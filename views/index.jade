@@ -1,0 +1,41 @@
+extends header
+
+block content
+  h1#title= title
+  div#main
+    div#left
+      div#query (mag glass) 
+        input(type="text", placeholder="search")
+      div#nuts
+        div.header
+          span (nutmeg icon)s
+          span#new-nut +
+          span.sort
+            label(for="nut-sort-select") Sort by 
+            select#nut-sort-select
+              option(value="modified,desc") Recently modified
+              option(value="modified,asc") Oldest modified
+              option(value="created,desc") Recently created
+              option(value="created,asc") Oldest created
+              option(value="length,desc") Longest
+              option(value="length,asc") Shortest
+              option(value="tags,desc") Most tags
+              option(value="tags,asc") Fewest tags
+              option(value="query,desc") Query match strength
+        ul
+    div#right
+      span (tag icon)s
+      br
+      span.sort
+        label(for="tag-sort-select") Sort by 
+        select#tag-sort-select
+          option(value="docs,desc") Most used
+          option(value="docs,asc") Least used
+          option(value="modified,desc") Recently modified
+          option(value="modified,asc") Oldest modified
+          option(value="created,desc") Recently created
+          option(value="created,asc") Oldest created
+          option(value="name,asc") Alphabetically
+          option(value="name,desc") Alpha (reversed)
+      input(type="text", placeholder="search")
+      ul#taglist tags

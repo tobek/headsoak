@@ -1,0 +1,184 @@
+/* =CSS Reset
+----------------------------------------------- */
+
+/* http://meyerweb.com/eric/tools/css/reset/ */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol, ul {
+  list-style: none;
+}
+blockquote, q {
+  quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+
+/* =Onwards
+----------------------------------------------- */
+
+html, body {
+  position: relative;
+  width: 100%;
+  height: 100%
+}
+
+body {
+  background-color: #333;
+  font: 150% "Lucida Grande", Helvetica, Arial, sans-serif;
+  color: white;
+}
+
+/* HACK not sure why these work/are necessary */
+textarea, input {
+  font-size: 60%; 
+}
+select, option, label {
+  font-size: 75%;
+}
+
+#title {
+  margin: 5px;
+}
+
+a {
+  color: #00B7FF;
+}
+
+#main {
+  margin: 1% 2% 2% 2%;
+  height: 96%;
+  width: 96%;
+}
+
+#left {
+  float: left;
+  width: 80%;
+  background-color: midnightblue;
+}
+
+.tag {
+  background-color: black;
+  color: white;
+  display: inline-block;
+  clear: both;
+  cursor: pointer;
+}
+.tag:hover{
+  background-color: maroon;
+}
+
+#right {
+  float: right;
+  width: 20%;
+  background-color: seagreen;
+  > * {
+    margin: 3px;
+  }
+  .tag {
+    padding: 4px;
+    margin: 4px;
+    float: left;
+  }
+}
+
+#query {
+  background-color: #181818;
+  padding: 0.5%;
+  input {
+    width: 80%;
+  }
+}
+
+#nuts {
+  text-align: center;
+  .header {
+    > span {
+      float: left;
+      margin: 5px 5px 1% 5px;
+    }
+    .sort {
+      float: right;
+    }
+  }
+  #new-nut {
+    margin-left: 3%;
+    font-size: 105%;
+    cursor: pointer;
+  }
+  #new-nut:hover {
+    color: gold;
+  }
+  .nut {
+    float: left;
+    clear: both;
+    width: 100%;
+    margin: 0 0 10px 0;
+    textarea {
+      width: 97%;
+      max-width: 97%;
+      margin: auto;
+      max-height: 200px;
+    }
+    textarea:focus {
+      background-color: lavender;
+    }
+    .tags {
+      float: right;
+      margin-right: 1.5%;
+      font-size: 80%;
+      .tag {
+        padding: 2px;
+        margin: 2px;
+        .delete {
+          color: gray;
+          font-size: 70%;
+          cursor: pointer;
+        }
+        .delete:hover {
+          color: black; 
+        }
+      }
+      .add-tag-to-nut {
+        cursor: pointer;
+      }
+      .add-tag-to-nut:hover {
+        color: gold;
+      }
+    }
+  }
+}

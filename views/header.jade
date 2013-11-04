@@ -1,0 +1,18 @@
+!!!
+html(lang='en')
+
+  head
+
+    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    meta(charset='utf-8')
+
+    title= title
+    link(rel="shortcut icon", href="/favicon.png")
+    link(rel="author", href="https://plus.google.com/102644916989167332589/posts")
+
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    -each script in scripts
+      script(src= script)
+
+  body
+    block content
