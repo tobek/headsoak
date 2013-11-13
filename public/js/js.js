@@ -1,5 +1,8 @@
 "use strict";
 
+// https://github.com/andyet/ConsoleDummy.js
+(function(b){function c(){}for(var d="error,group,groupCollapsed,groupEnd,log,time,timeEnd,warn".split(","),a;a=d.pop();)b[a]=b[a]||c})(window.console=window.console||{});
+
 /*
 
 ### DO NOW
@@ -74,6 +77,35 @@ var nm = {
   tags: {}, // map from id to tag
   tagIndex: 0, // increment
 
+  // these are what get saved in browser local storage
+  dataFields: ['config', 'store', 'nutIndex', 'tags', 'tagIndex'],
+
+  // will trigger an entire re-index for lunr
+  loadData: function() {
+    console.time("loadData");
+    $.extend(this, JSON.parse(localStorage.nm));
+    this.reIndex();
+    this.face.populate();
+    this.face.populateTags();
+    console.timeEnd("loadData");
+  },
+
+  reIndex: function() {
+    console.time("re-indexing");
+    _.each(_.keys(this.store), this.updateNutInIndex, this);
+    console.timeEnd("re-indexing");
+  },
+
+  saveData: function() {
+    console.time("saveData");
+    var saveMe = {};
+    this.dataFields.map(function(field) {
+      saveMe[field] = this[field];
+    }, this);
+    localStorage.nm = JSON.stringify(saveMe);
+    console.timeEnd("saveData");
+  },
+
   // ==== NUT FUNCTIONS ==== //
 
   /* 
@@ -140,7 +172,7 @@ var nm = {
   },
 
   addTagToNut: function(nutId, tagId) {
-    dbg("adding tag "+tagId+" to nut "+nutId);
+    console.log("adding tag "+tagId+" to nut "+nutId);
 
     // add tag id to nut if it's not already there
     if (this.store[nutId].tags.indexOf(tagId) === -1 ) {
@@ -157,7 +189,7 @@ var nm = {
     this.nutUpdated(nutId);
   },
   removeTagFromNut: function(nutId, tagId) { // TODO test
-    dbg("removing tag "+tagId+" from nut "+nutId);
+    console.log("removing tag "+tagId+" from nut "+nutId);
 
     // remove tag id from nut (check it's there first so we don't splice out -1)
     if (this.store[nutId].tags.indexOf(tagId) !== -1 ) {
@@ -178,9 +210,12 @@ var nm = {
   // NOTE: we're not updating history here, see note on updateNut()
   nutUpdated: function(id) {
     this.store[id].modified = (new Date).getTime()
+    this.saveData();
+    this.updateNutInIndex(id);
+  },
 
+  updateNutInIndex: function(id) {
     // update just does `remove` then `add` - seems to be fine that this gets called even when it's a totally new nut
-    var tagIds = 
     this.index.update({
       id: id,
       body: this.store[id].body,
@@ -195,6 +230,7 @@ var nm = {
     if (id) {
       this.tags[id].modified = (new Date).getTime();
     }
+    this.saveData();
     this.face.populateTags();
   },
 
@@ -309,7 +345,7 @@ var nm = {
     // TODO keep track of ids displayed currently and only actually populate if they're different or sorting is different?
     populate: function(nutIds) {
       nutIds = defaultFor(nutIds, _.keys(nm.store)); // default is everything
-      dbg("populating with nut ids " + nutIds);
+      console.log("populating with nut ids " + nutIds);
 
       $("#nuts ul").html(""); // clear everything
 
@@ -331,7 +367,7 @@ var nm = {
     },
 
     populateTags: function() {
-      dbg("populating tags");
+      console.log("populating tags");
 
       $("#taglist").html(""); // clear everything
 
@@ -358,7 +394,7 @@ var nm = {
         var aVal = self.sortHelper(a, field);
         var bVal = self.sortHelper(b, field);
         var result = aVal == bVal ? 0 : aVal < bVal ? -1 : 1;
-        //dbg("aVal: "+aVal+", bVal: "+bVal+", result: "+result);
+        //console.log("aVal: "+aVal+", bVal: "+bVal+", result: "+result);
         return order == "asc" ? result : result * -1;
       }));
     },
@@ -385,7 +421,7 @@ var nm = {
     },
     // whatever's in #nut-sort-select, sort from that
     sortFromSelect: function() {
-      dbg("sort by " + $("#nut-sort-select").val());
+      console.log("sort by " + $("#nut-sort-select").val());
       var sortBy = $("#nut-sort-select").val().split(',');
       nm.face.sortNuts(sortBy[0], sortBy[1]);
     },
@@ -393,16 +429,16 @@ var nm = {
     // recieves jQuery object containing li.nut
     // TODO console.group this shit
     saveNut: function(nut) {
-      dbg("saveNut called");
+      console.log("saveNut called");
 
       var ta = nut.children("textarea");
 
       if (ta.val() != nutDiff) {
-        dbg("new content!");
+        console.log("new content!");
         nutDiff = ta.val();
 
         if (!nut.attr("data-id")) { // means this must be a new nut
-          dbg("in fact, an entirely new nut");
+          console.log("in fact, an entirely new nut");
           // createNut() returns new id, store that in data-id
           nut.attr("data-id", nm.createNut({body: ta.val()}));
         }
@@ -410,7 +446,7 @@ var nm = {
           nm.updateNut(nut.attr("data-id"), {body: ta.val()});
         }
 
-        dbg(nut.attr("data-id") + " saved");
+        console.log(nut.attr("data-id") + " saved");
 
         // TODO better color animation
         ta.css("color", "green");
@@ -419,7 +455,7 @@ var nm = {
         }, 500);
       }
       else {
-        dbg("nothing has changed");
+        console.log("nothing has changed");
       }
     }
   } // end interface functions
@@ -445,7 +481,7 @@ $(function() { // upon DOM having loaded
   // attach to #nuts so that even new textareas within it trigger this
   $("#nuts").on("focusin", "textarea", function(e){
     var nut = $(e.target).parents(".nut");
-    dbg("focus on " + nut.attr("data-id"));
+    console.log("focus on " + nut.attr("data-id"));
     nutDiff = nut.children("textarea").val();
     saveInterval = window.setInterval(function() {
       nm.face.saveNut(nut);
@@ -454,7 +490,7 @@ $(function() { // upon DOM having loaded
 
   $("#nuts").on("focusout", "textarea", function(e){
     var nut = $(e.target).parents(".nut");
-    dbg("focus out from " + nut.attr("data-id"));
+    console.log("focus out from " + nut.attr("data-id"));
     nm.face.saveNut(nut);
     clearInterval(saveInterval);
   });
@@ -474,12 +510,12 @@ $(function() { // upon DOM having loaded
       var tagId = nm.getTagIdByName(tagName);
 
       if (tagId === -1) {
-        dbg("creating new tag " + tagName);
+        console.log("creating new tag " + tagName);
         tagId = nm.createTag({name: tagName});
       }
 
       if (nm.store[nutId].tags.indexOf(parseInt(tagId)) !== -1) {
-        dbg("tag "+tagName+" already exists on nut "+nutId);
+        console.log("tag "+tagName+" already exists on nut "+nutId);
       }
       else {
         nm.addTagToNut(nutId, tagId);
@@ -501,7 +537,7 @@ $(function() { // upon DOM having loaded
     // only start live searching once 3 chars have been entered
     if ($("#query input").val().length > 2) {
       var results = nm.index.search($("#query input").val());
-      dbg(results);
+      console.log(results);
       // results is array of objects each containing `ref` and `score`
       nm.face.populate(results.map(function(doc){ return doc.ref; }));
     }
@@ -515,38 +551,41 @@ $(function() { // upon DOM having loaded
 
   // ==== INITIALIZE NUTMEG ==== //
 
-  nm.createTags([{name: "Turkey"},{name: "steampunk"},{name: "quote"},{name: "education"},{name: "observation"}]);
+  // nutmeg's been used before on this browser, load data
+  if (localStorage.nm) {
+    nm.loadData();
+  }
+  // load dummy data
+  else {
+    nm.createTags([{name: "Turkey"},{name: "steampunk"},{name: "quote"},{name: "education"},{name: "observation"}]);
 
-  nm.createNuts([{
-    body: "'everyone saves the country in their own way' rough translation from turkish, part of raki culture",
-    tags: [0,2]
-  }, {
-    body: "Suddenly I realized that the music had been replaced with—had descended into—the plaintive beeps of a truck reversing outside. I hadn't noticed the transition.",
-    tags:[4]
-  }, {
-    body: "At a good teaching school, a professor is expected to run the class and, sometimes, have a small group of students over to his house for dinner. As the former function becomes less important, due to competition from online content, the latter function will predominate. The computer program cannot host a chatty, informal dinner in the same manner. We could think of the forthcoming educational model as professor as impresario. In some important ways, we would be returning to the original model of face-to-face education as practiced in ancient Greek symposia and meetings by the agora.\n\nIt will become increasingly apparent how much of current education is driven by human weakness, namely the inability of most students to simply sit down and try to learn something on their own. **It’s a common claim that you can’t replace professors with Nobel-quality YouTube lectures, because the professor, and perhaps also the classroom setting, is required to motivate most of the students. Fair enough, but let’s take this seriously. The professor is then a motivator first and foremost.** Let’s hire good motivators. Let’s teach our professors how to motivate. Let’s judge them on that basis. Let’s treat professors more like athletics coaches, personal therapists, and preachers, because that is what they will evolve to be.\n\nFrom Average Is Over: Powering America Beyond the Age of the Great Stagnation, by Tyler Cowen (emphasis mine)",
-    tags: [2,3]
-  },
-  {
-    body: 'nonsensenyc steampunk event from "Gemini and Scorpio": "Lost Circus dress code: dark cabaret, traveling circus, steampunk Victorian, neo-tribal, funky formal, desert wanderer, Edward Gorey, Tim Burton, Mad Max, City of Lost Children. Effort required. Stilts and characters welcome."',
-    tags: [1,2]
-  },
-  {
-    body: "**What did it feel like in the moments after you got your diagnosis?**\n\nIt was a little dizzying, partly because I’d expected to just be in and out of the place, and suddenly they were pulling out the hypodermics and tourniquets to do a confirmatory blood test, and I felt like I was going crazy because I’d given them a pseudonym and they were all calling me Mark.\n\n**Why a pseudonym?**\n\nBush-era paranoia. I didn’t want to link myself to my diagnosis. So they’re like “MARK, WHAT DO YOU WANT TO DO,” and the fluorescent lights are flickering above me and I’ve got super low blood sugar because I’d meant to get food immediately after, and now all these people with needles are staring at me, going “MARK. MARK,” and I was like, “I’m going to leave right now.” I didn’t have any pockets, and I had all of these pills and paperwork and walked out with three things in each hand, and it was so bright outside…\n\nThere was this hyper-real moment on the street. I’d gotten a parking ticket and that’s what made me shed my first tear. And afterwards I couldn’t decide what to do, get food or go to work or what, and I was sort of doing pirouettes on the crosswalk of this sun-drenched intersection, looking back and forth between the clinic and my car, and this girl was watching me and I finally locked eyes with her. It was the most intense eye contact I’ve ever had with a stranger. We were just staring at each other for a full minute, and she sort of wordlessly acknowledged, “You are having a fucking day right now.”\n\nexcerpt from The Sexual History of Jared Sabbagh, Part 3 http://thehairpin.com/2013/09/jared#more",
-    tags:[2]
-  }]);
+    nm.createNuts([{
+      body: "'everyone saves the country in their own way' rough translation from turkish, part of raki culture",
+      tags: [0,2]
+    }, {
+      body: "Suddenly I realized that the music had been replaced with—had descended into—the plaintive beeps of a truck reversing outside. I hadn't noticed the transition.",
+      tags:[4]
+    }, {
+      body: "At a good teaching school, a professor is expected to run the class and, sometimes, have a small group of students over to his house for dinner. As the former function becomes less important, due to competition from online content, the latter function will predominate. The computer program cannot host a chatty, informal dinner in the same manner. We could think of the forthcoming educational model as professor as impresario. In some important ways, we would be returning to the original model of face-to-face education as practiced in ancient Greek symposia and meetings by the agora.\n\nIt will become increasingly apparent how much of current education is driven by human weakness, namely the inability of most students to simply sit down and try to learn something on their own. **It’s a common claim that you can’t replace professors with Nobel-quality YouTube lectures, because the professor, and perhaps also the classroom setting, is required to motivate most of the students. Fair enough, but let’s take this seriously. The professor is then a motivator first and foremost.** Let’s hire good motivators. Let’s teach our professors how to motivate. Let’s judge them on that basis. Let’s treat professors more like athletics coaches, personal therapists, and preachers, because that is what they will evolve to be.\n\nFrom Average Is Over: Powering America Beyond the Age of the Great Stagnation, by Tyler Cowen (emphasis mine)",
+      tags: [2,3]
+    },
+    {
+      body: 'nonsensenyc steampunk event from "Gemini and Scorpio": "Lost Circus dress code: dark cabaret, traveling circus, steampunk Victorian, neo-tribal, funky formal, desert wanderer, Edward Gorey, Tim Burton, Mad Max, City of Lost Children. Effort required. Stilts and characters welcome."',
+      tags: [1,2]
+    },
+    {
+      body: "**What did it feel like in the moments after you got your diagnosis?**\n\nIt was a little dizzying, partly because I’d expected to just be in and out of the place, and suddenly they were pulling out the hypodermics and tourniquets to do a confirmatory blood test, and I felt like I was going crazy because I’d given them a pseudonym and they were all calling me Mark.\n\n**Why a pseudonym?**\n\nBush-era paranoia. I didn’t want to link myself to my diagnosis. So they’re like “MARK, WHAT DO YOU WANT TO DO,” and the fluorescent lights are flickering above me and I’ve got super low blood sugar because I’d meant to get food immediately after, and now all these people with needles are staring at me, going “MARK. MARK,” and I was like, “I’m going to leave right now.” I didn’t have any pockets, and I had all of these pills and paperwork and walked out with three things in each hand, and it was so bright outside…\n\nThere was this hyper-real moment on the street. I’d gotten a parking ticket and that’s what made me shed my first tear. And afterwards I couldn’t decide what to do, get food or go to work or what, and I was sort of doing pirouettes on the crosswalk of this sun-drenched intersection, looking back and forth between the clinic and my car, and this girl was watching me and I finally locked eyes with her. It was the most intense eye contact I’ve ever had with a stranger. We were just staring at each other for a full minute, and she sort of wordlessly acknowledged, “You are having a fucking day right now.”\n\nexcerpt from The Sexual History of Jared Sabbagh, Part 3 http://thehairpin.com/2013/09/jared#more",
+      tags:[2]
+    }]);
 
-  nm.face.populate();
-  nm.face.populateTags();
+    nm.face.populate();
+    nm.face.populateTags();
+  }
+
 
 });
 
 // ==== RANDOM GLOBAL UTILITIES ==== //
-
-var DEBUG = true;
-function dbg(text) {
-  if (DEBUG) console.log(text);
-}
 
 function defaultFor(arg, val) {
   return typeof arg !== 'undefined' ? arg : val;
