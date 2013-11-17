@@ -61,6 +61,9 @@ body {
   background-color: #333;
   font: 150% "Lucida Grande", Helvetica, Arial, sans-serif;
   color: white;
+  background: url("/img/room.jpg") fixed;
+  background-size: cover;
+  background-position: bottom center;
 }
 
 /* HACK not sure why these work/are necessary */
@@ -72,7 +75,12 @@ select, option, label {
 }
 
 #title {
+  color: black;
   margin: 5px;
+  display: inline-block;
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
 }
 
 a {
@@ -80,7 +88,7 @@ a {
 }
 
 #main {
-  margin: 1% 2% 2% 2%;
+  margin: 0 2% 2% 2%;
   height: 96%;
   width: 96%;
 }
@@ -117,10 +125,18 @@ a {
 }
 
 #query {
-  background-color: #181818;
-  padding: 0.5%;
+  padding-bottom: 0.5%;
+  position: relative;
   input {
-    width: 80%;
+    -moz-box-shadow: none;
+    background-color: rgba(255,255,255,0.7);
+    width: 100%;
+    border: none;
+    border-bottom: 5px solid black;
+    font-size: 115%;
+  }
+  input:focus {
+    -moz-box-shadow: none;
   }
 }
 
@@ -141,7 +157,7 @@ a {
     cursor: pointer;
   }
   #new-nut:hover {
-    color: gold;
+    color: red;
   }
   .nut {
     float: left;
