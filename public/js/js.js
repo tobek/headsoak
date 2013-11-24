@@ -61,6 +61,15 @@ Intuitively the answer should be yes, but I wanted to know whether I can rely on
 // ============================== //
 // ==== SET UP NUTMEG OBJECT ==== //
 // ============================== //
+/*
+##    ## ##     ## ######## ##     ## ########  ######       #######  ########        ## 
+###   ## ##     ##    ##    ###   ### ##       ##    ##     ##     ## ##     ##       ## 
+####  ## ##     ##    ##    #### #### ##       ##           ##     ## ##     ##       ## 
+## ## ## ##     ##    ##    ## ### ## ######   ##   ####    ##     ## ########        ## 
+##  #### ##     ##    ##    ##     ## ##       ##    ##     ##     ## ##     ## ##    ## 
+##   ### ##     ##    ##    ##     ## ##       ##    ##     ##     ## ##     ## ##    ## 
+##    ##  #######     ##    ##     ## ########  ######       #######  ########   ######  
+*/
 
 var nm = {
   config: {
@@ -72,13 +81,11 @@ var nm = {
     this.field('body', {boost: 1});
     this.ref('id');
   }),
-  store: {}, // map from id to nut. load from mongo into memory?
-  nutIndex: 0, // increment
-  tags: {}, // map from id to tag
-  tagIndex: 0, // increment
+  store: [], // index in array will be id of tag. load from mongo into memory?
+  tags: [], // index in array will be id of tag
 
   // these are what get saved in browser local storage
-  dataFields: ['config', 'store', 'nutIndex', 'tags', 'tagIndex'],
+  dataFields: ['config', 'store', 'tags'],
 
   // will trigger an entire re-index for lunr
   loadData: function() {
@@ -107,13 +114,21 @@ var nm = {
   },
 
   // ==== NUT FUNCTIONS ==== //
+  /*
+       d8b   db db    db d888888b   d88888b db    db d8b   db  .o88b. .d8888. 
+       888o  88 88    88 `~~88~~'   88'     88    88 888o  88 d8P  Y8 88'  YP 
+       88V8o 88 88    88    88      88ooo   88    88 88V8o 88 8P      `8bo.   
+C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b. 
+       88  V888 88b  d88    88      88      88b  d88 88  V888 Y8b  d8 db   8D 
+       VP   V8P ~Y8888P'    YP      YP      ~Y8888P' VP   V8P  `Y88P' `8888Y'
+  */
 
   /* 
    * merge passed nut with defaults and store it
    * NOTE: this is allowing totally empty nuts... would be a minor pain to disallow (what if you create non-empty and then update to empty?) and i can't see it causing problems so it's okay. we can do a "this nut is empty would you like to delete?" message maybe
    */
   createNut: function(nut) {
-    this.store[this.nutIndex] = _.defaults(nut, {
+    var newId = this.store.push(_.defaults(nut, {
       // default nut:
       // title: null,
       body: null,
@@ -121,20 +136,20 @@ var nm = {
       created: (new Date).getTime(),
       modified: (new Date).getTime(),
       history: [] // an array of nuts, last is the latest
-    });
+    })) - 1; // newId is return val of push()-1 cause push returns new length
 
     if (nut.tags && nut.tags.length > 0) {
       // add this doc id to each of the tags
       var self = this;
       nut.tags.forEach(function(tagId){
-        self.tags[tagId].docs.push(self.nutIndex);
+        self.tags[tagId].docs.push(newId);
         self.tags[tagId].modified = (new Date).getTime();
       });
     }
 
-    this.nutUpdated(this.nutIndex);
+    this.nutUpdated(newId);
 
-    return this.nutIndex++;
+    return newId;
   },
   createNuts: function(nuts){
     var self = this;
@@ -223,7 +238,8 @@ var nm = {
     });
   },
 
-  // call whenever a nut is updated
+  // call whenever a tag is updated
+  // pass no id if tag was deleted
   // 1: updates `modified` (unless no id is sent, meaning a tag was deleted)
   // 2: redraws tag browser
   tagUpdated: function(id) {
@@ -235,6 +251,14 @@ var nm = {
   },
 
   // ==== TAG FUNCTIONS ==== //
+  /*
+       d888888b  .d8b.   d888b    d88888b db    db d8b   db  .o88b. .d8888. 
+       `~~88~~' d8' `8b 88' Y8b   88'     88    88 888o  88 d8P  Y8 88'  YP 
+          88    88ooo88 88        88ooo   88    88 88V8o 88 8P      `8bo.   
+C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b. 
+          88    88   88 88. ~8~   88      88b  d88 88  V888 Y8b  d8 db   8D 
+          YP    YP   YP  Y888P    YP      ~Y8888P' VP   V8P  `Y88P' `8888Y'
+  */
   
   /* 
    * merge passed tag with defaults and store it
@@ -248,15 +272,15 @@ var nm = {
       console.error(tag);
       return; // this is required
     }
-    this.tags[this.tagIndex] = _.defaults(tag, {
+    var newId = this.tags.push(_.defaults(tag, {
       docs: [], // array of doc ids that have this
       created: (new Date).getTime(),
       modified: (new Date).getTime(),
       color: "white", // # or css color
       bgColor: "black"
-    });
-    this.tagUpdated(this.tagIndex);
-    return this.tagIndex++;
+    })) - 1; // newId is return val of push()-1 cause push returns new length
+    this.tagUpdated(newId);
+    return newId;
   },
   createTags: function(tags){
     var self = this;
@@ -318,6 +342,14 @@ var nm = {
   },
 
   // ==== COMPONENT TEMPLATES ==== //
+  /*
+       d888888b d88888b .88b  d88. d8888b. db       .d8b.  d888888b d88888b .d8888. 
+       `~~88~~' 88'     88'YbdP`88 88  `8D 88      d8' `8b `~~88~~' 88'     88'  YP 
+          88    88ooooo 88  88  88 88oodD' 88      88ooo88    88    88ooooo `8bo.   
+C8888D    88    88~~~~~ 88  88  88 88~~~   88      88~~~88    88    88~~~~~   `Y8b. 
+          88    88.     88  88  88 88      88booo. 88   88    88    88.     db   8D 
+          YP    Y88888P YP  YP  YP 88      Y88888P YP   YP    YP    Y88888P `8888Y' 
+  */
 
   // these return html strings
 
@@ -338,6 +370,15 @@ var nm = {
   },
 
   // ==== INTERFACE FUNCTIONS ==== //
+  /*
+
+       d888888b d8b   db d888888b d88888b d8888b. d88888b  .d8b.   .o88b. d88888b 
+         `88'   888o  88 `~~88~~' 88'     88  `8D 88'     d8' `8b d8P  Y8 88'     
+          88    88V8o 88    88    88ooooo 88oobY' 88ooo   88ooo88 8P      88ooooo 
+C8888D    88    88 V8o88    88    88~~~~~ 88`8b   88~~~   88~~~88 8b      88~~~~~ 
+         .88.   88  V888    88    88.     88 `88. 88      88   88 Y8b  d8 88.     
+       Y888888P VP   V8P    YP    Y88888P 88   YD YP      YP   YP  `Y88P' Y88888P
+  */
 
   face: {
     // takes a list of nut Ids and replaces the viewport with them
@@ -367,6 +408,7 @@ var nm = {
     },
 
     populateTags: function() {
+      return;
       console.log("populating tags");
 
       $("#taglist").html(""); // clear everything
@@ -463,12 +505,34 @@ var nm = {
 }; // end defining and declaring nutmeg
 
 
+
+
+
+/*
+ ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##  
+#### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### 
+ ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##  
+                                                                                
+ ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##  
+#### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### 
+ ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##  
+*/
+
 var saveInterval; // window.setInterval timer for saving
 var nutDiff; // stores body of nut to check if it's changed - only saves if it has
 
 $(function() { // upon DOM having loaded
 
   // ==== EVENT LISTENERS ==== //
+  /*
+
+d88888b db    db d88888b d8b   db d888888b .d8888. 
+88'     88    88 88'     888o  88 `~~88~~' 88'  YP 
+88ooooo Y8    8P 88ooooo 88V8o 88    88    `8bo.   
+88~~~~~ `8b  d8' 88~~~~~ 88 V8o88    88      `Y8b. 
+88.      `8bd8'  88.     88  V888    88    db   8D 
+Y88888P    YP    Y88888P VP   V8P    YP    `8888Y'
+  */
 
   $("#new-nut").click(function() {
     var n = $(nm.templates.nut());
@@ -549,9 +613,11 @@ $(function() { // upon DOM having loaded
 
   // for other keypress listening, e.keyCode, e.metaKey, e.shiftKey, e.ctrlKey, e.altKey
 
+
   // ==== INITIALIZE NUTMEG ==== //
 
   // nutmeg's been used before on this browser, load data
+  //localStorage.clear(); // actually don't
   if (localStorage.nm) {
     nm.loadData();
   }
@@ -580,10 +646,62 @@ $(function() { // upon DOM having loaded
 
     nm.face.populate();
     nm.face.populateTags();
+
+    // temporary hack because angular tag sort select is created before any tags, so we need to reapply model to sort (and therefore display) the tags
+    $("#tagContainer .sort select").trigger("change");
   }
 
+  // ==== AUTOCOMPLETE ==== //
+
+  // TODO store this better and update on tagsUpdated()
+  $( "#query input" ).autocomplete({
+    source: _.map(nm.tags, function(tag) { return tag.name; })
+  });
 
 });
+
+// ANGULAR
+
+var ngApp = angular.module('nutmeg',[]);
+
+function Query($scope) {}
+function Nuts($scope) {}
+function Tags($scope) {
+  $scope.tags = nm.tags;
+  $scope.sortOpts = [
+    {field: "docs.length", rev: true, name: "Most used"},
+    {field: "docs.length", rev: false, name: "Least used"},
+    {field: "modified", rev: true, name: "Recently modified"},
+    {field: "modified", rev: false, name: "Oldest modified"},
+    {field: "created", rev: true, name: "Recently created"},
+    {field: "created", rev: false, name: "Oldest created"},
+    {field: "name", rev: false, name: "Alphabetically"},
+    {field: "name", rev: true, name: "Alpha (reversed)"}
+  ];
+  // set initial value for select dropdown
+  $scope.t = {sortBy: $scope.sortOpts[0]};
+
+  $scope.addTodo = function() {
+    $scope.todos.push({text:$scope.todoText, done:false});
+    $scope.todoText = '';
+  };
+
+  $scope.remaining = function() {
+    var count = 0;
+    angular.forEach($scope.todos, function(todo) {
+      count += todo.done ? 0 : 1;
+    });
+    return count;
+  };
+
+  $scope.archive = function() {
+    var oldTodos = $scope.todos;
+    $scope.todos = [];
+    angular.forEach(oldTodos, function(todo) {
+      if (!todo.done) $scope.todos.push(todo);
+    });
+  };
+}
 
 // ==== RANDOM GLOBAL UTILITIES ==== //
 

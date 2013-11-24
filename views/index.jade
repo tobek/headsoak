@@ -2,11 +2,14 @@ extends header
 
 block content
   h1#title= title
-  div#query
+  div#query(ng-controller="Query")
+    img(src="/img/nutmeg40h.png")
     input(type="text", placeholder="search")
+
+  //- can add .tab-hidden
   div#main
     div#left
-      div#nuts
+      div#nuts(ng-controller="Nuts")
         div.header
           span (nutmeg icon)s
           span#new-nut +
@@ -24,18 +27,13 @@ block content
               option(value="query,desc") Query match strength
         ul
     div#right
-      span (tag icon)s
-      br
-      span.sort
-        label(for="tag-sort-select") Sort by 
-        select#tag-sort-select
-          option(value="docs,desc") Most used
-          option(value="docs,asc") Least used
-          option(value="modified,desc") Recently modified
-          option(value="modified,asc") Oldest modified
-          option(value="created,desc") Recently created
-          option(value="created,asc") Oldest created
-          option(value="name,asc") Alphabetically
-          option(value="name,desc") Alpha (reversed)
-      input(type="text", placeholder="search")
-      ul#taglist tags
+      div#tagContainer(ng-controller="Tags")
+        span (tag icon)s
+        br
+        span.sort
+          label(for="tag-sort-select") Sort by 
+          select(ng-model='t.sortBy', ng-options='o as o.name for o in sortOpts')
+        input(type="text", placeholder="search")
+        ul#taglist
+          li.tag(ng-repeat="tag in tags | orderBy:t.sortBy.field:t.sortBy.rev")
+            {{tag.name}} ({{tag.docs.length}})
