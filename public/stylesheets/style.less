@@ -1,3 +1,11 @@
+/* =Variables
+----------------------------------------------- */
+
+@mainbg: #263D59;
+//@tagbg: #f5580a; // pumpkin
+@tagbg: saturate(#b5534a,20%); // tomato
+//@tagbg: #fc8c03; // goldish
+
 /* =CSS Reset
 ----------------------------------------------- */
 
@@ -96,7 +104,7 @@ a {
 #left {
   float: left;
   width: 80%;
-  background-color: midnightblue;
+  background-color: fade(@mainbg, 85%);
 }
 
 .tag {
@@ -106,14 +114,23 @@ a {
   clear: both;
   cursor: pointer;
 }
-.tag:hover{
-  background-color: maroon;
+#left .tag:hover{
+  background-color: @tagbg;
+}
+#right .tag:hover{
+  background-color: @mainbg;
+}
+
+.tab-hidden {
+  #right {
+    display: none;
+  }
 }
 
 #right {
   float: right;
   width: 20%;
-  background-color: seagreen;
+  background-color: fade(@tagbg, 80%);
   > * {
     margin: 3px;
   }
@@ -125,18 +142,26 @@ a {
 }
 
 #query {
-  padding-bottom: 0.5%;
+  margin-bottom: 0.5%;
   position: relative;
+  background-color: rgba(255,255,255,0.7);
+  width: 100%;
+  border-bottom: 5px solid @mainbg;
   input {
     -moz-box-shadow: none;
-    background-color: rgba(255,255,255,0.7);
-    width: 100%;
     border: none;
-    border-bottom: 5px solid black;
-    font-size: 115%;
+    font-size: 100%;
+    width: 97%;
+    background: none;
+    padding: 0;
+    margin: 0;
   }
   input:focus {
     -moz-box-shadow: none;
+  }
+  img {
+    height: auto;
+    width: 2%;
   }
 }
 
