@@ -8,11 +8,11 @@ html(lang='en', ng-app='nutmeg')
 
     title= title
     link(rel="shortcut icon", href="/favicon.png")
-    link(rel="author", href="https://plus.google.com/102644916989167332589/posts")
+    link(rel="author", href="https://plus.google.com/+TobyFox/posts")
 
     link(rel='stylesheet', href='/stylesheets/style.css')
     -each script in scripts
       script(src= script)
 
-  body
+  body(ng-controller="Nutmeg")
     block content

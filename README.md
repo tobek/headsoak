@@ -1,3 +1,3 @@
 # Nutmeg
 
-Vim and Evernote are having a baby.
+An API for your writing

@@ -2,38 +2,37 @@ extends header
 
 block content
   h1#title= title
-  div#query(ng-controller="Query")
+  div#query
     img(src="/img/nutmeg40h.png")
     input(type="text", placeholder="search")
 
   //- can add .tab-hidden
   div#main
     div#left
-      div#nuts(ng-controller="Nuts")
+      div#nuts
         div.header
           span (nutmeg icon)s
           span#new-nut +
           span.sort
-            label(for="nut-sort-select") Sort by 
-            select#nut-sort-select
-              option(value="modified,desc") Recently modified
-              option(value="modified,asc") Oldest modified
-              option(value="created,desc") Recently created
-              option(value="created,asc") Oldest created
-              option(value="length,desc") Longest
-              option(value="length,asc") Shortest
-              option(value="tags,desc") Most tags
-              option(value="tags,asc") Fewest tags
-              option(value="query,desc") Query match strength
+            label Sort by 
+              select#nut-sort-select(ng-model='n.sortBy', ng-options='o as o.name for o in n.sortOpts')
         ul
+          li.nut(ng-repeat="nut in n.nuts | orderBy:n.sortBy.field:n.sortBy.rev")
+            div.tags
+              span.add-tag-to-nut(ng-click="addingTag=true;") +
+              form(ng-submit="n.addTag(n.newTagName, nut)", ng-show="addingTag")
+                input(type="text", ng-model="n.newTagName")
+              span.tag(ng-repeat="tagId in nut.tags") {{t.tags[tagId].name}} 
+                span.delete X
+            textarea {{nut.body}}
     div#right
-      div#tagContainer(ng-controller="Tags")
+      div#tagContainer
         span (tag icon)s
         br
         span.sort
-          label(for="tag-sort-select") Sort by 
-          select(ng-model='t.sortBy', ng-options='o as o.name for o in sortOpts')
+          label Sort by 
+            select(ng-model='t.sortBy', ng-options='o as o.name for o in t.sortOpts')
         input(type="text", placeholder="search")
         ul#taglist
-          li.tag(ng-repeat="tag in tags | orderBy:t.sortBy.field:t.sortBy.rev")
+          li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev")
             {{tag.name}} ({{tag.docs.length}})

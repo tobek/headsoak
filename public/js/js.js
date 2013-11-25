@@ -128,15 +128,17 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
    * NOTE: this is allowing totally empty nuts... would be a minor pain to disallow (what if you create non-empty and then update to empty?) and i can't see it causing problems so it's okay. we can do a "this nut is empty would you like to delete?" message maybe
    */
   createNut: function(nut) {
-    var newId = this.store.push(_.defaults(nut, {
+    var newId = this.store.length; // will be index of nut we're about to store
+    this.store.push(_.defaults(nut, {
       // default nut:
       // title: null,
       body: null,
       tags: [], // array of tag ids
       created: (new Date).getTime(),
       modified: (new Date).getTime(),
-      history: [] // an array of nuts, last is the latest
-    })) - 1; // newId is return val of push()-1 cause push returns new length
+      history: [], // an array of nuts, last is the latest
+      id: newId
+    }));
 
     if (nut.tags && nut.tags.length > 0) {
       // add this doc id to each of the tags
@@ -385,6 +387,7 @@ C8888D    88    88 V8o88    88    88~~~~~ 88`8b   88~~~   88~~~88 8b      88~~~~
     // TODO SUPER IMPORTANT: check focusout before anything else, otherwise clearing will delete just-made changes
     // TODO keep track of ids displayed currently and only actually populate if they're different or sorting is different?
     populate: function(nutIds) {
+      return;
       nutIds = defaultFor(nutIds, _.keys(nm.store)); // default is everything
       console.log("populating with nut ids " + nutIds);
 
@@ -617,7 +620,7 @@ Y88888P    YP    Y88888P VP   V8P    YP    `8888Y'
   // ==== INITIALIZE NUTMEG ==== //
 
   // nutmeg's been used before on this browser, load data
-  //localStorage.clear(); // actually don't
+  localStorage.clear(); // actually don't
   if (localStorage.nm) {
     nm.loadData();
   }
@@ -660,15 +663,35 @@ Y88888P    YP    Y88888P VP   V8P    YP    `8888Y'
 
 });
 
-// ANGULAR
+// ANGULARFIRE
 
-var ngApp = angular.module('nutmeg',[]);
+// TODO look at angularFireCollection for explicit instead of implicit syncing
+var ngApp = angular.module('nutmeg',['firebase']).controller('Nutmeg', ['$scope', 'angularFire',function($s, angularFire) {
 
-function Query($scope) {}
-function Nuts($scope) {}
-function Tags($scope) {
-  $scope.tags = nm.tags;
-  $scope.sortOpts = [
+  var ref = new Firebase('https://nutmeg.firebaseio.com/');
+
+  $s.n = {};
+  $s.n.nuts = nm.store;
+  $s.n['sortOpts'] = [
+    {field: "modified", rev: true, name: "Recently modified"},
+    {field: "modified", rev: false, name: "Oldest modified"},
+    {field: "created", rev: true, name: "Recently created"},
+    {field: "created", rev: false, name: "Oldest created"},
+    {field: "body.length", rev: true, name: "Longest"},
+    {field: "body.length", rev: false, name: "Shortest"},
+    {field: "tags.length", rev: false, name: "Most Tags"},
+    {field: "tags.length", rev: true, name: "Fewest tags"}
+    // TODO: query match strength
+  ];
+  $s.n['sortBy'] = $s.n['sortOpts'][0]; // set initial value for nut sort select dropdown
+
+  $s.n.addTag = function(tagName, nut) {
+    debugger;
+  };
+
+  $s.t = {};
+  $s.t.tags = nm.tags;
+  $s.t['sortOpts'] = [
     {field: "docs.length", rev: true, name: "Most used"},
     {field: "docs.length", rev: false, name: "Least used"},
     {field: "modified", rev: true, name: "Recently modified"},
@@ -678,30 +701,9 @@ function Tags($scope) {
     {field: "name", rev: false, name: "Alphabetically"},
     {field: "name", rev: true, name: "Alpha (reversed)"}
   ];
-  // set initial value for select dropdown
-  $scope.t = {sortBy: $scope.sortOpts[0]};
+  $s.t['sortBy'] = $s.t['sortOpts'][0]; // set initial value for tag sort select dropdown
 
-  $scope.addTodo = function() {
-    $scope.todos.push({text:$scope.todoText, done:false});
-    $scope.todoText = '';
-  };
-
-  $scope.remaining = function() {
-    var count = 0;
-    angular.forEach($scope.todos, function(todo) {
-      count += todo.done ? 0 : 1;
-    });
-    return count;
-  };
-
-  $scope.archive = function() {
-    var oldTodos = $scope.todos;
-    $scope.todos = [];
-    angular.forEach(oldTodos, function(todo) {
-      if (!todo.done) $scope.todos.push(todo);
-    });
-  };
-}
+}]);
 
 // ==== RANDOM GLOBAL UTILITIES ==== //
 
