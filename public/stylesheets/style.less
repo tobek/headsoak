@@ -6,6 +6,8 @@
 @tagbg: saturate(#b5534a,20%); // tomato
 //@tagbg: #fc8c03; // goldish
 
+@new-hover: gold;
+
 /* =CSS Reset
 ----------------------------------------------- */
 
@@ -135,6 +137,13 @@ form {
   float: right;
   width: 20%;
   background-color: fade(@tagbg, 80%);
+  #new-tag {
+    float: right;
+    cursor: pointer;
+  }
+  #new-tag:hover {
+    color: @new-hover;
+  }
   > * {
     margin: 3px;
   }
@@ -186,7 +195,7 @@ form {
     cursor: pointer;
   }
   #new-nut:hover {
-    color: red;
+    color: @new-hover;
   }
   .nut {
     float: left;
@@ -222,7 +231,7 @@ form {
         cursor: pointer;
       }
       .add-tag-to-nut:hover {
-        color: gold;
+        color: @new-hover;
       }
     }
   }

@@ -8,31 +8,40 @@ block content
 
   //- can add .tab-hidden
   div#main
+
     div#left
       div#nuts
         div.header
           span (nutmeg icon)s
-          span#new-nut +
+          span#new-nut(ng-click="n.createNut({})") +
           span.sort
             label Sort by 
               select#nut-sort-select(ng-model='n.sortBy', ng-options='o as o.name for o in n.sortOpts')
+
         ul
           li.nut(ng-repeat="nut in n.nuts | orderBy:n.sortBy.field:n.sortBy.rev")
             div.tags
               span.add-tag-to-nut(ng-click="addingTag=true;") +
-              form(ng-submit="n.addTag(n.newTagName, nut)", ng-show="addingTag")
-                input(type="text", ng-model="n.newTagName")
+              span.tag(ng-show="addingTag")
+                form(ng-submit="n.addTagNameToNut(n.addTagName, nut)")
+                  input(type="text", ng-model="n.addTagName", ng-blur="addingTag=false;")
               span.tag(ng-repeat="tagId in nut.tags") {{t.tags[tagId].name}} 
-                span.delete X
+                span.delete(ng-click="n.removeTagIdFromNut(nut.id, tagId)") X
             textarea {{nut.body}}
+
     div#right
       div#tagContainer
-        span (tag icon)s
+        span (t)s
+        span#new-tag(ng-click="t.creatingTag=true;") +
         br
         span.sort
           label Sort by 
             select(ng-model='t.sortBy', ng-options='o as o.name for o in t.sortOpts')
         input(type="text", placeholder="search")
+
         ul#taglist
+          li.tag.new-tag(ng-show="t.creatingTag")
+            form(ng-submit="t.createTag({name: t.createTagName})")
+              input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';")
           li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev")
             {{tag.name}} ({{tag.docs.length}})

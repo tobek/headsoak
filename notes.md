@@ -215,6 +215,9 @@ could have user collection which stored name of note collection. multiple users 
   - https://github.com/fergiemcdowall/forage
   - https://github.com/fergiemcdowall/search-index
   - http://lucene.apache.org/
+- angular
+  - simple example of storing model in a service to access it from multiple controllers: http://stackoverflow.com/questions/11112608/angularjs-where-to-put-model-data-and-behaviour
+  - storing logged-in user context: http://stackoverflow.com/questions/14206492/how-do-i-store-a-current-user-context-in-angular
 
 if you hit performance issues with lunr, could offload to a web-worker. can migrate to solr or something later.
 
