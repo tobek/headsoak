@@ -84,13 +84,38 @@ select, option, label {
   font-size: 75%;
 }
 
+#menu {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  cursor: pointer;
+  text-align: right;
+  ul {
+    display: none;
+    margin-right: 10px;
+    font-size: 80%;
+  }
+  li:hover {
+    background-color: #333;
+  }
+  li:active {
+    color: @new-hover;
+  }
+  .account, .login, .logout { display: none; }
+  .loggedin {
+    .account, .logout { display: list-item; }
+  }
+  .loggedout {
+    .login { display: list-item; }
+  }
+}
+#menu:hover ul {
+  display: block;
+}
 #title {
   color: black;
   margin: 5px;
   display: inline-block;
-  position: fixed;
-  bottom: 0px;
-  right: 0px;
 }
 
 a {
@@ -164,10 +189,11 @@ form {
     -moz-box-shadow: none;
     border: none;
     font-size: 100%;
-    width: 97%;
+    width: 94%;
     background: none;
-    padding: 0;
-    margin: 0;
+    padding: 3px 0;
+    margin: 0 0 0 1%;
+    vertical-align: middle;
   }
   input:focus {
     -moz-box-shadow: none;
@@ -175,6 +201,17 @@ form {
   img {
     height: auto;
     width: 2%;
+    float: left;
+  }
+  .clear {
+    padding: 3px 0;
+    width: 2%;
+    float: right;
+    cursor: pointer;
+    color: #666;
+  }
+  .clear:hover {
+    color: black;
   }
 }
 

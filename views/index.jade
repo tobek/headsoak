@@ -1,10 +1,21 @@
 extends header
 
 block content
-  h1#title= title
+  div#menu
+    ul.loggedout
+      li about
+      li feedback
+      li importer
+      li shortcuts
+      li settings
+      li.account account
+      li.login log in
+      li.logout log out
+    h1#title nutmeg
   div#query
     img(src="/img/nutmeg40h.png")
-    input(type="text", placeholder="search")
+    input(type="text", placeholder="search", ng-model="q.query", nm-query="q.query")
+    span.clear(ng-click="q.query=''") X
 
   //- can add .tab-hidden
   div#main
@@ -19,15 +30,15 @@ block content
               select#nut-sort-select(ng-model='n.sortBy', ng-options='o as o.name for o in n.sortOpts')
 
         ul
-          li.nut(ng-repeat="nut in n.nuts | orderBy:n.sortBy.field:n.sortBy.rev")
+          li.nut(ng-repeat="nut in n.nuts | orderBy:n.sortBy.field:n.sortBy.rev", ng-show="q.showAll || q.showNuts.indexOf(nut.id) !== -1")
             div.tags
               span.add-tag-to-nut(ng-click="addingTag=true;") +
               span.tag(ng-show="addingTag")
-                form(ng-submit="n.addTagNameToNut(n.addTagName, nut)")
-                  input(type="text", ng-model="n.addTagName", ng-blur="addingTag=false;")
+                form(ng-submit="n.addTagNameToNut(n.addTagName, nut); n.addTagName = ''; addingTag=false")
+                  input(type="text", ng-model="n.addTagName", ng-blur="n.addTagName = ''; addingTag=false;", nm-focus="addingTag")
               span.tag(ng-repeat="tagId in nut.tags") {{t.tags[tagId].name}} 
                 span.delete(ng-click="n.removeTagIdFromNut(nut.id, tagId)") X
-            textarea {{nut.body}}
+            textarea(ng-model="nut.body", ng-blur="n.nutBodyUpdated(nut)")
 
     div#right
       div#tagContainer
@@ -42,6 +53,6 @@ block content
         ul#taglist
           li.tag.new-tag(ng-show="t.creatingTag")
             form(ng-submit="t.createTag({name: t.createTagName})")
-              input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';")
-          li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev")
+              input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';" nm-focus="t.creatingTag")
+          li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev", ng-click="q.query = tag.name + ' ' + q.query")
             {{tag.name}} ({{tag.docs.length}})

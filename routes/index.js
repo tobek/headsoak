@@ -6,7 +6,6 @@
 
 exports.index = function(req, res){
   var view = {
-    title: 'nutmeg',
     scripts: [
       //* offline
       "/js/jquery.min.js",
