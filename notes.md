@@ -194,6 +194,9 @@ could have user collection which stored name of note collection. multiple users 
 
 # Resources
 
+- checking whether online, client-side:
+  - http://www.html5rocks.com/en/mobile/workingoffthegrid/
+  - https://developer.mozilla.org/en-US/docs/Web/API/NavigatorOnLine.onLine?redirectlocale=en-US&redirectslug=Web%2FAPI%2FNavigator.onLine
 - http://craig.is/killing/mice
 - http://bitdrift.com/post/2376383378/using-mustache-templates-in-express
 - searching/indexing

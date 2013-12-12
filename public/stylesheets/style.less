@@ -91,7 +91,7 @@ select, option, label {
   cursor: pointer;
   text-align: right;
   ul {
-    display: none;
+    // display: none;
     margin-right: 10px;
     font-size: 80%;
   }
@@ -100,13 +100,6 @@ select, option, label {
   }
   li:active {
     color: @new-hover;
-  }
-  .account, .login, .logout { display: none; }
-  .loggedin {
-    .account, .logout { display: list-item; }
-  }
-  .loggedout {
-    .login { display: list-item; }
   }
 }
 #menu:hover ul {

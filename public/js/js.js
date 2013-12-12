@@ -182,7 +182,21 @@ Y88888P    YP    Y88888P VP   V8P    YP    `8888Y'
 var ngApp = angular.module('nutmeg',['firebase'])
 .controller('Nutmeg', ['$scope', 'angularFire',function($s, angularFire) {
 
-  //var ref = new Firebase('https://nutmeg.firebaseio.com/');
+  var ref = new Firebase('https://nutmeg.firebaseio.com/');
+  $s.u = { loggedIn: false };
+  var auth = new FirebaseSimpleLogin(ref, function(error, user) {
+    if (error) {
+      // an error occurred while attempting login
+      console.log(error);
+    } else if (user) {
+      // user authenticated with Firebase
+      console.log('User ID: ' + user.id + ', Provider: ' + user.provider);
+      $s.u.loggedIn = true;
+    } else {
+      // user is logged out
+      $s.u.loggedIn = false;
+    }
+  });
 
   // ==== NUT FUNCTIONS ==== //
   /*

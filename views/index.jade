@@ -8,9 +8,9 @@ block content
       li importer
       li shortcuts
       li settings
-      li.account account
-      li.login log in
-      li.logout log out
+      li(ng-show="u.loggedIn") account
+      li(ng-show="u.loggedIn") log in
+      li(ng-show="!u.loggedIn") log out
     h1#title nutmeg
   div#query
     img(src="/img/nutmeg40h.png")
@@ -23,7 +23,7 @@ block content
     div#left
       div#nuts
         div.header
-          span (nutmeg icon)s
+          span (n)s
           span#new-nut(ng-click="n.createNut({})") +
           span.sort
             label Sort by 
