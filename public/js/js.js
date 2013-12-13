@@ -530,7 +530,6 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 .directive('nmFocus', function($timeout) {
   return function(scope, element, attrs) {
      scope.$watch(attrs.nmFocus, function (newValue) {
-        debugger;
         // not sure why $timeout is necessary here, but seems like otherwise input gets focus BEFORE ng-show on parent <li> kicks in
         $timeout(function() {
           newValue && element[0].focus()
