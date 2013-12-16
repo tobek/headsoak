@@ -159,7 +159,7 @@ Y88888P    YP    Y88888P VP   V8P    YP    `8888Y'
   */
 
 
-  nm.face.autosizeAllNuts();
+  
 
   // ==== AUTOCOMPLETE ==== //
 
@@ -178,25 +178,69 @@ Y88888P    YP    Y88888P VP   V8P    YP    `8888Y'
 // angular.element($("body")).scope().t.tags.push({name:"foooo"})
 // angular.element($("body")).scope().$apply()
 
-// TODO look at angularFireCollection for explicit instead of implicit syncing
-var ngApp = angular.module('nutmeg',['firebase'])
-.controller('Nutmeg', ['$scope', 'angularFire',function($s, angularFire) {
+var ngApp = angular.module('nutmeg', [])
+.controller('Nutmeg', ['$scope', function($s) {
 
-  var ref = new Firebase('https://nutmeg.firebaseio.com/');
-  $s.u = { loggedIn: false };
-  var auth = new FirebaseSimpleLogin(ref, function(error, user) {
-    if (error) {
-      // an error occurred while attempting login
-      console.log(error);
-    } else if (user) {
-      // user authenticated with Firebase
-      console.log('User ID: ' + user.id + ', Provider: ' + user.provider);
-      $s.u.loggedIn = true;
-    } else {
-      // user is logged out
-      $s.u.loggedIn = false;
-    }
-  });
+  $s.m = { modal: false };
+
+  $s.u = {
+    loggedIn: true, // TODO check if actually logged in when opening
+
+    createAccount: function(email, pass1, pass2) {
+      if (pass1 != pass2) {
+        alert("Passwords don't match!");
+        return;
+      }
+      if (!email) {
+        alert("You didn't enter an email address!");
+        return;
+      }
+      if (!pass1) {
+        alert("You didn't enter a password!");
+        return;
+      }
+      $s.u.auth.createUser(email, pass1, function(error, user) {
+        if (!error) {
+          console.log('New account made: user id ' + user.id + ', email ' + user.email);
+          $s.u.login(email, pass1);
+        }
+        else {
+          alert("Error creating account: " + JSON.stringify(error));
+        }
+      });
+    },
+
+    login: function(email, password) {
+      $s.u.auth.login('password', {
+        'email': email,
+        'password': password,
+        'rememberMe': true
+      });
+    },
+
+    auth: new FirebaseSimpleLogin(new Firebase('https://nutmeg.firebaseio.com/'), function(error, user) {
+      if (error) {
+        // an error occurred while attempting login
+        alert("Error logging in: " + JSON.stringify(error));
+      } else if (user) {
+        // user authenticated with Firebase
+        console.log('Logged in, user id: ' + user.id + ', provider: ' + user.provider);
+        $s.u.user = user;
+        $s.u.loggedIn = true;
+        $s.m.modal = false;
+        $s.$apply();
+        angular.element("#nonmodal").css("display", "block"); // really a hack, but can't get ng-cloak to not flicker
+        init(user.uid);
+        nm.face.autosizeAllNuts();
+      } else {
+        // user is logged out
+        console.log("Logged out");
+        $s.u.loggedIn = false;
+        $s.m.modal = 'login';
+        $s.$apply();
+      }
+    })
+  };
 
   // ==== NUT FUNCTIONS ==== //
   /*
@@ -209,7 +253,6 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
   */
 
   $s.n = {
-    nuts: [],
     sortOpts: [
       {field: "modified", rev: true, name: "Recently modified"},
       {field: "modified", rev: false, name: "Oldest modified"},
@@ -343,6 +386,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       console.log("nut "+nut.id+" has been updated");
     },
 
+    // TODO call when textarea blurred?
     nutBodyUpdated: function(nut) {
       if (nut.body == nut.history[nut.history.length-1].body) {
         console.log("nut "+nut.id+" lost focus but unchanged");
@@ -428,13 +472,15 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         console.error(tag);
         return -1;
       }
-      var newId = this.tags.push(_.defaults(tag, {
+      var newId = this.tags.length; // will be index of new nut
+      this.tags.push(_.defaults(tag, {
         docs: [], // array of doc ids that have this
         created: (new Date).getTime(),
         modified: (new Date).getTime(),
         color: "white", // # or css color
-        bgColor: "black"
-      })) - 1; // newId is return val of push()-1 cause push returns new length
+        bgColor: "black",
+        id: newId
+      }));
       // nm.tagUpdated(newId);
       this.createTagName = ""; // clear input
       this.creatingTag = false; // hide input
@@ -494,15 +540,17 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
   $s.t.sortBy = $s.t.sortOpts[0]; // set initial value for tag sort select dropdown
 
+  function init(uid) {
+    $s.ref = new Firebase('https://nutmeg.firebaseio.com/users/' + uid);
 
-  // for other keypress listening, e.keyCode, e.metaKey, e.shiftKey, e.ctrlKey, e.altKey
-
-  // nutmeg's been used before on this browser, load data
-  localStorage.clear(); // actually don't
-  if (localStorage.nm) {
-    // TODO load data
+    dummyInit();
+    $s.$apply();
   }
-  else {
+
+  function dummyInit() {
+    $s.n.nuts = [];
+    $s.t.tags = [];
+
     // load dummy data
     $s.t.createTags([{name: "Turkey"},{name: "steampunk"},{name: "quote"},{name: "education"},{name: "observation"}]);
     $s.n.createNuts([{
@@ -523,7 +571,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       body: "**What did it feel like in the moments after you got your diagnosis?**\n\nIt was a little dizzying, partly because I’d expected to just be in and out of the place, and suddenly they were pulling out the hypodermics and tourniquets to do a confirmatory blood test, and I felt like I was going crazy because I’d given them a pseudonym and they were all calling me Mark.\n\n**Why a pseudonym?**\n\nBush-era paranoia. I didn’t want to link myself to my diagnosis. So they’re like “MARK, WHAT DO YOU WANT TO DO,” and the fluorescent lights are flickering above me and I’ve got super low blood sugar because I’d meant to get food immediately after, and now all these people with needles are staring at me, going “MARK. MARK,” and I was like, “I’m going to leave right now.” I didn’t have any pockets, and I had all of these pills and paperwork and walked out with three things in each hand, and it was so bright outside…\n\nThere was this hyper-real moment on the street. I’d gotten a parking ticket and that’s what made me shed my first tear. And afterwards I couldn’t decide what to do, get food or go to work or what, and I was sort of doing pirouettes on the crosswalk of this sun-drenched intersection, looking back and forth between the clinic and my car, and this girl was watching me and I finally locked eyes with her. It was the most intense eye contact I’ve ever had with a stranger. We were just staring at each other for a full minute, and she sort of wordlessly acknowledged, “You are having a fucking day right now.”\n\nexcerpt from The Sexual History of Jared Sabbagh, Part 3 http://thehairpin.com/2013/09/jared#more",
       tags:[2]
     }]);
-  } // else nothing in localStorage
+  }
 
 
 }]) // end of Nutmeg controller

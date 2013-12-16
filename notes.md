@@ -10,6 +10,7 @@ l.search("some") // returns no results
 
 ## TODO
 
+- replace 'go' button in login/create account with loading symbol before callback
 - esc should leave and blur new tag input
 - configurable max-height for nuts but automatically expands otherwise
 - highlight matched query in search results
@@ -32,11 +33,11 @@ l.search("some") // returns no results
 
 ### cloud storage
 
-- set up login + sessions (look at random confidant)
-- set up mongo DB and build script for it
-  - nuts collection per user
-  - tags collection per user
-  - users collection (each nut and tag has user id) which has id, name, email, password, last contact, data version #
+- data structure
+  - users/uid/
+    - nuts
+    - tags
+    - config - like id, name, email, password, last contact, data version #
 - client has everything on their side, loadData() downloads it all at start
 - syncTag/Nut takes data, packs into single request and sends to to nutmeg server (later this should just package the changes)
 - client does ALL the work. keeps track of tag/nutIds changed, and every X minutes or on startup or quitting do sync. when synced, changelist gets cleared and we receive version # from server (see next)
@@ -161,11 +162,14 @@ or (d*)-(d*)([cw]*)([+-]+) for range
 
 http://wordnetweb.princeton.edu/perl/webwn?o2=&o0=1&o8=1&o1=1&o7=&o5=&o9=&o6=&o3=&o4=&r=1&s=country&i=5&h=10100100000#c
 
+http://www.visuwords.com/
+
 - X is parent of Y
 - X is related to Y. superset of:
   - X and Y are of the same kind
-  - X is the hypernym of Y (Y is a more specific example type of X)
-  - Y is the hyponym of X
+  - X is the hypernym of Y (Y is a more specific example, a type of X). "color" is hypernym of "red"
+  - Y is the hyponym of X.
+  - meronymy? "finger" is a meronym of "hand", "istanbul" of "Turkey"
 - related-to OR same-kind should be automatic for siblings
 
 ## config
@@ -194,6 +198,9 @@ could have user collection which stored name of note collection. multiple users 
 
 # Resources
 
+- git hooks
+  - http://stackoverflow.com/questions/9132144/how-can-i-automatically-deploy-my-app-after-a-git-push-github-and-node-js/9150437#9150437
+  - https://bitbucket.org/tobyfox/nutmeg/admin/hooks
 - checking whether online, client-side:
   - http://www.html5rocks.com/en/mobile/workingoffthegrid/
   - https://developer.mozilla.org/en-US/docs/Web/API/NavigatorOnLine.onLine?redirectlocale=en-US&redirectslug=Web%2FAPI%2FNavigator.onLine

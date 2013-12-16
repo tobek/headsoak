@@ -1,58 +1,85 @@
 extends header
 
 block content
-  div#menu
-    ul.loggedout
-      li about
-      li feedback
-      li importer
-      li shortcuts
-      li settings
-      li(ng-show="u.loggedIn") account
-      li(ng-show="u.loggedIn") log in
-      li(ng-show="!u.loggedIn") log out
-    h1#title nutmeg
-  div#query
-    img(src="/img/nutmeg40h.png")
-    input(type="text", placeholder="search", ng-model="q.query", nm-query="q.query")
-    span.clear(ng-click="q.query=''") X
 
-  //- can add .tab-hidden
-  div#main
+  div#modalclickoff(ng-click="!u.loggedin || (m.modal = false)", ng-show="m.modal")
+  div#modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal}", ng-click="!u.loggedin || (m.modal = false)")
+    div#circleholder
+      div.circle(ng-click="$event.stopPropagation()")
 
-    div#left
-      div#nuts
-        div.header
-          span (n)s
-          span#new-nut(ng-click="n.createNut({})") +
+        div(ng-show="m.modal == 'login'")
+          h3 log in
+          form(ng-submit="u.login(email, password)")
+            input(type="email", placeholder="email", ng-model="email")
+            input(type="password", placeholder="password", ng-model="password")
+            input(type="submit", value="go")
+          p or 
+            a(ng-click="m.modal='createaccount'") create an account
+
+        div(ng-show="m.modal == 'createaccount'")
+          form(ng-submit="u.createAccount(email, pass1, pass2)")
+            h3 create an account
+            input(type="email", placeholder="email", ng-model="email")
+            input(type="password", placeholder="password", ng-model="pass1")
+            input(type="password", placeholder="password again", ng-model="pass2")
+            input(type="submit", value="go")
+
+
+  div#nonmodal(ng-class="{modalon: m.modal}", ng-show="u.loggedIn", ng-cloak, style="display: none;")
+
+    div#menu
+      ul
+        li about
+        li feedback
+        li importer
+        li shortcuts
+        li settings
+        li(ng-show="u.loggedIn") account
+        li(ng-show="u.loggedIn", ng-click="u.auth.logout()") log out
+        li(ng-show="!u.loggedIn", ng-click="m.modal='login'") log in
+      h1#title nutmeg
+
+    div#query
+      img(src="/img/nutmeg40h.png")
+      input(type="text", placeholder="search", ng-model="q.query", nm-query="q.query")
+      span.clear(ng-click="q.query=''") X
+
+    //- can add .tab-hidden
+    div#main
+
+      div#left
+        div#nuts
+          div.header
+            span (n)s
+            span#new-nut(ng-click="n.createNut({})") +
+            span.sort
+              label Sort by 
+                select#nut-sort-select(ng-model='n.sortBy', ng-options='o as o.name for o in n.sortOpts')
+
+          ul
+            li.nut(ng-repeat="nut in n.nuts | orderBy:n.sortBy.field:n.sortBy.rev", ng-show="q.showAll || q.showNuts.indexOf(nut.id) !== -1")
+              div.tags
+                span.add-tag-to-nut(ng-click="addingTag=true;") +
+                span.tag(ng-show="addingTag")
+                  form(ng-submit="n.addTagNameToNut(n.addTagName, nut); n.addTagName = ''; addingTag=false")
+                    input(type="text", ng-model="n.addTagName", ng-blur="n.addTagName = ''; addingTag=false;", nm-focus="addingTag")
+                span.tag(ng-repeat="tagId in nut.tags") {{t.tags[tagId].name}} 
+                  span.delete(ng-click="n.removeTagIdFromNut(nut.id, tagId)") X
+              textarea(ng-model="nut.body", ng-blur="n.nutBodyUpdated(nut)")
+
+      div#right
+        div#tagContainer
+          span (t)s
+          span#new-tag(ng-click="t.creatingTag=true;") +
+          br
           span.sort
             label Sort by 
-              select#nut-sort-select(ng-model='n.sortBy', ng-options='o as o.name for o in n.sortOpts')
+              select(ng-model='t.sortBy', ng-options='o as o.name for o in t.sortOpts')
+          input(type="text", placeholder="search")
 
-        ul
-          li.nut(ng-repeat="nut in n.nuts | orderBy:n.sortBy.field:n.sortBy.rev", ng-show="q.showAll || q.showNuts.indexOf(nut.id) !== -1")
-            div.tags
-              span.add-tag-to-nut(ng-click="addingTag=true;") +
-              span.tag(ng-show="addingTag")
-                form(ng-submit="n.addTagNameToNut(n.addTagName, nut); n.addTagName = ''; addingTag=false")
-                  input(type="text", ng-model="n.addTagName", ng-blur="n.addTagName = ''; addingTag=false;", nm-focus="addingTag")
-              span.tag(ng-repeat="tagId in nut.tags") {{t.tags[tagId].name}} 
-                span.delete(ng-click="n.removeTagIdFromNut(nut.id, tagId)") X
-            textarea(ng-model="nut.body", ng-blur="n.nutBodyUpdated(nut)")
-
-    div#right
-      div#tagContainer
-        span (t)s
-        span#new-tag(ng-click="t.creatingTag=true;") +
-        br
-        span.sort
-          label Sort by 
-            select(ng-model='t.sortBy', ng-options='o as o.name for o in t.sortOpts')
-        input(type="text", placeholder="search")
-
-        ul#taglist
-          li.tag.new-tag(ng-show="t.creatingTag")
-            form(ng-submit="t.createTag({name: t.createTagName})")
-              input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';" nm-focus="t.creatingTag")
-          li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev", ng-click="q.query = tag.name + ' ' + q.query")
-            {{tag.name}} ({{tag.docs.length}})
+          ul#taglist
+            li.tag.new-tag(ng-show="t.creatingTag")
+              form(ng-submit="t.createTag({name: t.createTagName})")
+                input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';" nm-focus="t.creatingTag")
+            li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev", ng-click="q.query = tag.name + ' ' + q.query")
+              {{tag.name}} ({{tag.docs.length}})
