@@ -65,6 +65,7 @@ block content
                     input(type="text", ng-model="n.addTagName", ng-blur="n.addTagName = ''; addingTag=false;", nm-focus="addingTag")
                 span.tag(ng-repeat="tagId in nut.tags") {{t.tags[tagId].name}} 
                   span.delete(ng-click="n.removeTagIdFromNut(nut.id, tagId)") X
+              div.clear
               textarea(ng-model="nut.body", ng-blur="n.nutBodyUpdated(nut)")
 
       div#right

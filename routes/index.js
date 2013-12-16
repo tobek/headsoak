@@ -13,7 +13,7 @@ exports.index = function(req, res){
       console.log("Not connected to Internet, will use local JS files");
       var scripts = [
         "/js/jquery.min.js",
-        "/js/jquery-ui.min.js",
+        //"/js/jquery-ui.min.js",
         "/js/underscore.min.js",
         "/js/angular.min.js",
         //"/js/angular-animate.min.js",
@@ -26,8 +26,8 @@ exports.index = function(req, res){
       console.log("Resolved google.com so think we're connected, will use CDNs for JS");
       var scripts = [
         "//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js",
-        "//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js",
-        "/js/underscore.min.js",
+        //"//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js",
+        "//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js",
         "//ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js",
         //"//ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular-animate.min.js",
         "//cdn.firebase.com/v0/firebase.js",

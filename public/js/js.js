@@ -7,10 +7,8 @@
 
 ### DO NOW
 
-- modal
-- digest of changes
-  - add to digest
-  - push digest (clearing it)
+- fade in nonmodal after login
+- figure out why digest.push() doesn't work on nut blur
 - when you click on a nut tag, prepend it to the query?
 
 ### DO SOON
@@ -106,9 +104,6 @@ C8888D    88    88 V8o88    88    88~~~~~ 88`8b   88~~~   88~~~88 8b      88~~~~
 }; // end defining and declaring nutmeg
 
 
-
-
-
 /*
  ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##  
 #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### 
@@ -164,7 +159,7 @@ Y88888P    YP    Y88888P VP   V8P    YP    `8888Y'
   // ==== AUTOCOMPLETE ==== //
 
   /*
-  // TODO store this better and update on tagsUpdated()
+  // TODO store this better and auto update with tags updating
   $( "#query input" ).autocomplete({
     source: _.map(nm.tags, function(tag) { return tag.name; })
   });
@@ -182,6 +177,33 @@ var ngApp = angular.module('nutmeg', [])
 .controller('Nutmeg', ['$scope', function($s) {
 
   $s.m = { modal: false };
+
+  // keeps track of changes. nuts and tags will map from id to object
+  $s.digest = {
+    reset: function() {
+      this.config = {};
+      this.nuts = {};
+      this.tags = {};
+    },
+    push: function() {
+      // note: this is called from various places - we can't rely on 'this' so use $s.digest
+      console.log("digest: checking for changes to push");
+      var updated = false;
+      ['config', 'nuts', 'tags'].map(function(field) {
+        if (Object.keys($s.digest[field]).length != 0) {
+          $s.ref.child(field).update(angular.copy($s.digest[field]));
+          updated = true;
+        }
+      });
+
+      if (updated) {
+        console.log("digest: changes found, pushing");
+      }
+      // TODO: onComplete callback after both to say push successful - this only called after sync to servers: https://www.firebase.com/docs/javascript/firebase/update.html
+      $s.digest.reset();
+    }
+  }
+  $s.digest.reset(); // also initializes
 
   $s.u = {
     loggedIn: true, // TODO check if actually logged in when opening
@@ -226,15 +248,18 @@ var ngApp = angular.module('nutmeg', [])
         // user authenticated with Firebase
         console.log('Logged in, user id: ' + user.id + ', provider: ' + user.provider);
         $s.u.user = user;
-        $s.u.loggedIn = true;
-        $s.m.modal = false;
-        $s.$apply();
-        angular.element("#nonmodal").css("display", "block"); // really a hack, but can't get ng-cloak to not flicker
-        init(user.uid);
-        nm.face.autosizeAllNuts();
+        init(user.uid, function() {
+          $s.u.loggedIn = true;
+          $s.m.modal = false;
+          angular.element("#nonmodal").css("display", "block"); // really a hack, but can't get ng-cloak to not flicker
+          $s.$apply();
+          nm.face.autosizeAllNuts();
+        });
       } else {
         // user is logged out
         console.log("Logged out");
+        $s.u.user = undefined;
+        window.clearInterval($s.u.digestInterval);
         $s.u.loggedIn = false;
         $s.m.modal = 'login';
         $s.$apply();
@@ -335,6 +360,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.t.tags[tagId].modified = (new Date).getTime();
 
       this.nutUpdated(nutId); // update history, modified, index
+      $s.t.tagUpdated(tagId);
     },
     removeTagIdFromNut: function(nutId, tagId) { // TODO test
       console.log("removing tag "+tagId+" from nut "+nutId);
@@ -349,6 +375,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.t.tags[tagId].modified = (new Date).getTime();
 
       this.nutUpdated(nutId); // update history, modified, index
+      $s.t.tagUpdated(tagId);
     },
 
     /*
@@ -366,6 +393,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
      * 1: updates history. NOTE: we store entire state of nut in each history entry. could instead store just changes if this gets to big. NOTE 2: by the time this is called, the view and model have already changed. we are actually storing the CHANGED version in history.
      * 2: updates `modified`
      * 3: updates lunr index
+     * 4: adds to digest to be saved to firebase
      */
     nutUpdated: function(nut) {
       if (typeof nut == "number") {
@@ -380,6 +408,9 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       }
 
       nut.modified = (new Date).getTime()
+
+      $s.digest.nuts[nut.id] = nut;
+      $s.digest.push();
 
       this.updateNutInIndex(nut);
 
@@ -481,7 +512,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         bgColor: "black",
         id: newId
       }));
-      // nm.tagUpdated(newId);
+      this.tagUpdated(newId);
       this.createTagName = ""; // clear input
       this.creatingTag = false; // hide input
       return newId;
@@ -519,32 +550,61 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       return; // TODO
       // TODO
       // go through each doc id and splice it out
-      this.tagUpdated();
+      // remove from firebase
+      this.tagUpdated(id);
     },
 
     /* call whenever a tag is updated
-     * pass no id if tag was deleted
-     * 1: updates `modified` (unless no id is sent, meaning a tag was deleted)
+     * if this.tags[id] is undefined, this means it was deleted
+     * 1: updates `modified` (unless was deleted)
      * 2: TODO: updateNutInIndex() too, but only if name changed or deleted? when added/removed from nut, nutUpdated() gets called which will reindex those nuts. need to have convention of where index gets updated when tag entirely deleted
-     * TODO this never gets called right now
+     * 3: add to digest
      */
     tagUpdated: function(id) {
-      return; // TODO
-      if (id) {
+      console.log("tag "+id+" has been updated")
+      if (this.tags[id]) {
         this.tags[id].modified = (new Date).getTime();
+        $s.digest.tags[id] = this.tags[id];
       }
-      //this.saveData();
+      else {
+        // was deleted
+        console.log("tag "+id+" was deleted actually")
+        $s.digest.tags[id] = null;
+      }
+      $s.digest.push();
     },
 
   };
 
   $s.t.sortBy = $s.t.sortOpts[0]; // set initial value for tag sort select dropdown
 
-  function init(uid) {
+  function init(uid, cb) {
+    console.log("fetching data for user uid "+uid)
     $s.ref = new Firebase('https://nutmeg.firebaseio.com/users/' + uid);
 
-    dummyInit();
-    $s.$apply();
+    $s.ref.once('value', function(data) {
+      if (data.val() === null) {
+        console.log("new user - initializing with dummy data");
+        // must be a new user - even if existing user deleted everything there would still be object with config and empty nuts/tags
+        dummyInit();
+        $s.digest.push();
+      }
+      else {
+        console.log("fetched user data");
+        $s.n.nuts = data.val().nuts;
+        $s.t.tags = data.val().tags;
+      }
+
+      // sync to server every 5s
+      // if there are no changes this does nothing, so that's fine
+      $s.u.digestInterval = window.setInterval($s.digest.push, 5000);
+      window.beforeunload = $s.digest.push; // TODO since push() isn't synchronous, probably won't work. TODO: check if there is an issue with "this"
+
+      cb();
+    });
+
+    // TODO also put child add/changed/removed on nuts config and tags? or does it work on entire ref?
+
   }
 
   function dummyInit() {
@@ -555,10 +615,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     $s.t.createTags([{name: "Turkey"},{name: "steampunk"},{name: "quote"},{name: "education"},{name: "observation"}]);
     $s.n.createNuts([{
       body: "'everyone saves the country in their own way' rough translation from turkish, part of raki culture",
-      tags: [0,2]
-    }, {
-      body: "Suddenly I realized that the music had been replaced with—had descended into—the plaintive beeps of a truck reversing outside. I hadn't noticed the transition.",
-      tags:[4]
+      tags: [0,2,4]
     }, {
       body: "At a good teaching school, a professor is expected to run the class and, sometimes, have a small group of students over to his house for dinner. As the former function becomes less important, due to competition from online content, the latter function will predominate. The computer program cannot host a chatty, informal dinner in the same manner. We could think of the forthcoming educational model as professor as impresario. In some important ways, we would be returning to the original model of face-to-face education as practiced in ancient Greek symposia and meetings by the agora.\n\nIt will become increasingly apparent how much of current education is driven by human weakness, namely the inability of most students to simply sit down and try to learn something on their own. **It’s a common claim that you can’t replace professors with Nobel-quality YouTube lectures, because the professor, and perhaps also the classroom setting, is required to motivate most of the students. Fair enough, but let’s take this seriously. The professor is then a motivator first and foremost.** Let’s hire good motivators. Let’s teach our professors how to motivate. Let’s judge them on that basis. Let’s treat professors more like athletics coaches, personal therapists, and preachers, because that is what they will evolve to be.\n\nFrom Average Is Over: Powering America Beyond the Age of the Great Stagnation, by Tyler Cowen (emphasis mine)",
       tags: [2,3]
@@ -570,6 +627,9 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     {
       body: "**What did it feel like in the moments after you got your diagnosis?**\n\nIt was a little dizzying, partly because I’d expected to just be in and out of the place, and suddenly they were pulling out the hypodermics and tourniquets to do a confirmatory blood test, and I felt like I was going crazy because I’d given them a pseudonym and they were all calling me Mark.\n\n**Why a pseudonym?**\n\nBush-era paranoia. I didn’t want to link myself to my diagnosis. So they’re like “MARK, WHAT DO YOU WANT TO DO,” and the fluorescent lights are flickering above me and I’ve got super low blood sugar because I’d meant to get food immediately after, and now all these people with needles are staring at me, going “MARK. MARK,” and I was like, “I’m going to leave right now.” I didn’t have any pockets, and I had all of these pills and paperwork and walked out with three things in each hand, and it was so bright outside…\n\nThere was this hyper-real moment on the street. I’d gotten a parking ticket and that’s what made me shed my first tear. And afterwards I couldn’t decide what to do, get food or go to work or what, and I was sort of doing pirouettes on the crosswalk of this sun-drenched intersection, looking back and forth between the clinic and my car, and this girl was watching me and I finally locked eyes with her. It was the most intense eye contact I’ve ever had with a stranger. We were just staring at each other for a full minute, and she sort of wordlessly acknowledged, “You are having a fucking day right now.”\n\nexcerpt from The Sexual History of Jared Sabbagh, Part 3 http://thehairpin.com/2013/09/jared#more",
       tags:[2]
+    },
+    {
+      body: "Here you have some dummy notes to get you started. Sorry, you can't delete notes yet but you'll be able to soon."
     }]);
   }
 

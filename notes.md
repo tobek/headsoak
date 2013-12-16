@@ -10,6 +10,12 @@ l.search("some") // returns no results
 
 ## TODO
 
+- request an invite
+  - basically give a unique URL like nutmeg.io?invite=somethingcute
+  - with login, if invite query param exists and matches again firebase array i've hand-added, then show create account (nicer welcome message) and then update firebase with this invite being taken
+- right now nutbodyupdatedwhatever only happens on blur. also happen on an interval while has focus, but make sure it only does stuff if it changed (think function does that already)
+- nutmeg name on login screen
+- investigate if property name length matters in firebase - if so, have some automated minifier two-way dictionary to convert prop names - nice github plugin maybe
 - replace 'go' button in login/create account with loading symbol before callback
 - esc should leave and blur new tag input
 - configurable max-height for nuts but automatically expands otherwise
