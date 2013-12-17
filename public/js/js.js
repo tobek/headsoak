@@ -7,9 +7,14 @@
 
 ### DO NOW
 
-- fade in nonmodal after login
+- X button in modal (except login) - top middle or bottom middle?
+- feedback form
 - figure out why digest.push() doesn't work on nut blur
 - when you click on a nut tag, prepend it to the query?
+- create account by invite only + 'request invite' button
+- permissions for reading nuts
+- right now, a note is only saved after you click outside of the textarea. that means if you're typing something and directly close the window, you'll lose changes
+- sync status icon
 
 ### DO SOON
 
@@ -25,30 +30,7 @@
 
 */
 
-// ============================== //
-// ==== SET UP NUTMEG OBJECT ==== //
-// ============================== //
-/*
-##    ## ##     ## ######## ##     ## ########  ######       #######  ########        ## 
-###   ## ##     ##    ##    ###   ### ##       ##    ##     ##     ## ##     ##       ## 
-####  ## ##     ##    ##    #### #### ##       ##           ##     ## ##     ##       ## 
-## ## ## ##     ##    ##    ## ### ## ######   ##   ####    ##     ## ########        ## 
-##  #### ##     ##    ##    ##     ## ##       ##    ##     ##     ## ##     ## ##    ## 
-##   ### ##     ##    ##    ##     ## ##       ##    ##     ##     ## ##     ## ##    ## 
-##    ##  #######     ##    ##     ## ########  ######       #######  ########   ######  
-*/
-
-var nm = {
-  config: {
-    maxHistory: 20 // how many revisions of each nut to save
-  },
-  index: lunr(function () {
-    // this.field('title', {boost: 10});
-    this.field('tags', {boost: 100});
-    this.field('body', {boost: 1});
-    this.ref('id');
-  }),
-
+var oldUnusedFuncs = {
   // will trigger an entire re-index for lunr
   loadData: function() {
     console.time("loadData");
@@ -72,63 +54,13 @@ var nm = {
     }, this);
     localStorage.nm = JSON.stringify(saveMe);
     console.timeEnd("saveData");
-  },
-
-
-
-  // ==== INTERFACE FUNCTIONS ==== //
-  /*
-
-       d888888b d8b   db d888888b d88888b d8888b. d88888b  .d8b.   .o88b. d88888b 
-         `88'   888o  88 `~~88~~' 88'     88  `8D 88'     d8' `8b d8P  Y8 88'     
-          88    88V8o 88    88    88ooooo 88oobY' 88ooo   88ooo88 8P      88ooooo 
-C8888D    88    88 V8o88    88    88~~~~~ 88`8b   88~~~   88~~~88 8b      88~~~~~ 
-         .88.   88  V888    88    88.     88 `88. 88      88   88 Y8b  d8 88.     
-       Y888888P VP   V8P    YP    Y88888P 88   YD YP      YP   YP  `Y88P' Y88888P
-  */
-
-  face: {
-    autosizeAllNuts: function() {
-      $(".nut textarea").each(function(i, ta){
-        nm.face.autosizeNuts.call(ta);
-      });
-    },
-
-    autosizeNuts: function() {
-      this.style.height = "";
-      this.style.height = this.scrollHeight + 'px';
-    },
-
-  } // end interface functions
-
-}; // end defining and declaring nutmeg
-
-
-/*
- ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##  
-#### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### 
- ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##  
-                                                                                
- ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##  
-#### #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### 
- ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##   ##  
-*/
+  }
+};
 
 var saveInterval; // window.setInterval timer for saving
 var nutDiff; // stores body of nut to check if it's changed - only saves if it has
 
 $(function() { // upon DOM having loaded
-
-  // ==== EVENT LISTENERS ==== //
-  /*
-
-d88888b db    db d88888b d8b   db d888888b .d8888. 
-88'     88    88 88'     888o  88 `~~88~~' 88'  YP 
-88ooooo Y8    8P 88ooooo 88V8o 88    88    `8bo.   
-88~~~~~ `8b  d8' 88~~~~~ 88 V8o88    88      `Y8b. 
-88.      `8bd8'  88.     88  V888    88    db   8D 
-Y88888P    YP    Y88888P VP   V8P    YP    `8888Y'
-  */
 
   // focus events: when you focus on a nut, start autosaving until you unfocus
 
@@ -150,11 +82,8 @@ Y88888P    YP    Y88888P VP   V8P    YP    `8888Y'
     clearInterval(saveInterval);
   });
 
-  $("#nuts").on("keydown", "textarea", nm.face.autosizeNuts);
+  $("#nuts").on("keydown", "textarea", nm.face.autosizeNut);
   */
-
-
-  
 
   // ==== AUTOCOMPLETE ==== //
 
@@ -205,8 +134,9 @@ var ngApp = angular.module('nutmeg', [])
   }
   $s.digest.reset(); // also initializes
 
+  // user authentication
   $s.u = {
-    loggedIn: true, // TODO check if actually logged in when opening
+    loggedIn: false,
 
     createAccount: function(email, pass1, pass2) {
       if (pass1 != pass2) {
@@ -249,11 +179,10 @@ var ngApp = angular.module('nutmeg', [])
         console.log('Logged in, user id: ' + user.id + ', provider: ' + user.provider);
         $s.u.user = user;
         init(user.uid, function() {
-          $s.u.loggedIn = true;
-          $s.m.modal = false;
-          angular.element("#nonmodal").css("display", "block"); // really a hack, but can't get ng-cloak to not flicker
           $s.$apply();
-          nm.face.autosizeAllNuts();
+          $s.n.autosizeAllNuts();
+          $s.m.modal = false;
+          $s.u.loggedIn = true;
         });
       } else {
         // user is logged out
@@ -266,6 +195,17 @@ var ngApp = angular.module('nutmeg', [])
       }
     })
   };
+
+  $s.config = {
+    maxHistory: 20 // how many revisions of each nut to save
+  };
+
+  $s.lunr = lunr(function () {
+    // this.field('title', {boost: 10});
+    this.field('tags', {boost: 100});
+    this.field('body', {boost: 1});
+    this.ref('id');
+  });
 
   // ==== NUT FUNCTIONS ==== //
   /*
@@ -403,7 +343,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       var oldState = $.extend(true, {}, nut); // deep clone ourself
       delete oldState.history; // no need for the history to have history
       nut.history.push(oldState); // append ourselves into history
-      if (nut.history.length > nm.config.maxHistory) {
+      if (nut.history.length > $s.config.maxHistory) {
         nut.history.shift(); // chuck the oldest one
       }
 
@@ -417,7 +357,6 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       console.log("nut "+nut.id+" has been updated");
     },
 
-    // TODO call when textarea blurred?
     nutBodyUpdated: function(nut) {
       if (nut.body == nut.history[nut.history.length-1].body) {
         console.log("nut "+nut.id+" lost focus but unchanged");
@@ -429,11 +368,22 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
     updateNutInIndex: function(nut) {
       // update just does `remove` then `add` - seems to be fine that this gets called even when it's a totally new nut
-      nm.index.update({
+      $s.lunr.update({
         id: nut.id,
         body: nut.body,
         tags: nut.tags.map(function(i){ return $s.t.tags[i].name; }).join(" ")
       });
+    },
+
+    autosizeAllNuts: function() {
+      angular.element(".nut textarea").each(function(i, ta){
+        $s.n.autosizeNut(ta);
+      });
+    },
+
+    autosizeNut: function(el) {
+      el.style.height = "";
+      el.style.height = el.scrollHeight + 'px';
     }
 
   };
@@ -451,7 +401,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       console.log("queried \""+query+"\"");
       // only start live searching once 3 chars have been entered
       if (query.length > 2) {
-        var results = nm.index.search(query); // by default ANDs spaces: "foo bar" will search foo AND bar
+        var results = $s.lunr.search(query); // by default ANDs spaces: "foo bar" will search foo AND bar
         // results is array of objects each containing `ref` and `score`
         // ignoring score for now
         this.showAll = false;

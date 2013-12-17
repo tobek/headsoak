@@ -101,6 +101,9 @@ select, option, label {
   li:active {
     color: @new-hover;
   }
+  .incomplete {
+    color: #CCC;
+  }
 }
 #menu:hover ul {
   display: block;
@@ -277,10 +280,12 @@ form {
   z-index: 5;
 }
 
+#nonmodal {
+  transition: opacity 0.5s ease;
+  -webkit-transition: opacity ease 0.5s;
+}
 #nonmodal.modalon {
   opacity: 0.2;
-  transition: opacity 0.35s ease;
-  -webkit-transition: opacity ease 0.35s;
 }
 #nonmodal.loggedout {
   opacity: 0;
@@ -296,8 +301,8 @@ form {
   visibility: hidden;
 }
 #modal {
-  -webkit-transition:all ease 0.45s;
-  transition:all ease 0.45s;
+  -webkit-transition:all ease 0.5s;
+  transition:all ease 0.5s;
   text-align: center;
   position: fixed;
   width: 100%;
@@ -306,6 +311,7 @@ form {
 
   #circleholder {
     width: 30%;
+    min-width: 380px;
     margin: auto;
 
     .circle div {
@@ -315,9 +321,12 @@ form {
       width: 70%;
       margin-left: 15%;
       h3, input, p {
+        margin: 2% 0;
+      }
+      h3 {
+        line-height: 25px;
         margin: 2%;
       }
-      h3 { line-height: 25px;}
       p {
         font-size: 60%;
         line-height: 115%;
@@ -329,7 +338,7 @@ form {
       a:hover {
         color: @new-hover;
       }
-      input {
+      input, textarea {
         margin: 5px 0;
         padding: 1%;
         border: none;
@@ -338,6 +347,13 @@ form {
       input[type='submit']:active {
         font-weight: bold;
         background-color: #AAA;
+      }
+
+      &.feedback {
+        margin-top: -110px;
+        textarea {
+          font-size: 50%;
+        }
       }
     }
   }
@@ -363,6 +379,10 @@ form {
   clear: both;
 }
 
+b {
+  font-weight: bold;  
+}
+
 [ng\:cloak], [ng-cloak], .ng-cloak {
-  display: none !important;
+  opacity: 0 !important;
 }

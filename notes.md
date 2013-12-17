@@ -13,6 +13,7 @@ l.search("some") // returns no results
 - request an invite
   - basically give a unique URL like nutmeg.io?invite=somethingcute
   - with login, if invite query param exists and matches again firebase array i've hand-added, then show create account (nicer welcome message) and then update firebase with this invite being taken
+- demo
 - right now nutbodyupdatedwhatever only happens on blur. also happen on an interval while has focus, but make sure it only does stuff if it changed (think function does that already)
 - nutmeg name on login screen
 - investigate if property name length matters in firebase - if so, have some automated minifier two-way dictionary to convert prop names - nice github plugin maybe
@@ -181,6 +182,15 @@ http://www.visuwords.com/
 ## config
 
 - searching for "importer" brings up a nut that itself contains the import tool (which, like all nuts, can be expanded to full screen mode). when you click on importer from the nutmeg menu, it simply inserts "importer" in to the query box. the menu teaches you the shortcuts - everything can be done through the query box/runner
+- adding/removing tags changes "modified" timestamp on nut. what should default be?
+
+## shortcuts
+
+### commands
+
+shortcut can be arbitrary list of commands
+
+- create nut with whatever pre-set stuff - text, tags, etc.
 
 ## RANDO
 

@@ -2,10 +2,22 @@ extends header
 
 block content
 
-  div#modalclickoff(ng-click="!u.loggedin || (m.modal = false)", ng-show="m.modal")
-  div#modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal}", ng-click="!u.loggedin || (m.modal = false)")
+  //- only remove modal on click if logged in - otherwise we're closing the login window on a blank screen
+  div#modalclickoff(ng-click="!u.loggedIn || (m.modal = false)", ng-show="m.modal")
+  div#modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal}", ng-click="!u.loggedIn || (m.modal = false)")
     div#circleholder
       div.circle(ng-click="$event.stopPropagation()")
+
+        div(ng-show="m.modal == 'about'")
+          h3 about
+          p The <b>nutmeg</b> tree is any of several species of trees in genus <b>Myristica</b>. The nutmeg tree is important for two spices derived from the fruit: nutmeg and mace.
+
+        div.feedback(ng-show="m.modal == 'feedback'")
+          h3 feedback 
+          p Bug reports and suggestions are eagerly awaited. You'll hear from me personally.
+          form
+            textarea(placeholder="blah")
+            input(type="submit", value="send")
 
         div(ng-show="m.modal == 'login'")
           h3 log in
@@ -25,16 +37,16 @@ block content
             input(type="submit", value="go")
 
 
-  div#nonmodal(ng-class="{modalon: m.modal}", ng-show="u.loggedIn", ng-cloak, style="display: none;")
+  div#nonmodal(ng-class="{modalon: m.modal, loggedout: !u.loggedIn}", ng-cloak)
 
     div#menu
       ul
-        li about
-        li feedback
-        li importer
-        li shortcuts
-        li settings
-        li(ng-show="u.loggedIn") account
+        li.incomplete(ng-click="m.modal='about'") about
+        li.incomplete(ng-click="m.modal='feedback'") feedback
+        li.incomplete importer
+        li.incomplete shortcuts
+        li.incomplete settings
+        li.incomplete(ng-show="u.loggedIn") account
         li(ng-show="u.loggedIn", ng-click="u.auth.logout()") log out
         li(ng-show="!u.loggedIn", ng-click="m.modal='login'") log in
       h1#title nutmeg
@@ -66,7 +78,7 @@ block content
                 span.tag(ng-repeat="tagId in nut.tags") {{t.tags[tagId].name}} 
                   span.delete(ng-click="n.removeTagIdFromNut(nut.id, tagId)") X
               div.clear
-              textarea(ng-model="nut.body", ng-blur="n.nutBodyUpdated(nut)")
+              textarea(ng-model="nut.body", ng-blur="n.nutBodyUpdated(nut)", ng-keydown="n.autosizeNut($event.target)")
 
       div#right
         div#tagContainer
