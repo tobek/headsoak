@@ -8,6 +8,8 @@
 
 @new-hover: gold;
 
+@modalbg: #170E01;
+
 /* =CSS Reset
 ----------------------------------------------- */
 
@@ -116,6 +118,7 @@ select, option, label {
 
 a {
   color: #00B7FF;
+  cursor: pointer;
 }
 
 #main {
@@ -235,14 +238,32 @@ form {
     clear: both;
     width: 100%;
     margin: 0 0 10px 0;
-    textarea {
+    .tawrapper {
+      display: inline-block;
+      position: relative;
       width: 97%;
       max-width: 97%;
       margin: auto;
-      max-height: 200px;
-    }
-    textarea:focus {
-      background-color: lavender;
+      textarea {
+        width: 100%;
+        max-height: 200px;
+        outline: none;
+        overflow: auto;
+      }
+      textarea:focus {
+        background-color: lavender;
+      }
+      &:hover .options { display: inline-block; }
+      .options {
+        display: none;
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 5;
+        font-size: 60%;
+        color: #AAA;
+        &:hover {color: #666;}
+      }
     }
     .tags {
       float: right;
@@ -309,67 +330,79 @@ form {
   z-index: 10;
   top: 20%;
 
-  #circleholder {
+  #circle-holder {
     width: 30%;
     min-width: 380px;
     margin: auto;
 
-    .circle div {
-      text-align: left;
+    #close-modal {
       position: absolute;
-      margin-top: -90px;
-      width: 70%;
-      margin-left: 15%;
-      h3, input, p {
-        margin: 2% 0;
-      }
-      h3 {
-        line-height: 25px;
-        margin: 2%;
-      }
-      p {
-        font-size: 60%;
-        line-height: 115%;
-      }
-      a {
-        cursor: pointer;
-        text-decoration: underline;
-      }
-      a:hover {
-        color: @new-hover;
-      }
-      input, textarea {
-        margin: 5px 0;
-        padding: 1%;
-        border: none;
-        width: 93%;
-      }
-      input[type='submit']:active {
-        font-weight: bold;
-        background-color: #AAA;
-      }
+      z-index: 15;
+      width: 50px;
+      margin-left: -25px;
+      margin-top: 5px;
+      color: lighten(desaturate(@modalbg, 50%), 15%);
+      font-size: 80%;
+      &:hover { color: @new-hover; }
+    }
 
-      &.feedback {
-        margin-top: -110px;
-        textarea {
-          font-size: 50%;
+    .circle {
+      width:100%;
+      border-radius:50%;
+      text-align:center;
+      font-size: 30px;
+      padding:50% 0;
+      line-height:0;
+      position:relative;
+      background: @modalbg;
+      color: white;
+
+      div {
+        text-align: left;
+        position: absolute;
+        margin-top: -90px;
+        width: 70%;
+        margin-left: 15%;
+        h3, input, p {
+          margin: 2% 0;
+        }
+        h3 {
+          line-height: 25px;
+          margin: 2%;
+        }
+        p {
+          font-size: 60%;
+          line-height: 115%;
+        }
+        a {
+          text-decoration: underline;
+        }
+        a:hover {
+          color: @new-hover;
+        }
+        input, textarea {
+          margin: 5px 0;
+          padding: 1%;
+          border: none;
+          width: 93%;
+        }
+        input[type='submit']:active {
+          font-weight: bold;
+          background-color: #AAA;
+        }
+
+        &.feedback {
+          margin-top: -140px;
+          textarea {
+            font-size: 50%;
+            height: 100px;
+          }
         }
       }
     }
+
   }
 
-}
-
-.circle {
-  width:100%;
-  border-radius:50%;
-  text-align:center;
-  font-size: 30px;
-  padding:50% 0;
-  line-height:0;
-  position:relative;
-  background: #170E01;
-  color: white;
 }
 
 /* =Misc

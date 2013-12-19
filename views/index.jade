@@ -5,7 +5,8 @@ block content
   //- only remove modal on click if logged in - otherwise we're closing the login window on a blank screen
   div#modalclickoff(ng-click="!u.loggedIn || (m.modal = false)", ng-show="m.modal")
   div#modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal}", ng-click="!u.loggedIn || (m.modal = false)")
-    div#circleholder
+    div#circle-holder
+      a#close-modal(ng-click="m.modal = false", ng-show="u.loggedIn") x
       div.circle(ng-click="$event.stopPropagation()")
 
         div(ng-show="m.modal == 'about'")
@@ -14,9 +15,10 @@ block content
 
         div.feedback(ng-show="m.modal == 'feedback'")
           h3 feedback 
-          p Bug reports and suggestions are eagerly awaited. You'll hear from me personally.
           form
-            textarea(placeholder="blah")
+            textarea(placeholder="Bug reports and suggestions are eagerly awaited. You'll hear from me personally.", ng-model="feedback")
+            input(type="text", placeholder="name (optional)", ng-model="name")
+            input(type="email", placeholder="email (optional)", ng-model="email")
             input(type="submit", value="send")
 
         div(ng-show="m.modal == 'login'")
@@ -78,7 +80,10 @@ block content
                 span.tag(ng-repeat="tagId in nut.tags") {{t.tags[tagId].name}} 
                   span.delete(ng-click="n.removeTagIdFromNut(nut.id, tagId)") X
               div.clear
-              textarea(ng-model="nut.body", ng-blur="n.nutBodyUpdated(nut)", ng-keydown="n.autosizeNut($event.target)")
+              div.tawrapper
+                a.options
+                  i.fa.fa-caret-square-o-down
+                textarea(ng-model="nut.body", ng-blur="n.nutBodyUpdated(nut)", ng-keydown="n.autosizeNut($event.target)")
 
       div#right
         div#tagContainer

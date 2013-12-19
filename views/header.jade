@@ -10,7 +10,8 @@ html(lang='en', ng-app='nutmeg')
     link(rel="shortcut icon", href="/favicon.png")
     link(rel="author", href="https://plus.google.com/+TobyFox/posts")
 
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    -each style in styles
+      link(rel='stylesheet', href= style)
     -each script in scripts
       script(src= script)
 

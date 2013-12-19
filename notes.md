@@ -10,6 +10,7 @@ l.search("some") // returns no results
 
 ## TODO
 
+- do something about font sizes (proportional to screen yes, try out on a) 1920x1080, b) smaller screen, c) tablet, d) phone)
 - request an invite
   - basically give a unique URL like nutmeg.io?invite=somethingcute
   - with login, if invite query param exists and matches again firebase array i've hand-added, then show create account (nicer welcome message) and then update firebase with this invite being taken
@@ -32,6 +33,11 @@ l.search("some") // returns no results
 - add config to control how tags are sorted on an individual nut? alphabetical, most/fewest tags, recently/oldest modified/created
 - ctrl+z. how best to implement? ask on quora or stack overflow? stack of actions, each with a `do` and `undo` action you can execute (`do` needed so you can redo). e.g. if you do deleteTag(4), you'd push an object onto the stack with `do` = `deleteTag(4)` and `undo` = `createTag({whatever})` having saved the state of the tag and all the docs it was on
 - consider browser spell-checking - option to disable? if we switch to div content editable, will we lose it?
+
+### backlog
+
+- esc exits modal
+- dynamically verticle center the contents of modal .circle
 
 ## QUESTIONS
 
@@ -145,8 +151,9 @@ or (d*)-(d*)([cw]*)([+-]+) for range
   - when you focus on nut it auto expands to full size (and contracts again when you blur)
 - formatting: bold, italic, underline, bulleted list, numbered list, links
 - on any note OR entire query, you can:
+  - delete
   - change creation date
-  - export
+  - share/send to/export
   - bulk add/remove tags (deal like gmail with labels that some but not all in selection have)
 - customizeable views but two default: browser and note
   - browser: full screen, tag list, shows multiple results (tiny tiny section navigation icon), search bar, menu
@@ -183,6 +190,7 @@ http://www.visuwords.com/
 
 - searching for "importer" brings up a nut that itself contains the import tool (which, like all nuts, can be expanded to full screen mode). when you click on importer from the nutmeg menu, it simply inserts "importer" in to the query box. the menu teaches you the shortcuts - everything can be done through the query box/runner
 - adding/removing tags changes "modified" timestamp on nut. what should default be?
+- show delete X for each tag in nut
 
 ## shortcuts
 
@@ -214,6 +222,7 @@ could have user collection which stored name of note collection. multiple users 
 
 # Resources
 
+- http://www.impressivewebs.com/textarea-auto-resize/
 - git hooks
   - http://stackoverflow.com/questions/9132144/how-can-i-automatically-deploy-my-app-after-a-git-push-github-and-node-js/9150437#9150437
   - https://bitbucket.org/tobyfox/nutmeg/admin/hooks

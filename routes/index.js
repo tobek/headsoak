@@ -41,7 +41,11 @@ exports.index = function(req, res){
         // scripts served by this server:
         "/js/lunr.min.js",
         "/js/js.js"
-      ])
+      ]),
+      styles: [
+        '/stylesheets/style.css',
+        '//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css'
+      ]
     };
     res.render('index', view);
   });

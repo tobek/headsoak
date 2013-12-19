@@ -5,9 +5,12 @@
 
 /*
 
+var h = angular.element(".circle div")[2].scrollHeight
+angular.element(".circle div")[2].style['margin-top'] = "-86px"
+
 ### DO NOW
 
-- X button in modal (except login) - top middle or bottom middle?
+- disable go button on click
 - feedback form
 - figure out why digest.push() doesn't work on nut blur
 - when you click on a nut tag, prepend it to the query?
