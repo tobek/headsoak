@@ -100,4 +100,4 @@ block content
               form(ng-submit="t.createTag({name: t.createTagName})")
                 input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';" nm-focus="t.creatingTag")
             li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev", ng-click="q.query = tag.name + ' ' + q.query")
-              {{tag.name}} ({{tag.docs.length}})
+              {{tag.name}} ({{tag.docs ? tag.docs.length : 0}})

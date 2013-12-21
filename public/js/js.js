@@ -278,6 +278,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
           tagId = $s.t.createTag({name: tagName});
         }
 
+        if (!nut.tags) nut.tags = []; // firebase doesn't store empty arrays/objects, so create it here
         if (nut.tags.indexOf(parseInt(tagId)) !== -1) {
           console.log("tag "+tagName+" already exists on nut "+nut.id);
         }
@@ -296,6 +297,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         $s.n.nuts[nutId].modified = (new Date).getTime();
       }
       // add nut id to tag if it's not already there
+      if (!$s.t.tags[tagId].docs) $s.t.tags[tagId].docs = []; // firebase doesn't store empty arrays/objects, so create it here
       if ($s.t.tags[tagId].docs.indexOf(nutId) === -1 ) {
         $s.t.tags[tagId].docs.push(nutId);
         $s.t.tags[tagId].modified = (new Date).getTime();
@@ -434,7 +436,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     tags: [],
 
     sortOpts: [
-      {field: "docs.length", rev: true, name: "Most used"},
+      {field: "docs.length", rev: true, name: "Most used"}, // TODO firebase doesn't store empty arrays, so docs.length is undefined for unused tags. hacked to dispay (0) anyway but sort is off. maybe if dropdown switches to one of these then scan through all tags and fix? would pulling changes from firebase then obliterate?
       {field: "docs.length", rev: false, name: "Least used"},
       {field: "modified", rev: true, name: "Recently modified"},
       {field: "modified", rev: false, name: "Oldest modified"},
