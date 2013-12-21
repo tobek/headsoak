@@ -81,8 +81,8 @@ block content
                   span.delete(ng-click="n.removeTagIdFromNut(nut.id, tagId)") X
               div.clear
               div.tawrapper
-                a.options
-                  i.fa.fa-caret-square-o-down
+                a.options(ng-click="n.deleteNut(nut)")
+                  i.fa.fa-trash-o.fa-lg
                 textarea(ng-model="nut.body", ng-blur="n.nutBodyUpdated(nut)", ng-keydown="n.autosizeNut($event.target)")
 
       div#right
@@ -100,4 +100,6 @@ block content
               form(ng-submit="t.createTag({name: t.createTagName})")
                 input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';" nm-focus="t.creatingTag")
             li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev", ng-click="q.query = tag.name + ' ' + q.query")
-              {{tag.name}} ({{tag.docs ? tag.docs.length : 0}})
+              {{tag.name}} ({{tag.docs ? tag.docs.length : 0}}) 
+              a.delete(ng-click="n.deleteTag(tag)")
+                i.fa.fa-trash-o

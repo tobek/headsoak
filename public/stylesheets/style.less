@@ -1,14 +1,25 @@
 /* =Variables
 ----------------------------------------------- */
 
-@mainbg: #263D59;
-//@tagbg: #f5580a; // pumpkin
-@tagbg: saturate(#b5534a,20%); // tomato
-//@tagbg: #fc8c03; // goldish
+@mainbg: #0F161F;
+// @tagbg: saturate(#b5534a,20%); // tomato
+@tagbg: #fc8c03; // goldish
+
+@nutTagHover: fade(@tagbg, 20%);
+@tagBG: black;
+@tagColor: white;
+@tagHover: lighten(@mainbg, 15%);
+
+@textareaBG: #DDD;
+@textareaFocusBG: desaturate(lighten(@mainbg, 85%), 8%);
 
 @new-hover: gold;
 
 @modalbg: #170E01;
+
+@menuHover: #333;
+@menuActive: @new-hover;
+
 
 /* =CSS Reset
 ----------------------------------------------- */
@@ -98,10 +109,10 @@ select, option, label {
     font-size: 80%;
   }
   li:hover {
-    background-color: #333;
+    background-color: @menuHover;
   }
   li:active {
-    color: @new-hover;
+    color: @menuActive;
   }
   .incomplete {
     color: #CCC;
@@ -134,17 +145,17 @@ a {
 }
 
 .tag {
-  background-color: black;
-  color: white;
+  background-color: @tagBG;
+  color: @tagColor;
   display: inline-block;
   clear: both;
   cursor: pointer;
 }
 #left .tag:hover{
-  background-color: @tagbg;
+  background-color: @nutTagHover;
 }
 #right .tag:hover{
-  background-color: @mainbg;
+  background-color: @tagHover;
 }
 
 .tab-hidden {
@@ -160,7 +171,7 @@ form {
 #right {
   float: right;
   width: 20%;
-  background-color: fade(@tagbg, 80%);
+  background-color: fade(@tagbg, 20%);
   #new-tag {
     float: right;
     cursor: pointer;
@@ -175,6 +186,14 @@ form {
     padding: 4px;
     margin: 4px;
     float: left;
+
+    &:hover .delete { display: inline-block; }
+    .delete {
+      display: none;
+      font-size: 80%;
+      color: #999;
+      &:hover {color: #DDD;}
+    }
   }
 }
 
@@ -245,24 +264,25 @@ form {
       max-width: 97%;
       margin: auto;
       textarea {
+        background-color: @textareaBG;
         width: 100%;
         max-height: 200px;
         outline: none;
         overflow: auto;
       }
       textarea:focus {
-        background-color: lavender;
+        background-color: @textareaFocusBG;
       }
       &:hover .options { display: inline-block; }
       .options {
         display: none;
         position: absolute;
-        top: 0;
+        top: 3px;
         right: 0;
         z-index: 5;
         font-size: 60%;
-        color: #AAA;
-        &:hover {color: #666;}
+        color: #777;
+        &:hover {color: #333;}
       }
     }
     .tags {

@@ -268,6 +268,81 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       });
     },
 
+    deleteNut: function(nut) { // TODO test
+      if (!confirm("Are you sure you want to delete this not? At the moment, this can't be undone")) {
+        return;
+      }
+
+      if (nut.tags) {
+        nut.tags.forEach(function(tagId) {
+          $s.n.removeTagIdFromNut(nut.id, tagId);
+        });
+      }
+
+      $s.digest.nuts[nut.id] = null;
+      $s.digest.push(); // update right away
+
+      this.removeNutFromIndex(nut);
+
+      delete this.nuts[nut.id];
+
+      console.log("nut "+nut.id+" has been deleted");
+    },
+
+    /* call whenever a nut is updated
+     * can accept nut id OR nut
+     * is called, for instance, via nutBodyUpdated when textarea blurs or when tags added/removed
+     * 1: updates history. NOTE: we store entire state of nut in each history entry. could instead store just changes if this gets to big. NOTE 2: by the time this is called, the view and model have already changed. we are actually storing the CHANGED version in history.
+     * 2: updates `modified`
+     * 3: updates lunr index
+     * 4: adds to digest to be saved to firebase
+     */
+    nutUpdated: function(nut) {
+      if (typeof nut == "number") {
+        nut = $s.n.nuts[nut];
+      }
+
+      var oldState = $.extend(true, {}, nut); // deep clone ourself
+      delete oldState.history; // no need for the history to have history
+      nut.history.push(oldState); // append ourselves into history
+      if (nut.history.length > $s.config.maxHistory) {
+        nut.history.shift(); // chuck the oldest one
+      }
+
+      nut.modified = (new Date).getTime()
+
+      $s.digest.nuts[nut.id] = nut;
+      // $s.digest.push(); // don't update right away. sometimes nutUpdated() can be called multiple times during one operation
+
+      this.updateNutInIndex(nut);
+
+      console.log("nut "+nut.id+" has been updated");
+    },
+
+    nutBodyUpdated: function(nut) {
+      if (nut.body == nut.history[nut.history.length-1].body) {
+        console.log("nut "+nut.id+" lost focus but unchanged");
+      }
+      else {
+        this.nutUpdated(nut);
+      }
+    },
+
+    updateNutInIndex: function(nut) {
+      // update just does `remove` then `add` - seems to be fine that this gets called even when it's a totally new nut
+      $s.lunr.update({
+        id: nut.id,
+        body: nut.body,
+        tags: nut.tags.map(function(i){ return $s.t.tags[i].name; }).join(" ")
+      });
+    },
+
+    removeNutFromIndex: function(nut) {
+      $s.lunr.remove({
+        id: nut.id
+      });
+    },
+
     addTagNameToNut: function(tagName, nut) {
       // TODO: inline creator, that autosuggests (the last autosuggestion always being "create new tag [current text]")
       if (tagName) {
@@ -321,63 +396,6 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
       this.nutUpdated(nutId); // update history, modified, index
       $s.t.tagUpdated(tagId);
-    },
-
-    /*
-     */
-    updateNut: function(id, nut) {
-    },
-    deleteNut: function(id) { // TODO test
-      // TODO
-      // remove from store, index, and tags, change tag modified
-    },
-
-    /* call whenever a nut is updated
-     * can accept nut id OR nut
-     * is called, for instance, when textarea blurs or when tags added/removed
-     * 1: updates history. NOTE: we store entire state of nut in each history entry. could instead store just changes if this gets to big. NOTE 2: by the time this is called, the view and model have already changed. we are actually storing the CHANGED version in history.
-     * 2: updates `modified`
-     * 3: updates lunr index
-     * 4: adds to digest to be saved to firebase
-     */
-    nutUpdated: function(nut) {
-      if (typeof nut == "number") {
-        nut = $s.n.nuts[nut];
-      }
-
-      var oldState = $.extend(true, {}, nut); // deep clone ourself
-      delete oldState.history; // no need for the history to have history
-      nut.history.push(oldState); // append ourselves into history
-      if (nut.history.length > $s.config.maxHistory) {
-        nut.history.shift(); // chuck the oldest one
-      }
-
-      nut.modified = (new Date).getTime()
-
-      $s.digest.nuts[nut.id] = nut;
-      $s.digest.push();
-
-      this.updateNutInIndex(nut);
-
-      console.log("nut "+nut.id+" has been updated");
-    },
-
-    nutBodyUpdated: function(nut) {
-      if (nut.body == nut.history[nut.history.length-1].body) {
-        console.log("nut "+nut.id+" lost focus but unchanged");
-      }
-      else {
-        this.nutUpdated(nut);
-      }
-    },
-
-    updateNutInIndex: function(nut) {
-      // update just does `remove` then `add` - seems to be fine that this gets called even when it's a totally new nut
-      $s.lunr.update({
-        id: nut.id,
-        body: nut.body,
-        tags: nut.tags.map(function(i){ return $s.t.tags[i].name; }).join(" ")
-      });
     },
 
     autosizeAllNuts: function() {
@@ -502,6 +520,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     },
 
     deleteTag: function(id) {
+      debugger;
       return; // TODO
       // TODO
       // go through each doc id and splice it out

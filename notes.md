@@ -88,6 +88,20 @@ basically, question is, if we try to sync and server has new version # and we ha
 ## design
 
 - The nutmeg tree could embody the server-side aspects of nutmeg - signing up, backups, syncing, etc. A silvery vector image of a sheltering tree could be used.
+- Hover effect for nut textareas in addition to focus? Maybe a border/outline/highlight?
+
+### tags
+
+So... per-tag color and bg color. How to do hover?
+
+- Controllabe is too much effort
+- inverting is easy but might feel too rainbow
+- Maybe darkening/lightening/depending
+- Or not change colors
+  - beveling pop-forward effect
+  - border that's the same color as the text.
+
+nut icons? useful for like the `private` nut (or any nut you select as private, cause you can do that?). tags could have compound icons. or the tag clarifiers could be represented as icons.
 
 ## querying
 
@@ -186,6 +200,29 @@ http://www.visuwords.com/
   - meronymy? "finger" is a meronym of "hand", "istanbul" of "Turkey"
 - related-to OR same-kind should be automatic for siblings
 
+Parent tags create sort of implicit tags. Any related tags really. Some way to show tags by their distance from a note. Lower is closer. Immediate tags have distance 1. (Maybe peripheral tags could be used here, see lab). Maybe all tags 1 relationship away would have distance 2. Though maybe different relationships have different distances. Like children of a tag on a nut maybe distance infinity, parents distance +1. Sibling might also be different +1 or maybe +2 or more. Obviously [NRW (not right word) inductive recursive] BLUBBER
+
+### tag prepositions OR per-nut tag relationships OR nut-tag connections OR *tag clarifiers*
+
+let's say a note is one that i am writing about martial. two options
+
+option 1: tag it `martial` and `writing to`. not there yet. because i might also tag `oman` because i'm writing to martial about oman, but from these tags you won't know which. so instead, just for this nut, i say that the `martial` and `writing about` tags are related. (could be a generic relationship which would probably disambiguate enough in almost all cases, or could be diff kinds)
+
+option 2: tag it `martial` and additionally *this* nut's relationship to that tag is the `writing to` relationship. these could be on the fly or structured, or other, with autosuggest.
+
+both options offer cool opportunities to visualize the `martial` tag or `writing to` tag/relationship.
+
+SOLUTION: they're the same. process:
+
+- ctrl+t creates new tag
+- type `martial` (autosuggested)
+- instead of hitting enter, which adds the tag, hit shift+enter, which adds the tag and opens a new window to describe this nuts relationship to that tag
+- type `writing to` (also autosuggested). it adds `writing to` as a tag but visually differentiated and connected to `martial` in this nut's tag list.
+
+the per-tag nut-to-nut relationship really is the same as the this-nut-to-tag relationship. can encode the latter as a tag
+
+tag clarifiers sort of form subtags on the fly. like reusable subtags. rather than have a `martial` tag with `writing to martial` subtag and `celia` tag with `writing to celia` subtag, you just create them on the fly by attaching the `writing to` clarifier to the tag on notes you wish to tag with this subtag
+
 ## config
 
 - searching for "importer" brings up a nut that itself contains the import tool (which, like all nuts, can be expanded to full screen mode). when you click on importer from the nutmeg menu, it simply inserts "importer" in to the query box. the menu teaches you the shortcuts - everything can be done through the query box/runner
@@ -199,6 +236,28 @@ http://www.visuwords.com/
 shortcut can be arbitrary list of commands
 
 - create nut with whatever pre-set stuff - text, tags, etc.
+
+## laboratory
+
+#### auto detecting on-the-fly syntax (nutmeg shortcodes)
+
+let's say i start regularly typing [BLAH something about accessible healthcare]. it can pick this up at offer to create metadata about it OR visualize it as a language construct. this isn't a great example because this is a language construct, not tag metadata (though the former can generate the latter). It is actually metadata, just very specific. You could create queues based on the [BLAH ____] tag. A nut would basically have nut-wide metadata "this has BLAH todos in it".
+
+  nested! [BLAH something about [BLAH something that indicates my usage of BLAH]]] (actually was hard for me to come up with an example)
+
+it could have a browser that suggests syntaxes you've begun to use. even somehow clustering them to suggest a single syntax that might cover multiple things you've been doing. this way you could kind of barely care about being consistent, but it would get picked up (and then find-and-replace). even further in the future it could parse plain text and suggest formalized relationship as language constructs. (parsing plain text for nut-wide metadata, like emotions, is totally already on the cards, and probably easier to make useful)
+
+Of course these shortcodes - all picked up syntax really - could have arbitrarily complex syntax. If I personally stick to shortcode-ish bracket syntax (and obv a repository to share these), simplest would be `[BLAH thing i generally want to communicate]` which is really `[KEYWORD data]`. Could be also not-the-write-word syntax like `[NRW inductive recursive]` which could be `[KEYWORD space separated list]`. Could be overloaded shortcodes, like `[KEYWORD comma separated, if you want phrases]`. Then of course full-blow shorcuts, maybe with command line arg style key/value declarations.
+
+#### transforming tags, state-ful tags
+
+Certain tags (or tag clarifiers) could have sort of multiple forms, like `finish and send to` and `sent to`. And for these maybe you click on it to transform it to the other. Could have any chain of click-to-advance tags. Potentially more complicated, like you click and you get a list of the possible states you can go to next. this is JIRA-ish.
+
+#### tag strength
+
+Two (or arbitrary #) of strengths with which you can attach a tag to a nut. Personally I'd use two: strong (default) and weak/peripheral. Maybe like ctrl+enter would add the tag peripherally, and the tag would be a little bit translucent.
+
+Really the way to make it extensible is a list of levels each with value, shortcut, and opacity level. With a default. Shortcuts could be multi-key, like 1-then-enter.
 
 ## RANDO
 
