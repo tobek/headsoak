@@ -10,6 +10,7 @@ l.search("some") // returns no results
 
 ## TODO
 
+- autosizeAllNuts() should happen basically whenever the nuts displayed changes. i manually did it on create and delete nut, but even needs to be done whenever sort order changes - whether by using choosing a different sort-by, or by changing stuff (modifying, adding tag) such that a notes position changes
 - do something about font sizes (proportional to screen yes, try out on a) 1920x1080, b) smaller screen, c) tablet, d) phone)
 - request an invite
   - basically give a unique URL like nutmeg.io?invite=somethingcute
@@ -37,6 +38,7 @@ l.search("some") // returns no results
 ### backlog
 
 - deal with nuts and tags being sparse arrays full of undefineds for each thing you've deleted. `track by $index` fixes duplicates in ng-repeat, but entries still show up in the DOM but are just hidden with ng-hide="!nut". kind of ugly.
+  - might help https://github.com/angular/angular.js/issues/1286
 - esc exits modal
 - dynamically verticle center the contents of modal .circle
 

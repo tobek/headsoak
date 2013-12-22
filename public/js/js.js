@@ -21,6 +21,7 @@ angular.element(".circle div")[2].style['margin-top'] = "-86px"
 
 ### DO SOON
 
+- hover over clock show creation and mod times, also mention history? pencil icon to edit creation date
 - shortcuts
   - new nut
   - new tag on nut
@@ -104,7 +105,7 @@ $(function() { // upon DOM having loaded
 // angular.element($("body")).scope().$apply()
 
 var ngApp = angular.module('nutmeg', [])
-.controller('Nutmeg', ['$scope', function($s) {
+.controller('Nutmeg', ['$scope', '$timeout', function($s, $timeout) {
 
   $s.m = { modal: false };
 
@@ -198,7 +199,7 @@ var ngApp = angular.module('nutmeg', [])
   };
 
   $s.config = {
-    maxHistory: 20 // how many revisions of each nut to save
+    maxHistory: 1 // how many revisions of each nut to save. 1 is minimum - we use it in nutBodyUpdated
   };
 
   $s.lunr = lunr(function () {
@@ -258,6 +259,8 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       this.nutUpdated(newId); // saves state in history, updates index, etc.
       console.log("new nut "+newId+" has been created");
 
+      $timeout($s.n.autosizeAllNuts, 0);
+
       return newId;
     },
     createNuts: function(nuts){
@@ -283,6 +286,8 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
       $s.digest.nuts[nut.id] = null;
       $s.digest.push(); // update right away
+
+      $timeout($s.n.autosizeAllNuts, 0);
 
       console.log("nut "+nut.id+" has been deleted");
     },
@@ -331,7 +336,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.lunr.update({
         id: nut.id,
         body: nut.body,
-        tags: nut.tags.map(function(i){ return $s.t.tags[i].name; }).join(" ")
+        tags: nut.tags ? nut.tags.map(function(i){ return $s.t.tags[i].name; }).join(" ") : ""
       });
     },
 
@@ -500,7 +505,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     // TODO gotta be a better way than looping through the whole thing. keep a reverse index?
     getTagIdByName: function(name) {
       for (var i = this.tags.length - 1; i >= 0; i--) {
-        if (name === this.tags[i].name ) {
+        if (this.tags[i] && name === this.tags[i].name ) {
           return i;
         }
       };

@@ -27,6 +27,8 @@ block content
             input(type="email", placeholder="email", ng-model="email")
             input(type="password", placeholder="password", ng-model="password")
             input(type="submit", value="go")
+            p.loader
+              img(src="/img/loader-white.gif")
           p or 
             a(ng-click="m.modal='createaccount'") create an account
 
@@ -37,6 +39,8 @@ block content
             input(type="password", placeholder="password", ng-model="pass1")
             input(type="password", placeholder="password again", ng-model="pass2")
             input(type="submit", value="go")
+            p.loader
+              img(src="/img/loader-white.gif")
 
 
   div#nonmodal(ng-class="{modalon: m.modal, loggedout: !u.loggedIn}", ng-cloak)
@@ -56,7 +60,8 @@ block content
     div#query
       img(src="/img/nutmeg40h.png")
       input(type="text", placeholder="search", ng-model="q.query", nm-query="q.query")
-      span.clear(ng-click="q.query=''") X
+      span.clear-query(ng-click="q.query=''")
+        i.fa.fa-times
 
     //- can add .tab-hidden
     div#main
@@ -64,8 +69,8 @@ block content
       div#left
         div#nuts
           div.header
-            span (n)s
-            span#new-nut(ng-click="n.createNut({})") +
+            span#new-nut(ng-click="n.createNut({})")
+              i.fa.fa-plus
             span.sort
               label Sort by 
                 select#nut-sort-select(ng-model='n.sortBy', ng-options='o as o.name for o in n.sortOpts')
@@ -74,22 +79,28 @@ block content
             //- ng-hide="!nut" to avoid showing undefined nuts (happens when deleting nuts)
             li.nut(ng-repeat="nut in n.nuts | orderBy:n.sortBy.field:n.sortBy.rev track by $index", ng-show="q.showAll || q.showNuts.indexOf(nut.id) !== -1", ng-hide="!nut")
               div.tags
-                span.add-tag-to-nut(ng-click="addingTag=true;") +
+                span.add-tag-to-nut(ng-click="addingTag=true;")
+                  i.fa.fa-plus
                 span.tag(ng-show="addingTag")
                   form(ng-submit="n.addTagNameToNut(n.addTagName, nut); n.addTagName = ''; addingTag=false")
                     input(type="text", ng-model="n.addTagName", ng-blur="n.addTagName = ''; addingTag=false;", nm-focus="addingTag")
                 span.tag(ng-repeat="tagId in nut.tags") {{t.tags[tagId].name}} 
-                  span.delete(ng-click="n.removeTagIdFromNut(nut.id, tagId)") X
+                  span.delete(ng-click="n.removeTagIdFromNut(nut.id, tagId)")
+                    i.fa.fa-times
               div.clear
               div.tawrapper
-                a.delete(ng-click="n.deleteNut(nut)")
-                  i.fa.fa-trash-o.fa-lg
+                div.icons
+                  a.time
+                    i.fa.fa-clock-o
+                  a.delete(ng-click="n.deleteNut(nut)")
+                    i.fa.fa-trash-o
                 textarea(ng-model="nut.body", ng-blur="n.nutBodyUpdated(nut)", ng-keydown="n.autosizeNut($event.target)")
 
       div#right
         div#tagContainer
-          span (t)s
-          span#new-tag(ng-click="t.creatingTag=true;") +
+          i.fa.fa-tags
+          span#new-tag(ng-click="t.creatingTag=true;")
+            i.fa.fa-plus
           br
           span.sort
             label Sort by 
