@@ -71,7 +71,8 @@ block content
                 select#nut-sort-select(ng-model='n.sortBy', ng-options='o as o.name for o in n.sortOpts')
 
           ul
-            li.nut(ng-repeat="nut in n.nuts | orderBy:n.sortBy.field:n.sortBy.rev", ng-show="q.showAll || q.showNuts.indexOf(nut.id) !== -1")
+            //- ng-hide="!nut" to avoid showing undefined nuts (happens when deleting nuts)
+            li.nut(ng-repeat="nut in n.nuts | orderBy:n.sortBy.field:n.sortBy.rev track by $index", ng-show="q.showAll || q.showNuts.indexOf(nut.id) !== -1", ng-hide="!nut")
               div.tags
                 span.add-tag-to-nut(ng-click="addingTag=true;") +
                 span.tag(ng-show="addingTag")
@@ -81,7 +82,7 @@ block content
                   span.delete(ng-click="n.removeTagIdFromNut(nut.id, tagId)") X
               div.clear
               div.tawrapper
-                a.options(ng-click="n.deleteNut(nut)")
+                a.delete(ng-click="n.deleteNut(nut)")
                   i.fa.fa-trash-o.fa-lg
                 textarea(ng-model="nut.body", ng-blur="n.nutBodyUpdated(nut)", ng-keydown="n.autosizeNut($event.target)")
 
@@ -99,7 +100,7 @@ block content
             li.tag.new-tag(ng-show="t.creatingTag")
               form(ng-submit="t.createTag({name: t.createTagName})")
                 input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';" nm-focus="t.creatingTag")
-            li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev", ng-click="q.query = tag.name + ' ' + q.query")
+            li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev track by $index", ng-click="q.query = tag.name + ' '", ng-hide="!tag")
               {{tag.name}} ({{tag.docs ? tag.docs.length : 0}}) 
-              a.delete(ng-click="n.deleteTag(tag)")
+              a.delete(ng-click="t.deleteTag(tag); $event.stopPropagation()")
                 i.fa.fa-trash-o

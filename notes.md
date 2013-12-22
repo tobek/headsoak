@@ -36,6 +36,7 @@ l.search("some") // returns no results
 
 ### backlog
 
+- deal with nuts and tags being sparse arrays full of undefineds for each thing you've deleted. `track by $index` fixes duplicates in ng-repeat, but entries still show up in the DOM but are just hidden with ng-hide="!nut". kind of ugly.
 - esc exits modal
 - dynamically verticle center the contents of modal .circle
 

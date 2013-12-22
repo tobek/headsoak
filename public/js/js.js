@@ -21,8 +21,6 @@ angular.element(".circle div")[2].style['margin-top'] = "-86px"
 
 ### DO SOON
 
-- delete tag (confirm)
-- delete nut
 - shortcuts
   - new nut
   - new tag on nut
@@ -268,8 +266,8 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       });
     },
 
-    deleteNut: function(nut) { // TODO test
-      if (!confirm("Are you sure you want to delete this not? At the moment, this can't be undone")) {
+    deleteNut: function(nut) {
+      if (!confirm("Are you sure you want to delete this not? This can't be undone.")) {
         return;
       }
 
@@ -279,12 +277,12 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         });
       }
 
-      $s.digest.nuts[nut.id] = null;
-      $s.digest.push(); // update right away
-
       this.removeNutFromIndex(nut);
 
       delete this.nuts[nut.id];
+
+      $s.digest.nuts[nut.id] = null;
+      $s.digest.push(); // update right away
 
       console.log("nut "+nut.id+" has been deleted");
     },
@@ -519,32 +517,34 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       this.tagUpdated(id);
     },
 
-    deleteTag: function(id) {
-      debugger;
-      return; // TODO
-      // TODO
-      // go through each doc id and splice it out
-      // remove from firebase
-      this.tagUpdated(id);
+    deleteTag: function(tag) {
+      if (!confirm('Are you sure you want to delete the tag "'+tag.name+'"? This can\'t be undone.')) {
+        return;
+      }
+
+      if (tag.docs) {
+        tag.docs.forEach(function(docId) {
+          $s.n.removeTagIdFromNut(docId, tag.id);
+        });
+      }
+
+      delete this.tags[tag.id];
+
+      $s.digest.tags[tag.id] = null;
+      $s.digest.push(); // update right away
+
+      console.log("tag "+tag.id+" ("+tag.name+") has been deleted");
     },
 
     /* call whenever a tag is updated
-     * if this.tags[id] is undefined, this means it was deleted
-     * 1: updates `modified` (unless was deleted)
-     * 2: TODO: updateNutInIndex() too, but only if name changed or deleted? when added/removed from nut, nutUpdated() gets called which will reindex those nuts. need to have convention of where index gets updated when tag entirely deleted
+     * 1: updates `modified`
+     * 2: TODO: updateNutInIndex() too, but only if name changed? when added/removed from nut, nutUpdated() gets called which will reindex those nuts. need to have convention of where index gets updated when tag entirely deleted
      * 3: add to digest
      */
     tagUpdated: function(id) {
       console.log("tag "+id+" has been updated")
-      if (this.tags[id]) {
-        this.tags[id].modified = (new Date).getTime();
-        $s.digest.tags[id] = this.tags[id];
-      }
-      else {
-        // was deleted
-        console.log("tag "+id+" was deleted actually")
-        $s.digest.tags[id] = null;
-      }
+      this.tags[id].modified = (new Date).getTime();
+      $s.digest.tags[id] = this.tags[id];
       $s.digest.push();
     },
 
@@ -595,15 +595,11 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       tags: [2,3]
     },
     {
-      body: 'nonsensenyc steampunk event from "Gemini and Scorpio": "Lost Circus dress code: dark cabaret, traveling circus, steampunk Victorian, neo-tribal, funky formal, desert wanderer, Edward Gorey, Tim Burton, Mad Max, City of Lost Children. Effort required. Stilts and characters welcome."',
-      tags: [1,2]
-    },
-    {
       body: "**What did it feel like in the moments after you got your diagnosis?**\n\nIt was a little dizzying, partly because I’d expected to just be in and out of the place, and suddenly they were pulling out the hypodermics and tourniquets to do a confirmatory blood test, and I felt like I was going crazy because I’d given them a pseudonym and they were all calling me Mark.\n\n**Why a pseudonym?**\n\nBush-era paranoia. I didn’t want to link myself to my diagnosis. So they’re like “MARK, WHAT DO YOU WANT TO DO,” and the fluorescent lights are flickering above me and I’ve got super low blood sugar because I’d meant to get food immediately after, and now all these people with needles are staring at me, going “MARK. MARK,” and I was like, “I’m going to leave right now.” I didn’t have any pockets, and I had all of these pills and paperwork and walked out with three things in each hand, and it was so bright outside…\n\nThere was this hyper-real moment on the street. I’d gotten a parking ticket and that’s what made me shed my first tear. And afterwards I couldn’t decide what to do, get food or go to work or what, and I was sort of doing pirouettes on the crosswalk of this sun-drenched intersection, looking back and forth between the clinic and my car, and this girl was watching me and I finally locked eyes with her. It was the most intense eye contact I’ve ever had with a stranger. We were just staring at each other for a full minute, and she sort of wordlessly acknowledged, “You are having a fucking day right now.”\n\nexcerpt from The Sexual History of Jared Sabbagh, Part 3 http://thehairpin.com/2013/09/jared#more",
       tags:[2]
     },
     {
-      body: "Here you have some dummy notes to get you started. Sorry, you can't delete notes yet but you'll be able to soon."
+      body: "Here you have some dummy notes to get you started. You can delete them by hitting the trash can in the top right of each note."
     }]);
   }
 
