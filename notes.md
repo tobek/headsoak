@@ -10,6 +10,7 @@ l.search("some") // returns no results
 
 ## TODO
 
+- have option (probably default) to only resort when you hit dropdown or refresh. insta-resorting on modified or adding tags is annoying
 - autosizeAllNuts() should happen basically whenever the nuts displayed changes. i manually did it on create and delete nut, but even needs to be done whenever sort order changes - whether by using choosing a different sort-by, or by changing stuff (modifying, adding tag) such that a notes position changes
 - do something about font sizes (proportional to screen yes, try out on a) 1920x1080, b) smaller screen, c) tablet, d) phone)
 - request an invite
@@ -231,6 +232,7 @@ tag clarifiers sort of form subtags on the fly. like reusable subtags. rather th
 - searching for "importer" brings up a nut that itself contains the import tool (which, like all nuts, can be expanded to full screen mode). when you click on importer from the nutmeg menu, it simply inserts "importer" in to the query box. the menu teaches you the shortcuts - everything can be done through the query box/runner
 - adding/removing tags changes "modified" timestamp on nut. what should default be?
 - show delete X for each tag in nut
+- default nut and tag sort preferences
 
 ## shortcuts
 
