@@ -18,7 +18,6 @@ block content
           form
             textarea(placeholder="Bug reports and suggestions are eagerly awaited. You'll hear from me personally.", ng-model="feedback")
             input(type="text", placeholder="name (optional)", ng-model="name")
-            input(type="email", placeholder="email (optional)", ng-model="email")
             input(type="submit", value="send")
 
         div(ng-show="m.modal == 'login'")
@@ -26,8 +25,8 @@ block content
           form(ng-submit="u.login(email, password)")
             input(type="email", placeholder="email", ng-model="email")
             input(type="password", placeholder="password", ng-model="password")
-            input(type="submit", value="go")
-            p.loader
+            input(type="submit", value="go", ng-hide="u.loading")
+            p.loader(ng-show="u.loading")
               img(src="/img/loader-white.gif")
           p or 
             a(ng-click="m.modal='createaccount'") create an account
@@ -38,17 +37,23 @@ block content
             input(type="email", placeholder="email", ng-model="email")
             input(type="password", placeholder="password", ng-model="pass1")
             input(type="password", placeholder="password again", ng-model="pass2")
-            input(type="submit", value="go")
-            p.loader
+            input(type="submit", value="go", ng-hide="u.loading")
+            p.loader(ng-show="u.loading")
               img(src="/img/loader-white.gif")
 
 
   div#nonmodal(ng-class="{modalon: m.modal, loggedout: !u.loggedIn}", ng-cloak)
 
+    span#sync-status(ng-class="digest.status")
+      i.cloud.fa.fa-cloud-upload
+      i.spinner.fa.fa-refresh.fa-spin;
+
+
     div#menu
       ul
         li.incomplete(ng-click="m.modal='about'") about
         li.incomplete(ng-click="m.modal='feedback'") feedback
+        li.incomplete export
         li.incomplete importer
         li.incomplete shortcuts
         li.incomplete settings

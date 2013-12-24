@@ -93,6 +93,7 @@ basically, question is, if we try to sync and server has new version # and we ha
 
 - The nutmeg tree could embody the server-side aspects of nutmeg - signing up, backups, syncing, etc. A silvery vector image of a sheltering tree could be used.
 - Hover effect for nut textareas in addition to focus? Maybe a border/outline/highlight?
+- some kind of tag relationship visualization: http://bl.ocks.org/mbostock/7607535
 
 ### tags
 
@@ -305,6 +306,7 @@ could have user collection which stored name of note collection. multiple users 
 - angular
   - simple example of storing model in a service to access it from multiple controllers: http://stackoverflow.com/questions/11112608/angularjs-where-to-put-model-data-and-behaviour
   - storing logged-in user context: http://stackoverflow.com/questions/14206492/how-do-i-store-a-current-user-context-in-angular
+  - wrapping tinymce in angular: http://jsfiddle.net/programmieraffe/kjsEV/
 
 if you hit performance issues with lunr, could offload to a web-worker. can migrate to solr or something later.
 

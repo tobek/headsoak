@@ -10,14 +10,32 @@ angular.element(".circle div")[2].style['margin-top'] = "-86px"
 
 ### DO NOW
 
-- disable go button on click
-- feedback form
+- sync status
+  - $s.$apply() after changing?
+  - tooltip to show status
+  - move to unsynced when typing? best way to deal with this
+  - maybe pulsing glow?
+- finish disabling go button on click
+- feedback form pushing into firebase
 - figure out why digest.push() doesn't work on nut blur
 - when you click on a nut tag, prepend it to the query?
 - create account by invite only + 'request invite' button
 - permissions for reading nuts
 - right now, a note is only saved after you click outside of the textarea. that means if you're typing something and directly close the window, you'll lose changes
-- sync status icon
+- export (in the future all of these should optionally apply to current selection)
+  - Word Document (how to phrase?)
+    - "This feature isn't fully implemented yet. Click here to download your notes as an HTML file, which any word processor will be able to open."
+  - Share as web page
+    - (<hr> between notes, starting with <h3>Tags: tag1, tag2</h3>)
+  - JSON
+  - later
+    - xls
+  - info
+    - http://updates.html5rocks.com/2011/08/Saving-generated-files-on-the-client-side
+    - http://www.html5rocks.com/en/tutorials/file/filesystem/
+    - http://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server/3665147#3665147
+    - http://eligrey.com/blog/post/saving-generated-files-on-the-client-side
+    - https://developer.mozilla.org/en-US/docs/Web/API/URL.createObjectURL?redirectlocale=en-US&redirectslug=URL.createObjectURL
 
 ### DO SOON
 
@@ -115,8 +133,10 @@ var ngApp = angular.module('nutmeg', [])
       this.config = {};
       this.nuts = {};
       this.tags = {};
+      this.status = 'synced';
     },
     push: function() {
+      this.status = 'syncing';
       // note: this is called from various places - we can't rely on 'this' so use $s.digest
       console.log("digest: checking for changes to push");
       var updated = false;
@@ -153,6 +173,7 @@ var ngApp = angular.module('nutmeg', [])
         alert("You didn't enter a password!");
         return;
       }
+      $s.u.loading = true;
       $s.u.auth.createUser(email, pass1, function(error, user) {
         if (!error) {
           console.log('New account made: user id ' + user.id + ', email ' + user.email);
@@ -160,11 +181,14 @@ var ngApp = angular.module('nutmeg', [])
         }
         else {
           alert("Error creating account: " + JSON.stringify(error));
+          $s.u.loading = false;
         }
       });
     },
 
     login: function(email, password) {
+      console.log("login() called")
+      $s.u.loading = true;
       $s.u.auth.login('password', {
         'email': email,
         'password': password,
@@ -181,10 +205,12 @@ var ngApp = angular.module('nutmeg', [])
         console.log('Logged in, user id: ' + user.id + ', provider: ' + user.provider);
         $s.u.user = user;
         init(user.uid, function() {
-          $s.$apply();
-          $s.n.autosizeAllNuts();
+          console.log("init callback")
+          $timeout($s.n.autosizeAllNuts, 0);
           $s.m.modal = false;
           $s.u.loggedIn = true;
+          $s.u.loading = false; // used for login/createaccount loading spinner
+          $s.$apply();
         });
       } else {
         // user is logged out
@@ -301,6 +327,8 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
      * 4: adds to digest to be saved to firebase
      */
     nutUpdated: function(nut) {
+      $s.digest.status = 'unsynced';
+
       if (typeof nut == "number") {
         nut = $s.n.nuts[nut];
       }
@@ -547,6 +575,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
      * 3: add to digest
      */
     tagUpdated: function(id) {
+      $s.digest.status = 'unsynced';
       console.log("tag "+id+" has been updated")
       this.tags[id].modified = (new Date).getTime();
       $s.digest.tags[id] = this.tags[id];
@@ -558,18 +587,18 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
   $s.t.sortBy = $s.t.sortOpts[0]; // set initial value for tag sort select dropdown
 
   function init(uid, cb) {
-    console.log("fetching data for user uid "+uid)
+    console.log("init: fetching data for user uid "+uid)
     $s.ref = new Firebase('https://nutmeg.firebaseio.com/users/' + uid);
 
     $s.ref.once('value', function(data) {
       if (data.val() === null) {
-        console.log("new user - initializing with dummy data");
+        console.log("init: new user - initializing with dummy data");
         // must be a new user - even if existing user deleted everything there would still be object with config and empty nuts/tags
         dummyInit();
         $s.digest.push();
       }
       else {
-        console.log("fetched user data");
+        console.log("init: fetched user data");
         $s.n.nuts = data.val().nuts;
         $s.t.tags = data.val().tags;
       }
@@ -600,12 +629,12 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       tags: [2,3]
     },
     {
-      body: "There are six people living in space right now. There are people printing prototypes of human organs, and people printing nanowire tissue that will bond with human flesh and the human electrical system.\n\nWe’ve photographed the shadow of a single atom. We’ve got robot legs controlled by brainwaves. Explorers have just stood in the deepest unsubmerged place in the world, a cave more than two kilometres under Abkhazia. NASA are getting ready to launch three satellites the size of coffee mugs, that will be controllable by mobile phone apps.\n\nHere’s another angle on vintage space: Voyager 1 is more than 11 billion miles away, and it’s run off 64K of computing power and an eight-track tape deck.\n\nThe most basic mobile phone is in fact a communications device that shames all of science fiction, all the wrist radios and handheld communicators. Captain Kirk had to tune his fucking communicator and it couldn’t text or take a photo that he could stick a nice Polaroid filter on. Science fiction didn’t see the mobile phone coming. It certainly didn’t see the glowing glass windows many of us carry now, where we make amazing things happen by pointing at it with our fingers like goddamn wizards.\n\n...The central metaphor is magic. And perhaps magic seems an odd thing to bring up here, but magic and fiction are deeply entangled, and you are all now present at a séance for the future.\n\n- Warren Ellis, How to see the Future (http://www.warrenellis.com/?p=14314)",
-      tags: [1,2]
-    },
-    {
       body: "**What did it feel like in the moments after you got your diagnosis?**\n\nIt was a little dizzying, partly because I’d expected to just be in and out of the place, and suddenly they were pulling out the hypodermics and tourniquets to do a confirmatory blood test, and I felt like I was going crazy because I’d given them a pseudonym and they were all calling me Mark.\n\n**Why a pseudonym?**\n\nBush-era paranoia. I didn’t want to link myself to my diagnosis. So they’re like “MARK, WHAT DO YOU WANT TO DO,” and the fluorescent lights are flickering above me and I’ve got super low blood sugar because I’d meant to get food immediately after, and now all these people with needles are staring at me, going “MARK. MARK,” and I was like, “I’m going to leave right now.” I didn’t have any pockets, and I had all of these pills and paperwork and walked out with three things in each hand, and it was so bright outside…\n\nThere was this hyper-real moment on the street. I’d gotten a parking ticket and that’s what made me shed my first tear. And afterwards I couldn’t decide what to do, get food or go to work or what, and I was sort of doing pirouettes on the crosswalk of this sun-drenched intersection, looking back and forth between the clinic and my car, and this girl was watching me and I finally locked eyes with her. It was the most intense eye contact I’ve ever had with a stranger. We were just staring at each other for a full minute, and she sort of wordlessly acknowledged, “You are having a fucking day right now.”\n\nexcerpt from The Sexual History of Jared Sabbagh, Part 3 http://thehairpin.com/2013/09/jared#more",
       tags:[2]
+    },
+    {
+      body: "There are six people living in space right now. There are people printing prototypes of human organs, and people printing nanowire tissue that will bond with human flesh and the human electrical system.\n\nWe’ve photographed the shadow of a single atom. We’ve got robot legs controlled by brainwaves. Explorers have just stood in the deepest unsubmerged place in the world, a cave more than two kilometres under Abkhazia. NASA are getting ready to launch three satellites the size of coffee mugs, that will be controllable by mobile phone apps.\n\nHere’s another angle on vintage space: Voyager 1 is more than 11 billion miles away, and it’s run off 64K of computing power and an eight-track tape deck.\n\nThe most basic mobile phone is in fact a communications device that shames all of science fiction, all the wrist radios and handheld communicators. Captain Kirk had to tune his fucking communicator and it couldn’t text or take a photo that he could stick a nice Polaroid filter on. Science fiction didn’t see the mobile phone coming. It certainly didn’t see the glowing glass windows many of us carry now, where we make amazing things happen by pointing at it with our fingers like goddamn wizards.\n\n...The central metaphor is magic. And perhaps magic seems an odd thing to bring up here, but magic and fiction are deeply entangled, and you are all now present at a séance for the future.\n\n- Warren Ellis, How to see the Future (http://www.warrenellis.com/?p=14314)",
+      tags: [1,2]
     },
     {
       body: "Welcome to Nutmeg. Here are some dummy notes to get you started. You can delete them by hitting the trash can in the top right of each note. In the menu in the lower right corner of the screen you can submit any bug reports, suggestions, or thoughts as feeback. Please do!"

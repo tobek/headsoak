@@ -97,6 +97,28 @@ select, option, label {
   font-size: 75%;
 }
 
+/* 
+ * synced: green
+ * unsynced but will sync soon: yello
+ * syncing: yellow spinning
+ * disconnceted: red
+ */
+#sync-status {
+  position: fixed;
+  bottom: 2px;
+  left: 2px;
+  z-index: 10;
+  .spinner {
+    display: none;
+    color: yellow;
+  }
+  &.syncing      .spinner { display: inline-block; }
+  &.syncing      .cloud { display: none; }
+  &.synced       .cloud { color: green; }
+  &.unsynced     .cloud { color: yellow; }
+  &.disconnected .cloud { color: red; }
+}
+
 #menu {
   position: fixed;
   bottom: 0px;
