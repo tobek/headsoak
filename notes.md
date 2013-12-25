@@ -32,6 +32,7 @@ ece hdd reassigned (?) sectors 32768
   - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
 - nutmeg name on login screen
 - basic clock tooltip showing creation and modifcation times
+- autofocus nut after creating new one duh
 
 ### todo next
 
@@ -48,7 +49,10 @@ ece hdd reassigned (?) sectors 32768
   - new tag
   - ctrl+l move to query bar
   - verify tab goes between textareas in other browsers
+  - maybe shift+enter or comma to add another tag after writing this one (customizeable). it basically just hits enter and opens another/creates a new tag and clears current and leaves focus there
 - get rid of jQuery and/or underscore
+- when you query a tag, it should *not* also match notes which contain the text of that tag but aren't tagged with it themselves
+  - tag + plain text: intersection of tag.docs and lunr search.
 
 ### todo eventually
 
@@ -381,6 +385,11 @@ could have user collection which stored name of note collection. multiple users 
 if you hit performance issues with lunr, could offload to a web-worker. can migrate to solr or something later.
 
 every time you open up or switch to it (shouldn't be distracting actually...) like a popup in the corner with an autosuggestion you can approve or remove. could use automated summarization. "should this note about 'blah blah blah' have the 'blah' tag?""
+
+## inspiration
+
+- http://www.xmind.net/
+- intellisense? looks like intellisense is just code completion of properties and methods, and not open source. was justin referring to something else?
 
 # describing
 

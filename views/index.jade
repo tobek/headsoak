@@ -82,8 +82,8 @@ block content
                 select#nut-sort-select(ng-model='n.sortBy', ng-options='o as o.name for o in n.sortOpts')
 
           ul
-            //- ng-hide="!nut" to avoid showing undefined nuts (happens when deleting nuts)
-            li.nut(ng-repeat="nut in n.nuts | orderBy:n.sortBy.field:n.sortBy.rev track by $index", ng-show="q.showAll || q.showNuts.indexOf(nut.id) !== -1", ng-hide="!nut")
+            //- ng-show="nut && [...]" to avoid showing undefined nuts (happens when deleting nuts and resulting sparse arrays)
+            li.nut(ng-repeat="nut in n.nuts | orderBy:n.sortBy.field:n.sortBy.rev track by $index", ng-show="nut && (q.showAll || q.showNuts.indexOf(nut.id) !== -1)")
               div.tags
                 span.add-tag-to-nut(ng-click="addingTag=true;")
                   i.fa.fa-plus

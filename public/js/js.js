@@ -425,6 +425,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         // go back to show all
         this.showAll = true;
       }
+      $timeout($s.n.autosizeAllNuts, 0);
     }
   }; // end of $s.q
 
@@ -561,6 +562,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         console.log("init: fetched user data");
         $s.n.nuts = data.val().nuts;
         $s.t.tags = data.val().tags;
+        $s.n.nuts.forEach($s.n.updateNutInIndex);
       }
 
       // sync to server every 5s
