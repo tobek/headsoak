@@ -3,44 +3,6 @@
 // https://github.com/andyet/ConsoleDummy.js
 (function(b){function c(){}for(var d="error,group,groupCollapsed,groupEnd,log,time,timeEnd,warn".split(","),a;a=d.pop();)b[a]=b[a]||c})(window.console=window.console||{});
 
-/*
-
-var h = angular.element(".circle div")[2].scrollHeight
-angular.element(".circle div")[2].style['margin-top'] = "-86px"
-
-access angular shit from outside scope
-
-- angular.element($("body")).scope().t.tags.push({name:"foooo"})
-- angular.element($("body")).scope().$apply()
-
-### DO NOW
-
-- sync status
-  - $s.$apply() after changing? see if that's necessary, do fiddle, etc.
-  - tooltip to show status
-  - move to unsynced when typing? best way to deal with this
-  - maybe pulsing glow?
-- figure out why digest.push() doesn't work on nut blur
-- when you click on a nut tag, prepend it to the query?
-- create account by invite only + 'request invite' button
-- permissions for reading nuts
-- right now, a note is only saved after you click outside of the textarea. that means if you're typing something and directly close the window, you'll lose changes
-- build script: script that exports jade to public/index.html and uses pushup to upload public folder to s3
-- splash page with a little info and/or demo
-
-### DO SOON
-
-- hover over clock show creation and mod times, also mention history? pencil icon to edit creation date
-- shortcuts
-  - new nut
-  - new tag on nut
-  - new tag
-  - ctrl+l move to query bar
-  - verify tab goes between textareas in other browsers
-- implement sort by query match strength
-
-*/
-
 var oldUnusedFuncs = {
   // will trigger an entire re-index for lunr
   loadData: function() {
@@ -146,6 +108,7 @@ var ngApp = angular.module('nutmeg', [])
   // user authentication
   $s.u = {
     loggedIn: false,
+    loading: false, // when true, "go" button for login and createaccount is replaced with loading spinner
 
     createAccount: function(email, pass1, pass2) {
       console.log("createAccount() called");
@@ -193,7 +156,10 @@ var ngApp = angular.module('nutmeg', [])
       if (error) {
         // an error occurred while attempting login
         alert("Error logging in: " + JSON.stringify(error));
-      } else if (user) {
+        $s.u.loading = false; // so that they get the button back and can try again
+        $s.$apply();
+      }
+      else if (user) {
         // user authenticated with Firebase
         console.log('Logged in, user id: ' + user.id + ', provider: ' + user.provider);
         $s.u.user = user;
@@ -205,7 +171,8 @@ var ngApp = angular.module('nutmeg', [])
           $s.u.loading = false; // used for login/createaccount loading spinner
           $s.$apply();
         });
-      } else {
+      }
+      else {
         // user is logged out
         console.log("Logged out");
         $s.u.user = undefined;
@@ -654,6 +621,8 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     return true;
   };
 
+  // handy for accessing and playing with things from console while debugging
+  window.nmScope = angular.element(document.getElementsByTagName("body")[0]).scope();
 
 }]) // end of Nutmeg controller
 .directive('nmFocus', function($timeout) {

@@ -6,32 +6,64 @@ l.update({"body":"yo some words", "id": 0})
 l.search("word") // returns one result
 l.search("some") // returns no results
 
-32768
+ece hdd reassigned (?) sectors 32768
 
 ## TODO
 
-- check feedback script: when server starts, check firebase, if not null, email it and then delete it. make as standalone script too, can run on startup
-- have option (probably default) to only resort when you hit dropdown or refresh. insta-resorting on modified or adding tags is annoying
-- autosizeAllNuts() should happen basically whenever the nuts displayed changes. i manually did it on create and delete nut, but even needs to be done whenever sort order changes - whether by using choosing a different sort-by, or by changing stuff (modifying, adding tag) such that a notes position changes
-- do something about font sizes (proportional to screen yes, try out on a) 1920x1080, b) smaller screen, c) tablet, d) phone)
-- request an invite
+### todo before jello launch
+
+- sync status
+  - $s.$apply() after changing? see if that's necessary, do fiddle, etc.
+  - tooltip to show status
+  - move to unsynced when typing? best way to deal with this
+  - maybe pulsing glow?
+- figure out why digest.push() doesn't work on nut blur
+- when you click on a nut tag, prepend it to the query?
+- create account by invite only + 'request invite' button
   - basically give a unique URL like nutmeg.io?invite=somethingcute
   - with login, if invite query param exists and matches again firebase array i've hand-added, then show create account (nicer welcome message) and then update firebase with this invite being taken
-- demo
-- right now nutbodyupdatedwhatever only happens on blur. also happen on an interval while has focus, but make sure it only does stuff if it changed (think function does that already)
+- permissions for reading nuts
+- right now, a note is only saved after you click outside of the textarea. that means if you're typing something and directly close the window, you'll lose changes
+  - right now nutbodyupdatedwhatever only happens on blur. also happen on an interval while has focus, but make sure it only does stuff if it changed (think function does that already)
+- build script: script that exports jade to public/index.html and uses pushup to upload public folder to s3
+- have option (probably default) to only resort when you hit dropdown or refresh. insta-resorting on modified or adding tags is annoying
+  - maybe have n.sortBy be null or something, and to sort just change it to something, $apply(), then change it back to null?
+- splash page with a tiny bit of info and demo
+  - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
 - nutmeg name on login screen
-- investigate if property name length matters in firebase - if so, have some automated minifier two-way dictionary to convert prop names - nice github plugin maybe
-- replace 'go' button in login/create account with loading symbol before callback
-- esc should leave and blur new tag input
+- basic clock tooltip showing creation and modifcation times
+
+### todo next
+
+- do something about font sizes (proportional to screen yes, try out on a) 1920x1080, b) smaller screen, c) tablet, d) phone)
+- autosizeAllNuts() should happen basically whenever the nuts displayed changes. i manually did it on create and delete nut, but even needs to be done whenever sort order changes - whether by using choosing a different sort-by, or by changing stuff (modifying, adding tag) such that a notes position changes
 - configurable max-height for nuts but automatically expands otherwise
+- check feedback script: when server starts, check firebase, if not null, email it and then delete it. make as standalone script too, can run on startup
+  - could also keep running with on() listener
+  - git!
+- investigate and fix lunr weirdness
+- shortcuts
+  - new nut
+  - new tag on nut
+  - new tag
+  - ctrl+l move to query bar
+  - verify tab goes between textareas in other browsers
+- get rid of jQuery and/or underscore
+
+### todo eventually
+
+- remove all instances of `alert()` and replace with some single modal function. on chrome and FF at least, alert windows begin with "The page at https://megnut.s3.amazonaws.com says:"
+- implement sort by query match strength
+- investigate if property name length matters in firebase - if so, have some automated minifier two-way dictionary to convert prop names - nice github plugin maybe
+- esc should leave and blur new tag input
 - highlight matched query in search results
 - dbg time for lunr search
 - autocomplete tags
+- hover over clock show creation and mod times, also mention history? pencil icon to edit creation date
 - how/where to show modified/created dates on nuts? only on hover or focus?
   - could choose which (if any) of these to display
   - could be like tags, all the way to the right, with icon (clock for modified, star explosion for created?) instead of delete tag button
   - hover or right click menu would let you not show/show times
-- how should we communicate a nut being saved? downward (and downward moving) arrow icon in bottom right of textarea?
 - right now i always display everything in #nuts. this could get unwieldy. this will have to be fixed in various places
 - add config to control how tags are sorted on an individual nut? alphabetical, most/fewest tags, recently/oldest modified/created
 - ctrl+z. how best to implement? ask on quora or stack overflow? stack of actions, each with a `do` and `undo` action you can execute (`do` needed so you can redo). e.g. if you do deleteTag(4), you'd push an object onto the stack with `do` = `deleteTag(4)` and `undo` = `createTag({whatever})` having saved the state of the tag and all the docs it was on
@@ -50,18 +82,28 @@ l.search("some") // returns no results
     - http://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server/3665147#3665147
     - http://eligrey.com/blog/post/saving-generated-files-on-the-client-side
     - https://developer.mozilla.org/en-US/docs/Web/API/URL.createObjectURL?redirectlocale=en-US&redirectslug=URL.createObjectURL
+- tutorial/wizard/helper/cheat mode. maybe some bar along the bottom that displays some info for everything you hover on and every state you're in. would adapt to your shortcuts. so while you are in a nut it would have ctrl+t for tag writing. while you're tag adding it would have enter to add tag, comma to add tag and add another, etc.
+  - some mild animation, a pulse or something, when helper text changes
+  - would we ever need more? like arrows pointing at the add tag button? options:
+    - not needed
+    - helper mode also shows overlays
+    - some text ("the plus icon") is dashed-underlined and when you hover, it shows the arrow overlay
 
-### backlog
+### todo backlog
 
 - deal with nuts and tags being sparse arrays full of undefineds for each thing you've deleted. `track by $index` fixes duplicates in ng-repeat, but entries still show up in the DOM but are just hidden with ng-hide="!nut". kind of ugly.
   - might help https://github.com/angular/angular.js/issues/1286
 - esc exits modal
-- dynamically verticle center the contents of modal .circle
+- dynamically vertical center the contents of modal .circle
+  - var h = angular.element(".circle div")[2].scrollHeight
+  - angular.element(".circle div")[2].style['margin-top'] = "-86px"
 
 ## QUESTIONS
 
-- right now nuts automatically resort. like if you're sorting by latest modified and you start editing then unfocus, or by # of tags and you modify or add/remove tags, it jumps up. change? how? only $apply when you reselect sorting? could be annoying
-- right now nuts only save on unfocus. that okay? if not, they will jump up when sorting by modified, would need to be fixed
+- feedback placeholder text "Bug reports and suggestions are eagerly awaited. You'll hear from me personally." Maybe just "Bug reports and suggestions are eagerly awaited!"
+- nutmeg should remember your current location. details:
+  - is your location just your query, or the query and where you've scrolled to?
+  - should your location be remembered across all machines, or should each machine locally remember its location? configurable?
 
 ## info site
 
@@ -123,7 +165,7 @@ basically, question is, if we try to sync and server has new version # and we ha
 - Hover effect for nut textareas in addition to focus? Maybe a border/outline/highlight?
 - some kind of tag relationship visualization: http://bl.ocks.org/mbostock/7607535
 
-### tags
+### tags design
 
 So... per-tag color and bg color. How to do hover?
 
