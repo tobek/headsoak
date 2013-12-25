@@ -8,34 +8,25 @@
 var h = angular.element(".circle div")[2].scrollHeight
 angular.element(".circle div")[2].style['margin-top'] = "-86px"
 
+access angular shit from outside scope
+
+- angular.element($("body")).scope().t.tags.push({name:"foooo"})
+- angular.element($("body")).scope().$apply()
+
 ### DO NOW
 
 - sync status
-  - $s.$apply() after changing?
+  - $s.$apply() after changing? see if that's necessary, do fiddle, etc.
   - tooltip to show status
   - move to unsynced when typing? best way to deal with this
   - maybe pulsing glow?
-- finish disabling go button on click
-- feedback form pushing into firebase
 - figure out why digest.push() doesn't work on nut blur
 - when you click on a nut tag, prepend it to the query?
 - create account by invite only + 'request invite' button
 - permissions for reading nuts
 - right now, a note is only saved after you click outside of the textarea. that means if you're typing something and directly close the window, you'll lose changes
-- export (in the future all of these should optionally apply to current selection)
-  - Word Document (how to phrase?)
-    - "This feature isn't fully implemented yet. Click here to download your notes as an HTML file, which any word processor will be able to open."
-  - Share as web page
-    - (<hr> between notes, starting with <h3>Tags: tag1, tag2</h3>)
-  - JSON
-  - later
-    - xls
-  - info
-    - http://updates.html5rocks.com/2011/08/Saving-generated-files-on-the-client-side
-    - http://www.html5rocks.com/en/tutorials/file/filesystem/
-    - http://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server/3665147#3665147
-    - http://eligrey.com/blog/post/saving-generated-files-on-the-client-side
-    - https://developer.mozilla.org/en-US/docs/Web/API/URL.createObjectURL?redirectlocale=en-US&redirectslug=URL.createObjectURL
+- build script: script that exports jade to public/index.html and uses pushup to upload public folder to s3
+- splash page with a little info and/or demo
 
 ### DO SOON
 
@@ -118,10 +109,6 @@ $(function() { // upon DOM having loaded
 
 // ANGULARFIRE
 
-// access this shit from outside scope
-// angular.element($("body")).scope().t.tags.push({name:"foooo"})
-// angular.element($("body")).scope().$apply()
-
 var ngApp = angular.module('nutmeg', [])
 .controller('Nutmeg', ['$scope', '$timeout', function($s, $timeout) {
 
@@ -161,6 +148,9 @@ var ngApp = angular.module('nutmeg', [])
     loggedIn: false,
 
     createAccount: function(email, pass1, pass2) {
+      console.log("createAccount() called");
+      if ($s.u.loading) return;
+
       if (pass1 != pass2) {
         alert("Passwords don't match!");
         return;
@@ -173,11 +163,12 @@ var ngApp = angular.module('nutmeg', [])
         alert("You didn't enter a password!");
         return;
       }
+
       $s.u.loading = true;
       $s.u.auth.createUser(email, pass1, function(error, user) {
         if (!error) {
           console.log('New account made: user id ' + user.id + ', email ' + user.email);
-          $s.u.login(email, pass1);
+          $s.u.login(email, pass1, true);
         }
         else {
           alert("Error creating account: " + JSON.stringify(error));
@@ -186,8 +177,10 @@ var ngApp = angular.module('nutmeg', [])
       });
     },
 
-    login: function(email, password) {
+    login: function(email, password, calledFromCreateAccount) {
       console.log("login() called")
+      if (!calledFromCreateAccount && $s.u.loading) return;
+
       $s.u.loading = true;
       $s.u.auth.login('password', {
         'email': email,
@@ -580,7 +573,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       this.tags[id].modified = (new Date).getTime();
       $s.digest.tags[id] = this.tags[id];
       $s.digest.push();
-    },
+    }
 
   };
 
@@ -640,6 +633,26 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       body: "Welcome to Nutmeg. Here are some dummy notes to get you started. You can delete them by hitting the trash can in the top right of each note. In the menu in the lower right corner of the screen you can submit any bug reports, suggestions, or thoughts as feeback. Please do!"
     }]);
   }
+
+  $s.submitFeedback = function(feedback, name) {
+    console.log("calling submitFeedback()");
+    if (!feedback) {
+      alert("You forgot to enter any feedback.");
+      return false;
+    }
+
+    new Firebase('https://nutmeg.firebaseio.com/feedback/').push({
+      'feedback': feedback,
+      'name': name || null,
+      'email': $s.u.user.email
+    }, function(err) {
+      if (err) console.log(err);
+      console.log("feedback submitted and synced to Firebase");
+    });
+
+    alert("Thanks!");
+    return true;
+  };
 
 
 }]) // end of Nutmeg controller

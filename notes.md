@@ -10,6 +10,7 @@ l.search("some") // returns no results
 
 ## TODO
 
+- check feedback script: when server starts, check firebase, if not null, email it and then delete it. make as standalone script too, can run on startup
 - have option (probably default) to only resort when you hit dropdown or refresh. insta-resorting on modified or adding tags is annoying
 - autosizeAllNuts() should happen basically whenever the nuts displayed changes. i manually did it on create and delete nut, but even needs to be done whenever sort order changes - whether by using choosing a different sort-by, or by changing stuff (modifying, adding tag) such that a notes position changes
 - do something about font sizes (proportional to screen yes, try out on a) 1920x1080, b) smaller screen, c) tablet, d) phone)
@@ -35,6 +36,20 @@ l.search("some") // returns no results
 - add config to control how tags are sorted on an individual nut? alphabetical, most/fewest tags, recently/oldest modified/created
 - ctrl+z. how best to implement? ask on quora or stack overflow? stack of actions, each with a `do` and `undo` action you can execute (`do` needed so you can redo). e.g. if you do deleteTag(4), you'd push an object onto the stack with `do` = `deleteTag(4)` and `undo` = `createTag({whatever})` having saved the state of the tag and all the docs it was on
 - consider browser spell-checking - option to disable? if we switch to div content editable, will we lose it?
+- export (in the future all of these should optionally apply to current selection)
+  - Word Document (how to phrase?)
+    - "This feature isn't fully implemented yet. Click here to download your notes as an HTML file, which any word processor will be able to open."
+  - Share as web page
+    - (<hr> between notes, starting with <h3>Tags: tag1, tag2</h3>)
+  - JSON
+  - later
+    - xls
+  - info
+    - http://updates.html5rocks.com/2011/08/Saving-generated-files-on-the-client-side
+    - http://www.html5rocks.com/en/tutorials/file/filesystem/
+    - http://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server/3665147#3665147
+    - http://eligrey.com/blog/post/saving-generated-files-on-the-client-side
+    - https://developer.mozilla.org/en-US/docs/Web/API/URL.createObjectURL?redirectlocale=en-US&redirectslug=URL.createObjectURL
 
 ### backlog
 
@@ -47,6 +62,19 @@ l.search("some") // returns no results
 
 - right now nuts automatically resort. like if you're sorting by latest modified and you start editing then unfocus, or by # of tags and you modify or add/remove tags, it jumps up. change? how? only $apply when you reselect sorting? could be annoying
 - right now nuts only save on unfocus. that okay? if not, they will jump up when sorting by modified, would need to be fixed
+
+## info site
+
+https://nutmeg.io has app. All stuff served over https AWS.
+
+- option 1: https://nutmeg.io also has about/info page in the same index.html. In order to keep SEO juice with nutmeg.io domain, all images will have to be served over https directly from EC2.
+- option 2:
+  - a: Separate page http://nutmeg.io/about (or /info or /whatever) which can have dynamic content from EC2, and has insecure static content delivered from S3 via http://static.nutmeg.io
+  - b: http://about.nutmeg.io is an entire static site served over s3
+
+What's important is that for a first-time visitor to nutmeg.io it's incredibly easy to both log in and see info
+
+Also, presumably want to redirect http://nutmeg.io to https://nutmeg.io. Is an exception possible for option 2a? Probably.
 
 ### cloud storage
 

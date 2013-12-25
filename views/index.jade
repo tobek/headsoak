@@ -15,10 +15,11 @@ block content
 
         div.feedback(ng-show="m.modal == 'feedback'")
           h3 feedback 
-          form
+          //- if submitFeedback() returns true, clear fields and close modal
+          form(ng-submit="submitFeedback(feedback, name) && ((feedback='') || (name='') || (m.modal = false))")
             textarea(placeholder="Bug reports and suggestions are eagerly awaited. You'll hear from me personally.", ng-model="feedback")
             input(type="text", placeholder="name (optional)", ng-model="name")
-            input(type="submit", value="send")
+            input(type="submit", value="submit")
 
         div(ng-show="m.modal == 'login'")
           h3 log in
@@ -51,8 +52,8 @@ block content
 
     div#menu
       ul
-        li.incomplete(ng-click="m.modal='about'") about
-        li.incomplete(ng-click="m.modal='feedback'") feedback
+        li(ng-click="m.modal='about'") about
+        li(ng-click="m.modal='feedback'") feedback
         li.incomplete export
         li.incomplete importer
         li.incomplete shortcuts
