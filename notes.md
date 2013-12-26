@@ -31,7 +31,6 @@ ece hdd reassigned (?) sectors 32768
 - splash page with a tiny bit of info and demo
   - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
 - nutmeg name on login screen
-- basic clock tooltip showing creation and modifcation times
 - autofocus nut after creating new one duh
 
 ### todo next
@@ -63,7 +62,7 @@ ece hdd reassigned (?) sectors 32768
 - highlight matched query in search results
 - dbg time for lunr search
 - autocomplete tags
-- hover over clock show creation and mod times, also mention history? pencil icon to edit creation date
+- hover over clock show creation and mod times, also mention history? pencil icon to edit creation date?
 - how/where to show modified/created dates on nuts? only on hover or focus?
   - could choose which (if any) of these to display
   - could be like tags, all the way to the right, with icon (clock for modified, star explosion for created?) instead of delete tag button

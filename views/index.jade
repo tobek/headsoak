@@ -96,7 +96,7 @@ block content
               div.clear
               div.tawrapper
                 div.icons
-                  a.time
+                  a.time.tooltip(ng-attr-data-tooltip='{{"created: " + (nut.created | date:"medium") + "\nmodified: " + (nut.modified | date:"medium")}}')
                     i.fa.fa-clock-o
                   a.delete(ng-click="n.deleteNut(nut)")
                     i.fa.fa-trash-o
