@@ -557,15 +557,17 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       if (data.val() === null) {
         console.log("init: new user - initializing with dummy data");
         // must be a new user - even if existing user deleted everything there would still be object with config and empty nuts/tags
-        dummyInit();
+        firstInit();
         $s.digest.push();
       }
       else {
         console.log("init: fetched user data");
-        // i believe these may be arrays or Objects depending on the indices:
-        $s.n.nuts = data.val().nuts;
-        $s.t.tags = data.val().tags;
-        angular.forEach($s.n.nuts, $s.n.updateNutInIndex);
+        // under some conditions (no 0th index?) firebase returns objects
+        // need arrays in order to do push and length etc. also IIRC arrays made ng-repeat easier?
+        // arrayFromObj also ensures that even if the value is undefined, we get back []
+        $s.n.nuts = data.val().nuts instanceof Array ? data.val().nuts : arrayFromObj(data.val().nuts);
+        $s.t.tags = data.val().tags instanceof Array ? data.val().tags : arrayFromObj(data.val().tags);
+        $s.n.nuts.forEach($s.n.updateNutInIndex);
       }
 
       // sync to server every 5s
@@ -580,7 +582,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
   }
 
-  function dummyInit() {
+  function firstInit() {
     $s.n.nuts = [];
     $s.t.tags = [];
 
@@ -653,4 +655,16 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
 function defaultFor(arg, val) {
   return typeof arg !== 'undefined' ? arg : val;
+}
+
+// expects object with only numerical indices
+// creates a sparse array that preserves those indices
+// always returns at least an empty array
+function arrayFromObj(obj) {
+  if (!obj) return [];
+  var arr = [];
+  angular.forEach(obj, function(value, key) {
+    arr[key] = value; // discards non-numerical keys
+  });
+  return arr;
 }
