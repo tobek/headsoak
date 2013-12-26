@@ -137,7 +137,11 @@ select, option, label {
     color: @menuActive;
   }
   .incomplete {
-    color: #CCC;
+    color: #AAA;
+    opacity: 0.75;
+  }
+  .incomplete:hover {
+    background-color: fade(lighten(@menuHover, 25%), 75%);
   }
 }
 #menu:hover ul {
@@ -477,6 +481,7 @@ a.tooltip:after, a.tooltip:before {
   position: absolute;
 }
 a.tooltip:after {
+  white-space: pre-line;
   content: attr(data-tooltip);
   bottom: 100%;
   left: 20%;

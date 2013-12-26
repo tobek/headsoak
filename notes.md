@@ -32,6 +32,7 @@ ece hdd reassigned (?) sectors 32768
 - splash page with a tiny bit of info and demo
   - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
 - nutmeg name on login screen
+- init config and pull it on refresh. also necessary so that even if they delete all notes and tags, something exists in users/simplelogin:x, so that they don't get the firstInit() again
 
 ### todo next
 
@@ -119,6 +120,18 @@ https://nutmeg.io has app. All stuff served over https AWS.
 What's important is that for a first-time visitor to nutmeg.io it's incredibly easy to both log in and see info
 
 Also, presumably want to redirect http://nutmeg.io to https://nutmeg.io. Is an exception possible for option 2a? Probably.
+
+## collaboration
+
+`uid-nutid` is a global identifier for a note - easy to reach in firebase too.
+
+Shared notes have an owner but then some collection like `collab/uid/` is a list of uid-nutids with that uid has access too (to keep permissions might have to do something hackier)
+
+The sample notes should be ones shared from my own store.
+
+Deleting a shared note just removes it from your store. (any way to get it back? eh low priority, can always be re-invited by owner)
+
+How to handle tags? Maybe show others' tags for it faded, but you can click on them to add them to your own tags for the thing.
 
 ### cloud storage
 
