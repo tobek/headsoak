@@ -524,6 +524,15 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       console.log("tag "+tag.id+" ("+tag.name+") has been deleted");
     },
 
+    editTag: function(tag) {
+      var newName = prompt("Enter a new name for this tag");
+      if (newName) {
+        tag.name = newName;
+        $s.digest.tags[tag.id] = tag;
+        console.log("tag "+tag.id+"'s name updated to "+tag.name);
+      }
+    },
+
     /* call whenever a tag is updated
      * 1: updates `modified`
      * 2: TODO: updateNutInIndex() too, but only if name changed? when added/removed from nut, nutUpdated() gets called which will reindex those nuts. need to have convention of where index gets updated when tag entirely deleted

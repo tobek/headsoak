@@ -119,5 +119,8 @@ block content
                 input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';" nm-focus="t.creatingTag")
             li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev track by $index", ng-click="q.query = tag.name + ' '", ng-hide="!tag")
               {{tag.name}} ({{tag.docs ? tag.docs.length : 0}}) 
-              a.delete(ng-click="t.deleteTag(tag); $event.stopPropagation()")
-                i.fa.fa-trash-o
+              span.icons
+                a.delete(ng-click="t.deleteTag(tag); $event.stopPropagation()")
+                  i.fa.fa-trash-o
+                a.edit(ng-click="t.editTag(tag); $event.stopPropagation()")
+                  i.fa.fa-pencil

@@ -214,12 +214,13 @@ form {
     margin: 3px;
     float: left;
 
-    &:hover .delete { display: inline-block; }
-    .delete {
+    &:hover .icons { display: inline-block; }
+    .icons {
       display: none;
       font-size: 75%;
-      color: #999;
-      &:hover {color: #DDD;}
+      a { color: #999; }
+      a:hover {color: #DDD;}
+      a + a { margin-left: 3px; } // all a's except the first one
     }
   }
 }
