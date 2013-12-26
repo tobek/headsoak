@@ -90,7 +90,8 @@ block content
                 span.tag(ng-show="addingTag")
                   form(ng-submit="n.addTagNameToNut(n.addTagName, nut); n.addTagName = ''; addingTag=false")
                     input(type="text", ng-model="n.addTagName", ng-blur="n.addTagName = ''; addingTag=false;", nm-focus="addingTag")
-                span.tag(ng-repeat="tagId in nut.tags") {{t.tags[tagId].name}} 
+                span.tag(ng-repeat="tagId in nut.tags") {{t.tags[tagId].name}}
+                  span.tracker {{t.tags[tagId].tracker ? nut.id : ''}} 
                   span.delete(ng-click="n.removeTagIdFromNut(tagId, nut.id)")
                     i.fa.fa-times
               div.clear
@@ -112,8 +113,9 @@ block content
             label Sort by 
               select(ng-model='t.sortBy', ng-options='o as o.name for o in t.sortOpts')
           input(type="text", placeholder="search")
+          i.fa.fa-cog.show-tag-options(ng-click="showOptions = showOptions ? false : true", ng-class="{on: showOptions}")
 
-          ul#taglist
+          ul#taglist(ng-class="{'show-options': showOptions}")
             li.tag.new-tag(ng-show="t.creatingTag")
               form(ng-submit="t.createTag({name: t.createTagName})")
                 input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';" nm-focus="t.creatingTag")
@@ -124,3 +126,8 @@ block content
                   i.fa.fa-trash-o
                 a.edit(ng-click="t.editTag(tag); $event.stopPropagation()")
                   i.fa.fa-pencil
+                a.toggle(ng-class="{on: tag.tracker}", ng-click="tag.tracker = tag.tracker ? null : true; t.tagUpdated(tag.id); $event.stopPropagation()")
+                  i.fa.fa-eye
+                a.toggle(ng-class="{on: tag.private}", ng-click="tag.private = tag.private ? null : true; t.tagUpdated(tag.id); $event.stopPropagation()")
+                  i.fa.fa-lock
+                  i.fa.fa-unlock-alt

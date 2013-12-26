@@ -212,19 +212,42 @@ form {
   > * {
     margin: 3px;
   }
-  .tag {
-    font-size: 80%;
-    padding: 4px;
-    margin: 3px;
-    float: left;
+  .show-tag-options {
+    margin-left: 3px;
+    vertical-align: middle;
+    cursor: pointer;
+    color: #BBB;
+    &:hover { color: #DDD; }
+    &:active { color: #FFF; }
+    &.on { color: @new-hover; }
+    &.on:hover { color: lighten(@new-hover, 20%); }
+  }
+  #taglist {
+    &.show-options .icons { display: inline-block !important; }
+    .tag {
+      font-size: 80%;
+      padding: 4px;
+      margin: 3px;
+      float: left;
 
-    &:hover .icons { display: inline-block; }
-    .icons {
-      display: none;
-      font-size: 75%;
-      a { color: #999; }
-      a:hover {color: #DDD;}
-      a + a { margin-left: 3px; } // all a's except the first one
+      &:hover .icons { display: inline-block; }
+      .icons {
+        display: none;
+        font-size: 75%;
+
+        a + a { margin-left: 3px; } // all a's except the first one
+        a { color: #999; }
+        a:hover {color: #DDD !important;}
+        a:active { color: white !important; }
+
+        a.toggle { color: #555; }
+        a.toggle.on { color: red; }
+        a.toggle.on:hover { color: lighten(red, 20%) !important; }
+
+        a.toggle .fa-lock { display: none; }
+        a.toggle.on .fa-lock { display: inline-block; }
+        a.toggle.on .fa-unlock-alt { display: none; }
+      }
     }
   }
 }
@@ -331,6 +354,9 @@ form {
       .tag {
         padding: 2px;
         margin: 2px;
+        .tracker {
+          color: cyan;
+        }
         .delete {
           color: gray;
           cursor: pointer;
