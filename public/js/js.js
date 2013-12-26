@@ -553,9 +553,10 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       }
       else {
         console.log("init: fetched user data");
+        // i believe these may be arrays or Objects depending on the indices:
         $s.n.nuts = data.val().nuts;
         $s.t.tags = data.val().tags;
-        $s.n.nuts.forEach($s.n.updateNutInIndex);
+        angular.forEach($s.n.nuts, $s.n.updateNutInIndex);
       }
 
       // sync to server every 5s
