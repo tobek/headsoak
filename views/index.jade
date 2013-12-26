@@ -91,7 +91,7 @@ block content
                   form(ng-submit="n.addTagNameToNut(n.addTagName, nut); n.addTagName = ''; addingTag=false")
                     input(type="text", ng-model="n.addTagName", ng-blur="n.addTagName = ''; addingTag=false;", nm-focus="addingTag")
                 span.tag(ng-repeat="tagId in nut.tags") {{t.tags[tagId].name}} 
-                  span.delete(ng-click="n.removeTagIdFromNut(nut.id, tagId)")
+                  span.delete(ng-click="n.removeTagIdFromNut(tagId, nut.id)")
                     i.fa.fa-times
               div.clear
               div.tawrapper

@@ -185,7 +185,8 @@ var ngApp = angular.module('nutmeg', [])
   };
 
   $s.config = {
-    maxHistory: 1 // how many revisions of each nut to save. 1 is minimum - we use it in nutBodyUpdated
+    maxHistory: 1, // how many revisions of each nut to save. 1 is minimum - we need it in nutBodyUpdated
+    tagChangesChangeNutModifiedTimestamp: false
   };
 
   $s.lunr = lunr(function () {
@@ -256,13 +257,15 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     },
 
     deleteNut: function(nut) {
-      if (!confirm("Are you sure you want to delete this not? This can't be undone.")) {
+      if (!confirm("Are you sure you want to delete this note? This can't be undone.")) {
         return;
       }
 
+      // keep tag docs consistent
+      // see comment on deleteTag() for why we need slice()
       if (nut.tags) {
-        nut.tags.forEach(function(tagId) {
-          $s.n.removeTagIdFromNut(nut.id, tagId);
+        nut.tags.slice().forEach(function(tagId) {
+          $s.n.removeTagIdFromNut(tagId, nut.id);
         });
       }
 
@@ -282,11 +285,13 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
      * can accept nut id OR nut
      * is called, for instance, via nutBodyUpdated when textarea blurs or when tags added/removed
      * 1: updates history. NOTE: we store entire state of nut in each history entry. could instead store just changes if this gets to big. NOTE 2: by the time this is called, the view and model have already changed. we are actually storing the CHANGED version in history.
-     * 2: updates `modified`
+     * 2: updates `modified` (default - pass false in as second param to disable)
      * 3: updates lunr index
      * 4: adds to digest to be saved to firebase
      */
-    nutUpdated: function(nut) {
+    nutUpdated: function(nut, updateModified) {
+      updateModified = defaultFor(updateModified, true);
+
       $s.digest.status = 'unsynced';
 
       if (typeof nut == "number") {
@@ -300,7 +305,9 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         nut.history.shift(); // chuck the oldest one
       }
 
-      nut.modified = (new Date).getTime()
+      if (updateModified) {
+        nut.modified = (new Date).getTime()
+      }
 
       $s.digest.nuts[nut.id] = nut;
       // $s.digest.push(); // don't update right away. sometimes nutUpdated() can be called multiple times during one operation
@@ -360,20 +367,17 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       // add tag id to nut if it's not already there
       if ($s.n.nuts[nutId].tags.indexOf(tagId) === -1 ) {
         $s.n.nuts[nutId].tags.push(tagId);
-        $s.n.nuts[nutId].modified = (new Date).getTime();
       }
       // add nut id to tag if it's not already there
       if (!$s.t.tags[tagId].docs) $s.t.tags[tagId].docs = []; // firebase doesn't store empty arrays/objects, so create it here
       if ($s.t.tags[tagId].docs.indexOf(nutId) === -1 ) {
         $s.t.tags[tagId].docs.push(nutId);
-        $s.t.tags[tagId].modified = (new Date).getTime();
       }
-      $s.t.tags[tagId].modified = (new Date).getTime();
 
-      this.nutUpdated(nutId); // update history, modified, index
+      this.nutUpdated(nutId, $s.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
       $s.t.tagUpdated(tagId);
     },
-    removeTagIdFromNut: function(nutId, tagId) { // TODO test
+    removeTagIdFromNut: function(tagId, nutId) {
       console.log("removing tag "+tagId+" from nut "+nutId);
       // remove tag id from nut (check it's there first so we don't splice out -1)
       if ($s.n.nuts[nutId].tags.indexOf(tagId) !== -1 ) {
@@ -383,9 +387,8 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       if ($s.t.tags[tagId].docs.indexOf(nutId) !== -1 ) {
         $s.t.tags[tagId].docs.splice($s.t.tags[tagId].docs.indexOf(nutId), 1);
       }
-      $s.t.tags[tagId].modified = (new Date).getTime();
 
-      this.nutUpdated(nutId); // update history, modified, index
+      this.nutUpdated(nutId, $s.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
       $s.t.tagUpdated(tagId);
     },
 
@@ -501,24 +504,15 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       return -1;
     },
 
-    /* probably to change name or color
-     * TODO this may be unnecessary with data binding + tagUpdated()
-     */
-    updateTag: function(id, tag) {
-      return; // TODO
-      // any new values will overwrite the old:
-      this.tags[id] = $.extend(this.tags[id], tag);
-      this.tagUpdated(id);
-    },
-
     deleteTag: function(tag) {
       if (!confirm('Are you sure you want to delete the tag "'+tag.name+'"? This can\'t be undone.')) {
         return;
       }
 
+      // tag.docs.slice() returns a duplicate of the array. necessary, because removeTagIdFromNut() splices tag.docs - if we splice out stuff while iterating over it with forEach, we won't iterate over them all
       if (tag.docs) {
-        tag.docs.forEach(function(docId) {
-          $s.n.removeTagIdFromNut(docId, tag.id);
+        tag.docs.slice().forEach(function(docId) {
+          $s.n.removeTagIdFromNut(tag.id, docId);
         });
       }
 
@@ -540,7 +534,6 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       console.log("tag "+id+" has been updated")
       this.tags[id].modified = (new Date).getTime();
       $s.digest.tags[id] = this.tags[id];
-      $s.digest.push();
     }
 
   };

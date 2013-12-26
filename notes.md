@@ -12,35 +12,32 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo before jello launch
 
+- right now, a note is only saved after you click outside of the textarea. that means if you're typing something and directly close the window, you'll lose changes
+  - right now nutbodyupdatedwhatever only happens on blur. also happen on an interval while has focus, but make sure it only does stuff if it changed (think function does that already)
+- have option (probably default) to only resort when you hit dropdown or refresh. insta-resorting on modified or adding tags is annoying
+  - maybe have n.sortBy be null or something, and to sort just change it to something, $apply(), then change it back to null?
+- autofocus nut after creating new one duh
+- when you click on a nut tag, prepend it to the query?
 - sync status
   - $s.$apply() after changing? see if that's necessary, do fiddle, etc.
   - tooltip to show status
   - move to unsynced when typing? best way to deal with this
   - maybe pulsing glow?
 - figure out why digest.push() doesn't work on nut blur
-- when you click on a nut tag, prepend it to the query?
 - create account by invite only + 'request invite' button
   - basically give a unique URL like nutmeg.io?invite=somethingcute
   - with login, if invite query param exists and matches again firebase array i've hand-added, then show create account (nicer welcome message) and then update firebase with this invite being taken
 - permissions for reading nuts
-- right now, a note is only saved after you click outside of the textarea. that means if you're typing something and directly close the window, you'll lose changes
-  - right now nutbodyupdatedwhatever only happens on blur. also happen on an interval while has focus, but make sure it only does stuff if it changed (think function does that already)
 - build script: script that exports jade to public/index.html and uses pushup to upload public folder to s3
-- have option (probably default) to only resort when you hit dropdown or refresh. insta-resorting on modified or adding tags is annoying
-  - maybe have n.sortBy be null or something, and to sort just change it to something, $apply(), then change it back to null?
 - splash page with a tiny bit of info and demo
   - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
 - nutmeg name on login screen
-- autofocus nut after creating new one duh
 
 ### todo next
 
 - do something about font sizes (proportional to screen yes, try out on a) 1920x1080, b) smaller screen, c) tablet, d) phone)
 - autosizeAllNuts() should happen basically whenever the nuts displayed changes. i manually did it on create and delete nut, but even needs to be done whenever sort order changes - whether by using choosing a different sort-by, or by changing stuff (modifying, adding tag) such that a notes position changes
 - configurable max-height for nuts but automatically expands otherwise
-- check feedback script: when server starts, check firebase, if not null, email it and then delete it. make as standalone script too, can run on startup
-  - could also keep running with on() listener
-  - git!
 - investigate and fix lunr weirdness
 - shortcuts
   - new nut
@@ -68,7 +65,8 @@ ece hdd reassigned (?) sectors 32768
   - could be like tags, all the way to the right, with icon (clock for modified, star explosion for created?) instead of delete tag button
   - hover or right click menu would let you not show/show times
 - right now i always display everything in #nuts. this could get unwieldy. this will have to be fixed in various places
-- add config to control how tags are sorted on an individual nut? alphabetical, most/fewest tags, recently/oldest modified/created
+- add config to control how tags are sorted on an individual nut? alphabetical, most/fewest docs, recently/oldest modified/created
+  - highlighting the tags with the fewest docs is cool. generic ones like "quote" or "list" may be less salient. could maybe change opacity or size accordingly
 - ctrl+z. how best to implement? ask on quora or stack overflow? stack of actions, each with a `do` and `undo` action you can execute (`do` needed so you can redo). e.g. if you do deleteTag(4), you'd push an object onto the stack with `do` = `deleteTag(4)` and `undo` = `createTag({whatever})` having saved the state of the tag and all the docs it was on
 - consider browser spell-checking - option to disable? if we switch to div content editable, will we lose it?
 - export (in the future all of these should optionally apply to current selection)
@@ -107,6 +105,7 @@ ece hdd reassigned (?) sectors 32768
 - nutmeg should remember your current location. details:
   - is your location just your query, or the query and where you've scrolled to?
   - should your location be remembered across all machines, or should each machine locally remember its location? configurable?
+- should + button for new tag on nut (and resulting field) be on the right side, so that it's always in the same place?
 
 ## info site
 
@@ -279,6 +278,8 @@ http://www.visuwords.com/
 - related-to OR same-kind should be automatic for siblings
 
 Parent tags create sort of implicit tags. Any related tags really. Some way to show tags by their distance from a note. Lower is closer. Immediate tags have distance 1. (Maybe peripheral tags could be used here, see lab). Maybe all tags 1 relationship away would have distance 2. Though maybe different relationships have different distances. Like children of a tag on a nut maybe distance infinity, parents distance +1. Sibling might also be different +1 or maybe +2 or more. Obviously [NRW (not right word) inductive recursive] BLUBBER
+
+**Tag stacks**: Maybe have an option to show, on each tag on each note, an optional number of ancestors. They could peak out from under the tags, at an angle, like a stack, maybe where you could see half of the text, enough to read (and hover shows it). That way like the `Ece` tag would have the `people` tag behind it. Maybe could show this in tag browser too.
 
 ### tag prepositions OR per-nut tag relationships OR nut-tag connections OR *tag clarifiers*
 
