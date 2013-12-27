@@ -338,6 +338,7 @@ form {
         max-height: 200px;
         outline: none;
         overflow: auto;
+        font-family: 'Lucida Grande', sans-serif;
       }
       textarea:focus {
         background-color: @textareaFocusBG;
@@ -509,17 +510,17 @@ form {
 /* =Tooltip
 ----------------------------------------------- */
 
-a.tooltip {
+.tooltip {
   position: relative;
 }
-a.tooltip:after, a.tooltip:before {
+.tooltip:after, .tooltip:before {
   /* At time of this creation, only Fx4 doing pseduo transitions */
   -webkit-transition: all 0.2s ease;
   -moz-transition   : all 0.2s ease;
-  opacity: 0;
+  display: none;
   position: absolute;
 }
-a.tooltip:after {
+.tooltip:after {
   white-space: pre-line;
   content: attr(data-tooltip);
   bottom: 100%;
@@ -530,13 +531,13 @@ a.tooltip:after {
   -webkit-border-radius: 5px;
   -moz-border-radius   : 5px;
   border-radius        : 5px;
-}
-a.time.tooltip:after {
-  left: -100px;
   font-size: 13px;
+}
+.time.tooltip:after {
+  left: -100px;
   width: 230px;
 }
-a.tooltip:before {
+.tooltip:before {
   content: "";
   width: 0;
   height: 0;
@@ -546,8 +547,11 @@ a.tooltip:before {
   left: -85%;
   bottom: 70%;
 }
-a.tooltip:hover:after, a.tooltip:hover:before {
-  opacity: 1;
+.tooltip:hover:after, .tooltip:hover:before {
+  display: block;
+}
+#sync-status.tooltip:hover:before {
+  display: none;
 }
 
 /* =Misc

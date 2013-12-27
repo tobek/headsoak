@@ -45,7 +45,7 @@ block content
 
   div#nonmodal(ng-class="{modalon: m.modal, loggedout: !u.loggedIn}", ng-cloak)
 
-    span#sync-status(ng-class="digest.status")
+    span#sync-status.tooltip(ng-class="digest.status", ng-attr-data-tooltip="Notes {{digest.status}}")
       i.cloud.fa.fa-cloud-upload
 
     div#menu
@@ -99,7 +99,7 @@ block content
                     i.fa.fa-clock-o
                   a.delete(ng-click="n.deleteNut(nut)")
                     i.fa.fa-trash-o
-                textarea(ng-model="nut.body", ng-blur="n.nutBodyUpdated(nut)", ng-keydown="n.autosizeNut($event.target)")
+                textarea(ng-model="nut.body", ng-blur="n.nutBodyUpdated(nut)", ng-keydown="digest.status='unsynced'; n.autosizeNut($event.target)")
 
       div#right
         div#tagContainer
