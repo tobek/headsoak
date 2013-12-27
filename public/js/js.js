@@ -3,74 +3,6 @@
 // https://github.com/andyet/ConsoleDummy.js
 (function(b){function c(){}for(var d="error,group,groupCollapsed,groupEnd,log,time,timeEnd,warn".split(","),a;a=d.pop();)b[a]=b[a]||c})(window.console=window.console||{});
 
-var oldUnusedFuncs = {
-  // will trigger an entire re-index for lunr
-  loadData: function() {
-    console.time("loadData");
-    $.extend(this, JSON.parse(localStorage.nm));
-    this.reIndex();
-    // this.face.populate();
-    console.timeEnd("loadData");
-  },
-
-  reIndex: function() {
-    console.time("re-indexing");
-    _.each(_.keys(this.store), this.updateNutInIndex, this);
-    console.timeEnd("re-indexing");
-  },
-
-  saveData: function() {
-    console.time("saveData");
-    var saveMe = {};
-    this.dataFields.map(function(field) {
-      saveMe[field] = this[field];
-    }, this);
-    localStorage.nm = JSON.stringify(saveMe);
-    console.timeEnd("saveData");
-  }
-};
-
-var saveInterval; // window.setInterval timer for saving
-var nutDiff; // stores body of nut to check if it's changed - only saves if it has
-
-$(function() { // upon DOM having loaded
-
-  // focus events: when you focus on a nut, start autosaving until you unfocus
-
-/*
-  // attach to #nuts so that even new textareas within it trigger this
-  $("#nuts").on("focusin", "textarea", function(e){
-    var nut = $(e.target).parents(".nut");
-    console.log("focus on " + nut.attr("data-id"));
-    nutDiff = nut.children("textarea").val();
-    saveInterval = window.setInterval(function() {
-      nm.face.saveNut(nut);
-    }, 5000);
-  });
-
-  $("#nuts").on("focusout", "textarea", function(e){
-    var nut = $(e.target).parents(".nut");
-    console.log("focus out from " + nut.attr("data-id"));
-    nm.face.saveNut(nut);
-    clearInterval(saveInterval);
-  });
-
-  $("#nuts").on("keydown", "textarea", nm.face.autosizeNut);
-  */
-
-  // ==== AUTOCOMPLETE ==== //
-
-  /*
-  // TODO store this better and auto update with tags updating
-  $( "#query input" ).autocomplete({
-    source: _.map(nm.tags, function(tag) { return tag.name; })
-  });
-  */
-
-});
-
-// ANGULARFIRE
-
 var ngApp = angular.module('nutmeg', [])
 .controller('Nutmeg', ['$scope', '$timeout', function($s, $timeout) {
 
@@ -87,8 +19,9 @@ var ngApp = angular.module('nutmeg', [])
     push: function() {
       if ($s.digest.pushHackCounter > 0) return;
       this.status = 'syncing';
+
       // note: this is called from various places - we can't rely on 'this' so use $s.digest
-      console.log("digest: checking for changes to push");
+      // console.log("digest: checking for changes to push");
       var updated = false;
       ['config', 'nuts', 'tags'].forEach(function(field) {
         if (Object.keys($s.digest[field]).length != 0) {
@@ -100,6 +33,10 @@ var ngApp = angular.module('nutmeg', [])
 
       if (updated) {
         console.log("digest: changes found, pushing");
+      }
+      else {
+        this.status = 'synced';
+        $timeout(function(){$s.$apply();}); // HACK: otherwise cloud icon doesn't seem to change after status gets set to synced
       }
     },
     pushHackCounter: 0, // HACK instead of figuring out how to get Firebase update() to return promises for $q.all(), or instead of using jQuery deferreds. this counter is incremented when we invoke update on Firebase ref, decremented when callback happens - if we reach 0, we're done. i think the worst-case scenario is that cb is called really quickly, so we go from 0-1-0-1-0 instead of 0-1-2-1-0, but that's kind of okay
@@ -298,7 +235,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
     /* call whenever a nut is updated
      * can accept nut id OR nut
-     * is called, for instance, via nutBodyUpdated when textarea blurs or when tags added/removed
+     * is called, for instance, via nutBlur when textarea blurs or when tags added/removed
      * 1: updates history. NOTE: we store entire state of nut in each history entry. could instead store just changes if this gets to big. NOTE 2: by the time this is called, the view and model have already changed. we are actually storing the CHANGED version in history.
      * 2: updates `modified` (default - pass false in as second param to disable)
      * 3: updates lunr index
@@ -325,20 +262,36 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       }
 
       $s.digest.nuts[nut.id] = nut;
-      // $s.digest.push(); // don't update right away. sometimes nutUpdated() can be called multiple times during one operation
 
       this.updateNutInIndex(nut);
 
       console.log("nut "+nut.id+" has been updated");
     },
 
-    nutBodyUpdated: function(nut) {
-      if (nut.body == nut.history[nut.history.length-1].body) {
-        console.log("nut "+nut.id+" lost focus but unchanged");
+    nutSaver: null, // to hold what setInterval() returns
+    nutWas: "", // this will store what the currently-focused nut body was before focusing, in order to determine, upon blurring, whether anything has changed
+    maybeUpdateNut: function(nut) {
+      if ($s.n.nutWas == nut.body) {
+        console.log("nut unchanged");
+        // so this nut hasn't changed, only problem is that, due to action on textarea keypress, digest.status == "unsynced" even if they just used arrow keys or typed then undid
+        $s.digest.push(); // if there are no changes in the digest, this won't do anything except set digest.status to "synced". if there ARE changes in the digest, it'll push them a second or two earlier than we otherwise would have
       }
       else {
-        this.nutUpdated(nut);
+        console.log("nut changed!");
+        $s.n.nutUpdated(nut);
+        $s.n.nutWas = nut.body;
       }
+    },
+    nutFocus: function(nut) {
+      console.log("focus on "+nut.id);
+      this.nutWas = nut.body;
+      this.nutSaver = setInterval(function() {
+        $s.n.maybeUpdateNut(nut);
+      }, 1000);
+    },
+    nutBlur: function(nut) {
+      this.maybeUpdateNut(nut);
+      clearInterval(this.nutSaver);
     },
 
     updateNutInIndex: function(nut) {
@@ -585,9 +538,9 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         $s.n.nuts.forEach($s.n.updateNutInIndex);
       }
 
-      // sync to server every 5s
+      // sync to server every 4s
       // if there are no changes this does nothing, so that's fine
-      $s.u.digestInterval = window.setInterval($s.digest.push, 5000);
+      $s.u.digestInterval = window.setInterval($s.digest.push, 4000);
       window.beforeunload = $s.digest.push; // TODO since push() isn't synchronous, probably won't work. TODO: check if there is an issue with "this"
 
       cb();

@@ -99,7 +99,7 @@ block content
                     i.fa.fa-clock-o
                   a.delete(ng-click="n.deleteNut(nut)")
                     i.fa.fa-trash-o
-                textarea(ng-model="nut.body", ng-blur="n.nutBodyUpdated(nut)", ng-keydown="digest.status='unsynced'; n.autosizeNut($event.target)")
+                textarea(ng-model="nut.body", ng-focus="n.nutFocus(nut)", ng-blur="n.nutBlur(nut)", ng-keydown="digest.status='unsynced'; n.autosizeNut($event.target)")
 
       div#right
         div#tagContainer

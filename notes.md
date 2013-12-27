@@ -12,13 +12,10 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo before jello launch
 
-- right now, a note is only saved after you click outside of the textarea. that means if you're typing something and directly close the window, you'll lose changes
-  - right now nutbodyupdatedwhatever only happens on blur. also happen on an interval while has focus, but make sure it only does stuff if it changed (think function does that already)
 - have option (probably default) to only resort when you hit dropdown or refresh. insta-resorting on modified or adding tags is annoying
   - maybe have n.sortBy be null or something, and to sort just change it to something, $apply(), then change it back to null?
 - autofocus nut after creating new one duh
 - when you click on a nut tag, prepend it to the query?
-- figure out why digest.push() doesn't work on nut blur
 - create account by invite only + 'request invite' button
   - basically give a unique URL like nutmeg.io?invite=somethingcute
   - with login, if invite query param exists and matches again firebase array i've hand-added, then show create account (nicer welcome message) and then update firebase with this invite being taken
