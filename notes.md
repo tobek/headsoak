@@ -14,7 +14,6 @@ ece hdd reassigned (?) sectors 32768
 
 - have option (probably default) to only resort when you hit dropdown or refresh. insta-resorting on modified or adding tags is annoying
   - maybe have n.sortBy be null or something, and to sort just change it to something, $apply(), then change it back to null?
-- autofocus nut after creating new one duh
 - create account by invite only + 'request invite' button
   - basically give a unique URL like nutmeg.io?invite=somethingcute
   - with login, if invite query param exists and matches again firebase array i've hand-added, then show create account (nicer welcome message) and then update firebase with this invite being taken
@@ -27,6 +26,7 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo next
 
+- search bar should take remaining width left by dynamic nutmeg icon and X
 - issues connecting to firebase
   - somehow listen for connection/disconnection and alert user and change cloud to red
   - maybe set some time in `push()`, and if `pushHackCounter>0` in `push()`, and if some length of time has passed (like 30s) then alert user and suggest something

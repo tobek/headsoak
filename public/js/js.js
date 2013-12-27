@@ -179,7 +179,6 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       var newId = this.nuts.length; // will be index of new nut
       this.nuts.push(_.defaults(nut, {
         // default nut:
-        // title: null,
         body: null,
         tags: [], // array of tag ids
         created: (new Date).getTime(),
@@ -198,7 +197,10 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       this.nutUpdated(newId); // saves state in history, updates index, etc.
       console.log("new nut "+newId+" has been created");
 
-      $timeout($s.n.autosizeAllNuts, 0);
+      $timeout(function() {
+        angular.element("#nut-"+newId+"-ta")[0].focus();
+        $s.n.autosizeAllNuts();
+      }, 0);
 
       return newId;
     },
@@ -494,7 +496,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     },
 
     editTag: function(tag) {
-      var newName = prompt("Enter a new name for this tag");
+      var newName = prompt("Enter a new name for this tag", tag.name);
       if (newName) {
         tag.name = newName;
         console.log("tag "+tag.id+"'s name updated to "+tag.name);
