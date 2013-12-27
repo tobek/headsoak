@@ -20,7 +20,6 @@ ece hdd reassigned (?) sectors 32768
   - basically give a unique URL like nutmeg.io?invite=somethingcute
   - with login, if invite query param exists and matches again firebase array i've hand-added, then show create account (nicer welcome message) and then update firebase with this invite being taken
 - permissions for reading nuts
-- build script: script that exports jade to public/index.html and uses pushup to upload public folder to s3
 - splash page with a tiny bit of info and demo
   - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
 - nutmeg name on login screen
