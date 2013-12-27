@@ -12,11 +12,11 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo before jello launch
 
+- 90% width tags?
+- smaller nut tags and margin
+- deal with height
 - have option (probably default) to only resort when you hit dropdown or refresh. insta-resorting on modified or adding tags is annoying
   - maybe have n.sortBy be null or something, and to sort just change it to something, $apply(), then change it back to null?
-- create account by invite only + 'request invite' button
-  - basically give a unique URL like nutmeg.io?invite=somethingcute
-  - with login, if invite query param exists and matches again firebase array i've hand-added, then show create account (nicer welcome message) and then update firebase with this invite being taken
 - splash page with a tiny bit of info and demo
   - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
 - nutmeg name on login screen
@@ -25,6 +25,10 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo next
 
+- tags in the query: shouldn't be plain text, and should be added to new notes (configurable?)
+- create account by invite only + 'request invite' button
+  - basically give a unique URL like nutmeg.io?invite=somethingcute
+  - with login, if invite query param exists and matches again firebase array i've hand-added, then show create account (nicer welcome message) and then update firebase with this invite being taken
 - search bar should take remaining width left by dynamic nutmeg icon and X
 - issues connecting to firebase
   - somehow listen for connection/disconnection and alert user and change cloud to red
@@ -105,6 +109,7 @@ ece hdd reassigned (?) sectors 32768
   - is your location just your query, or the query and where you've scrolled to?
   - should your location be remembered across all machines, or should each machine locally remember its location? configurable?
 - should + button for new tag on nut (and resulting field) be on the right side, so that it's always in the same place?
+- SHARING: should it be on a per-note basis, per-tag basis, or both? both might get messy
 
 #### private notes/tags
 

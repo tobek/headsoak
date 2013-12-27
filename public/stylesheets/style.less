@@ -97,40 +97,44 @@ select, option, label {
   font-size: 75%;
 }
 
-/* 
- * synced: green
- * unsynced but will sync soon: yellow bobbing
- * syncing: same (this state only ever lasts a fraction of a second)
- * disconnected: red
- */
 
-@keyframes cloud-sync-pulse {
-  0% { margin-bottom: 5px; animation-timing-function: ease; }
-  100% { margin-bottom: 0px; animation-timing-function: ease; }
-}
-@-webkit-keyframes cloud-sync-pulse {
-  0% { margin-bottom: 5px; animation-timing-function: ease; }
-  100% { margin-bottom: 0px; animation-timing-function: ease; }
+a {
+  color: #00B7FF;
+  cursor: pointer;
 }
 
-#sync-status {
-  position: fixed;
-  bottom: 2px;
-  left: 2px;
-  z-index: 10;
-  .cloud {
-    text-shadow: 0px 0px 5px black;
-    -webkit-transition: all ease 0.25s;
-    transition: all ease 0.25s;
-  }
-  &.synced .cloud { color: green; }
-  &.disconnected .cloud { color: red; }
-  &.syncing .cloud, &.unsynced .cloud {
-    color: yellow;
-    animation: cloud-sync-pulse 1s infinite alternate;
-    -webkit-animation: cloud-sync-pulse 1s infinite alternate;
-  }
+.tag {
+  background-color: @tagBG;
+  color: @tagColor;
+  display: inline-block;
+  clear: both;
+  cursor: pointer;
 }
+#left .tag:hover{
+  background-color: @nutTagHover;
+}
+#right .tag:hover{
+  background-color: @tagHover;
+}
+
+form {
+  display: inline;
+}
+
+#title {
+  color: black;
+  margin: 5px;
+  display: inline-block;
+}
+
+#main {
+  margin: 0 2% 2% 2%;
+  height: 96%;
+  width: 96%;
+}
+
+/* =MENU
+----------------------------------------------- */
 
 #menu {
   position: fixed;
@@ -138,6 +142,9 @@ select, option, label {
   right: 0px;
   cursor: pointer;
   text-align: right;
+  &:hover ul {
+    display: block;
+  }
   ul {
     display: none;
     margin-right: 10px;
@@ -157,54 +164,151 @@ select, option, label {
     background-color: fade(lighten(@menuHover, 25%), 75%);
   }
 }
-#menu:hover ul {
-  display: block;
-}
-#title {
-  color: black;
-  margin: 5px;
-  display: inline-block;
+
+/* =QUERY BAR
+----------------------------------------------- */
+
+#query {
+  margin-bottom: 0.5%;
+  position: relative;
+  background-color: rgba(255,255,255,0.7);
+  width: 100%;
+  border-bottom: 5px solid @mainbg;
+  input {
+    -moz-box-shadow: none;
+    border: none;
+    font-size: 100%;
+    width: 94%;
+    background: none;
+    padding: 3px 0;
+    margin: 0 0 0 1%;
+    vertical-align: middle;
+  }
+  input:focus {
+    -moz-box-shadow: none;
+  }
+  img {
+    height: auto;
+    width: 2%;
+    float: left;
+  }
+  .clear-query {
+    padding: 3px 0;
+    width: 2%;
+    float: right;
+    cursor: pointer;
+    color: #666;
+  }
+  .clear-query:hover {
+    color: black;
+  }
 }
 
-a {
-  color: #00B7FF;
-  cursor: pointer;
-}
-
-#main {
-  margin: 0 2% 2% 2%;
-  height: 96%;
-  width: 96%;
-}
+/* =LEFT (NUTS)
+----------------------------------------------- */
 
 #left {
   float: left;
   width: 85%;
   background-color: fade(@mainbg, 85%);
+
+  #nuts {
+    text-align: center;
+    .header {
+      > span {
+        float: left;
+        margin: 5px 5px 1% 5px;
+      }
+      .sort {
+        float: right;
+      }
+    }
+    #new-nut {
+      font-size: 105%;
+      margin-top: 8px;
+      margin-left: 8px;
+      cursor: pointer;
+    }
+    #new-nut:hover {
+      color: @new-hover;
+    }
+    .nut {
+      float: left;
+      clear: both;
+      width: 100%;
+      margin: 0 0 10px 0;
+      .tawrapper {
+        display: inline-block;
+        position: relative;
+        width: 97%;
+        max-width: 97%;
+        margin: auto;
+        textarea {
+          background-color: @textareaBG;
+          width: 100%;
+          max-height: 200px;
+          outline: none;
+          overflow: auto;
+          font-family: 'Lucida Grande', sans-serif;
+        }
+        textarea:focus {
+          background-color: @textareaFocusBG;
+        }
+        .icons {
+          display: none;
+          position: absolute;
+          top: 3px;
+          right: 0;
+          z-index: 5;
+          font-size: 75%;
+          a {
+            margin-left: 3px;
+            color: #777;
+            &:hover { color: #333; }
+          }
+        }
+        &:hover .icons{ display: inline-block; }
+      }
+      .tags {
+        float: right;
+        margin-right: 1.5%;
+        font-size: 80%;
+        .fa {
+          font-size: 70%;
+        }
+        .tag {
+          padding: 2px;
+          margin: 2px;
+          .tracker {
+            color: cyan;
+          }
+          .delete {
+            color: gray;
+            cursor: pointer;
+          }
+          .delete:hover {
+            color: black; 
+          }
+        }
+        .add-tag-to-nut {
+          cursor: pointer;
+        }
+        .add-tag-to-nut:hover {
+          color: @new-hover;
+        }
+      }
+    }
+  }
 }
 
-.tag {
-  background-color: @tagBG;
-  color: @tagColor;
-  display: inline-block;
-  clear: both;
-  cursor: pointer;
-}
-#left .tag:hover{
-  background-color: @nutTagHover;
-}
-#right .tag:hover{
-  background-color: @tagHover;
-}
+
+/* =RIGHT (TAGS)
+----------------------------------------------- */
 
 .tab-hidden {
   #right {
     display: none;
   }
-}
-
-form {
-  display: inline;
 }
 
 #right {
@@ -260,130 +364,6 @@ form {
         a.toggle .fa-lock { display: none; }
         a.toggle.on .fa-lock { display: inline-block; }
         a.toggle.on .fa-unlock-alt { display: none; }
-      }
-    }
-  }
-}
-
-#query {
-  margin-bottom: 0.5%;
-  position: relative;
-  background-color: rgba(255,255,255,0.7);
-  width: 100%;
-  border-bottom: 5px solid @mainbg;
-  input {
-    -moz-box-shadow: none;
-    border: none;
-    font-size: 100%;
-    width: 94%;
-    background: none;
-    padding: 3px 0;
-    margin: 0 0 0 1%;
-    vertical-align: middle;
-  }
-  input:focus {
-    -moz-box-shadow: none;
-  }
-  img {
-    height: auto;
-    width: 2%;
-    float: left;
-  }
-  .clear-query {
-    padding: 3px 0;
-    width: 2%;
-    float: right;
-    cursor: pointer;
-    color: #666;
-  }
-  .clear-query:hover {
-    color: black;
-  }
-}
-
-#nuts {
-  text-align: center;
-  .header {
-    > span {
-      float: left;
-      margin: 5px 5px 1% 5px;
-    }
-    .sort {
-      float: right;
-    }
-  }
-  #new-nut {
-    font-size: 105%;
-    margin-top: 8px;
-    margin-left: 8px;
-    cursor: pointer;
-  }
-  #new-nut:hover {
-    color: @new-hover;
-  }
-  .nut {
-    float: left;
-    clear: both;
-    width: 100%;
-    margin: 0 0 10px 0;
-    .tawrapper {
-      display: inline-block;
-      position: relative;
-      width: 97%;
-      max-width: 97%;
-      margin: auto;
-      textarea {
-        background-color: @textareaBG;
-        width: 100%;
-        max-height: 200px;
-        outline: none;
-        overflow: auto;
-        font-family: 'Lucida Grande', sans-serif;
-      }
-      textarea:focus {
-        background-color: @textareaFocusBG;
-      }
-      .icons {
-        display: none;
-        position: absolute;
-        top: 3px;
-        right: 0;
-        z-index: 5;
-        font-size: 75%;
-        a {
-          margin-left: 3px;
-          color: #777;
-          &:hover { color: #333; }
-        }
-      }
-      &:hover .icons{ display: inline-block; }
-    }
-    .tags {
-      float: right;
-      margin-right: 1.5%;
-      font-size: 80%;
-      .fa {
-        font-size: 70%;
-      }
-      .tag {
-        padding: 2px;
-        margin: 2px;
-        .tracker {
-          color: cyan;
-        }
-        .delete {
-          color: gray;
-          cursor: pointer;
-        }
-        .delete:hover {
-          color: black; 
-        }
-      }
-      .add-tag-to-nut {
-        cursor: pointer;
-      }
-      .add-tag-to-nut:hover {
-        color: @new-hover;
       }
     }
   }
@@ -505,6 +485,44 @@ form {
 
   }
 
+}
+
+/* =Sync status icon
+----------------------------------------------- */
+
+/* 
+ * synced: green
+ * unsynced but will sync soon: yellow bobbing
+ * syncing: same (this state only ever lasts a fraction of a second)
+ * disconnected: red
+ */
+
+@keyframes cloud-sync-pulse {
+  0% { margin-bottom: 5px; animation-timing-function: ease; }
+  100% { margin-bottom: 0px; animation-timing-function: ease; }
+}
+@-webkit-keyframes cloud-sync-pulse {
+  0% { margin-bottom: 5px; animation-timing-function: ease; }
+  100% { margin-bottom: 0px; animation-timing-function: ease; }
+}
+
+#sync-status {
+  position: fixed;
+  bottom: 2px;
+  left: 2px;
+  z-index: 10;
+  .cloud {
+    text-shadow: 0px 0px 5px black;
+    -webkit-transition: all ease 0.25s;
+    transition: all ease 0.25s;
+  }
+  &.synced .cloud { color: green; }
+  &.disconnected .cloud { color: red; }
+  &.syncing .cloud, &.unsynced .cloud {
+    color: yellow;
+    animation: cloud-sync-pulse 1s infinite alternate;
+    -webkit-animation: cloud-sync-pulse 1s infinite alternate;
+  }
 }
 
 /* =Tooltip
