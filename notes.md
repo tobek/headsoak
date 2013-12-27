@@ -15,7 +15,6 @@ ece hdd reassigned (?) sectors 32768
 - have option (probably default) to only resort when you hit dropdown or refresh. insta-resorting on modified or adding tags is annoying
   - maybe have n.sortBy be null or something, and to sort just change it to something, $apply(), then change it back to null?
 - autofocus nut after creating new one duh
-- when you click on a nut tag, prepend it to the query?
 - create account by invite only + 'request invite' button
   - basically give a unique URL like nutmeg.io?invite=somethingcute
   - with login, if invite query param exists and matches again firebase array i've hand-added, then show create account (nicer welcome message) and then update firebase with this invite being taken
@@ -32,6 +31,9 @@ ece hdd reassigned (?) sectors 32768
   - somehow listen for connection/disconnection and alert user and change cloud to red
   - maybe set some time in `push()`, and if `pushHackCounter>0` in `push()`, and if some length of time has passed (like 30s) then alert user and suggest something
 - FAQ
+- new features feature
+  - "changes to nutmeg since you last logged in" with "never show me this again"
+  - basically array of strings that are features. part of account info is last feature # you've seen
 - forgot password link that resets
 - do something about font sizes (proportional to screen yes, try out on a) 1920x1080, b) smaller screen, c) tablet, d) phone)
 - autosizeAllNuts() should happen basically whenever the nuts displayed changes. i manually did it on create and delete nut, but even needs to be done whenever sort order changes - whether by using choosing a different sort-by, or by changing stuff (modifying, adding tag) such that a notes position changes

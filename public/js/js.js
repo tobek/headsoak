@@ -283,13 +283,14 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       }
     },
     nutFocus: function(nut) {
-      console.log("focus on "+nut.id);
+      console.log("focus on nut "+nut.id);
       this.nutWas = nut.body;
       this.nutSaver = setInterval(function() {
         $s.n.maybeUpdateNut(nut);
       }, 1000);
     },
     nutBlur: function(nut) {
+      console.log("blur on nut "+nut.id);
       this.maybeUpdateNut(nut);
       clearInterval(this.nutSaver);
     },

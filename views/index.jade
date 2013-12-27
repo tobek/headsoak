@@ -88,7 +88,8 @@ block content
                 span.tag(ng-show="addingTag")
                   form(ng-submit="n.addTagNameToNut(n.addTagName, nut); n.addTagName = ''; addingTag=false")
                     input(type="text", ng-model="n.addTagName", ng-blur="n.addTagName = ''; addingTag=false;", nm-focus="addingTag")
-                span.tag(ng-repeat="tagId in nut.tags") {{t.tags[tagId].name}}
+                span.tag(ng-repeat="tagId in nut.tags",  ng-click="q.query = q.query == t.tags[tagId].name + ' ' ? '' : t.tags[tagId].name + ' '")
+                  | {{t.tags[tagId].name}}
                   span.tracker {{t.tags[tagId].tracker ? nut.id : ''}} 
                   span.delete(ng-click="n.removeTagIdFromNut(tagId, nut.id)")
                     i.fa.fa-times
@@ -111,14 +112,14 @@ block content
             label Sort by 
               select(ng-model='t.sortBy', ng-options='o as o.name for o in t.sortOpts')
           input(type="text", placeholder="search")
-          i.fa.fa-cog.show-tag-options(ng-click="showOptions = showOptions ? false : true", ng-class="{on: showOptions}")
+          i.fa.fa-cogs.show-tag-options(ng-click="showOptions = showOptions ? false : true", ng-class="{on: showOptions}")
 
           ul#taglist(ng-class="{'show-options': showOptions}")
             li.tag.new-tag(ng-show="t.creatingTag")
               form(ng-submit="t.createTag({name: t.createTagName})")
                 input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';" nm-focus="t.creatingTag")
-            li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev track by $index", ng-click="q.query = tag.name + ' '", ng-hide="!tag")
-              {{tag.name}} ({{tag.docs ? tag.docs.length : 0}}) 
+            li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev track by $index", ng-click="q.query = q.query == tag.name + ' ' ? '' : tag.name + ' '", ng-hide="!tag")
+              | {{tag.name}} ({{tag.docs ? tag.docs.length : 0}}) 
               span.icons
                 a.delete(ng-click="t.deleteTag(tag); $event.stopPropagation()")
                   i.fa.fa-trash-o
