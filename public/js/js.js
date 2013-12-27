@@ -197,6 +197,8 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       this.nutUpdated(newId); // saves state in history, updates index, etc.
       console.log("new nut "+newId+" has been created");
 
+      $s.q.showNuts.push(newId); // ensures that the new nut is visible even if we have a search query open
+
       $timeout(function() {
         angular.element("#nut-"+newId+"-ta")[0].focus();
         $s.n.autosizeAllNuts();
