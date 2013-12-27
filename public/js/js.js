@@ -82,16 +82,18 @@ var ngApp = angular.module('nutmeg', [])
       this.config = {};
       this.nuts = {};
       this.tags = {};
-      this.status = 'synced';
+      this.status = 'synced'; // options: synced, syncing, unsynced, disconnected
     },
     push: function() {
+      if ($s.digest.pushHackCounter > 0) return;
       this.status = 'syncing';
       // note: this is called from various places - we can't rely on 'this' so use $s.digest
       console.log("digest: checking for changes to push");
       var updated = false;
-      ['config', 'nuts', 'tags'].map(function(field) {
+      ['config', 'nuts', 'tags'].forEach(function(field) {
         if (Object.keys($s.digest[field]).length != 0) {
-          $s.ref.child(field).update(angular.copy($s.digest[field]));
+          $s.digest.pushHackCounter++;
+          $s.ref.child(field).update(angular.copy($s.digest[field]), $s.digest.pushCB);
           updated = true;
         }
       });
@@ -99,8 +101,21 @@ var ngApp = angular.module('nutmeg', [])
       if (updated) {
         console.log("digest: changes found, pushing");
       }
-      // TODO: onComplete callback after both to say push successful - this only called after sync to servers: https://www.firebase.com/docs/javascript/firebase/update.html
-      $s.digest.reset();
+    },
+    pushHackCounter: 0, // HACK instead of figuring out how to get Firebase update() to return promises for $q.all(), or instead of using jQuery deferreds. this counter is incremented when we invoke update on Firebase ref, decremented when callback happens - if we reach 0, we're done. i think the worst-case scenario is that cb is called really quickly, so we go from 0-1-0-1-0 instead of 0-1-2-1-0, but that's kind of okay
+    pushCB: function(err) {
+      $s.digest.pushHackCounter--;
+      if (err) {
+        alert("Error syncing your notes to the cloud! Some stuff may not have been saved. We'll keep trying though. You can email me at toby@nutmeg.io if this keeps happening. Tell me what this error says: " + JSON.stringify(err));
+        this.status = 'disconnected';
+        $timeout(function(){$s.$apply();});
+        return;
+      }
+      if ($s.digest.pushHackCounter == 0) {
+        console.log("digest: changes pushed successfully");
+        $s.digest.reset();
+        $timeout(function(){$s.$apply();}); // HACK: otherwise cloud icon doesn't seem to change after status gets set to synced
+      }
     }
   }
   $s.digest.reset(); // also initializes

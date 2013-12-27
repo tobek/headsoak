@@ -99,24 +99,37 @@ select, option, label {
 
 /* 
  * synced: green
- * unsynced but will sync soon: yello
- * syncing: yellow spinning
- * disconnceted: red
+ * unsynced but will sync soon: yellow bobbing
+ * syncing: same (this state only ever lasts a fraction of a second)
+ * disconnected: red
  */
+
+@keyframes cloud-sync-pulse {
+  0% { margin-bottom: 5px; animation-timing-function: ease; }
+  100% { margin-bottom: 0px; animation-timing-function: ease; }
+}
+@-webkit-keyframes cloud-sync-pulse {
+  0% { margin-bottom: 5px; animation-timing-function: ease; }
+  100% { margin-bottom: 0px; animation-timing-function: ease; }
+}
+
 #sync-status {
   position: fixed;
   bottom: 2px;
   left: 2px;
   z-index: 10;
-  .spinner {
-    display: none;
-    color: yellow;
+  .cloud {
+    text-shadow: 0px 0px 5px black;
+    -webkit-transition: all ease 0.25s;
+    transition: all ease 0.25s;
   }
-  &.syncing      .spinner { display: inline-block; }
-  &.syncing      .cloud { display: none; }
-  &.synced       .cloud { color: green; }
-  &.unsynced     .cloud { color: yellow; }
+  &.synced .cloud { color: green; }
   &.disconnected .cloud { color: red; }
+  &.syncing .cloud, &.unsynced .cloud {
+    color: yellow;
+    animation: cloud-sync-pulse 1s infinite alternate;
+    -webkit-animation: cloud-sync-pulse 1s infinite alternate;
+  }
 }
 
 #menu {

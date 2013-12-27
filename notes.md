@@ -37,6 +37,9 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo next
 
+- issues connecting to firebase
+  - somehow listen for connection/disconnection and alert user and change cloud to red
+  - maybe set some time in `push()`, and if `pushHackCounter>0` in `push()`, and if some length of time has passed (like 30s) then alert user and suggest something
 - FAQ
 - forgot password link that resets
 - do something about font sizes (proportional to screen yes, try out on a) 1920x1080, b) smaller screen, c) tablet, d) phone)
@@ -110,6 +113,18 @@ ece hdd reassigned (?) sectors 32768
   - is your location just your query, or the query and where you've scrolled to?
   - should your location be remembered across all machines, or should each machine locally remember its location? configurable?
 - should + button for new tag on nut (and resulting field) be on the right side, so that it's always in the same place?
+
+#### private notes/tags
+
+you need to be able to specify any tag as "private" (maybe have a default tag called "private" that already has this set). need to be able to do for any tags because, when unlocked, private tags shouldn't even show
+
+how to implement? need to actually set value on nut as well. maybe have n.checkPrivate(id) which loops through tags and makes sure it has the right value. this would need to get called whenever tags are added or removed from note
+
+also visually show on note? maybe icon you can click which is basically a shortcut for adding (creating if there is none) the "private" tag?
+
+specify time after last inactivity to log out of private mode
+
+where should the option to enter/leave private mode be? key icon next to new note icon or sort menu? in menu? shortcut clearly. need some visualization (big green key) of when it's on
 
 ## info site
 
