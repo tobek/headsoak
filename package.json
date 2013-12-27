@@ -1,21 +1,19 @@
 {
   "name": "nutmeg",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/tobek/Nutmeg.git"
+    "url": "https://bitbucket.org/tobyfox/nutmeg.git"
   },
   "scripts": {
     "start": "node app.js"
   },
   "dependencies": {
-    "async": "*",
     "express": "3.x",
-    "underscore": "*",
-    "less-middleware": "*",
     "jade": "*",
-    "mongodb": "*",
-    "mustache": "*"
+    "knox": "0.8.*",
+    "less-middleware": "*",
+    "wrench": "1.5.*"
   }
 }

@@ -36,14 +36,14 @@ require('dns').resolve('www.google.com', function(err) {
   if (err) { // not connected
     console.log("Not connected to Internet, will use local JS files");
     var scripts = [
-      "/js/jquery.min.js",
-      //"/js/jquery-ui.min.js",
-      "/js/underscore.min.js",
-      "/js/angular.min.js",
-      //"/js/angular-animate.min.js",
-      "/js/firebase.js",
-      //"/js/angularfire.min.js",
-      "/js/firebase-simple-login.js"
+      "/js/offline/jquery.min.js",
+      //"/js/offline/jquery-ui.min.js",
+      "/js/offline/underscore.min.js",
+      "/js/offline/angular.min.js",
+      //"/js/offline/angular-animate.min.js",
+      "/js/offline/firebase.js",
+      //"/js/offline/angularfire.min.js",
+      "/js/offline/firebase-simple-login.js"
     ];
   }
   else { // connected
