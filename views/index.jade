@@ -121,9 +121,9 @@ block content
             li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev track by $index", ng-click="q.query = q.query == tag.name + ' ' ? '' : tag.name + ' '", ng-hide="!tag")
               | {{tag.name}} ({{tag.docs ? tag.docs.length : 0}}) 
               span.icons
-                a.delete(ng-click="t.deleteTag(tag); $event.stopPropagation()")
+                a.delete(ng-click="$event.stopPropagation(); t.deleteTag(tag)")
                   i.fa.fa-trash-o
-                a.edit(ng-click="t.editTag(tag); $event.stopPropagation()")
+                a.edit(ng-click="$event.stopPropagation(); t.editTag(tag)")
                   i.fa.fa-pencil
                 a.toggle(ng-class="{on: tag.tracker}", ng-click="tag.tracker = tag.tracker ? null : true; t.tagUpdated(tag.id); $event.stopPropagation()")
                   i.fa.fa-eye

@@ -24,6 +24,7 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo next
 
+- roll back functionality in deploy.js. first GET, then create archive with date/time of deployment
 - listen to remote changes in Firebase (suggesting you've logged in elsewhere) and if detected, show popup saying that you've logged in and changed elsewhere, you gotta refresh or something
 - tags in the query: shouldn't be plain text, and should be added to new notes (configurable?)
 - create account by invite only + 'request invite' button

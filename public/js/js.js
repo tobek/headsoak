@@ -8,7 +8,7 @@ var ngApp = angular.module('nutmeg', [])
   
   $s.m = { modal: false };
 
-  // keeps track of changes. nuts and tags will map from id to object
+  // keeps track of changes. nuts and tags will map from id to reference to actual object nut/tag object in $s
   $s.digest = {
     reset: function() {
       this.config = {};
@@ -16,9 +16,12 @@ var ngApp = angular.module('nutmeg', [])
       this.tags = {};
       this.status = 'synced'; // options: synced, syncing, unsynced, disconnected
     },
+    // properties that should not be uploaded to firebase - map of field -> array of props
+    excludeProps: {
+      "nuts": ["sortVal"]
+    },
     push: function() {
       if ($s.digest.pushHackCounter > 0) return;
-      this.status = 'syncing';
 
       // note: this is called from various places - we can't rely on 'this' so use $s.digest
       // console.log("digest: checking for changes to push");
@@ -26,7 +29,20 @@ var ngApp = angular.module('nutmeg', [])
       ['config', 'nuts', 'tags'].forEach(function(field) {
         if (Object.keys($s.digest[field]).length != 0) {
           $s.digest.pushHackCounter++;
-          $s.ref.child(field).update(angular.copy($s.digest[field]), $s.digest.pushCB);
+          var dupe = angular.copy($s.digest[field]);
+
+          // now we have to go through every prop of every obj and strip out anything from excludeProps
+          if ($s.digest.excludeProps[field]) {
+            angular.forEach(dupe, function(obj){ // for every object...
+              if (!obj) return; // could be null: deleting the value from Firebase
+              $s.digest.excludeProps[field].forEach(function(prop) { // for every excludeProp...
+                if (obj[prop]) delete obj[prop];
+              });
+            });
+          }
+
+          $s.digest.status = 'syncing';
+          $s.ref.child(field).update(dupe, $s.digest.pushCB);
           updated = true;
         }
       });
@@ -360,11 +376,11 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     removeTagIdFromNut: function(tagId, nutId) {
       console.log("removing tag "+tagId+" from nut "+nutId);
       // remove tag id from nut (check it's there first so we don't splice out -1)
-      if ($s.n.nuts[nutId].tags.indexOf(tagId) !== -1 ) {
+      if ($s.n.nuts[nutId].tags && $s.n.nuts[nutId].tags.indexOf(tagId) !== -1 ) {
         $s.n.nuts[nutId].tags.splice($s.n.nuts[nutId].tags.indexOf(tagId), 1);
       }
       // you get it
-      if ($s.t.tags[tagId].docs.indexOf(nutId) !== -1 ) {
+      if ($s.t.tags[tagId].docs && $s.t.tags[tagId].docs.indexOf(nutId) !== -1 ) {
         $s.t.tags[tagId].docs.splice($s.t.tags[tagId].docs.indexOf(nutId), 1);
       }
 
@@ -569,15 +585,15 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     // load dummy data
     $s.t.createTags([{name: "quote"},{name: "sample notes"},{name: "futurism"}]);
     $s.n.createNuts([{
-      body: "\"There are six people living in space right now. There are people printing prototypes of human organs, and people printing nanowire tissue that will bond with human flesh and the human electrical system.\n\n\"We’ve photographed the shadow of a single atom. We’ve got robot legs controlled by brainwaves. Explorers have just stood in the deepest unsubmerged place in the world, a cave more than two kilometres under Abkhazia. NASA are getting ready to launch three satellites the size of coffee mugs, that will be controllable by mobile phone apps.\n\n\"Here’s another angle on vintage space: Voyager 1 is more than 11 billion miles away, and it’s run off 64K of computing power and an eight-track tape deck.\n\n\"The most basic mobile phone is in fact a communications device that shames all of science fiction, all the wrist radios and handheld communicators. Captain Kirk had to tune his fucking communicator and it couldn’t text or take a photo that he could stick a nice Polaroid filter on. Science fiction didn’t see the mobile phone coming. It certainly didn’t see the glowing glass windows many of us carry now, where we make amazing things happen by pointing at it with our fingers like goddamn wizards.\n\n\"...The central metaphor is magic. And perhaps magic seems an odd thing to bring up here, but magic and fiction are deeply entangled, and you are all now present at a séance for the future.\"\n\n- Warren Ellis, How to see the Future (http://www.warrenellis.com/?p=14314)",
+      body: "\"There are six people living in space right now. There are people printing prototypes of human organs, and people printing nanowire tissue that will bond with human flesh and the human electrical system.\n\n\"We’ve photographed the shadow of a single atom. We’ve got robot legs controlled by brainwaves. Explorers have just stood in the deepest unsubmerged place in the world, a cave more than two kilometres under Abkhazia. NASA are getting ready to launch three satellites the size of coffee mugs, that will be controllable by mobile phone apps.\n\n\"Here’s another angle on vintage space: Voyager 1 is more than 11 billion miles away, and it’s run off 64K of computing power and an eight-track tape deck.\n\n\"The most basic mobile phone is in fact a communications device that shames all of science fiction, all the wrist radios and handheld communicators. Captain Kirk had to tune his fucking communicator and it couldn’t text or take a photo that he could stick a nice Polaroid filter on. Science fiction didn’t see the mobile phone coming. It certainly didn’t see the glowing glass windows many of us carry now, where we make amazing things happen by pointing at it with our fingers like goddamn wizards.\n\n\"...The central metaphor is magic. And perhaps magic seems an odd thing to bring up here, but magic and fiction are deeply entangled, and you are all now present at a séance for the future.\"\n\n- Warren Ellis, [How to see the Future](http://www.warrenellis.com/?p=14314)",
       tags: [0,1,2]
     },
     {
-      body: "Here is my todo list of things to implement in Nutmeg in the very near future:\n\n- A million shortcuts\n- Fix weird font sizes\n- Responsive design: usable on all different sizes of devices\n- Any design at all\n- SSL\n- Tag autocomplete\n\nPotential avenues for future feature-bloat:\n\n- Tag jiggery\n  - (Auto-suggested) tag relationships, sequences, and modifiers\n  - Auto-tagging and  API for programmatic tagging - tagging based output of arbitrary functions, like...\n    - Classifiers trained on what you've tagged so far\n    - Sentiment analysis and other computational linguistics prestidigitation like unusual concentrations of domain-specific words\n    - # or % of regex matching lines\n    - Flesch Reading Ease test\n    - Whatever your little heart desires\n- Markdown, Vim, syntax highlighting, and WYSIWYG support\n- Customizable layout\n- Integration with...\n  - Email\n  - Instant messaging protocols\n- Shortcuts and visualizations for non-linear writing - think LaTeX meets [XMind](http://www.xmind.net/)\n- Plugin API and repository\n- Sharing and collaboration\n- Autodetecting (encouraging, formalizing, formatting) user-generated on-the-fly syntax\n- Media support\n- Life logging\n- Exporting, web-hooks, integration with IFTTT and Zapier\n- Legend/You Are Here minimap",
+      body: "Here is my todo list of things to implement in Nutmeg in the very near future:\n\n- A million shortcuts\n- Fix weird font sizes\n- Responsive design: usable on all different sizes of devices\n- Any design at all\n- SSL\n- Tag autocomplete\n- Private notes\n\nPotential avenues for future feature-bloat:\n\n- Tag jiggery\n  - (Auto-suggested) tag relationships, sequences, and modifiers\n  - Auto-tagging and  API for programmatic tagging - tagging based output of arbitrary functions, like...\n    - Classifiers trained on what you've tagged so far\n    - Sentiment analysis and other computational linguistics prestidigitation like unusual concentrations of domain-specific words\n    - # or % of lines matching given regex\n    - Flesch Reading Ease test\n    - Whatever your little heart desires\n- Markdown, Vim, syntax highlighting, and WYSIWYG support\n- Customizable layout\n- Integration with...\n  - Email\n  - Instant messaging protocols\n- Shortcuts and visualizations for non-linear writing - think LaTeX meets [XMind](http://www.xmind.net/)\n- Plugin API and repository\n- Sharing and collaboration\n- Autodetecting (encouraging, formalizing, visualizing) user-generated on-the-fly syntax\n- Media support\n- Life logging\n- Exporting, web-hooks, integration with: IFTTT, Zapier, WordPress...\n- Legend/You Are Here minimap",
       tags: [1]
     },
     {
-      body: "Hi, welcome to Nutmeg. These are your personal notes, accessible by you from anywhere. Here are some things you can do with Nutmeg:\n\n- Write notes\n- Tag notes\n- Everything is synced to the cloud within seconds: you write, it's saved\n- See and edit your notes from any device\n- Instant searching through your notes, by tag and by keyword\n\nYou can delete notes by hitting the trash can in the top right of each note. You can figure out how to edit and delete tags.\n\nNutmeg is under active development, so bear with me on any weirdness. In the menu in the lower right corner of the screen you can log out, and submit any bug reports, suggestions, or thoughts as feeback, which I hope you do.",
+      body: "Hi, welcome to Nutmeg. These are your personal notes, accessible by you from anywhere. Here are some things you can do with Nutmeg:\n\n- Write notes\n- Tag notes\n- Everything is synced to the cloud within seconds: you write, it's saved\n- See and edit your notes from any device\n- Instant searching through your notes, by tag and by keyword\n\nYou can delete notes by hitting the trash can in the top right of each note. You can figure out how to edit and delete tags.\n\nNutmeg is under active development, so bear with me on any weirdness. In the menu in the lower right corner of the screen you can log out, and submit any bug reports, suggestions, or thoughts as feedback, which I hope you do.",
       tags: [1]
     }]);
   }
