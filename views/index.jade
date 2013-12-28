@@ -5,6 +5,7 @@ block content
   //- only remove modal on click if logged in - otherwise we're closing the login window on a blank screen
   div#modalclickoff(ng-click="!u.loggedIn || (m.modal = false)", ng-show="m.modal")
   div#modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal}", ng-click="!u.loggedIn || (m.modal = false)")
+    h1#title(ng-show="!u.loggedIn") nutmeg
     div#circle-holder
       a#close-modal(ng-click="m.modal = false", ng-show="u.loggedIn") x
       div.circle(ng-click="$event.stopPropagation()")
@@ -59,7 +60,7 @@ block content
         li.incomplete(ng-show="u.loggedIn") account
         li(ng-show="u.loggedIn", ng-click="u.auth.logout()") log out
         li(ng-show="!u.loggedIn", ng-click="m.modal='login'") log in
-      h1#title nutmeg
+      div#menutitle nutmeg
 
     div#query
       img(src="/img/nutmeg40h.png")
@@ -101,7 +102,7 @@ block content
                     i.fa.fa-clock-o
                   a.delete(ng-click="n.deleteNut(nut)")
                     i.fa.fa-trash-o
-                textarea(id="nut-{{nut.id}}-ta", ng-model="nut.body", ng-focus="n.nutFocus(nut)", ng-blur="n.nutBlur(nut)", ng-keydown="digest.status='unsynced'; n.autosizeNut($event.target)")
+                textarea(id="nut-{{nut.id}}-ta", ng-model="nut.body", ng-focus="n.nutFocus(nut)", ng-blur="n.nutBlur(nut)", ng-change="digest.status='unsynced'; n.autosizeNutById(nut.id)")
 
       div#right
         div#tagContainer

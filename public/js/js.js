@@ -248,7 +248,8 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         created: (new Date).getTime(),
         modified: (new Date).getTime(),
         history: [], // an array of nuts, last is the latest
-        id: newId
+        id: newId,
+        sortVal: -1 * newId // ensures that this new nut is always sorted first until stuff is re-sorted
       }));
 
       if (nut.tags && nut.tags.length > 0) {
