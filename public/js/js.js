@@ -169,7 +169,9 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       {field: "tags.length", rev: true, name: "Most Tags"},
       {field: "tags.length", rev: false, name: "Fewest tags"}
       // TODO: query match strength
+      // NOTE: changes to the fields might require changes to the nutSort filter
     ],
+    doSort: true, // when we start off we need to sort
 
     /* 
      * merge passed nut with defaults and store it
@@ -197,7 +199,9 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       this.nutUpdated(newId); // saves state in history, updates index, etc.
       console.log("new nut "+newId+" has been created");
 
-      $s.q.showNuts.push(newId); // ensures that the new nut is visible even if we have a search query open
+      if ($s.q.showNuts) {
+        $s.q.showNuts.push(newId); // ensures that the new nut is visible even if we have a search query open
+      }
 
       $timeout(function() {
         angular.element("#nut-"+newId+"-ta")[0].focus();
@@ -381,7 +385,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
   };
 
-  $s.n.sortBy = $s.n.sortOpts[0]; // set initial value for nut sort select dropdown
+  $s.n.sortBy = $s.n.sortOpts[0]; // set initial value for nut sort select dropdown TODO: this should be remembered and drawn from config
 
   // ==== QUERY STUFF ==== //
 
@@ -569,7 +573,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       tags: [0,1,2]
     },
     {
-      body: "Here is my todo list of things to implement in Nutmeg in the very near future:\n\n- Chill out on the insta-sorting\n- Improve syncing behavior (sync while typing, pull remote changes without refresh)\n- A million shortcuts\n- Fix weird font sizes\n- Responsive design: usable on all different sizes of devices\n- Any design at all\n- SSL\n- Tag autocomplete\n\nPotential avenues for future feature-bloat:\n\n- Tag jiggery\n  - (Auto-suggested) tag relationships, sequences, and modifiers\n  - Auto-tagging and  API for programmatic tagging - tagging based output of arbitrary functions, like...\n    - Classifiers trained on what you've tagged so far\n    - Sentiment analysis and other computational linguistics prestidigitation like unusual concentrations of domain-specific words\n    - # or % of regex matching lines\n    - Flesch Reading Ease test\n    - Whatever your little heart desires\n- Markdown, Vim, syntax highlighting, and WYSIWYG support\n- Customizable layout\n- Integration with...\n  - Email\n  - Instant messaging protocols\n- Shortcuts and visualizations for non-linear writing - think LaTeX meets [XMind](http://www.xmind.net/)\n- Plugin API and repository\n- Sharing and collaboration\n- Autodetecting (encouraging, formalizing, formatting) user-generated on-the-fly syntax\n- Media support\n- Life logging\n- Exporting, web-hooks, integration with IFTTT and Zapier\n- Legend/You Are Here minimap",
+      body: "Here is my todo list of things to implement in Nutmeg in the very near future:\n\n- A million shortcuts\n- Fix weird font sizes\n- Responsive design: usable on all different sizes of devices\n- Any design at all\n- SSL\n- Tag autocomplete\n\nPotential avenues for future feature-bloat:\n\n- Tag jiggery\n  - (Auto-suggested) tag relationships, sequences, and modifiers\n  - Auto-tagging and  API for programmatic tagging - tagging based output of arbitrary functions, like...\n    - Classifiers trained on what you've tagged so far\n    - Sentiment analysis and other computational linguistics prestidigitation like unusual concentrations of domain-specific words\n    - # or % of regex matching lines\n    - Flesch Reading Ease test\n    - Whatever your little heart desires\n- Markdown, Vim, syntax highlighting, and WYSIWYG support\n- Customizable layout\n- Integration with...\n  - Email\n  - Instant messaging protocols\n- Shortcuts and visualizations for non-linear writing - think LaTeX meets [XMind](http://www.xmind.net/)\n- Plugin API and repository\n- Sharing and collaboration\n- Autodetecting (encouraging, formalizing, formatting) user-generated on-the-fly syntax\n- Media support\n- Life logging\n- Exporting, web-hooks, integration with IFTTT and Zapier\n- Legend/You Are Here minimap",
       tags: [1]
     },
     {
@@ -618,6 +622,46 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       // TODO: hack, i don't understand angular enough to do this properly. use a service?
       angular.element($("body")).scope().q.doQuery(newQ);
     });
+  };
+})
+.filter('nutSort', function() {
+  /* I'M SORRY FOR THIS GIANT HACK LET ME EXPLAIN
+   * 
+   * basically we don't want sort order updating *while* you're editing some
+   * property that we're sorting on. e.g. you're sorting on recently modified
+   * and as you start typing, that note shoots to the top.
+   * 
+   * we're using this custom filter to sort. this filter is basically just
+   * `orderBy:n.sortBy.field:n.sortBy.rev` except that it only actually does
+   * something if doSort is true (and then sets it back to false). doSort
+   * is only set to true when the sort dropdown changes. voila.
+   */
+  return function(items, doSort, sortOpt) {
+    if (!doSort || !items || !sortOpt) return items;
+    console.log("sorting...");
+
+    if (sortOpt.field.indexOf(".") !== -1 ) { // e.g. field might be "tags.length"
+      var fields = sortOpt.field.split(".");
+      items.sort(function(a, b) {
+        var aVal = a[fields[0]] ? a[fields[0]][fields[1]] : 0;
+        var bVal = b[fields[0]] ? b[fields[0]][fields[1]] : 0;
+        return aVal - bVal;
+      })
+    }
+    else { // e.g. "created"
+      items.sort(function(a, b) {
+        return a[sortOpt.field] - b[sortOpt.field];
+      })
+    }
+    // NOTE: this is a more generic way to deal with this indexing of sub-objects by dot-notation string: http://stackoverflow.com/a/6394168
+
+    if (sortOpt.rev) items.reverse();
+
+    // as if this was not hacky enough already:
+    angular.element($("body")).scope().n.doSort = false;
+    setTimeout(angular.element($("body")).scope().n.autosizeAllNuts, 5);
+
+    return items;
   };
 });
 

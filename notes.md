@@ -14,9 +14,8 @@ ece hdd reassigned (?) sectors 32768
 
 - 90% width tags?
 - deal with height
-- have option (probably default) to only resort when you hit dropdown or refresh. insta-resorting on modified or adding tags is annoying
-  - maybe have n.sortBy be null or something, and to sort just change it to something, $apply(), then change it back to null?
 - don't always set to unsynced on keypress - check that it's not arrow keys etc (what else?)
+- do re-sort when you select same sort option
 - splash page with a tiny bit of info and demo
   - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
 - nutmeg name on login screen
@@ -25,6 +24,7 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo next
 
+- listen to remote changes in Firebase (suggesting you've logged in elsewhere) and if detected, show popup saying that you've logged in and changed elsewhere, you gotta refresh or something
 - tags in the query: shouldn't be plain text, and should be added to new notes (configurable?)
 - create account by invite only + 'request invite' button
   - basically give a unique URL like nutmeg.io?invite=somethingcute
@@ -39,7 +39,6 @@ ece hdd reassigned (?) sectors 32768
   - basically array of strings that are features. part of account info is last feature # you've seen
 - forgot password link that resets
 - do something about font sizes (proportional to screen yes, try out on a) 1920x1080, b) smaller screen, c) tablet, d) phone)
-- autosizeAllNuts() should happen basically whenever the nuts displayed changes. i manually did it on create and delete nut, but even needs to be done whenever sort order changes - whether by using choosing a different sort-by, or by changing stuff (modifying, adding tag) such that a notes position changes
 - configurable max-height for nuts but automatically expands otherwise
 - investigate and fix lunr weirdness
 - shortcuts
