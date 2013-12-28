@@ -133,7 +133,7 @@ var ngApp = angular.module('nutmeg', [])
         $s.u.user = user;
         init(user.uid, function() {
           console.log("init callback")
-          $timeout($s.n.autosizeAllNuts, 0);
+          $s.n.assignSortVals($s.n.sortBy);
           $s.m.modal = false;
           $s.u.loggedIn = true;
           $s.u.loading = false; // used for login/createaccount loading spinner
@@ -187,7 +187,53 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       // TODO: query match strength
       // NOTE: changes to the fields might require changes to the nutSort filter
     ],
-    doSort: true, // when we start off we need to sort
+
+    /* go through all $s.n.nuts and assign property sortVal 
+     * 
+     * basically we don't want sort order updating *while* you're editing some
+     * property that we're sorting on. e.g. you're sorting on recently modified
+     * and as you start typing, that note shoots to the top.
+     *
+     * procedure:
+     *
+     * 1. make a copy of nuts
+     * 2. sort it
+     * 3. iterate through and assign $s.n.nuts[id].sortVal = index in sorted copy
+     */
+    assignSortVals: function(sortOpt) {
+      if (!$s.n.nuts) return; // sometimes we get called before anything has been set up
+      console.log("sorting...");
+
+      // STEP 1
+      var dupe = angular.copy($s.n.nuts);
+
+      // STEP 2
+      if (sortOpt.field.indexOf(".") !== -1 ) { // e.g. field might be "tags.length"
+        var fields = sortOpt.field.split(".");
+        dupe.sort(function(a, b) {
+          var aVal = a[fields[0]] ? a[fields[0]][fields[1]] : 0;
+          var bVal = b[fields[0]] ? b[fields[0]][fields[1]] : 0;
+          return aVal - bVal;
+        })
+      }
+      else { // e.g. "created"
+        dupe.sort(function(a, b) {
+          return a[sortOpt.field] - b[sortOpt.field];
+        })
+      }
+      // NOTE: this is a more generic way to deal with this indexing of sub-objects by dot-notation string: http://stackoverflow.com/a/6394168
+
+      if (sortOpt.rev) dupe.reverse();
+
+      // STEP 3
+      dupe.forEach(function(sortedNut, sortedIndex) {
+        if (sortedNut) { // some will be undefiend
+          $s.n.nuts[sortedNut.id].sortVal = sortedIndex;
+        }
+      })
+
+      setTimeout(angular.element($("body")).scope().n.autosizeAllNuts, 5);
+    },
 
     /* 
      * merge passed nut with defaults and store it
@@ -638,46 +684,6 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       // TODO: hack, i don't understand angular enough to do this properly. use a service?
       angular.element($("body")).scope().q.doQuery(newQ);
     });
-  };
-})
-.filter('nutSort', function() {
-  /* I'M SORRY FOR THIS GIANT HACK LET ME EXPLAIN
-   * 
-   * basically we don't want sort order updating *while* you're editing some
-   * property that we're sorting on. e.g. you're sorting on recently modified
-   * and as you start typing, that note shoots to the top.
-   * 
-   * we're using this custom filter to sort. this filter is basically just
-   * `orderBy:n.sortBy.field:n.sortBy.rev` except that it only actually does
-   * something if doSort is true (and then sets it back to false). doSort
-   * is only set to true when the sort dropdown changes. voila.
-   */
-  return function(items, doSort, sortOpt) {
-    if (!doSort || !items || !sortOpt) return items;
-    console.log("sorting...");
-
-    if (sortOpt.field.indexOf(".") !== -1 ) { // e.g. field might be "tags.length"
-      var fields = sortOpt.field.split(".");
-      items.sort(function(a, b) {
-        var aVal = a[fields[0]] ? a[fields[0]][fields[1]] : 0;
-        var bVal = b[fields[0]] ? b[fields[0]][fields[1]] : 0;
-        return aVal - bVal;
-      })
-    }
-    else { // e.g. "created"
-      items.sort(function(a, b) {
-        return a[sortOpt.field] - b[sortOpt.field];
-      })
-    }
-    // NOTE: this is a more generic way to deal with this indexing of sub-objects by dot-notation string: http://stackoverflow.com/a/6394168
-
-    if (sortOpt.rev) items.reverse();
-
-    // as if this was not hacky enough already:
-    angular.element($("body")).scope().n.doSort = false;
-    setTimeout(angular.element($("body")).scope().n.autosizeAllNuts, 5);
-
-    return items;
   };
 });
 

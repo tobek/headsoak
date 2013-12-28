@@ -77,11 +77,12 @@ block content
               i.fa.fa-plus
             span.sort
               label Sort by 
-                select#nut-sort-select(ng-change='n.doSort = true', ng-model='n.sortBy', ng-options='o as o.name for o in n.sortOpts')
+                select#nut-sort-select(ng-change='n.assignSortVals(n.sortBy)', ng-model='n.sortBy', ng-options='o as o.name for o in n.sortOpts')
 
           ul
-            //- ng-show="nut && [...]" to avoid showing undefined nuts (happens when deleting nuts and resulting sparse arrays) NOTE: maybe should pass this to doSort filter instead
-            li.nut(ng-repeat="nut in n.nuts | nutSort:n.doSort:n.sortBy track by $index", ng-show="nut && (q.showAll || q.showNuts.indexOf(nut.id) !== -1)")
+            //- ng-show="nut && [...]" to avoid showing undefined nuts (happens when deleting nuts and resulting sparse arrays) and to filter by query
+            //- NOTE: maybe should let n.assignSortVals() handle both, and ng-show="nut.sortVal"
+            li.nut(ng-repeat="nut in n.nuts | orderBy:'sortVal' track by $index", ng-show="nut && (q.showAll || q.showNuts.indexOf(nut.id) !== -1)")
               div.tags
                 span.add-tag-to-nut(ng-click="addingTag=true;")
                   i.fa.fa-plus &nbsp;
