@@ -13,8 +13,7 @@ ece hdd reassigned (?) sectors 32768
 ### todo before jello launch
 
 - 90% width tags?
-- deal with height
-- don't always set to unsynced on keypress - check that it's not arrow keys etc (what else?)
+- deal with textarea height
 - do re-sort when you select same sort option
 - splash page with a tiny bit of info and demo
   - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
@@ -24,6 +23,7 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo next
 
+- on init, some sign that your notes are loading
 - roll back functionality in deploy.js. first GET, then create archive with date/time of deployment
 - listen to remote changes in Firebase (suggesting you've logged in elsewhere) and if detected, show popup saying that you've logged in and changed elsewhere, you gotta refresh or something
 - tags in the query: shouldn't be plain text, and should be added to new notes (configurable?)

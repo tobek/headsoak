@@ -436,11 +436,17 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
     autosizeAllNuts: function() {
       angular.element(".nut textarea").each(function(i, ta){
-        $s.n.autosizeNut(ta);
+        $s.n.autosizeNutByEl(ta);
       });
     },
 
-    autosizeNut: function(el) {
+    // hack, needed because ngChange doesn't pass element
+    autosizeNutById: function(id) {
+      this.autosizeNutByEl(angular.element("#nut-"+id+"-ta")[0]);
+    },
+
+    autosizeNutByEl: function(el) {
+      if (!el) return;
       el.style.height = "";
       el.style.height = el.scrollHeight + 'px';
     }
