@@ -5,7 +5,7 @@
 
 var ngApp = angular.module('nutmeg', [])
 .controller('Nutmeg', ['$scope', '$timeout', function($s, $timeout) {
-
+  
   $s.m = { modal: false };
 
   // keeps track of changes. nuts and tags will map from id to object
@@ -34,7 +34,7 @@ var ngApp = angular.module('nutmeg', [])
       if (updated) {
         console.log("digest: changes found, pushing");
       }
-      else {
+      else if (this.status != 'synced') {
         this.status = 'synced';
         $timeout(function(){$s.$apply();}); // HACK: otherwise cloud icon doesn't seem to change after status gets set to synced
       }
@@ -274,11 +274,14 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
     nutSaver: null, // to hold what setInterval() returns
     nutWas: "", // this will store what the currently-focused nut body was before focusing, in order to determine, upon blurring, whether anything has changed
-    maybeUpdateNut: function(nut) {
+    maybeUpdateNut: function(nut, blurred) {
       if ($s.n.nutWas == nut.body) {
         console.log("nut unchanged");
-        // so this nut hasn't changed, only problem is that, due to action on textarea keypress, digest.status == "unsynced" even if they just used arrow keys or typed then undid
-        $s.digest.push(); // if there are no changes in the digest, this won't do anything except set digest.status to "synced". if there ARE changes in the digest, it'll push them a second or two earlier than we otherwise would have
+
+        if (blurred) {
+          // so this nut hasn't changed, only problem is that, due to action on textarea keypress, digest.status == "unsynced" even if they just used arrow keys or typed then undid. however, we can't just set digest.status to "synced", because maybe there are pending changes so that would be a lie
+          $s.digest.push(); // if there are no changes in the digest, this won't do anything except set digest.status to "synced". if there ARE changes in the digest, it'll push them a second or two earlier than we otherwise would have
+        }
       }
       else {
         console.log("nut changed!");
@@ -295,7 +298,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     },
     nutBlur: function(nut) {
       console.log("blur on nut "+nut.id);
-      this.maybeUpdateNut(nut);
+      this.maybeUpdateNut(nut, true);
       clearInterval(this.nutSaver);
     },
 

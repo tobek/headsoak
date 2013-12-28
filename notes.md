@@ -16,6 +16,7 @@ ece hdd reassigned (?) sectors 32768
 - deal with height
 - have option (probably default) to only resort when you hit dropdown or refresh. insta-resorting on modified or adding tags is annoying
   - maybe have n.sortBy be null or something, and to sort just change it to something, $apply(), then change it back to null?
+- don't always set to unsynced on keypress - check that it's not arrow keys etc (what else?)
 - splash page with a tiny bit of info and demo
   - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
 - nutmeg name on login screen
