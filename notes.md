@@ -13,7 +13,6 @@ ece hdd reassigned (?) sectors 32768
 ### todo before jello launch
 
 - 90% width tags?
-- smaller nut tags and margin
 - deal with height
 - have option (probably default) to only resort when you hit dropdown or refresh. insta-resorting on modified or adding tags is annoying
   - maybe have n.sortBy be null or something, and to sort just change it to something, $apply(), then change it back to null?
