@@ -43,6 +43,12 @@ block content
             p.loader(ng-show="u.loading")
               img(src="/img/loader-white.gif")
 
+        div(ng-show="m.modal == 'alert'")
+          h3 {{m.modalTitle}}
+          div(ng-bind-html="m.modalBody")
+          div.button-holder
+            input(type="submit", value="{{m.modalOK}}", ng-click="m.modal = false")
+
 
   div#nonmodal(ng-class="{modalon: m.modal, loggedout: !u.loggedIn}", ng-cloak)
 

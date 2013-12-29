@@ -96,9 +96,6 @@ ece hdd reassigned (?) sectors 32768
 - deal with nuts and tags being sparse arrays full of undefineds for each thing you've deleted. `track by $index` fixes duplicates in ng-repeat, but entries still show up in the DOM but are just hidden with ng-hide="!nut". kind of ugly.
   - might help https://github.com/angular/angular.js/issues/1286
 - esc exits modal
-- dynamically vertical center the contents of modal .circle
-  - var h = angular.element(".circle div")[2].scrollHeight
-  - angular.element(".circle div")[2].style['margin-top'] = "-86px"
 
 ## QUESTIONS
 

@@ -4,9 +4,25 @@
 (function(b){function c(){}for(var d="error,group,groupCollapsed,groupEnd,log,time,timeEnd,warn".split(","),a;a=d.pop();)b[a]=b[a]||c})(window.console=window.console||{});
 
 var ngApp = angular.module('nutmeg', [])
-.controller('Nutmeg', ['$scope', '$timeout', function($s, $timeout) {
-  
-  $s.m = { modal: false };
+.controller('Nutmeg', ['$scope', '$timeout', "$sce", function($s, $timeout, $sce) {
+
+  $s.m = {
+    modal: false,
+    alert: function(title, body, ok) {
+      $s.$apply(function() {
+        $s.m.modal = "alert";
+        $s.m.modalTitle = title;
+        $s.m.modalBody = $sce.trustAsHtml(body);
+        $s.m.modalOK = ok ? ok : "OK";
+
+        // vertically align:
+        $timeout(function() {
+          var el = angular.element(".circle > div:visible")[0];
+          el.style['margin-top'] = el.scrollHeight/(-2)+"px"
+        });
+      });
+    }
+  };
 
   // keeps track of changes. nuts and tags will map from id to reference to actual object nut/tag object in $s
   $s.digest = {
