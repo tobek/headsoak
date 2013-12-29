@@ -459,7 +459,7 @@ form {
       background: @modalbg;
       color: white;
 
-      div {
+      > div {
         text-align: left;
         position: absolute;
         margin-top: -90px;
@@ -472,9 +472,12 @@ form {
           line-height: 25px;
           margin: 2%;
         }
-        p {
+        p, ul {
           font-size: 60%;
           line-height: 115%;
+        }
+        ul {
+          list-style-type: disc;
         }
         a {
           text-decoration: underline;
@@ -486,11 +489,22 @@ form {
           margin: 5px 0;
           padding: 1%;
           border: none;
-          width: 93%;
         }
         input[type='submit']:active {
           font-weight: bold;
           background-color: #AAA;
+        }
+        form input {
+          // looks good with full width input fields for login
+          width: 93%;
+        }
+        .button-holder {
+          // using button-holder everywhere except login/createaccount
+          text-align: center;
+          input {
+            width: auto;
+            padding: 1% 3%;
+          }
         }
         .loader {
           text-align: center;

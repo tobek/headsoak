@@ -375,6 +375,10 @@ Really the way to make it extensible is a list of levels each with value, shortc
 - instead of framing $ for improvements as bounties, could be like conditional donations: i'll donate X if this feature/whatever gets built
 - filtering with ng-repeat and ng-show may be slow for large number of nuts
 
+## Ridiculous Features
+
+The ability to share a note with someone but without them being able to see the text of the note - they can only see the tags and the timestamps. So it will, for instance, show at the top when sorting by recently modified if they've edited it. Useful for love letters and kinky plans.
+
 # Data Model
 
 data to store:

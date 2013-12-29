@@ -24,9 +24,9 @@ block content
 
         div(ng-show="m.modal == 'login'")
           h3 log in
-          form(ng-submit="u.login(email, password)")
-            input(type="email", placeholder="email", ng-model="email")
-            input(type="password", placeholder="password", ng-model="password")
+          form(ng-submit="u.login(u.email, u.password);")
+            input(type="email", placeholder="email", ng-model="u.email")
+            input(type="password", placeholder="password", ng-model="u.password")
             input(type="submit", value="go", ng-hide="u.loading")
             p.loader(ng-show="u.loading")
               img(src="/img/loader-white.gif")
@@ -34,11 +34,11 @@ block content
             a(ng-click="m.modal='createaccount'") create an account
 
         div(ng-show="m.modal == 'createaccount'")
-          form(ng-submit="u.createAccount(email, pass1, pass2)")
+          form(ng-submit="u.createAccount(u.email, u.pass1, u.pass2);")
             h3 create an account
-            input(type="email", placeholder="email", ng-model="email")
-            input(type="password", placeholder="password", ng-model="pass1")
-            input(type="password", placeholder="password again", ng-model="pass2")
+            input(type="email", placeholder="email", ng-model="u.email")
+            input(type="password", placeholder="password", ng-model="u.pass1")
+            input(type="password", placeholder="password again", ng-model="u.pass2")
             input(type="submit", value="go", ng-hide="u.loading")
             p.loader(ng-show="u.loading")
               img(src="/img/loader-white.gif")

@@ -133,11 +133,13 @@ var ngApp = angular.module('nutmeg', [])
         $s.u.user = user;
         init(user.uid, function() {
           console.log("init callback")
-          $s.n.assignSortVals($s.n.sortBy);
-          $s.m.modal = false;
-          $s.u.loggedIn = true;
-          $s.u.loading = false; // used for login/createaccount loading spinner
-          $s.$apply();
+          $s.$apply(function() {
+            $s.n.assignSortVals($s.n.sortBy);
+            $s.m.modal = false;
+            $s.u.loggedIn = true;
+            $s.u.loading = false; // used for login/createaccount loading spinner
+            $s.u.email = $s.u.password = $s.u.pass1 = $s.u.pass2 = ""; // clear input fields so they're not still shown there when they log out: otherwise, anyone can just hit log in again
+          });
         });
       }
       else {
