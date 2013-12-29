@@ -391,6 +391,7 @@ could have user collection which stored name of note collection. multiple users 
 
 # Resources
 
+- https://build.phonegap.com/
 - http://www.impressivewebs.com/textarea-auto-resize/
 - git hooks
   - http://stackoverflow.com/questions/9132144/how-can-i-automatically-deploy-my-app-after-a-git-push-github-and-node-js/9150437#9150437

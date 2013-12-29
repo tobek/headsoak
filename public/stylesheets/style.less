@@ -222,6 +222,14 @@ form {
       }
       .sort {
         float: right;
+        .fa-refresh {
+          cursor: pointer;
+          vertical-align: text-bottom;
+          font-size: 80%;
+          color: #BBB;
+          &:hover { color: #EEE; }
+          &:active { color: #FFF; }
+        }
       }
     }
     #new-nut {
@@ -319,6 +327,9 @@ form {
   background-color: fade(@tagbg, 20%);
   input {
     max-width: 90%;
+  }
+  .fa-tags {
+    margin-left: 3px;
   }
   #new-tag {
     float: right;

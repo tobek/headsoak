@@ -79,6 +79,8 @@ block content
             span.sort
               label Sort by 
                 select#nut-sort-select(ng-change='n.assignSortVals(n.sortBy)', ng-model='n.sortBy', ng-options='o as o.name for o in n.sortOpts')
+                | 
+              i.fa.fa-refresh(ng-click='n.assignSortVals(n.sortBy)')
 
           ul
             //- ng-show="nut && [...]" to avoid showing undefined nuts (happens when deleting nuts and resulting sparse arrays) and to filter by query
