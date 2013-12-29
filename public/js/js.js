@@ -403,8 +403,9 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         }
         $s.n.addTagName = '';
       }
-      return false; // bit of a hack, this is so that we can set addingTag to false while using span.add-tag-to-nut to both open the input and add tag
+      return false; // bit of a hack, this is so that we can set addingTag to false while using ng-click on span.add-tag-to-nut to both open the input and add tag
     },
+    // see comment in jade file where this is called for explanation
     addTagHack: function() {
       $s.n.addTagHackFieldJustBlurred = true;
       $timeout(function () {
@@ -654,7 +655,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       tags: [1]
     },
     {
-      body: "Hi, welcome to Nutmeg. These are your personal notes, accessible by you from anywhere. Here are some things you can do with Nutmeg:\n\n- Write notes\n- Tag notes\n- Everything is synced to the cloud within seconds: you write, it's saved, kind of like paper.\n- See and edit your notes from any device\n- Instant searching through your notes, by tag and by keyword\n\nYou can delete notes by hitting the trash can in the top right of each note. You can figure out how to edit and delete tags.\n\nNutmeg is under active development, so bear with me on any weirdness. In the menu in the lower right corner of the screen you can log out, and submit any bug reports, suggestions, or thoughts as feedback, which I hope you do.",
+      body: "Hey, welcome to Nutmeg. These are your personal notes, accessible by you from anywhere. Here are some things you can do with Nutmeg:\n\n- Write notes\n- Tag notes\n- Everything is synced to the cloud within seconds: you write, it's saved, kind of like paper.\n- See and edit your notes from any device\n- Instant searching through your notes, by tag and by keyword\n\nYou can delete notes by hitting the trash can in the top right of each note. You can figure out how to edit and delete tags.\n\nNutmeg is under active development, so bear with me on any weirdness. In the menu in the lower right corner of the screen you can log out, and submit any bug reports, suggestions, or thoughts as feedback, which I hope you do.",
       tags: [1]
     }]);
   }

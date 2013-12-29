@@ -60,11 +60,12 @@ block content
         li.incomplete(ng-show="u.loggedIn") account
         li(ng-show="u.loggedIn", ng-click="u.auth.logout()") log out
         li(ng-show="!u.loggedIn", ng-click="m.modal='login'") log in
-      div#menutitle nutmeg
+      img#menuimage(src="/img/nutmeg40h.png", alt="nutmeg")
 
     div#query
-      img(src="/img/nutmeg40h.png")
-      input(type="text", placeholder="search", ng-model="q.query", nm-query="q.query")
+      label
+        i.fa.fa-search
+        input(type="text", placeholder="search", ng-model="q.query", nm-query="q.query")
       span.clear-query(ng-click="q.query=''")
         i.fa.fa-times
 
@@ -95,7 +96,7 @@ block content
                 | 
                 span.tag(ng-show="addingTag")
                   form(ng-submit="n.addTagNameToNut(n.addTagName, nut); addingTag=false")
-                    input(type="text", ng-model="n.addTagName", ng-blur="addingTag=false; n.addTagHack()", nm-focus="addingTag")
+                    input(type="text", ng-model="n.addTagName", ng-blur="addingTag=false; n.addTagHack()", nm-focus="addingTag", placeholder="tag name")
                 //- HACK
                   want to make sure user can hit the '+' to add the tag. but blur fires too quickly and won't not fire: http://stackoverflow.com/questions/20822978/blur-event-not-firing-on-label
                   a solution:
@@ -123,13 +124,13 @@ block content
           span.sort
             label Sort by 
               select(ng-model='t.sortBy', ng-options='o as o.name for o in t.sortOpts')
-          input(type="text", placeholder="search")
+          input(type="text", placeholder="search tags")
           i.fa.fa-cogs.show-tag-options(ng-click="showOptions = showOptions ? false : true", ng-class="{on: showOptions}")
 
           ul#taglist(ng-class="{'show-options': showOptions}")
             li.tag.new-tag(ng-show="t.creatingTag")
               form(ng-submit="t.createTag({name: t.createTagName})")
-                input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';" nm-focus="t.creatingTag")
+                input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';" nm-focus="t.creatingTag", placeholder="tag name")
             li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev track by $index", ng-click="q.query = q.query == tag.name + ' ' ? '' : tag.name + ' '", ng-hide="!tag")
               | {{tag.name}} ({{tag.docs ? tag.docs.length : 0}}) 
               span.icons

@@ -389,6 +389,7 @@ could have user collection which stored name of note collection. multiple users 
 
 # Resources
 
+- cool markdown: https://stackedit.io/
 - vim bindings in text areas and other stuff! http://codemirror.net/ OR http://ace.c9.io/
 - for collaboration? http://www.firepad.io/
 - https://build.phonegap.com/
@@ -413,6 +414,7 @@ could have user collection which stored name of note collection. multiple users 
   - simple example of storing model in a service to access it from multiple controllers: http://stackoverflow.com/questions/11112608/angularjs-where-to-put-model-data-and-behaviour
   - storing logged-in user context: http://stackoverflow.com/questions/14206492/how-do-i-store-a-current-user-context-in-angular
   - wrapping tinymce in angular: http://jsfiddle.net/programmieraffe/kjsEV/
+- http://prediction.io/
 
 if you hit performance issues with lunr, could offload to a web-worker. can migrate to solr or something later.
 
