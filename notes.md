@@ -13,13 +13,11 @@ ece hdd reassigned (?) sectors 32768
 ### todo before jello launch
 
 - 90% width tags?
-- deal with textarea height
-- do re-sort when you select same sort option
 - splash page with a tiny bit of info and demo
   - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
-- nutmeg name on login screen
 - init config and pull it on refresh. also necessary so that even if they delete all notes and tags, something exists in users/simplelogin:x, so that they don't get the firstInit() again
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
+- replace nutmeg icon with mag glass? where should nutmeg icon go?
 
 ### todo next
 
@@ -338,6 +336,7 @@ tag clarifiers sort of form subtags on the fly. like reusable subtags. rather th
 - adding/removing tags changes "modified" timestamp on nut. what should default be?
 - show delete X for each tag in nut
 - default nut and tag sort preferences
+- option to have sticky/fixed search bar header
 
 ## shortcuts
 
@@ -375,7 +374,6 @@ Really the way to make it extensible is a list of levels each with value, shortc
 - have a hello message to users who open the JS console on nutmeg
 - instead of framing $ for improvements as bounties, could be like conditional donations: i'll donate X if this feature/whatever gets built
 - filtering with ng-repeat and ng-show may be slow for large number of nuts
-- from inkpad: "Notes are automatically saved. Just like a paper notepad, all you have to do is write, InkPad takes care of saving your text. "
 
 # Data Model
 
@@ -391,7 +389,10 @@ could have user collection which stored name of note collection. multiple users 
 
 # Resources
 
+- vim bindings in text areas and other stuff! http://codemirror.net/ OR http://ace.c9.io/
+- for collaboration? http://www.firepad.io/
 - https://build.phonegap.com/
+- REST API for email? http://context.io/
 - http://www.impressivewebs.com/textarea-auto-resize/
 - git hooks
   - http://stackoverflow.com/questions/9132144/how-can-i-automatically-deploy-my-app-after-a-git-push-github-and-node-js/9150437#9150437

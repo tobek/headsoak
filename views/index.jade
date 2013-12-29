@@ -87,16 +87,24 @@ block content
             //- NOTE: maybe should let n.assignSortVals() handle both, and ng-show="nut.sortVal"
             li.nut(ng-repeat="nut in n.nuts | orderBy:'sortVal' track by $index", ng-show="nut && (q.showAll || q.showNuts.indexOf(nut.id) !== -1)")
               div.tags
-                span.add-tag-to-nut(ng-click="addingTag=true;")
-                  i.fa.fa-plus &nbsp;
-                span.tag(ng-show="addingTag")
-                  form(ng-submit="n.addTagNameToNut(n.addTagName, nut); n.addTagName = ''; addingTag=false")
-                    input(type="text", ng-model="n.addTagName", ng-blur="n.addTagName = ''; addingTag=false;", nm-focus="addingTag")
                 span.tag(ng-repeat="tagId in nut.tags",  ng-click="q.query = q.query == t.tags[tagId].name + ' ' ? '' : t.tags[tagId].name + ' '")
                   | {{t.tags[tagId].name}}
                   span.tracker {{t.tags[tagId].tracker ? nut.id : ''}} 
                   span.delete(ng-click="n.removeTagIdFromNut(tagId, nut.id)")
                     i.fa.fa-times
+                | 
+                span.tag(ng-show="addingTag")
+                  form(ng-submit="n.addTagNameToNut(n.addTagName, nut); addingTag=false")
+                    input(type="text", ng-model="n.addTagName", ng-blur="addingTag=false; n.addTagHack()", nm-focus="addingTag")
+                //- HACK
+                  want to make sure user can hit the '+' to add the tag. but blur fires too quickly and won't not fire: http://stackoverflow.com/questions/20822978/blur-event-not-firing-on-label
+                  a solution:
+                  n.addTagHack() above sets n.addTagHackFieldJustBlurred to true for 50ms, then back to false
+                  in this way we can tell, when hitting add-tag-to-nut, whether the field was just open
+                  if it was, then do addTagNameToNut() (which returns false, setting addingTag to false)
+                  if not, field's been closed for a while, so set addingTag to true to show it
+                span.add-tag-to-nut(ng-click="addingTag = n.addTagHackFieldJustBlurred ? n.addTagNameToNut(n.addTagName, nut) : true;")
+                  i.fa.fa-plus &nbsp;
               div.clear
               div.tawrapper
                 div.icons
