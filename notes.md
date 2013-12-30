@@ -32,6 +32,7 @@ ece hdd reassigned (?) sectors 32768
 - issues connecting to firebase
   - somehow listen for connection/disconnection and alert user and change cloud to red
   - maybe set some time in `push()`, and if `pushHackCounter>0` in `push()`, and if some length of time has passed (like 30s) then alert user and suggest something
+  - https://www.firebase.com/docs/managing-presence.html
 - FAQ
 - new features feature
   - "changes to nutmeg since you last logged in" with "never show me this again"
