@@ -807,6 +807,16 @@ var shortcuts = [
     apply: true
   }
   , {
+    name: "Add tag",
+    description: "Adds tag to the note that you are currently editing.",
+    binding: ['mod+t', 'ctrl+t'],
+    fn: function() {
+      var nut = getFocusedNut();
+      if (nut) { nmScope.n.addingTag = nut.id; }
+    },
+    apply: true
+  }
+  , {
     name: "Go to search bar",
     binding: ['mod+l', 'ctrl+l'],
     fn: function() {
