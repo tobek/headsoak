@@ -323,8 +323,8 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       });
     },
 
-    deleteNut: function(nut) {
-      if (!confirm("Are you sure you want to delete this note? This can't be undone.")) {
+    deleteNut: function(nut, noconfirm) {
+      if (!noconfirm && !confirm("Are you sure you want to delete this note? This can't be undone.")) {
         return;
       }
 
@@ -744,6 +744,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
   };
 
   // handy for accessing and playing with things from console while debugging
+  // HACK: i'm now using this all the time, i don't understand angular enough to do various things properly, sorry
   window.nmScope = angular.element(document.getElementsByTagName("body")[0]).scope();
 
 }]) // end of Nutmeg controller
@@ -760,11 +761,88 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 .directive('nmQuery', function() {
   return function(scope, element, attrs) {
     scope.$watch(attrs.nmQuery, function(newQ) {
-      // TODO: hack, i don't understand angular enough to do this properly. use a service?
-      angular.element($("body")).scope().q.doQuery(newQ);
+      nmScope.q.doQuery(newQ);
     });
   };
 });
+
+// ==== KEYBOARD SHORTCUTS ==== //
+
+/* **properties:**
+ *
+ * name: duh
+ * description (optional): duh
+ * fn: duh
+ * binding: duh (at least while passed directly to mousetrap. maybe later do something more flexible/amenable to user input, like customModKey+letter)
+ * apply (optional): whether this needs to be wrapped in nmScope.$apply()
+ * overkill (optional): for power-users - don't display by default
+ */
+
+var shortcuts = [
+  {
+    name: "New note",
+    binding: ['mod+n', 'ctrl+n'],
+    fn: function() { nmScope.n.createNut({}); },
+    apply: true
+  }
+  , {
+    name: "Delete note",
+    description: "Deletes the note that you are currently editing.",
+    binding: ['mod+backspace', 'ctrl+backspace'],
+    fn: function() {
+      var nut = getFocusedNut();
+      if (nut) { nmScope.n.deleteNut(nut); }
+    },
+    apply: true
+  }
+  , {
+    name: "Delete note (no confirm)",
+    description: "Deletes the note that you are currently editing. Does not ask \"Are you sure?\"",
+    binding: ['mod+shift+backspace', 'ctrl+shift+backspace'],
+    fn: function() {
+      var nut = getFocusedNut();
+      if (nut) { nmScope.n.deleteNut(nut, true); }
+    },
+    overkill: true,
+    apply: true
+  }
+  , {
+    name: "Go to search bar",
+    binding: ['mod+l', 'ctrl+l'],
+    fn: function() {
+      angular.element("#query input")[0].focus();
+    }
+  }
+
+  , {
+    name: "Focus on first note",
+    binding: ['mod+1', 'ctrl+1'],
+    fn: function() {
+      var el = angular.element("#nuts .nut textarea")[0];
+      if (el) { el.focus(); }
+    }
+  }
+];
+
+shortcuts.forEach(function(shortcut) {
+  Mousetrap.bind(shortcut.binding, function(e) {
+    if (!nmScope.u.loggedIn || nmScope.m.modal) return;
+
+    if (shortcut.apply) {
+      nmScope.$apply(shortcut.fn);
+    }
+    else {
+      shortcut.fn();
+    }
+
+    return false;
+  });
+})
+
+function getFocusedNut() {
+  var match = document.activeElement.id.match(/^nut-(\d*)-ta$/); // ids are all e.g. nut-11-ta
+  return match ? nmScope.n.nuts[match[1]] : null;
+}
 
 // ==== RANDOM GLOBAL UTILITIES ==== //
 

@@ -71,7 +71,7 @@ block content
     div#query
       label
         i.fa.fa-search
-        input(type="text", placeholder="search", ng-model="q.query", nm-query="q.query")
+        input.moustrap(type="text", placeholder="search", ng-model="q.query", nm-query="q.query")
       span.clear-query(ng-click="q.query=''")
         i.fa.fa-times
 
@@ -119,7 +119,7 @@ block content
                     i.fa.fa-clock-o
                   a.delete(ng-click="n.deleteNut(nut)")
                     i.fa.fa-trash-o
-                textarea(id="nut-{{nut.id}}-ta", ng-model="nut.body", ng-focus="n.nutFocus(nut)", ng-blur="n.nutBlur(nut)", ng-change="digest.status='unsynced'; n.autosizeNutById(nut.id)")
+                textarea.mousetrap(id="nut-{{nut.id}}-ta", ng-model="nut.body", ng-focus="n.nutFocus(nut)", ng-blur="n.nutBlur(nut)", ng-change="digest.status='unsynced'; n.autosizeNutById(nut.id)")
 
       div#right
         div#tagContainer
@@ -130,7 +130,7 @@ block content
           span.sort
             label Sort by 
               select(ng-model='t.sortBy', ng-options='o as o.name for o in t.sortOpts')
-          input(type="text", placeholder="search tags")
+          input.moustrap(type="text", placeholder="search tags")
           i.fa.fa-cogs.show-tag-options(ng-click="showOptions = showOptions ? false : true", ng-class="{on: showOptions}")
 
           ul#taglist(ng-class="{'show-options': showOptions}")
