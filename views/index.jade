@@ -45,7 +45,7 @@ block content
 
         div(ng-show="m.modal == 'alert'")
           h3 {{m.modalTitle}}
-          div(ng-bind-html="m.modalBody")
+          div.custom-body(ng-bind-html="m.modalBody")
           div.button-holder
             input(type="submit", value="{{m.modalOK}}", ng-click="m.modal = false")
 

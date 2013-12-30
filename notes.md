@@ -53,6 +53,7 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo eventually
 
+- email me when new users (and answer http://stackoverflow.com/questions/17723195/is-there-any-way-to-do-email-confirmation-for-firebase-user-creation-and-or-pass)
 - remove all instances of `alert()` and replace with some single modal function. on chrome and FF at least, alert windows begin with "The page at https://megnut.s3.amazonaws.com says:"
 - implement sort by query match strength
 - investigate if property name length matters in firebase - if so, have some automated minifier two-way dictionary to convert prop names - nice github plugin maybe
@@ -96,6 +97,7 @@ ece hdd reassigned (?) sectors 32768
 - deal with nuts and tags being sparse arrays full of undefineds for each thing you've deleted. `track by $index` fixes duplicates in ng-repeat, but entries still show up in the DOM but are just hidden with ng-hide="!nut". kind of ugly.
   - might help https://github.com/angular/angular.js/issues/1286
 - esc exits modal
+- gzip before uploading the S3 and set headers appopriately: http://www.jamiebegin.com/serving-compressed-gzipped-static-files-from-amazon-s3-or-cloudfront/ (just make sure no .gz extension)
 
 ## QUESTIONS
 
@@ -105,6 +107,7 @@ ece hdd reassigned (?) sectors 32768
   - should your location be remembered across all machines, or should each machine locally remember its location? configurable?
 - should + button for new tag on nut (and resulting field) be on the right side, so that it's always in the same place?
 - SHARING: should it be on a per-note basis, per-tag basis, or both? both might get messy
+- Do I want to obfuscate/uglify JS (and CSS?) https://github.com/mishoo/UglifyJS2 and/or https://npmjs.org/package/node-minify
 
 #### private notes/tags
 
@@ -132,6 +135,8 @@ What's important is that for a first-time visitor to nutmeg.io it's incredibly e
 Also, presumably want to redirect http://nutmeg.io to https://nutmeg.io. Is an exception possible for option 2a? Probably.
 
 ## collaboration
+
+http://stackoverflow.com/questions/17798444/how-to-structure-firebase-data-and-rules-for-sharing-data-between-users
 
 `uid-nutid` is a global identifier for a note - easy to reach in firebase too.
 

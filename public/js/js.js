@@ -147,7 +147,7 @@ var ngApp = angular.module('nutmeg', [])
         // user authenticated with Firebase
         console.log('Logged in, user id: ' + user.id + ', provider: ' + user.provider);
         $s.u.user = user;
-        init(user.uid, function() {
+        init(user.uid, function(latestFeatureSeen) {
           console.log("init callback")
           $s.$apply(function() {
             $s.n.assignSortVals($s.n.sortBy);
@@ -155,6 +155,32 @@ var ngApp = angular.module('nutmeg', [])
             $s.u.loggedIn = true;
             $s.u.loading = false; // used for login/createaccount loading spinner
             $s.u.email = $s.u.password = $s.u.pass1 = $s.u.pass2 = ""; // clear input fields so they're not still shown there when they log out: otherwise, anyone can just hit log in again
+          });
+
+          var latestFeatureSeenRef = new Firebase('https://nutmeg.firebaseio.com/users/' + $s.u.user.uid + '/latestFeatureSeen');
+
+          new Firebase('https://nutmeg.firebaseio.com/newFeatureCount').once('value', function(data) {
+            var newFeatureCount = data.val();
+            if (latestFeatureSeen) {
+              if (latestFeatureSeen < newFeatureCount-1) {
+                console.log("latestFeatures: there are some new features user hasn't seen");
+                new Firebase('https://nutmeg.firebaseio.com/newFeatures').once('value', function(data) {
+                  var feats = data.val();
+                  feats.splice(0, latestFeatureSeen+1); // cuts off the ones they've already seen;
+                  var list = feats.map(function(val) { return "<li>"+val+"</li>"; }).join("");
+                  $s.m.alert("Since you've been gone...", "<p>In addition to tweaks and fixes, here's what's new:<ul>"+list+"</ul>", "Cool");
+                  latestFeatureSeenRef.set(newFeatureCount-1)
+                });
+              }
+              else {
+                console.log("latestFeatures: already seen em");
+              }
+            }
+            else {
+              // new user
+              console.log("latestFeatures: new user");
+              latestFeatureSeenRef.set(newFeatureCount-1)
+            }
           });
         });
       }
@@ -630,6 +656,8 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     $s.ref = new Firebase('https://nutmeg.firebaseio.com/users/' + uid);
 
     $s.ref.once('value', function(data) {
+      var latestFeatureSeen;
+
       if (data.val() === null) {
         console.log("init: new user - initializing with dummy data");
         // must be a new user - even if existing user deleted everything there would still be object with config and empty nuts/tags
@@ -644,6 +672,8 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         $s.n.nuts = data.val().nuts instanceof Array ? data.val().nuts : arrayFromObj(data.val().nuts);
         $s.t.tags = data.val().tags instanceof Array ? data.val().tags : arrayFromObj(data.val().tags);
         $s.n.nuts.forEach($s.n.updateNutInIndex);
+
+        latestFeatureSeen = data.val().latestFeatureSeen;
       }
 
       // sync to server every 4s
@@ -651,7 +681,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.u.digestInterval = window.setInterval($s.digest.push, 4000);
       window.beforeunload = $s.digest.push; // TODO since push() isn't synchronous, probably won't work. TODO: check if there is an issue with "this"
 
-      cb();
+      cb(latestFeatureSeen);
     });
 
     // TODO also put child add/changed/removed on nuts config and tags? or does it work on entire ref?
