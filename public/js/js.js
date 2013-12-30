@@ -311,7 +311,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       }
 
       $timeout(function() {
-        angular.element("#nut-"+newId+"-ta")[0].focus();
+        $s.n.focusOnNutId(newId);
         $s.n.autosizeAllNuts();
       }, 0);
 
@@ -403,6 +403,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     nutFocus: function(nut) {
       console.log("focus on nut "+nut.id);
       this.nutWas = nut.body;
+      clearInterval(this.nutSaver); // in case there was anything there before
       this.nutSaver = setInterval(function() {
         $s.n.maybeUpdateNut(nut);
       }, 1000);
@@ -428,7 +429,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       });
     },
 
-    addTagNameToNut: function(tagName, nut) {
+    addTagNameToNut: function(tagName, nut, returnFocusToNut) {
       // TODO: inline creator, that autosuggests (the last autosuggestion always being "create new tag [current text]")
       if (tagName) {
         var tagId = $s.t.getTagIdByName(tagName);
@@ -446,6 +447,9 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
           this.addTagIdToNut(tagId, nut.id);
         }
         $s.n.addTagName = '';
+      }
+      if (returnFocusToNut) {
+        this.focusOnNutId(nut.id);
       }
       return false; // bit of a hack, this is so that we can set addingTag to false while using ng-click on span.add-tag-to-nut to both open the input and add tag
     },
@@ -503,6 +507,17 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       if (!el) return;
       el.style.height = "";
       el.style.height = el.scrollHeight + 'px';
+    },
+
+    focusOnNutId: function(id) {
+      $timeout(function() {
+        angular.element("#nut-"+id+"-ta")[0].focus();
+      });
+    },
+    // currently unused:
+    focusOnFirstResult: function() {
+      var el = angular.element("#nuts .nut textarea")[0];
+      if (el) { $timeout(function() { el.focus(); }); }
     }
 
   };

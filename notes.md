@@ -12,7 +12,7 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo before jello launch
 
-- 90% width tags?
+- figure out why nmQuery is eating keyboard shortcuts
 - splash page with a tiny bit of info and demo
   - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
 - init config and pull it on refresh. also necessary so that even if they delete all notes and tags, something exists in users/simplelogin:x, so that they don't get the firstInit() again
@@ -38,6 +38,7 @@ ece hdd reassigned (?) sectors 32768
   - "changes to nutmeg since you last logged in" with "never show me this again"
   - basically array of strings that are features. part of account info is last feature # you've seen
 - forgot password link that resets
+  - reset password should be grammatical passphrase:  The <adjective> <noun> is <verb> <adverb>. The green cat is jumping wildly. have lists for the categories. with 1024 choices for each you have 40 bits of entropy.
 - do something about font sizes (proportional to screen yes, try out on a) 1920x1080, b) smaller screen, c) tablet, d) phone)
 - configurable max-height for nuts but automatically expands otherwise
 - investigate and fix lunr weirdness
@@ -227,6 +228,7 @@ nut icons? useful for like the `private` nut (or any nut you select as private, 
 - parenthese? invert entire query, invert individual parts of query?
 - how to deal with accented characters? ideally searching for plain roman leter should get you all accented versions of that letter (though searching for an accented version should restrict to that version)
 - by default not case senstive
+- enter (when not potentially autocompleting) focuses the first result
 
 ### special queries
 
