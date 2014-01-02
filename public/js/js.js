@@ -646,20 +646,26 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       if (newName) {
         tag.name = newName;
         console.log("tag "+tag.id+"'s name updated to "+tag.name);
-        this.tagUpdated(tag.id);
+        this.tagUpdated(tag.id, true);
       }
     },
 
     /* call whenever a tag is updated
      * 1: updates `modified`
-     * 2: TODO: updateNutInIndex() too, but only if name changed? when added/removed from nut, nutUpdated() gets called which will reindex those nuts. need to have convention of where index gets updated when tag entirely deleted
+     * 2: updateNutInIndex() too if updateNut == true, e.g. if the name has changed
      * 3: add to digest
      */
-    tagUpdated: function(id) {
+    tagUpdated: function(id, updateNut) {
       $s.digest.status = 'unsynced';
       console.log("tag "+id+" has been updated")
       this.tags[id].modified = (new Date).getTime();
       $s.digest.tags[id] = this.tags[id];
+
+      if (updateNut && this.tags[id].docs) {
+        this.tags[id].docs.forEach(function(docId) {
+          $s.n.nutUpdated(docId, $s.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
+        });
+      }
     }
 
   };
