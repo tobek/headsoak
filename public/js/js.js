@@ -505,7 +505,9 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
     autosizeNutByEl: function(el) {
       if (!el) return;
-      el.style.height = "";
+      // TODO: see if div contenteditable has this issue
+      // OR: http://www.impressivewebs.com/textarea-auto-resize/
+      el.style.height = "auto";
       el.style.height = el.scrollHeight + 'px';
     },
 
@@ -672,6 +674,97 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
   $s.t.sortBy = $s.t.sortOpts[0]; // set initial value for tag sort select dropdown
 
+
+  // ==== KEYBOARD SHORTCUTS ==== //
+
+  /* **properties:**
+   *
+   * name: duh
+   * description (optional): duh
+   * fn: duh
+   * binding: duh (at least while passed directly to mousetrap. maybe later do something more flexible/amenable to user input, like customModKey+letter)
+   * apply (optional): whether this needs to be wrapped in nmScope.$apply()
+   * overkill (optional): for power-users - don't display by default
+   */
+
+  $s.shortcuts = [
+    {
+      name: "New note",
+      binding: ['mod+n', 'ctrl+n'],
+      fn: function() { nmScope.n.createNut({}); },
+      apply: true
+    }
+    , {
+      name: "Delete note",
+      description: "Deletes the note that you are currently editing.",
+      binding: ['mod+backspace', 'ctrl+backspace'],
+      fn: function() {
+        var nut = getFocusedNut();
+        if (nut) { nmScope.n.deleteNut(nut); }
+      },
+      apply: true
+    }
+    , {
+      name: "Delete note (no confirm)",
+      description: "Deletes the note that you are currently editing. Does not ask \"Are you sure?\"",
+      binding: ['mod+shift+backspace', 'ctrl+shift+backspace'],
+      fn: function() {
+        var nut = getFocusedNut();
+        if (nut) { nmScope.n.deleteNut(nut, true); }
+      },
+      overkill: true,
+      apply: true
+    }
+    , {
+      name: "Add tag",
+      description: "Adds tag to the note that you are currently editing.",
+      binding: ['mod+t', 'ctrl+t'],
+      fn: function() {
+        var nut = getFocusedNut();
+        if (nut) { nmScope.n.addingTag = nut.id; }
+      },
+      apply: true
+    }
+    , {
+      name: "Go to search bar",
+      binding: ['mod+l', 'ctrl+l'],
+      fn: function() {
+        angular.element("#query input")[0].focus();
+      }
+    }
+
+    , {
+      name: "Focus on first note",
+      binding: ['mod+1', 'ctrl+1'],
+      fn: function() {
+        var el = angular.element("#nuts .nut textarea")[0];
+        if (el) { el.focus(); }
+      }
+    }
+
+    // TODO: clear search query. scroll up/down?
+  ];
+
+  $s.shortcuts.forEach(function(shortcut) {
+    Mousetrap.bind(shortcut.binding, function(e) {
+      if (!$s.u.loggedIn || $s.m.modal) return;
+
+      if (shortcut.apply) {
+        $s.$apply(shortcut.fn);
+      }
+      else {
+        shortcut.fn();
+      }
+
+      return false;
+    });
+  })
+
+  function getFocusedNut() {
+    var match = document.activeElement.id.match(/^nut-(\d*)-ta$/); // ids are all e.g. nut-11-ta
+    return match ? $s.n.nuts[match[1]] : null;
+  }
+
   function init(uid, cb) {
     console.log("init: fetching data for user uid "+uid)
     $s.ref = new Firebase('https://nutmeg.firebaseio.com/users/' + uid);
@@ -772,93 +865,6 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
   };
 });
 
-// ==== KEYBOARD SHORTCUTS ==== //
-
-/* **properties:**
- *
- * name: duh
- * description (optional): duh
- * fn: duh
- * binding: duh (at least while passed directly to mousetrap. maybe later do something more flexible/amenable to user input, like customModKey+letter)
- * apply (optional): whether this needs to be wrapped in nmScope.$apply()
- * overkill (optional): for power-users - don't display by default
- */
-
-var shortcuts = [
-  {
-    name: "New note",
-    binding: ['mod+n', 'ctrl+n'],
-    fn: function() { nmScope.n.createNut({}); },
-    apply: true
-  }
-  , {
-    name: "Delete note",
-    description: "Deletes the note that you are currently editing.",
-    binding: ['mod+backspace', 'ctrl+backspace'],
-    fn: function() {
-      var nut = getFocusedNut();
-      if (nut) { nmScope.n.deleteNut(nut); }
-    },
-    apply: true
-  }
-  , {
-    name: "Delete note (no confirm)",
-    description: "Deletes the note that you are currently editing. Does not ask \"Are you sure?\"",
-    binding: ['mod+shift+backspace', 'ctrl+shift+backspace'],
-    fn: function() {
-      var nut = getFocusedNut();
-      if (nut) { nmScope.n.deleteNut(nut, true); }
-    },
-    overkill: true,
-    apply: true
-  }
-  , {
-    name: "Add tag",
-    description: "Adds tag to the note that you are currently editing.",
-    binding: ['mod+t', 'ctrl+t'],
-    fn: function() {
-      var nut = getFocusedNut();
-      if (nut) { nmScope.n.addingTag = nut.id; }
-    },
-    apply: true
-  }
-  , {
-    name: "Go to search bar",
-    binding: ['mod+l', 'ctrl+l'],
-    fn: function() {
-      angular.element("#query input")[0].focus();
-    }
-  }
-
-  , {
-    name: "Focus on first note",
-    binding: ['mod+1', 'ctrl+1'],
-    fn: function() {
-      var el = angular.element("#nuts .nut textarea")[0];
-      if (el) { el.focus(); }
-    }
-  }
-];
-
-shortcuts.forEach(function(shortcut) {
-  Mousetrap.bind(shortcut.binding, function(e) {
-    if (!nmScope.u.loggedIn || nmScope.m.modal) return;
-
-    if (shortcut.apply) {
-      nmScope.$apply(shortcut.fn);
-    }
-    else {
-      shortcut.fn();
-    }
-
-    return false;
-  });
-})
-
-function getFocusedNut() {
-  var match = document.activeElement.id.match(/^nut-(\d*)-ta$/); // ids are all e.g. nut-11-ta
-  return match ? nmScope.n.nuts[match[1]] : null;
-}
 
 // ==== RANDOM GLOBAL UTILITIES ==== //
 

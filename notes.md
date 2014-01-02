@@ -12,12 +12,13 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo before jello launch
 
-- figure out why nmQuery is eating keyboard shortcuts
+- figure out why nmQuery is eating keyboard shortcuts (possible to bypass with ng-bind on keydown or whatever?)
 - splash page with a tiny bit of info and demo
   - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
 - init config and pull it on refresh. also necessary so that even if they delete all notes and tags, something exists in users/simplelogin:x, so that they don't get the firstInit() again
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
 - replace nutmeg icon with mag glass? where should nutmeg icon go?
+- when confirming note delete, include snippet of note. "We're talking about the note that starts 'blah blah...'"
 
 ### todo next
 
@@ -34,18 +35,12 @@ ece hdd reassigned (?) sectors 32768
   - maybe set some time in `push()`, and if `pushHackCounter>0` in `push()`, and if some length of time has passed (like 30s) then alert user and suggest something
   - https://www.firebase.com/docs/managing-presence.html
 - FAQ
-- new features feature
-  - "changes to nutmeg since you last logged in" with "never show me this again"
-  - basically array of strings that are features. part of account info is last feature # you've seen
 - forgot password link that resets
   - reset password should be grammatical passphrase:  The <adjective> <noun> is <verb> <adverb>. The green cat is jumping wildly. have lists for the categories. with 1024 choices for each you have 40 bits of entropy.
 - do something about font sizes (proportional to screen yes, try out on a) 1920x1080, b) smaller screen, c) tablet, d) phone)
-- configurable max-height for nuts but automatically expands otherwise
 - investigate and fix lunr weirdness
 - shortcuts
-  - new nut
-  - new tag on nut
-  - new tag
+  - new tag in general (ctrl shift t?)
   - ctrl+l move to query bar
   - verify tab goes between textareas in other browsers
   - maybe shift+enter or comma to add another tag after writing this one (customizeable). it basically just hits enter and opens another/creates a new tag and clears current and leaves focus there
