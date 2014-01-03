@@ -2,6 +2,9 @@ extends header
 
 block content
 
+  // we can call focus on this in order to blur all
+  input#blur-hack(style="position: absolute; opacity: 0;")
+
   //- only remove modal on click if logged in - otherwise we're closing the login window on a blank screen
   div#modalclickoff(ng-click="!u.loggedIn || (m.modal = false)", ng-show="m.modal")
   div#modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal, 'large-circle': m.modal == 'shortcuts'}", ng-click="!u.loggedIn || (m.modal = false)")

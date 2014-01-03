@@ -685,10 +685,12 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
    * name: duh
    * description (optional): duh
    * fn: duh
-   * binding: duh (at least while passed directly to mousetrap. maybe later do something more flexible/amenable to user input, like customModKey+letter)
+   * binding: a string, will be combined with global `mod` (unless `nomod`) and passed directly to mousetrap. see mousetrap docs for more info
    * apply (optional): whether this needs to be wrapped in nmScope.$apply()
    * overkill (optional): for power-users - don't display by default
+   * nomod (optional): do not add the global `mod` to binding
    * id: used to create a mapping of id->binding to save in Firebase without unnecessarily copying all of this data. must not change, or else it may fuck up people's existing bindings
+   * allowOnModal (optional): by default, shortcuts are disabled when a modal is open, unless this is true
    */
 
   $s.s = {
@@ -754,6 +756,20 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         id: 5
       }
 
+      , {
+        name: "Unfocus",
+        description: "Unfocuses from any input/textarea, closes any open modal.",
+        binding: "esc",
+        fn: function() {
+          $timeout(function() { $s.m.modal = false; })
+          angular.element("#blur-hack")[0].focus();
+        },
+        overkill: true,
+        nomod: true,
+        allowOnModal: true,
+        id: 6
+      }
+
       // TODO: clear search query. scroll up/down?
     ],
 
@@ -793,8 +809,10 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       Mousetrap.reset();
 
       $s.s.shortcuts.forEach(function(shortcut) {
-        Mousetrap.bind($s.s.mod + "+" + shortcut.binding, function(e) {
-          if (!$s.u.loggedIn || $s.m.modal) return;
+        var binding = shortcut.nomod ? shortcut.binding : $s.s.mod + "+" + shortcut.binding;
+        Mousetrap.bind(binding, function(e) {
+          if (!$s.u.loggedIn) return;
+          if ($s.m.modal && !shortcut.allowOnModal) return;
 
           if (shortcut.apply) {
             $s.$apply(shortcut.fn);
