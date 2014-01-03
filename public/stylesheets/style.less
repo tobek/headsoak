@@ -89,6 +89,8 @@ body {
   background-position: bottom center;
 }
 
+i { font-style: italic; }
+
 /* HACK not sure why these work/are necessary */
 textarea, input {
   font-size: 60%; 
@@ -432,10 +434,17 @@ form {
   z-index: 10;
   top: 20%;
 
+  &.large-circle {
+    top: 10%;
+    #circle-holder { width: 40%; }
+  }
+
   #circle-holder {
     width: 30%;
     min-width: 380px;
     margin: auto;
+    -webkit-transition:width ease 0.25s;
+    transition:width ease 0.25s;
 
     #close-modal {
       position: absolute;
@@ -463,8 +472,17 @@ form {
         text-align: left;
         position: absolute;
         margin-top: -90px;
+        -webkit-transition: margin ease 0.1s;
+        transition: margin ease 0.1s;
         width: 70%;
         margin-left: 15%;
+
+        &.ribbon {
+          // currently unused, but could be useful, possibly dynamically applied if viewport too small
+          background: @modalbg;
+          padding: 2%;
+          margin-left: 13%;
+        }
         h3, input, p {
           margin: 2% 0;
         }
@@ -472,12 +490,13 @@ form {
           line-height: 25px;
           margin: 3% 2%;
         }
-        p, ul {
+        p, ul, table {
           font-size: 60%;
           line-height: 115%;
         }
         ul {
           list-style-type: disc;
+          padding-left: 1em;
         }
         a {
           text-decoration: underline;
@@ -504,6 +523,7 @@ form {
           input {
             width: auto;
             padding: 1% 3%;
+            margin: 0 10px;
           }
         }
         .loader {
@@ -522,6 +542,50 @@ form {
         .custom-body {
           margin: 15px 0;
         }
+
+        .tooltip:after {
+          width: 200px;
+        }
+        .tooltip:before {
+          display: none;
+        }
+
+        table {
+          width: 100%;
+          thead {
+            font-weight: bold;
+            border-bottom: 1px solid white;
+          }
+          tbody tr:first-child td {
+            padding-top: 5px;
+          }
+          input {
+            font-size: 85%;
+            width: 150px;
+          }
+        }
+
+        &.shortcuts {
+          .button-holder { margin-top: 10px; }
+          .tooltip:after {
+            font-size: 90%;
+            font-weight: normal;
+            line-height: 100%;
+          }
+          .shortcut-modkey {
+            text-align: right;
+            width: 100%;
+            input {
+              font-size: 85%;
+              width: 100px;
+            }
+            .tooltip:after {
+              text-align: left;
+              width: 300px;
+            }
+          }
+        }
+
       }
     }
 

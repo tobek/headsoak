@@ -4,7 +4,7 @@
 (function(b){function c(){}for(var d="error,group,groupCollapsed,groupEnd,log,time,timeEnd,warn".split(","),a;a=d.pop();)b[a]=b[a]||c})(window.console=window.console||{});
 
 var ngApp = angular.module('nutmeg', [])
-.controller('Nutmeg', ['$scope', '$timeout', "$sce", function($s, $timeout, $sce) {
+.controller('Nutmeg', ['$scope', '$timeout', "$interval", "$sce", function($s, $timeout, $interval, $sce) {
 
   $s.m = {
     modal: false,
@@ -14,15 +14,19 @@ var ngApp = angular.module('nutmeg', [])
         $s.m.modalTitle = title;
         $s.m.modalBody = $sce.trustAsHtml(body);
         $s.m.modalOK = ok ? ok : "OK";
-
-        // vertically align:
-        $timeout(function() {
-          var el = angular.element(".circle > div:visible")[0];
-          el.style['margin-top'] = el.scrollHeight/(-2)+"px"
-        });
       });
     }
   };
+
+  $s.$watch('m.modal', function(newVal) {
+    if (['alert', 'shortcuts'].indexOf(newVal) !== -1) {
+      // vertically align:
+      $interval(function() {
+        var el = angular.element(".circle > div:visible")[0];
+        el.style['margin-top'] = el.scrollHeight/(-2)+"px"
+      }, 10, 50); // check every 10ms for 500ms
+    }
+  });
 
   // keeps track of changes. nuts and tags will map from id to reference to actual object nut/tag object in $s
   $s.digest = {
@@ -168,8 +172,8 @@ var ngApp = angular.module('nutmeg', [])
                   var feats = data.val();
                   feats.splice(0, featuresSeen); // cuts off the ones they've already seen;
                   var list = feats.map(function(val) { return "<li>"+val+"</li>"; }).join("");
-                  $s.m.alert("Since you've been gone...", "<p>In addition to tweaks and fixes, here's what's new:<ul>"+list+"</ul>", "Cool");
-                  featuresSeenRef.set(newFeatureCount)
+                  $s.m.alert("Since you've been gone...", "<p>In addition to tweaks and fixes, here's what's new:</p><ul>"+list+"</ul><p>As always, you can send along feedback and bug reports from the menu, which is at the bottom right of the page.</p>", "Cool");
+                  featuresSeenRef.set(newFeatureCount);
                 });
               }
               else {
@@ -672,8 +676,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
   };
 
-  $s.t.sortBy = $s.t.sortOpts[0]; // set initial value for tag sort select dropdown
-
+  $s.t.sortBy = $s.t.sortOpts[0]; // set initial value for tag sort select dropdown  
 
   // ==== KEYBOARD SHORTCUTS ==== //
 
@@ -685,80 +688,147 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
    * binding: duh (at least while passed directly to mousetrap. maybe later do something more flexible/amenable to user input, like customModKey+letter)
    * apply (optional): whether this needs to be wrapped in nmScope.$apply()
    * overkill (optional): for power-users - don't display by default
+   * id: used to create a mapping of id->binding to save in Firebase without unnecessarily copying all of this data. must not change, or else it may fuck up people's existing bindings
    */
 
-  $s.shortcuts = [
-    {
-      name: "New note",
-      binding: ['mod+n', 'ctrl+n'],
-      fn: function() { nmScope.n.createNut({}); },
-      apply: true
-    }
-    , {
-      name: "Delete note",
-      description: "Deletes the note that you are currently editing.",
-      binding: ['mod+backspace', 'ctrl+backspace'],
-      fn: function() {
-        var nut = getFocusedNut();
-        if (nut) { nmScope.n.deleteNut(nut); }
-      },
-      apply: true
-    }
-    , {
-      name: "Delete note (no confirm)",
-      description: "Deletes the note that you are currently editing. Does not ask \"Are you sure?\"",
-      binding: ['mod+shift+backspace', 'ctrl+shift+backspace'],
-      fn: function() {
-        var nut = getFocusedNut();
-        if (nut) { nmScope.n.deleteNut(nut, true); }
-      },
-      overkill: true,
-      apply: true
-    }
-    , {
-      name: "Add tag",
-      description: "Adds tag to the note that you are currently editing.",
-      binding: ['mod+t', 'ctrl+t'],
-      fn: function() {
-        var nut = getFocusedNut();
-        if (nut) { nmScope.n.addingTag = nut.id; }
-      },
-      apply: true
-    }
-    , {
-      name: "Go to search bar",
-      binding: ['mod+l', 'ctrl+l'],
-      fn: function() {
-        angular.element("#query input")[0].focus();
+  $s.s = {
+    "mod": "ctrl",
+    "shortcuts": [
+      {
+        name: "New note",
+        binding: "n",
+        fn: function() { nmScope.n.createNut({}); },
+        apply: true,
+        id: 0
       }
-    }
-
-    , {
-      name: "Focus on first note",
-      binding: ['mod+1', 'ctrl+1'],
-      fn: function() {
-        var el = angular.element("#nuts .nut textarea")[0];
-        if (el) { el.focus(); }
+      , {
+        name: "Delete note",
+        description: "Deletes the note that you are currently editing.",
+        binding: "backspace",
+        fn: function() {
+          var nut = getFocusedNut();
+          if (nut) { nmScope.n.deleteNut(nut); }
+        },
+        apply: true,
+        id: 1
       }
-    }
+      , {
+        name: "Delete note (no confirm)",
+        description: "Deletes the note that you are currently editing. Does not ask \"Are you sure?\"",
+        binding: 'shift+backspace',
+        fn: function() {
+          var nut = getFocusedNut();
+          if (nut) { nmScope.n.deleteNut(nut, true); }
+        },
+        overkill: true,
+        apply: true,
+        id: 2
+      }
+      , {
+        name: "Add tag",
+        description: "Adds tag to the note that you are currently editing.",
+        binding: "t",
+        fn: function() {
+          var nut = getFocusedNut();
+          if (nut) { nmScope.n.addingTag = nut.id; }
+        },
+        apply: true,
+        id: 3
+      }
+      , {
+        name: "Go to search bar",
+        binding: "l",
+        fn: function() {
+          angular.element("#query input")[0].focus();
+        },
+        id: 4
+      }
 
-    // TODO: clear search query. scroll up/down?
-  ];
+      , {
+        name: "Go to first note",
+        binding: "1",
+        fn: function() {
+          var el = angular.element("#nuts .nut textarea")[0];
+          if (el) { el.focus(); }
+        },
+        id: 5
+      }
 
-  $s.shortcuts.forEach(function(shortcut) {
-    Mousetrap.bind(shortcut.binding, function(e) {
-      if (!$s.u.loggedIn || $s.m.modal) return;
+      // TODO: clear search query. scroll up/down?
+    ],
 
-      if (shortcut.apply) {
-        $s.$apply(shortcut.fn);
+    initBindings: function(shortcutConfig) {
+      if (!shortcutConfig) {
+        console.log("no saved bindings, leaving them as default");
       }
       else {
-        shortcut.fn();
+        console.log("setting up fetched bindings")
+        if (shortcutConfig.modKey !== null) {
+          $s.s.mod = shortcutConfig.modKey;
+        }
+        if (shortcutConfig.bindings !== null) {
+          $s.s.shortcuts.forEach(function(shortcut) {
+            if (shortcutConfig.bindings[shortcut.id]) {
+              shortcut.binding = shortcutConfig.bindings[shortcut.id];
+            }
+          });
+        }
       }
 
-      return false;
-    });
-  })
+      $s.s.bind();
+      $s.s.shortcutsEditing = angular.copy($s.s.shortcuts);
+      $s.s.modEditing = $s.s.mod;
+    },
+    // takes values currently in shortcuts and makes a map to push into firebase
+    pushBindings: function() {
+      var bindings = {};
+      $s.s.shortcuts.forEach(function(shortcut) {
+        bindings[shortcut.id] = shortcut.binding;
+      });
+      $s.ref.child("shortcuts").child("bindings").set(bindings);
+      $s.ref.child("shortcuts").child("modKey").set($s.s.mod);
+    },
+
+    bind: function() {
+      Mousetrap.reset();
+
+      $s.s.shortcuts.forEach(function(shortcut) {
+        Mousetrap.bind($s.s.mod + "+" + shortcut.binding, function(e) {
+          if (!$s.u.loggedIn || $s.m.modal) return;
+
+          if (shortcut.apply) {
+            $s.$apply(shortcut.fn);
+          }
+          else {
+            shortcut.fn();
+          }
+
+          return false;
+        });
+      })
+    },
+
+    save: function() {
+      $s.m.modal = false;
+      $s.s.shortcuts = angular.copy($s.s.shortcutsEditing);
+      $s.s.mod = $s.s.modEditing;
+      $s.s.bind();
+
+      $s.s.pushBindings();
+    },
+    cancel: function() {
+      $s.m.modal = false;
+      $s.s.shortcutsEditing = angular.copy($s.s.shortcuts);
+      $s.s.modEditing = $s.s.mod;
+    },
+    revert: function() {
+      $s.s.shortcutsEditing = angular.copy($s.s.shortcutsDefaults);
+      $s.s.modEditing = $s.s.modDefault;
+    }
+  };
+  // backup a copy of defaults in case user wants to revert to default
+  $s.s.shortcutsDefaults = angular.copy($s.s.shortcuts);
+  $s.s.modDefault = $s.s.mod;
 
   function getFocusedNut() {
     var match = document.activeElement.id.match(/^nut-(\d*)-ta$/); // ids are all e.g. nut-11-ta
@@ -786,6 +856,8 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         $s.n.nuts = data.val().nuts instanceof Array ? data.val().nuts : arrayFromObj(data.val().nuts);
         $s.t.tags = data.val().tags instanceof Array ? data.val().tags : arrayFromObj(data.val().tags);
         $s.n.nuts.forEach($s.n.updateNutInIndex);
+
+        $s.s.initBindings(data.val().shortcuts);
 
         featuresSeen = data.val().featuresSeen;
       }

@@ -40,6 +40,7 @@ ece hdd reassigned (?) sectors 32768
 - do something about font sizes (proportional to screen yes, try out on a) 1920x1080, b) smaller screen, c) tablet, d) phone)
 - investigate and fix lunr weirdness
 - shortcuts
+  - MOAR POWER mode: enable overkill, enable checkbox that removes modkey for that shortcut
   - new tag in general (ctrl shift t?)
   - ctrl+l move to query bar
   - verify tab goes between textareas in other browsers
@@ -91,6 +92,7 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo backlog
 
+- while add tag to note input has focus, don't shrink scroll height?
 - deal with nuts and tags being sparse arrays full of undefineds for each thing you've deleted. `track by $index` fixes duplicates in ng-repeat, but entries still show up in the DOM but are just hidden with ng-hide="!nut". kind of ugly.
   - might help https://github.com/angular/angular.js/issues/1286
 - esc exits modal

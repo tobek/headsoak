@@ -4,7 +4,7 @@ block content
 
   //- only remove modal on click if logged in - otherwise we're closing the login window on a blank screen
   div#modalclickoff(ng-click="!u.loggedIn || (m.modal = false)", ng-show="m.modal")
-  div#modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal}", ng-click="!u.loggedIn || (m.modal = false)")
+  div#modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal, 'large-circle': m.modal == 'shortcuts'}", ng-click="!u.loggedIn || (m.modal = false)")
     h1#title(ng-show="!u.loggedIn") nutmeg
     div#circle-holder
       a#close-modal(ng-click="m.modal = false", ng-show="u.loggedIn") x
@@ -13,6 +13,37 @@ block content
         div(ng-show="m.modal == 'about'")
           h3 about
           p The <b>nutmeg</b> tree is any of several species of trees in genus <b>Myristica</b>. The nutmeg tree is important for two spices derived from the fruit: nutmeg and mace.
+
+        div.shortcuts(ng-show="m.modal == 'shortcuts'")
+          h3 shortcuts
+          p.shortcut-modkey
+            label modifier key: 
+              input(type="text", ng-model="s.modEditing")
+              | 
+              span.tooltip(data-tooltip="This will prefix all of these shortcuts. Your options are:\n\n- 'ctrl'\n- 'shift'\n- 'alt'\n- 'option'\n- 'command' (only on Mac)\n- 'meta' (?)\n- 'mod' ('ctrl' on a PC, 'command' on a Mac).\n\nYou can also combine them, e.g. 'ctrl+shift', or leave blank to control different shortcuts separately.")
+                i.fa.fa-info-circle.fa-lg
+          table
+            thead
+              tr
+                th Action
+                th Shortcut 
+                  span.tooltip(data-tooltip="Simply type in a letter or symbol, or one of the following: backspace, tab, enter, return, capslock, esc, escape, space, pageup, pagedown, end, home, left, up, right, down, ins, del\n\nYou may include modifier keys in here too, e.g. 'shift+alt+backspace'")
+                    i.fa.fa-info-circle
+            tbody
+              tr(ng-repeat="shortcut in s.shortcutsEditing", ng-show="!shortcut.overkill")
+                td {{shortcut.name}} 
+                  span.tooltip(ng-show="shortcut.description", ng-attr-data-tooltip="{{shortcut.description}}")
+                    i.fa.fa-info-circle
+                td
+                  label
+                    span(ng-show="s.modEditing") {{s.modEditing}}+
+                    input(type="text", ng-model="shortcut.binding")
+          p
+            i Note: Different browsers and operating systems handle web site shortcuts differently. You might find that some combinations don't work.
+          div.button-holder
+            input(type="submit", value="cancel", ng-click="s.cancel()")
+            input(type="submit", value="defaults", ng-click="s.revert()")
+            input(type="submit", value="save", ng-click="s.save()")
 
         div.feedback(ng-show="m.modal == 'feedback'")
           h3 feedback 
@@ -61,7 +92,7 @@ block content
         li(ng-click="m.modal='feedback'") feedback
         li.incomplete export
         li.incomplete importer
-        li.incomplete shortcuts
+        li(ng-click="m.modal='shortcuts'") shortcuts
         li.incomplete settings
         li.incomplete(ng-show="u.loggedIn") account
         li(ng-show="u.loggedIn", ng-click="u.auth.logout()") log out
