@@ -744,6 +744,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         apply: true,
         id: 3
       }
+
       , {
         name: "Go to search bar",
         binding: "l",
@@ -751,6 +752,15 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
           angular.element("#query input")[0].focus();
         },
         id: 4
+      }
+      , {
+        name: "Clear search bar",
+        binding: "0",
+        fn: function() {
+          $s.q.query = "";
+        },
+        id: 7,
+        apply: true
       }
 
       , {
