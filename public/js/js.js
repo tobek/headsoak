@@ -280,7 +280,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         }
       })
 
-      setTimeout(angular.element($("body")).scope().n.autosizeAllNuts, 5);
+      setTimeout(angular.element("body").scope().n.autosizeAllNuts, 5);
     },
 
     /* 
@@ -516,10 +516,15 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
     autosizeNutByEl: function(el) {
       if (!el) return;
-      // TODO: see if div contenteditable has this issue
-      // OR: http://www.impressivewebs.com/textarea-auto-resize/
+
+      var oldDocScroll = $(document).scrollTop();
+      var oldScroll = el.scrollTop;
+
       el.style.height = "auto";
       el.style.height = el.scrollHeight + 'px';
+      
+      $(document).scrollTop(oldDocScroll);
+      el.scrollTop = oldScroll;
     },
 
     focusOnNutId: function(id) {
@@ -951,7 +956,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
   // handy for accessing and playing with things from console while debugging
   // HACK: i'm now using this all the time, i don't understand angular enough to do various things properly, sorry
-  window.nmScope = angular.element(document.getElementsByTagName("body")[0]).scope();
+  window.nmScope = angular.element("body").scope();
 
 }]) // end of Nutmeg controller
 .directive('nmFocus', function($timeout) {
