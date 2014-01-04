@@ -606,11 +606,20 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     clear: function() {
       this.query = "";
       this.tags = [];
+      this.doQuery();
     },
     focus: function() {
-      angular.element('#query input')[0].focus();
+      angular.element('#query .search')[0].focus();
     }
   }; // end of $s.q
+
+  // backspace in first position of searchbar when there are tags should delete last tag
+  // TODO: not sure in what browsers selectionStart works, but it's not all. make sure that it doesn't always return 0 in some browsers, cause then we'll be deleting all the time
+  $("#query .search").on("keydown", function(e) {
+    if (e.keyCode == 8 && $("#query .search")[0].selectionStart == 0 && $s.q.tags.length > 0) {
+      $s.q.toggleTag($s.q.tags[$s.q.tags.length-1]);
+    }
+  });
 
 
   // ==== TAG FUNCTIONS ==== //

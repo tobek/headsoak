@@ -12,7 +12,6 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo before jello launch
 
-- delete in leading position in search bar removes latest tag
 - splash page with a tiny bit of info and demo
   - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
 - init config and pull it on refresh. also necessary so that even if they delete all notes and tags, something exists in users/simplelogin:x, so that they don't get the firstInit() again
