@@ -202,7 +202,8 @@ var ngApp = angular.module('nutmeg', [])
 
   $s.config = {
     maxHistory: 0, // how many revisions of each nut to save. 0 disables
-    tagChangesChangeNutModifiedTimestamp: false
+    tagChangesChangeNutModifiedTimestamp: false,
+    addQueryTagsToNewNuts: true
   };
 
   $s.lunr = lunr(function () {
@@ -522,7 +523,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
       el.style.height = "auto";
       el.style.height = el.scrollHeight + 'px';
-      
+
       $(document).scrollTop(oldDocScroll);
       el.scrollTop = oldScroll;
     },
@@ -547,25 +548,70 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
   $s.q = {
     showAll: true,
     query: "", // modeled in query bar and watched for changes by nmQuery directive, which calls doQuery()
+    tags: [], // list of tag ids we are filtering by - will be intersected with results of lunr search. also, if $s.config.addQueryTagsToNewNuts, then... you guessed it
+
+    toggleTag: function(tagId) {
+      var i = this.tags.indexOf(tagId);
+      if (i == -1) {
+        this.tags.push(tagId);
+      }
+      else {
+        this.tags.splice(i, 1);
+      }
+      $s.q.doQuery();
+    },
 
     // TODO tag autocomplete should start with 1 keypress and be sorted by most used (configurable?)
-    doQuery: function(query) {
-      console.log("queried \""+query+"\"");
-      // only start live searching once 3 chars have been entered
-      if (query.length > 2) {
+    // query is string, tags is array of tag IDs
+    doQuery: function(query, tags) {
+      query = defaultFor(query, this.query);
+      tags = defaultFor(tags, this.tags);
+
+      console.log("queried \""+query+"\" with tags "+JSON.stringify(tags));
+
+      // FIRST get the docs filtered by tags
+      if (tags && tags.length > 0) {
+        var arrays = [];
+        tags.forEach(function(tagId) {
+          arrays.push($s.t.tags[tagId].docs);
+        });
+        var filteredByTags = multiArrayIntersect(arrays);
+      }
+
+      // NEXT get the docs filtered by any string
+      if (query.length > 2) { // only start live searching once 3 chars have been entered
         var results = $s.lunr.search(query); // by default ANDs spaces: "foo bar" will search foo AND bar
         // results is array of objects each containing `ref` and `score`
         // ignoring score for now
-        this.showAll = false;
-        this.showNuts = results.map(function(doc){ return parseInt(doc.ref); }); // gives us an array
+        var filteredByString = results.map(function(doc){ return parseInt(doc.ref); }); // gives us an array
+      }
+
+      this.showAll = false;
+      if (filteredByTags && filteredByString) {
+        this.showNuts = arrayIntersect(filteredByTags, filteredByString);
+      }
+      else if (filteredByTags) {
+        this.showNuts = filteredByTags;
+      }
+      else if (filteredByString) {
+        this.showNuts = filteredByString;
       }
       else {
-        // go back to show all
         this.showAll = true;
       }
+
       $timeout($s.n.autosizeAllNuts, 0);
+    },
+
+    clear: function() {
+      this.query = "";
+      this.tags = [];
+    },
+    focus: function() {
+      angular.element('#query input')[0].focus();
     }
   }; // end of $s.q
+
 
   // ==== TAG FUNCTIONS ==== //
   /*
@@ -754,7 +800,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         name: "Go to search bar",
         binding: "l",
         fn: function() {
-          angular.element("#query input")[0].focus();
+          $s.q.focus();
         },
         id: 4
       }
@@ -762,7 +808,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         name: "Clear search bar",
         binding: "0",
         fn: function() {
-          $s.q.query = "";
+          $s.q.clear();
         },
         id: 7,
         apply: true
@@ -925,7 +971,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       tags: [0,1,2]
     },
     {
-      body: "Here is my todo list of things to implement in Nutmeg in the very near future:\n\n- Better searching with tags\n- Better handling of very large notes\n- Tag auto-complete\n- Fix weird font sizes\n- Responsive design: usable on all different sizes of devices\n- Any design at all\n- SSL\n- Tag autocomplete\n- Private notes\n\nPotential avenues for future feature-bloat:\n\n- Tag jiggery\n  - (Auto-suggested) tag relationships, sequences, and modifiers\n  - Auto-tagging and API for programmatic tagging - tagging based output of arbitrary functions, like...\n    - Classifiers trained on what you've tagged so far\n    - Sentiment analysis and other computational linguistics prestidigitation like unusual concentrations of domain-specific words\n    - # or % of lines matching given regex\n    - Flesch Reading Ease test\n    - Whatever your little heart desires\n- Markdown, Vim, syntax highlighting, and WYSIWYG support\n- Customizable layout\n- Integration with...\n  - Email\n  - Instant messaging protocols\n- Shortcuts and visualizations for non-linear writing - think LaTeX meets [XMind](http://www.xmind.net/)\n- Plugin API and repository\n- Sharing and collaboration\n- Autodetecting (encouraging, formalizing, visualizing) user-generated on-the-fly syntax\n- Media support\n- Life logging\n- Exporting, web-hooks, integration with: IFTTT, Zapier, WordPress...\n- Legend/You Are Here minimap",
+      body: "Here is my todo list of things to implement in Nutmeg in the very near future:\n\n- Tag auto-complete\n- Fix weird font sizes\n- Responsive design: usable on all different sizes of devices\n- Any design at all\n- SSL\n- Tag autocomplete\n- Private notes\n\nPotential avenues for future feature-bloat:\n\n- Tag jiggery\n  - (Auto-suggested) tag relationships, sequences, and modifiers\n  - Auto-tagging and API for programmatic tagging - tagging based output of arbitrary functions, like...\n    - Classifiers trained on what you've tagged so far\n    - Sentiment analysis and other computational linguistics prestidigitation like unusual concentrations of domain-specific words\n    - # or % of lines matching given regex\n    - Flesch Reading Ease test\n    - Whatever your little heart desires\n- Markdown, Vim, syntax highlighting, and WYSIWYG support\n- Customizable layout\n- Integration with...\n  - Email\n  - Instant messaging protocols\n- Shortcuts and visualizations for non-linear writing - think LaTeX meets [XMind](http://www.xmind.net/)\n- Plugin API and repository\n- Sharing and collaboration\n- Autodetecting (encouraging, formalizing, visualizing) user-generated on-the-fly syntax\n- Media support\n- Life logging\n- Exporting, web-hooks, integration with: IFTTT, Zapier, WordPress...\n- Legend/You Are Here minimap",
       tags: [1]
     },
     {
@@ -972,7 +1018,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 .directive('nmQuery', function() {
   return function(scope, element, attrs) {
     scope.$watch(attrs.nmQuery, function(newQ) {
-      nmScope.q.doQuery(newQ);
+      nmScope.q.doQuery();
     });
   };
 });
@@ -994,4 +1040,22 @@ function arrayFromObj(obj) {
     arr[key] = value; // discards non-numerical keys
   });
   return arr;
+}
+
+function arrayIntersect(a1, a2) {
+  return a1.filter(function(n) {
+    return a2.indexOf(n) != -1;
+  });
+}
+// takes array of arrays
+function multiArrayIntersect(arrays) {
+  if (arrays.length == 0) return [];
+  else if (arrays.length == 1 ) return arrays[0];
+  else {
+    var soFar = arrays[0]; // start with the 0th
+    for (var i = 1; i < arrays.length; i++) { // then with the first
+      soFar = arrayIntersect(soFar, arrays[i]);
+    };
+    return soFar;
+  }
 }

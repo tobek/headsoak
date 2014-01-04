@@ -102,11 +102,15 @@ block content
         li(ng-show="!u.loggedIn", ng-click="m.modal='login'") log in
       img#menuimage(src="/img/nutmeg40h.png", alt="nutmeg")
 
-    div#query
-      label
-        i.fa.fa-search
-        input.mousetrap(type="text", placeholder="search", ng-model="q.query", nm-query="q.query", tabindex=1)
-      span.clear-query(ng-click="q.query=''")
+    div#query.flex-container
+      i.fa.fa-search(ng-click="q.focus()")
+      span.tags
+        span.tag(ng-repeat="tagId in q.tags", ng-click="q.toggleTag(tagId)")
+          | {{t.tags[tagId].name}}
+          span.hover-cover
+            i.fa.fa-times
+      input.flex.mousetrap(type="text", placeholder="search", ng-model="q.query", nm-query="q.query", tabindex=1)
+      span.clear-query(ng-click="q.clear()")
         i.fa.fa-times
 
     //- can add .tab-hidden to hide right panel
@@ -121,14 +125,17 @@ block content
               label Sort by 
                 select#nut-sort-select(ng-change='n.assignSortVals(n.sortBy)', ng-model='n.sortBy', ng-options='o as o.name for o in n.sortOpts', tabindex=3)
                 | 
-              i.fa.fa-refresh(ng-click='n.assignSortVals(n.sortBy)')
+              i.fa.fa-refresh(ng-click='n.assignSortVals(n.sortBy); q.doQuery();')
+
+          //- number of notes in search results, just need to figure out how to style:
+          //- div {{q.showAll ? n.nuts.length : q.showNuts.length}}
 
           ul
             //- ng-show="nut && [...]" to avoid showing undefined nuts (happens when deleting nuts and resulting sparse arrays) and to filter by query
             //- NOTE: maybe should let n.assignSortVals() handle both, and ng-show="nut.sortVal"
             li.nut(ng-repeat="nut in n.nuts | orderBy:'sortVal' track by $index", ng-show="nut && (q.showAll || q.showNuts.indexOf(nut.id) !== -1)")
               div.tags
-                span.tag(ng-repeat="tagId in nut.tags",  ng-click="q.query = q.query == t.tags[tagId].name + ' ' ? '' : t.tags[tagId].name + ' '")
+                span.tag(ng-repeat="tagId in nut.tags",  ng-click="q.toggleTag(tagId)")
                   | {{t.tags[tagId].name}}
                   span.tracker {{t.tags[tagId].tracker ? nut.id : ''}} 
                   span.delete(ng-click="n.removeTagIdFromNut(tagId, nut.id)")
@@ -137,7 +144,8 @@ block content
                 span.tag(ng-show="n.addingTag === nut.id")
                   form(ng-submit="n.addTagNameToNut(n.addTagName, nut, true); n.addingTag=false")
                     input(type="text", ng-model="n.addTagName", ng-blur="n.addingTag=false; n.addTagHack()", nm-focus="n.addingTag === nut.id", placeholder="tag name")
-                //- HACK
+                //-
+                  HACK:
                   want to make sure user can hit the '+' to add the tag. but blur fires too quickly and won't not fire: http://stackoverflow.com/questions/20822978/blur-event-not-firing-on-label
                   a solution:
                   n.addTagHack() above sets n.addTagHackFieldJustBlurred to true for 50ms, then back to false
@@ -171,7 +179,7 @@ block content
             li.tag.new-tag(ng-show="t.creatingTag")
               form(ng-submit="t.createTag({name: t.createTagName})")
                 input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';" nm-focus="t.creatingTag", placeholder="tag name")
-            li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev track by $index", ng-click="q.query = q.query == tag.name + ' ' ? '' : tag.name + ' '", ng-hide="!tag")
+            li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev track by $index", ng-click="q.toggleTag(tag.id)", ng-hide="!tag")
               | {{tag.name}} ({{tag.docs ? tag.docs.length : 0}}) 
               span.icons
                 a.delete(ng-click="$event.stopPropagation(); t.deleteTag(tag)")

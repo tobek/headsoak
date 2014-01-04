@@ -12,39 +12,37 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo before jello launch
 
+- delete in leading position in search bar removes latest tag
 - splash page with a tiny bit of info and demo
   - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
 - init config and pull it on refresh. also necessary so that even if they delete all notes and tags, something exists in users/simplelogin:x, so that they don't get the firstInit() again
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
+- autocomplete tags
+- rudimentary programmatic tagging (popup modal with code editor and prototype of function and examples)
+- on init, some sign that your notes are loading
+- FAQ
+- forgot password link that resets
+  - reset password should be grammatical passphrase:  The <adjective> <noun> is <verb> <adverb>. The green cat is jumping wildly. have lists for the categories. with 1024 choices for each you have 40 bits of entropy.
+- get rid of underscore
+- listen to remote changes in Firebase (suggesting you've logged in elsewhere) and if detected, show popup saying that you've logged in and changed elsewhere, you gotta refresh or something
 
 ### todo next
 
-- on init, some sign that your notes are loading
+- do something about font sizes (proportional to screen yes, try out on a) 1920x1080, b) smaller screen, c) tablet, d) phone)
 - roll back functionality in deploy.js. first GET, then create archive with date/time of deployment
-- listen to remote changes in Firebase (suggesting you've logged in elsewhere) and if detected, show popup saying that you've logged in and changed elsewhere, you gotta refresh or something
-- tags in the query: shouldn't be plain text, and should be added to new notes (configurable?)
 - create account by invite only + 'request invite' button
   - basically give a unique URL like nutmeg.io?invite=somethingcute
   - with login, if invite query param exists and matches again firebase array i've hand-added, then show create account (nicer welcome message) and then update firebase with this invite being taken
-- search bar should take remaining width left by dynamic nutmeg icon and X
 - issues connecting to firebase
   - somehow listen for connection/disconnection and alert user and change cloud to red
   - maybe set some time in `push()`, and if `pushHackCounter>0` in `push()`, and if some length of time has passed (like 30s) then alert user and suggest something
   - https://www.firebase.com/docs/managing-presence.html
-- FAQ
-- forgot password link that resets
-  - reset password should be grammatical passphrase:  The <adjective> <noun> is <verb> <adverb>. The green cat is jumping wildly. have lists for the categories. with 1024 choices for each you have 40 bits of entropy.
-- do something about font sizes (proportional to screen yes, try out on a) 1920x1080, b) smaller screen, c) tablet, d) phone)
 - investigate and fix lunr weirdness
 - shortcuts
   - MOAR POWER mode: enable overkill, enable checkbox that removes modkey for that shortcut
   - new tag in general (ctrl shift t?)
-  - ctrl+l move to query bar
-  - verify tab goes between textareas in other browsers
   - maybe shift+enter or comma to add another tag after writing this one (customizeable). it basically just hits enter and opens another/creates a new tag and clears current and leaves focus there
-- get rid of jQuery and/or underscore
-- when you query a tag, it should *not* also match notes which contain the text of that tag but aren't tagged with it themselves
-  - tag + plain text: intersection of tag.docs and lunr search.
+- highlight matched query in search results
 
 ### todo eventually
 
@@ -52,8 +50,6 @@ ece hdd reassigned (?) sectors 32768
 - remove all instances of `alert()` and replace with some single modal function. on chrome and FF at least, alert windows begin with "The page at https://megnut.s3.amazonaws.com says:"
 - implement sort by query match strength
 - investigate if property name length matters in firebase - if so, have some automated minifier two-way dictionary to convert prop names - nice github plugin maybe
-- esc should leave and blur new tag input
-- highlight matched query in search results
 - dbg time for lunr search
 - autocomplete tags
 - hover over clock show creation and mod times, also mention history? pencil icon to edit creation date?
@@ -94,6 +90,9 @@ ece hdd reassigned (?) sectors 32768
   - might help https://github.com/angular/angular.js/issues/1286
 - esc exits modal
 - gzip before uploading the S3 and set headers appopriately: http://www.jamiebegin.com/serving-compressed-gzipped-static-files-from-amazon-s3-or-cloudfront/ (just make sure no .gz extension)
+- bugs in IE10
+  - modal overlay isn't working (menu and sync status show, you can still focus on stuff)
+  - some tooltips work, some don't
 
 ## QUESTIONS
 
