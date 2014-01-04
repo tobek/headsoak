@@ -12,13 +12,10 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo before jello launch
 
-- figure out why nmQuery is eating keyboard shortcuts (possible to bypass with ng-bind on keydown or whatever?)
 - splash page with a tiny bit of info and demo
   - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
 - init config and pull it on refresh. also necessary so that even if they delete all notes and tags, something exists in users/simplelogin:x, so that they don't get the firstInit() again
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
-- replace nutmeg icon with mag glass? where should nutmeg icon go?
-- when confirming note delete, include snippet of note. "We're talking about the note that starts 'blah blah...'"
 
 ### todo next
 

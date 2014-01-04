@@ -23,7 +23,7 @@ block content
             label modifier key: 
               input(type="text", ng-model="s.modEditing")
               | 
-              span.tooltip(data-tooltip="This will prefix all of these shortcuts. Your options are:\n\n- 'ctrl'\n- 'shift'\n- 'alt'\n- 'option'\n- 'command' (only on Mac)\n- 'meta' (?)\n- 'mod' ('ctrl' on a PC, 'command' on a Mac).\n\nYou can also combine them, e.g. 'ctrl+shift', or leave blank to control different shortcuts separately.")
+              span.tooltip(data-tooltip="This will prefix all of these shortcuts. Your options are:\n\n- 'ctrl'\n- 'shift'\n- 'alt'\n- 'option'\n- 'command' (only on Mac)\n- 'meta' (?)\n- 'win' (windows logo key)\n- 'mod' ('ctrl' on a PC, 'command' on a Mac).\n\nYou can also combine them, e.g. 'ctrl+shift', or leave blank to control different shortcuts separately.")
                 i.fa.fa-info-circle.fa-lg
           table
             thead
@@ -105,7 +105,7 @@ block content
     div#query
       label
         i.fa.fa-search
-        input.moustrap(type="text", placeholder="search", ng-model="q.query", nm-query="q.query", tabindex=1)
+        input.mousetrap(type="text", placeholder="search", ng-model="q.query", nm-query="q.query", tabindex=1)
       span.clear-query(ng-click="q.query=''")
         i.fa.fa-times
 

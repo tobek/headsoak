@@ -56,7 +56,7 @@ var ngApp = angular.module('nutmeg', [])
             angular.forEach(dupe, function(obj){ // for every object...
               if (!obj) return; // could be null: deleting the value from Firebase
               $s.digest.excludeProps[field].forEach(function(prop) { // for every excludeProp...
-                if (obj[prop]) delete obj[prop];
+                if (obj[prop] !== undefined) delete obj[prop];
               });
             });
           }
@@ -201,7 +201,7 @@ var ngApp = angular.module('nutmeg', [])
   };
 
   $s.config = {
-    maxHistory: 1, // how many revisions of each nut to save. 1 is minimum - we need it in nutBodyUpdated
+    maxHistory: 0, // how many revisions of each nut to save. 0 disables
     tagChangesChangeNutModifiedTimestamp: false
   };
 
@@ -328,7 +328,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     },
 
     deleteNut: function(nut, noconfirm) {
-      if (!noconfirm && !confirm("Are you sure you want to delete this note? This can't be undone.")) {
+      if (!noconfirm && !confirm("Are you sure you want to delete this note? This can't be undone.\n\nIt's the note that goes like this: \"" + (nut.body ? nut.body.substr(0, 100) : "") + "...\"")) {
         return;
       }
 
@@ -369,11 +369,18 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         nut = $s.n.nuts[nut];
       }
 
-      var oldState = $.extend(true, {}, nut); // deep clone ourself
-      delete oldState.history; // no need for the history to have history
-      nut.history.push(oldState); // append ourselves into history
-      if (nut.history.length > $s.config.maxHistory) {
-        nut.history.shift(); // chuck the oldest one
+      if ($s.config.maxHistory > 0) {
+        // TODO history is a bit overzealous. this function can get called every second. at the very least, history should only be separated when the note blurs. or it could even be by session. and should maybe me stored separately from the note so that not EVERY SINGLE push sends whole history
+        var oldState = $.extend(true, {}, nut); // deep clone ourself
+        delete oldState.history; // no need for the history to have history
+        nut.history.push(oldState); // append ourselves into history
+        if (nut.history.length > $s.config.maxHistory) {
+          nut.history.shift(); // chuck the oldest one
+        }
+      }
+      else {
+        // TEMPORARY? delete any pre-existing history
+        delete nut.history;
       }
 
       if (updateModified) {
@@ -903,11 +910,11 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       tags: [0,1,2]
     },
     {
-      body: "Here is my todo list of things to implement in Nutmeg in the very near future:\n\n- Better searching with tags\n- Tag auto-complete\n- Fix weird font sizes\n- Responsive design: usable on all different sizes of devices\n- Any design at all\n- SSL\n- Tag autocomplete\n- Private notes\n\nPotential avenues for future feature-bloat:\n\n- Tag jiggery\n  - (Auto-suggested) tag relationships, sequences, and modifiers\n  - Auto-tagging and API for programmatic tagging - tagging based output of arbitrary functions, like...\n    - Classifiers trained on what you've tagged so far\n    - Sentiment analysis and other computational linguistics prestidigitation like unusual concentrations of domain-specific words\n    - # or % of lines matching given regex\n    - Flesch Reading Ease test\n    - Whatever your little heart desires\n- Markdown, Vim, syntax highlighting, and WYSIWYG support\n- Customizable layout\n- Integration with...\n  - Email\n  - Instant messaging protocols\n- Shortcuts and visualizations for non-linear writing - think LaTeX meets [XMind](http://www.xmind.net/)\n- Plugin API and repository\n- Sharing and collaboration\n- Autodetecting (encouraging, formalizing, visualizing) user-generated on-the-fly syntax\n- Media support\n- Life logging\n- Exporting, web-hooks, integration with: IFTTT, Zapier, WordPress...\n- Legend/You Are Here minimap",
+      body: "Here is my todo list of things to implement in Nutmeg in the very near future:\n\n- Better searching with tags\n- Better handling of very large notes\n- Tag auto-complete\n- Fix weird font sizes\n- Responsive design: usable on all different sizes of devices\n- Any design at all\n- SSL\n- Tag autocomplete\n- Private notes\n\nPotential avenues for future feature-bloat:\n\n- Tag jiggery\n  - (Auto-suggested) tag relationships, sequences, and modifiers\n  - Auto-tagging and API for programmatic tagging - tagging based output of arbitrary functions, like...\n    - Classifiers trained on what you've tagged so far\n    - Sentiment analysis and other computational linguistics prestidigitation like unusual concentrations of domain-specific words\n    - # or % of lines matching given regex\n    - Flesch Reading Ease test\n    - Whatever your little heart desires\n- Markdown, Vim, syntax highlighting, and WYSIWYG support\n- Customizable layout\n- Integration with...\n  - Email\n  - Instant messaging protocols\n- Shortcuts and visualizations for non-linear writing - think LaTeX meets [XMind](http://www.xmind.net/)\n- Plugin API and repository\n- Sharing and collaboration\n- Autodetecting (encouraging, formalizing, visualizing) user-generated on-the-fly syntax\n- Media support\n- Life logging\n- Exporting, web-hooks, integration with: IFTTT, Zapier, WordPress...\n- Legend/You Are Here minimap",
       tags: [1]
     },
     {
-      body: "Hey, welcome to Nutmeg. These are your personal notes, accessible by you from anywhere. Here are some things you can do with Nutmeg:\n\n- Write notes\n- Tag notes\n- Everything is synced to the cloud within seconds: you write, it's saved, kind of like paper.\n- See and edit your notes from any device\n- Instant searching through your notes, by tag and by keyword\n\nYou can delete notes by hitting the trash can in the top right of each note. You can figure out how to edit and delete tags.\n\nNutmeg is under active development, so bear with me on any weirdness. In the menu in the lower right corner of the screen you can log out, and submit any bug reports, suggestions, or thoughts as feedback, which I hope you do.",
+      body: "Hey, welcome to Nutmeg. These are your personal notes, accessible by you from anywhere. Here are some things you can do with Nutmeg:\n\n- Write notes\n- Tag notes\n- Everything is synced to the cloud within seconds: you write, it's saved, kind of like paper.\n- See and edit your notes from any device\n- Instant searching through your notes, by tag and by keyword\n\nYou can delete notes by hitting the trash can in the top right of each note. You can figure out how to edit and delete tags.\n\nNutmeg is under active development, so bear with me on any weirdness. In the menu in the lower right corner of the screen you can log out, view/customize keyboard shortcuts, and submit any bug reports, feature requests, or thoughts as feedback, which I hope you do.",
       tags: [1]
     }]);
   }
