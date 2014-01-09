@@ -13,7 +13,7 @@ ece hdd reassigned (?) sectors 32768
 ### todo before jello launch
 
 - splash page with a tiny bit of info and demo
-  - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
+    - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
 - init config and pull it on refresh. also necessary so that even if they delete all notes and tags, something exists in users/simplelogin:x, so that they don't get the firstInit() again
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
 - autocomplete tags
@@ -21,33 +21,32 @@ ece hdd reassigned (?) sectors 32768
 - on init, some sign that your notes are loading
 - FAQ
 - forgot password link that resets
-  - reset password should be grammatical passphrase:  The <adjective> <noun> is <verb> <adverb>. The green cat is jumping wildly. have lists for the categories. with 1024 choices for each you have 40 bits of entropy.
-- get rid of underscore
+    - reset password should be grammatical passphrase:  The <adjective> <noun> is <verb> <adverb>. The green cat is jumping wildly. have lists for the categories. with 1024 choices for each you have 40 bits of entropy.
 - listen to remote changes in Firebase (suggesting you've logged in elsewhere) and if detected, show popup saying that you've logged in and changed elsewhere, you gotta refresh or something
 
 ### todo next
 
 - refactor entire app, with tests, split up into multiple files, with build and minification, etc
-  - http://vesparny.github.io/ng-kickstart
-  - http://joshdmiller.github.io/ng-boilerplate/
-  - https://github.com/angular/angular-seed
-  - https://github.com/angular-app/angular-app
-  - http://briantford.com/blog/huuuuuge-angular-apps.html
-  - http://briantford.com/blog/angular-yeoman.html
+    - http://vesparny.github.io/ng-kickstart
+    - http://joshdmiller.github.io/ng-boilerplate/
+    - https://github.com/angular/angular-seed
+    - https://github.com/angular-app/angular-app
+    - http://briantford.com/blog/huuuuuge-angular-apps.html
+    - http://briantford.com/blog/angular-yeoman.html
 - do something about font sizes (proportional to screen yes, try out on a) 1920x1080, b) smaller screen, c) tablet, d) phone)
 - roll back functionality in deploy.js. first GET, then create archive with date/time of deployment
 - create account by invite only + 'request invite' button
-  - basically give a unique URL like nutmeg.io?invite=somethingcute
-  - with login, if invite query param exists and matches again firebase array i've hand-added, then show create account (nicer welcome message) and then update firebase with this invite being taken
+    - basically give a unique URL like nutmeg.io?invite=somethingcute
+    - with login, if invite query param exists and matches again firebase array i've hand-added, then show create account (nicer welcome message) and then update firebase with this invite being taken
 - issues connecting to firebase
-  - somehow listen for connection/disconnection and alert user and change cloud to red
-  - maybe set some time in `push()`, and if `pushHackCounter>0` in `push()`, and if some length of time has passed (like 30s) then alert user and suggest something
-  - https://www.firebase.com/docs/managing-presence.html
+    - somehow listen for connection/disconnection and alert user and change cloud to red
+    - maybe set some time in `push()`, and if `pushHackCounter>0` in `push()`, and if some length of time has passed (like 30s) then alert user and suggest something
+    - https://www.firebase.com/docs/managing-presence.html
 - investigate and fix lunr weirdness
 - shortcuts
-  - MOAR POWER mode: enable overkill, enable checkbox that removes modkey for that shortcut
-  - new tag in general (ctrl shift t?)
-  - maybe shift+enter or comma to add another tag after writing this one (customizeable). it basically just hits enter and opens another/creates a new tag and clears current and leaves focus there
+    - MOAR POWER mode: enable overkill, enable checkbox that removes modkey for that shortcut
+    - new tag in general (ctrl shift t?)
+    - maybe shift+enter or comma to add another tag after writing this one (customizeable). it basically just hits enter and opens another/creates a new tag and clears current and leaves focus there
 - highlight matched query in search results
 
 ### todo eventually
@@ -60,56 +59,56 @@ ece hdd reassigned (?) sectors 32768
 - autocomplete tags
 - hover over clock show creation and mod times, also mention history? pencil icon to edit creation date?
 - how/where to show modified/created dates on nuts? only on hover or focus?
-  - could choose which (if any) of these to display
-  - could be like tags, all the way to the right, with icon (clock for modified, star explosion for created?) instead of delete tag button
-  - hover or right click menu would let you not show/show times
+    - could choose which (if any) of these to display
+    - could be like tags, all the way to the right, with icon (clock for modified, star explosion for created?) instead of delete tag button
+    - hover or right click menu would let you not show/show times
 - right now i always display everything in #nuts. this could get unwieldy. this will have to be fixed in various places
 - add config to control how tags are sorted on an individual nut? alphabetical, most/fewest docs, recently/oldest modified/created
-  - highlighting the tags with the fewest docs is cool. generic ones like "quote" or "list" may be less salient. could maybe change opacity or size accordingly
+    - highlighting the tags with the fewest docs is cool. generic ones like "quote" or "list" may be less salient. could maybe change opacity or size accordingly
 - ctrl+z. how best to implement? ask on quora or stack overflow? stack of actions, each with a `do` and `undo` action you can execute (`do` needed so you can redo). e.g. if you do deleteTag(4), you'd push an object onto the stack with `do` = `deleteTag(4)` and `undo` = `createTag({whatever})` having saved the state of the tag and all the docs it was on
 - consider browser spell-checking - option to disable? if we switch to div content editable, will we lose it?
 - export (in the future all of these should optionally apply to current selection)
-  - Word Document (how to phrase?)
-    - "This feature isn't fully implemented yet. Click here to download your notes as an HTML file, which any word processor will be able to open."
-  - Share as web page
-    - (<hr> between notes, starting with <h3>Tags: tag1, tag2</h3>)
-  - JSON
-  - later
-    - xls
-  - info
-    - http://updates.html5rocks.com/2011/08/Saving-generated-files-on-the-client-side
-    - http://www.html5rocks.com/en/tutorials/file/filesystem/
-    - http://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server/3665147#3665147
-    - http://eligrey.com/blog/post/saving-generated-files-on-the-client-side
-    - https://developer.mozilla.org/en-US/docs/Web/API/URL.createObjectURL?redirectlocale=en-US&redirectslug=URL.createObjectURL
+    - Word Document (how to phrase?)
+        - "This feature isn't fully implemented yet. Click here to download your notes as an HTML file, which any word processor will be able to open."
+    - Share as web page
+        - (<hr> between notes, starting with <h3>Tags: tag1, tag2</h3>)
+    - JSON
+    - later
+        - xls
+    - info
+        - http://updates.html5rocks.com/2011/08/Saving-generated-files-on-the-client-side
+        - http://www.html5rocks.com/en/tutorials/file/filesystem/
+        - http://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server/3665147#3665147
+        - http://eligrey.com/blog/post/saving-generated-files-on-the-client-side
+        - https://developer.mozilla.org/en-US/docs/Web/API/URL.createObjectURL?redirectlocale=en-US&redirectslug=URL.createObjectURL
 - tutorial/wizard/helper/cheat mode. maybe some bar along the bottom that displays some info for everything you hover on and every state you're in. would adapt to your shortcuts. so while you are in a nut it would have ctrl+t for tag writing. while you're tag adding it would have enter to add tag, comma to add tag and add another, etc.
-  - some mild animation, a pulse or something, when helper text changes
-  - would we ever need more? like arrows pointing at the add tag button? options:
-    - not needed
-    - helper mode also shows overlays
-    - some text ("the plus icon") is dashed-underlined and when you hover, it shows the arrow overlay
+    - some mild animation, a pulse or something, when helper text changes
+    - would we ever need more? like arrows pointing at the add tag button? options:
+        - not needed
+        - helper mode also shows overlays
+        - some text ("the plus icon") is dashed-underlined and when you hover, it shows the arrow overlay
 
 ### todo backlog
 
 - put lunr.update() in updateNutInIndex() (even on init?) into web workers so they don't halt the page
 - while add tag to note input has focus, don't shrink scroll height?
 - deal with nuts and tags being sparse arrays full of undefineds for each thing you've deleted. `track by $index` fixes duplicates in ng-repeat, but entries still show up in the DOM but are just hidden with ng-hide="!nut". kind of ugly.
-  - might help https://github.com/angular/angular.js/issues/1286
+    - might help https://github.com/angular/angular.js/issues/1286
 - esc exits modal
 - gzip before uploading the S3 and set headers appopriately: http://www.jamiebegin.com/serving-compressed-gzipped-static-files-from-amazon-s3-or-cloudfront/ (just make sure no .gz extension)
 - bugs in IE10
-  - modal overlay isn't working (menu and sync status show, you can still focus on stuff)
-  - some tooltips work, some don't
+    - modal overlay isn't working (menu and sync status show, you can still focus on stuff)
+    - some tooltips work, some don't
 - time tag autocompletion and then possibly cache the results of `fuzzyInitialismMatch()` - moving `highlightStringIndices()` into that function and into the cache
-  - http://www.dustindiaz.com/autocomplete-fuzzy-matching
-  - http://www.dustindiaz.com/javascript-cache-provider/
+    - http://www.dustindiaz.com/autocomplete-fuzzy-matching
+    - http://www.dustindiaz.com/javascript-cache-provider/
 
 ## QUESTIONS
 
 - feedback placeholder text "Bug reports and suggestions are eagerly awaited. You'll hear from me personally." Maybe just "Bug reports and suggestions are eagerly awaited!"
 - nutmeg should remember your current location. details:
-  - is your location just your query, or the query and where you've scrolled to?
-  - should your location be remembered across all machines, or should each machine locally remember its location? configurable?
+    - is your location just your query, or the query and where you've scrolled to?
+    - should your location be remembered across all machines, or should each machine locally remember its location? configurable?
 - should + button for new tag on nut (and resulting field) be on the right side, so that it's always in the same place?
 - SHARING: should it be on a per-note basis, per-tag basis, or both? both might get messy
 - Do I want to obfuscate/uglify JS (and CSS?) https://github.com/mishoo/UglifyJS2 and/or https://npmjs.org/package/node-minify
@@ -132,8 +131,8 @@ https://nutmeg.io has app. All stuff served over https AWS.
 
 - option 1: https://nutmeg.io also has about/info page in the same index.html. In order to keep SEO juice with nutmeg.io domain, all images will have to be served over https directly from EC2.
 - option 2:
-  - a: Separate page http://nutmeg.io/about (or /info or /whatever) which can have dynamic content from EC2, and has insecure static content delivered from S3 via http://static.nutmeg.io
-  - b: http://about.nutmeg.io is an entire static site served over s3
+    - a: Separate page http://nutmeg.io/about (or /info or /whatever) which can have dynamic content from EC2, and has insecure static content delivered from S3 via http://static.nutmeg.io
+    - b: http://about.nutmeg.io is an entire static site served over s3
 
 What's important is that for a first-time visitor to nutmeg.io it's incredibly easy to both log in and see info
 
@@ -156,29 +155,29 @@ How to handle tags? Maybe show others' tags for it faded, but you can click on t
 ### cloud storage
 
 - data structure
-  - users/uid/
-    - nuts
-    - tags
-    - config - like id, name, email, password, last contact, data version #
+    - users/uid/
+        - nuts
+        - tags
+        - config - like id, name, email, password, last contact, data version #
 - client has everything on their side, loadData() downloads it all at start
 - syncTag/Nut takes data, packs into single request and sends to to nutmeg server (later this should just package the changes)
 - client does ALL the work. keeps track of tag/nutIds changed, and every X minutes or on startup or quitting do sync. when synced, changelist gets cleared and we receive version # from server (see next)
 - server also keeps track of sync. when client syncs with server, server sends some incremented version #. if on startup, server's version # is different, client needs new stuff. just download whole thing.
 - little sync icon: green when in sync, yellow when out of sync, spinning when syncing, red when offline. hover should tell you this.
 - loadData() does all this
-  - show "loading data" overlay
-  - if not connected to internet
-    - show warning, set sync icon/status
-  - if connected to internet
-    - get version # from server
-      - if different
-        - if local changelist is empty, download entire new data from server and get new version #
-          - overlay message "Your notes have changed since you were last online, fetching updates..." with silvery vector image of tree
-        - if local changelist is NOT empty, display warning in overlay "While you were offline, changes were made to your notes from another computer. Unfortunately, you also have unsynced changes on this computer. We warned you that offline mode was experimental. Who knows what will happen!" or provide one of two options below
-        - re-index lunr, cause we downloaded new stuff
-      - if not different
-        - if local changelist is empty, we're done
-        - if local changlist not empty, we're done, but set sync icon/status accordingly
+    - show "loading data" overlay
+    - if not connected to internet
+        - show warning, set sync icon/status
+    - if connected to internet
+        - get version # from server
+            - if different
+                - if local changelist is empty, download entire new data from server and get new version #
+                    - overlay message "Your notes have changed since you were last online, fetching updates..." with silvery vector image of tree
+                - if local changelist is NOT empty, display warning in overlay "While you were offline, changes were made to your notes from another computer. Unfortunately, you also have unsynced changes on this computer. We warned you that offline mode was experimental. Who knows what will happen!" or provide one of two options below
+                - re-index lunr, cause we downloaded new stuff
+            - if not different
+                - if local changelist is empty, we're done
+                - if local changlist not empty, we're done, but set sync icon/status accordingly
 
 ##### two logged in machines at the same time
 
@@ -208,22 +207,22 @@ So... per-tag color and bg color. How to do hover?
 - inverting is easy but might feel too rainbow
 - Maybe darkening/lightening/depending
 - Or not change colors
-  - beveling pop-forward effect
-  - border that's the same color as the text.
+    - beveling pop-forward effect
+    - border that's the same color as the text.
 
 nut icons? useful for like the `private` nut (or any nut you select as private, cause you can do that?). tags could have compound icons. or the tag clarifiers could be represented as icons.
 
 ## querying
 
 - tag suggestions
-  - when you hit two chars, or even one? autocomplete least, bolding letters you've written.
-  - sort by (configurable?)
-    - most used
-    - most recently used
-    - ?
-  - first is highlighted. tab/arrow keys moves between highlighting
-  - enter selects.
-  - shortcuts configurable 
+    - when you hit two chars, or even one? autocomplete least, bolding letters you've written.
+    - sort by (configurable?)
+        - most used
+        - most recently used
+        - ?
+    - first is highlighted. tab/arrow keys moves between highlighting
+    - enter selects.
+    - shortcuts configurable 
 - index search starts at 3 chars?
 - spaces: by default everything is AND (lunr does this). configurable to OR? searches both tags and notes
 - "exact text" - deal with stemming - want no stemming?
@@ -236,30 +235,30 @@ nut icons? useful for like the `private` nut (or any nut you select as private, 
 ### special queries
 
 - length
-  - length:>50 // longer than 50 words
-  - length:50+ // alias
-  - l:50+ // alias
-  - l:50w+ // alias (default is words)
-  - l:50w // TODO should exactly 50 words is silly. default to + or -? tooltip telling you to pick one? 
-  - l:>50c+ // characters
-  - l:50-500 // range
+    - length:>50 // longer than 50 words
+    - length:50+ // alias
+    - l:50+ // alias
+    - l:50w+ // alias (default is words)
+    - l:50w // TODO should exactly 50 words is silly. default to + or -? tooltip telling you to pick one? 
+    - l:>50c+ // characters
+    - l:50-500 // range
 - timestamps
-  - modified:<50 // less than 50 days ago
-  - created:<50 // less than 50 days ago
-  - created:<50d // alias
-  - created:50- // alias
-  - c:50- // alias
-  - c:50h+ // 50 hours or older
-  - c:1-2y // betweeen 1 and 2 years ago
-  - m:1h- // last modified within last hour
-  - m:2y+ // last modified over two years ago
-  - m:2010-212 // last modified 2010 through 2012
+    - modified:<50 // less than 50 days ago
+    - created:<50 // less than 50 days ago
+    - created:<50d // alias
+    - created:50- // alias
+    - c:50- // alias
+    - c:50h+ // 50 hours or older
+    - c:1-2y // betweeen 1 and 2 years ago
+    - m:1h- // last modified within last hour
+    - m:2y+ // last modified over two years ago
+    - m:2010-212 // last modified 2010 through 2012
 - collaborators
-  - with:ece // will do a search of users for 'ece'
-  - w:ece
+    - with:ece // will do a search of users for 'ece'
+    - w:ece
 - number of tags
-  - t:0
-  - t:5+
+    - t:0
+    - t:5+
 
 aliases autocomplete to full text?
 
@@ -272,29 +271,29 @@ or (d*)-(d*)([cw]*)([+-]+) for range
 - choose maximum # of lines in nut
 - zoom to first example of search result (maybe nearest paragraph or a few lines above)
 - configurable:
-  - nut size stays same unless you change it manually, OR
-  - when you focus on nut it auto expands to full size (and contracts again when you blur)
+    - nut size stays same unless you change it manually, OR
+    - when you focus on nut it auto expands to full size (and contracts again when you blur)
 - formatting: bold, italic, underline, bulleted list, numbered list, links
 - on any note OR entire query, you can:
-  - delete
-  - change creation date
-  - share/send to/export
-  - bulk add/remove tags (deal like gmail with labels that some but not all in selection have)
+    - delete
+    - change creation date
+    - share/send to/export
+    - bulk add/remove tags (deal like gmail with labels that some but not all in selection have)
 - customizeable views but two default: browser and note
-  - browser: full screen, tag list, shows multiple results (tiny tiny section navigation icon), search bar, menu
-  - note: windowed, (transparent bg?), larger section navigation chiclet,
+    - browser: full screen, tag list, shows multiple results (tiny tiny section navigation icon), search bar, menu
+    - note: windowed, (transparent bg?), larger section navigation chiclet,
 
 ## tags
 
 - new tags automatically have random text color random bg color. work out some way to ensure they're always visible together. (is just brightness/value not to close alright? min saturation?). right click to randomize color to choose color
 - pseudo tag "untagged"
 - two options for what tags shown:
-  - default: all tags
-  - tags just in query (with numbers reflecting)
+    - default: all tags
+    - tags just in query (with numbers reflecting)
 - hover gives you options to rename, delete, and change colors.
 - does clicking add this tag to current nut, or add tag to query? both available in hover menu and configurable "default on click action" for tags?
 - a tag may be defined as any search query. give example queries.
-  - can you manually add nuts to a automatic tag
+    - can you manually add nuts to a automatic tag
 - duplicate tags names not allowed, but tag names are case sensitive
 
 ### tag relationships
@@ -305,10 +304,10 @@ http://www.visuwords.com/
 
 - X is parent of Y
 - X is related to Y. superset of:
-  - X and Y are of the same kind
-  - X is the hypernym of Y (Y is a more specific example, a type of X). "color" is hypernym of "red"
-  - Y is the hyponym of X.
-  - meronymy? "finger" is a meronym of "hand", "istanbul" of "Turkey"
+    - X and Y are of the same kind
+    - X is the hypernym of Y (Y is a more specific example, a type of X). "color" is hypernym of "red"
+    - Y is the hyponym of X.
+    - meronymy? "finger" is a meronym of "hand", "istanbul" of "Turkey"
 - related-to OR same-kind should be automatic for siblings
 
 Parent tags create sort of implicit tags. Any related tags really. Some way to show tags by their distance from a note. Lower is closer. Immediate tags have distance 1. (Maybe peripheral tags could be used here, see lab). Maybe all tags 1 relationship away would have distance 2. Though maybe different relationships have different distances. Like children of a tag on a nut maybe distance infinity, parents distance +1. Sibling might also be different +1 or maybe +2 or more. Obviously [NRW (not right word) inductive recursive] BLUBBER
@@ -401,6 +400,9 @@ could have user collection which stored name of note collection. multiple users 
 
 # Resources
 
+- guides (for wizards/tutorials)
+    - http://linkedin.github.io/hopscotch/
+    - https://github.com/jeff-optimizely/Guiders-JS
 - cool markdown: https://stackedit.io/
 - vim bindings in text areas and other stuff! http://codemirror.net/ OR http://ace.c9.io/
 - for collaboration? http://www.firepad.io/
@@ -408,24 +410,24 @@ could have user collection which stored name of note collection. multiple users 
 - REST API for email? http://context.io/
 - http://www.impressivewebs.com/textarea-auto-resize/
 - git hooks
-  - http://stackoverflow.com/questions/9132144/how-can-i-automatically-deploy-my-app-after-a-git-push-github-and-node-js/9150437#9150437
-  - https://bitbucket.org/tobyfox/nutmeg/admin/hooks
+    - http://stackoverflow.com/questions/9132144/how-can-i-automatically-deploy-my-app-after-a-git-push-github-and-node-js/9150437#9150437
+    - https://bitbucket.org/tobyfox/nutmeg/admin/hooks
 - checking whether online, client-side:
-  - http://www.html5rocks.com/en/mobile/workingoffthegrid/
-  - https://developer.mozilla.org/en-US/docs/Web/API/NavigatorOnLine.onLine?redirectlocale=en-US&redirectslug=Web%2FAPI%2FNavigator.onLine
+    - http://www.html5rocks.com/en/mobile/workingoffthegrid/
+    - https://developer.mozilla.org/en-US/docs/Web/API/NavigatorOnLine.onLine?redirectlocale=en-US&redirectslug=Web%2FAPI%2FNavigator.onLine
 - http://craig.is/killing/mice
 - http://bitdrift.com/post/2376383378/using-mustache-templates-in-express
 - searching/indexing
-  - http://stackoverflow.com/questions/16625104/is-there-a-good-indexing-search-engine-for-node-js
-  - https://github.com/lbdremy/solr-node-client
-  - http://lbdremy.github.io/solr-node-client/
-  - https://github.com/fergiemcdowall/forage
-  - https://github.com/fergiemcdowall/search-index
-  - http://lucene.apache.org/
+    - http://stackoverflow.com/questions/16625104/is-there-a-good-indexing-search-engine-for-node-js
+    - https://github.com/lbdremy/solr-node-client
+    - http://lbdremy.github.io/solr-node-client/
+    - https://github.com/fergiemcdowall/forage
+    - https://github.com/fergiemcdowall/search-index
+    - http://lucene.apache.org/
 - angular
-  - simple example of storing model in a service to access it from multiple controllers: http://stackoverflow.com/questions/11112608/angularjs-where-to-put-model-data-and-behaviour
-  - storing logged-in user context: http://stackoverflow.com/questions/14206492/how-do-i-store-a-current-user-context-in-angular
-  - wrapping tinymce in angular: http://jsfiddle.net/programmieraffe/kjsEV/
+    - simple example of storing model in a service to access it from multiple controllers: http://stackoverflow.com/questions/11112608/angularjs-where-to-put-model-data-and-behaviour
+    - storing logged-in user context: http://stackoverflow.com/questions/14206492/how-do-i-store-a-current-user-context-in-angular
+    - wrapping tinymce in angular: http://jsfiddle.net/programmieraffe/kjsEV/
 - http://prediction.io/
 
 if you hit performance issues with lunr, could offload to a web-worker. can migrate to solr or something later.

@@ -290,7 +290,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
      */
     createNut: function(nut) {
       var newId = this.nuts.length; // will be index of new nut
-      this.nuts.push(_.defaults(nut, {
+      this.nuts.push($.extend({
         // default nut:
         body: null,
         tags: [], // array of tag ids
@@ -299,7 +299,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         history: [], // an array of nuts, last is the latest
         id: newId,
         sortVal: -1 * newId // ensures that this new nut is always sorted first until stuff is re-sorted
-      }));
+      }, nut));
 
       if (nut.tags && nut.tags.length > 0) {
         // add this doc id to each of the tags
@@ -675,14 +675,12 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         return -1;
       }
       var newId = this.tags.length; // will be index of new nut
-      this.tags.push(_.defaults(tag, {
+      this.tags.push($.extend({
         docs: [], // array of doc ids that have this
         created: (new Date).getTime(),
         modified: (new Date).getTime(),
-        color: "white", // # or css color
-        bgColor: "black",
         id: newId
-      }));
+      }, tag));
       this.tagUpdated(newId);
       this.createTagName = ""; // clear input
       this.creatingTag = false; // hide input

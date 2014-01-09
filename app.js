@@ -38,7 +38,7 @@ require('dns').resolve('www.google.com', function(err) {
     var scripts = [
       "/js/offline/jquery.min.js",
       //"/js/offline/jquery-ui.min.js",
-      "/js/offline/underscore.min.js",
+      //"/js/offline/underscore.min.js",
       "/js/offline/angular.min.js",
       //"/js/offline/angular-animate.min.js",
       "/js/offline/firebase.js",
@@ -51,7 +51,7 @@ require('dns').resolve('www.google.com', function(err) {
     var scripts = [
       "//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js",
       //"//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js",
-      "//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js",
+      //"//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js",
       "//ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js",
       //"//ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular-animate.min.js",
       "//cdn.firebase.com/v0/firebase.js",
