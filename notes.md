@@ -27,6 +27,13 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo next
 
+- refactor entire app, with tests, split up into multiple files, with build and minification, etc
+  - http://vesparny.github.io/ng-kickstart
+  - http://joshdmiller.github.io/ng-boilerplate/
+  - https://github.com/angular/angular-seed
+  - https://github.com/angular-app/angular-app
+  - http://briantford.com/blog/huuuuuge-angular-apps.html
+  - http://briantford.com/blog/angular-yeoman.html
 - do something about font sizes (proportional to screen yes, try out on a) 1920x1080, b) smaller screen, c) tablet, d) phone)
 - roll back functionality in deploy.js. first GET, then create archive with date/time of deployment
 - create account by invite only + 'request invite' button
@@ -92,6 +99,9 @@ ece hdd reassigned (?) sectors 32768
 - bugs in IE10
   - modal overlay isn't working (menu and sync status show, you can still focus on stuff)
   - some tooltips work, some don't
+- time tag autocompletion and then possibly cache the results of `fuzzyInitialismMatch()` - moving `highlightStringIndices()` into that function and into the cache
+  - http://www.dustindiaz.com/autocomplete-fuzzy-matching
+  - http://www.dustindiaz.com/javascript-cache-provider/
 
 ## QUESTIONS
 

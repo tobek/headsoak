@@ -65,6 +65,7 @@ require('dns').resolve('www.google.com', function(err) {
       // scripts served by this server:
       "/js/lunr.min.js",
       "/js/mousetrap.min.js",
+      "/js/autocompleter.js",
       "/js/js.js"
     ]),
     styles: [
