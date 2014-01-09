@@ -91,6 +91,7 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo backlog
 
+- put lunr.update() in updateNutInIndex() (even on init?) into web workers so they don't halt the page
 - while add tag to note input has focus, don't shrink scroll height?
 - deal with nuts and tags being sparse arrays full of undefineds for each thing you've deleted. `track by $index` fixes duplicates in ng-repeat, but entries still show up in the DOM but are just hidden with ng-hide="!nut". kind of ugly.
   - might help https://github.com/angular/angular.js/issues/1286

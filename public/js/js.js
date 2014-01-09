@@ -23,7 +23,7 @@ var ngApp = angular.module('nutmeg', ['autocompleter'])
       // vertically align:
       $interval(function() {
         var el = angular.element(".circle > div:visible")[0];
-        el.style['margin-top'] = el.scrollHeight/(-2)+"px"
+        el.style.setProperty('margin-top', el.scrollHeight/(-2)+"px");
       }, 10, 50); // check every 10ms for 500ms
     }
   });
@@ -358,11 +358,12 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
      * is called, for instance, via nutBlur when textarea blurs or when tags added/removed
      * 1: updates history. NOTE: we store entire state of nut in each history entry. could instead store just changes if this gets to big. NOTE 2: by the time this is called, the view and model have already changed. we are actually storing the CHANGED version in history.
      * 2: updates `modified` (default - pass false in as second param to disable)
-     * 3: updates lunr index
+     * 3: updates lunr index (default - pass false in as third param to disable). note, this can be slow: 0.5s for 40k char text on one machine)
      * 4: adds to digest to be saved to firebase
      */
-    nutUpdated: function(nut, updateModified) {
+    nutUpdated: function(nut, updateModified, updateIndex) {
       updateModified = defaultFor(updateModified, true);
+      updateIndex = defaultFor(updateIndex, true);
 
       $s.digest.status = 'unsynced';
 
@@ -390,7 +391,9 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
       $s.digest.nuts[nut.id] = nut;
 
-      this.updateNutInIndex(nut);
+      if (updateIndex) {
+        this.updateNutInIndex(nut);
+      }
 
       console.log("nut "+nut.id+" has been updated");
     },
@@ -398,6 +401,8 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     nutSaver: null, // to hold what setInterval() returns
     nutWas: "", // this will store what the currently-focused nut body was before focusing, in order to determine, upon blurring, whether anything has changed
     maybeUpdateNut: function(nut, blurred) {
+      blurred = defaultFor(blurred, false); // have to set explicitly to false, cause undefined produces unexpected behavior in nutUpdated()
+
       if ($s.n.nutWas == nut.body) {
         console.log("nut unchanged");
 
@@ -408,7 +413,8 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       }
       else {
         console.log("nut changed!");
-        $s.n.nutUpdated(nut);
+        $s.n.nutUpdated(nut, true, blurred); // true for updateModified (default), blurred to only update index (slow operation) when blurring
+        $s.n.indexNeedsUpdating = nut.id; // need to make sure we updated lunr index later even if nut is unchanged by the time we blur
         $s.n.nutWas = nut.body;
       }
     },
@@ -416,14 +422,21 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       console.log("focus on nut "+nut.id);
       this.nutWas = nut.body;
       clearInterval(this.nutSaver); // in case there was anything there before
+
       this.nutSaver = setInterval(function() {
         $s.n.maybeUpdateNut(nut);
-      }, 1000);
+      }, (nut.body.length < 5000 ? 1000 : 5000) ); // every 1s if <5000 chars long, every 5s if over. crudely saves bandwidth. digest pushes ever 4s so this will halve # of pushes
     },
     nutBlur: function(nut) {
       console.log("blur on nut "+nut.id);
       this.maybeUpdateNut(nut, true);
       clearInterval(this.nutSaver);
+
+      // because we don't update index while typing/focused because it can be slow
+      if ($s.n.indexNeedsUpdating) {
+        $s.n.updateNutInIndex(nut);
+        $s.n.indexNeedsUpdating = false;
+      }
     },
 
     updateNutInIndex: function(nut) {
@@ -951,7 +964,10 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         // arrayFromObj also ensures that even if the value is undefined, we get back []
         $s.n.nuts = data.val().nuts instanceof Array ? data.val().nuts : arrayFromObj(data.val().nuts);
         $s.t.tags = data.val().tags instanceof Array ? data.val().tags : arrayFromObj(data.val().tags);
+
+        console.time("building lunr index");
         $s.n.nuts.forEach($s.n.updateNutInIndex);
+        console.timeEnd("building lunr index");
 
         $s.s.initBindings(data.val().shortcuts);
 
