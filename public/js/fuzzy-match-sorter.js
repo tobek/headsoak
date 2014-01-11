@@ -7,6 +7,14 @@ angular.module('fuzzyMatchSorter', []).factory('fuzzyMatchSort', function() {
     var origHaystack = haystack;
     haystack = haystack.toLowerCase();
 
+    if (needle === haystack) {
+      return {
+        value: origHaystack,
+        score: -1,
+        highlighted: "<b>"+origHaystack+"</b>"
+      };
+    }
+
     var score = 0;
     var sinceLastMatch = 0; // will be updated as we iterate and added to score on match
     var i = -1; // index of the haystack char we're checking. -1 cause logic is easier to i++ at beginning of loop

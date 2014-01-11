@@ -26,6 +26,9 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo next
 
+- new shortcut potential conflicts
+  - message: "HI: new keyboard shortcuts have been added. If you've changed shortcuts away from the defaults, you should check out the shortcuts menu to make sure there are no conflicts."
+  - shortcutsChanged and user-stored shortcutChangeIDSeen or something. add it into new features modal
 - refactor entire app, with tests, split up into multiple files, with build and minification, etc
     - http://vesparny.github.io/ng-kickstart
     - http://joshdmiller.github.io/ng-boilerplate/
@@ -153,11 +156,8 @@ How to handle tags? Maybe show others' tags for it faded, but you can click on t
 
 ### cloud storage
 
-- data structure
-    - users/uid/
-        - nuts
-        - tags
-        - config - like id, name, email, password, last contact, data version #
+manual procedure if i want everything in `localStorage` and sync that to the cloud
+
 - client has everything on their side, loadData() downloads it all at start
 - syncTag/Nut takes data, packs into single request and sends to to nutmeg server (later this should just package the changes)
 - client does ALL the work. keeps track of tag/nutIds changed, and every X minutes or on startup or quitting do sync. when synced, changelist gets cleared and we receive version # from server (see next)
@@ -233,6 +233,8 @@ nut icons? useful for like the `private` nut (or any nut you select as private, 
 
 ### special queries
 
+these are autosuggested and packaged up like tags are (but different color/look)
+
 - length
     - length:>50 // longer than 50 words
     - length:50+ // alias
@@ -300,6 +302,12 @@ or (d*)-(d*)([cw]*)([+-]+) for range
         - actually a tag, but represented and toggled as a little icon on the note
         - either of the above, plus ability to specify any tag as sticky
     - leaden tags too? float to bottom. brick icon. sometimes i'm making a note just to store some data... and then want to get it out of my sight
+
+### adding tags to notes
+
+- to add the highlighted suggestion (the top one is automatically highlighted) press enter or tab or click on it
+- to create a new tag while an existing tag is highlighted, hit up and then enter, or press the + button again, or select the "create new tag..." option
+- shift+enter adds the tag and then opens up a new add tag field
 
 ### tag relationships
 

@@ -455,7 +455,6 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     },
 
     addTagNameToNut: function(tagName, nut, returnFocusToNut) {
-      // TODO: inline creator, that autosuggests (the last autosuggestion always being "create new tag [current text]")
       if (tagName) {
         var tagId = $s.t.getTagIdByName(tagName);
 
@@ -476,7 +475,14 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       if (returnFocusToNut) {
         this.focusOnNutId(nut.id);
       }
-      return false; // bit of a hack, this is so that we can set addingTag to false while using ng-click on span.add-tag-to-nut to both open the input and add tag
+    },
+    openAddTagField: function(nut) {
+      $s.autocomplete($("#nut-"+nut.id+" .tags input"), nut);
+      $s.n.addingTag = nut.id; // this will automatically show the field and put focus on it
+    },
+    closeAddTagField: function(nut) {
+      $s.n.addingTag = false; // will automatically hide field
+      $("#nut-"+nut.id+" .tags input").autocomplete('dispose');
     },
     // see comment in jade file where this is called for explanation
     addTagHack: function() {
@@ -550,6 +556,11 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     focusOnFirstResult: function() {
       var el = angular.element("#nuts .nut textarea")[0];
       if (el) { $timeout(function() { el.focus(); }); }
+    },
+
+    getFocusedNut: function() {
+      var match = document.activeElement.id.match(/^nut-(\d*)-ta$/); // ids are all e.g. nut-11-ta
+      return match ? $s.n.nuts[match[1]] : null;
     }
 
   };
@@ -752,9 +763,50 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       }
     }
 
-  };
-
+  }; // end of tags
   $s.t.sortBy = $s.t.sortOpts[0]; // set initial value for tag sort select dropdown  
+
+  // a nut is passed if this is being called from add tag to note input field
+  $s.autocomplete = function(el, nut) {
+
+    var lookupArray; // should be array of strings
+    if (nut && nut.tags) {
+      lookupArray = $s.t.tags.filter(function(tag) {
+        return (tag && nut.tags.indexOf(tag.id) === -1) // filter out tags that are already on this nut
+      });
+    }
+    else {
+      lookupArray = $s.t.tags.filter(function(tag) {return tag;}) // filter to remove undefineds
+    }
+    lookupArray = lookupArray.map(function(tag) {return tag.name; }); // convert from tag objects to strings
+
+    return $(el).autocomplete({
+      width: 150,
+      autoSelectFirst: true,
+      triggerSelectOnValidInput: false,
+      customLookup: function(query, suggestions) {
+        // suggestions is array of {value: "string"} objects, so map it
+        // return fuzzyMatchSort(query, suggestions.map(function(s) {return s.value; }));
+        var results = fuzzyMatchSort(query, suggestions.map(function(s) {return s.value; }));
+        if (nut) {
+          // `highlighted` is the field that is actually displayed
+          results.push({value: query, highlighted: '<i>new tag "<b>'+query+'</b>"</i>'});
+        }
+        return results;
+      },
+      formatResult: function(suggestion) {
+        return suggestion.highlighted;
+      },
+      onSelect: function(suggestion) {
+        if (nut) { // we're in the add tag field of a nut
+          $s.n.addTagNameToNut(suggestion.value, nut, true);
+          $s.n.closeAddTagField(nut);
+        }
+      },
+      lookup: lookupArray
+    });
+  }
+
 
   // ==== KEYBOARD SHORTCUTS ==== //
 
@@ -786,7 +838,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         description: "Deletes the note that you are currently editing.",
         binding: "backspace",
         fn: function() {
-          var nut = getFocusedNut();
+          var nut = $s.n.getFocusedNut();
           if (nut) { nmScope.n.deleteNut(nut); }
         },
         apply: true,
@@ -797,7 +849,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         description: "Deletes the note that you are currently editing. Does not ask \"Are you sure?\"",
         binding: 'shift+backspace',
         fn: function() {
-          var nut = getFocusedNut();
+          var nut = $s.n.getFocusedNut();
           if (nut) { nmScope.n.deleteNut(nut, true); }
         },
         overkill: true,
@@ -809,8 +861,8 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         description: "Adds tag to the note that you are currently editing.",
         binding: "t",
         fn: function() {
-          var nut = getFocusedNut();
-          if (nut) { nmScope.n.addingTag = nut.id; }
+          var nut = $s.n.getFocusedNut();
+          if (nut) { $s.n.openAddTagField(nut); }
         },
         apply: true,
         id: 3
@@ -935,11 +987,6 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
   // backup a copy of defaults in case user wants to revert to default
   $s.s.shortcutsDefaults = angular.copy($s.s.shortcuts);
   $s.s.modDefault = $s.s.mod;
-
-  function getFocusedNut() {
-    var match = document.activeElement.id.match(/^nut-(\d*)-ta$/); // ids are all e.g. nut-11-ta
-    return match ? $s.n.nuts[match[1]] : null;
-  }
 
   function init(uid, cb) {
     console.log("init: fetching data for user uid "+uid)
