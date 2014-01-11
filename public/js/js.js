@@ -3,8 +3,8 @@
 // https://github.com/andyet/ConsoleDummy.js
 (function(b){function c(){}for(var d="error,group,groupCollapsed,groupEnd,log,time,timeEnd,warn".split(","),a;a=d.pop();)b[a]=b[a]||c})(window.console=window.console||{});
 
-var ngApp = angular.module('nutmeg', ['autocompleter'])
-.controller('Nutmeg', ['$scope', '$timeout', "$interval", "$sce", "autocomplete", function($s, $timeout, $interval, $sce, autocomplete) {
+var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
+.controller('Nutmeg', ['$scope', '$timeout', "$interval", "$sce", "fuzzyMatchSort", function($s, $timeout, $interval, $sce, fuzzyMatchSort) {
 
   $s.m = {
     modal: false,

@@ -1,9 +1,10 @@
-angular.module('autocompleter', []).factory('autocomplete', function() {
+angular.module('fuzzyMatchSorter', []).factory('fuzzyMatchSort', function() {
 
   // one situation in which this algorithm isn't quite optimal: you search "ep" against "extra special powers" - after matching `e` it will look ahead to the `s` in self, not match `p`, and iterate through `experience` until matching the `p` there, increasing score in the process. this could be fixed by look at every char after space in the remaining substring, which i didn't bother to do
   // also, separator maybe shouldn't be just ' '. but for now this is fine
   function fuzzyInitialismMatch(needle, haystack) {
     needle = needle.toLowerCase();
+    var origHaystack = haystack;
     haystack = haystack.toLowerCase();
 
     var score = 0;
@@ -51,7 +52,11 @@ angular.module('autocompleter', []).factory('autocomplete', function() {
     }
 
     // only way to leave while loop is to return false or break on success, so we succeded
-    return {score: score, matchedCharList: matchedCharList};
+    return {
+      value: origHaystack,
+      score: score,
+      highlighted: highlightStringIndices(origHaystack, matchedCharList, "<b>", "</b>")
+    };
   }
 
   // s is a string, indices is array of indices, before and after are strings (e.g. HTML) to insert before/after each index
@@ -77,11 +82,7 @@ angular.module('autocompleter', []).factory('autocomplete', function() {
     haystacks.forEach(function(tag) {
       var result = fuzzyInitialismMatch(needle, tag);
       if (result !== false) {
-        matches.push({
-          name: tag,
-          score: result.score,
-          highlighted: highlightStringIndices(tag, result.matchedCharList, "<b>", "</b>")
-        });
+        matches.push(result);
       }
     });
 

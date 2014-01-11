@@ -109,7 +109,6 @@ ece hdd reassigned (?) sectors 32768
 - nutmeg should remember your current location. details:
     - is your location just your query, or the query and where you've scrolled to?
     - should your location be remembered across all machines, or should each machine locally remember its location? configurable?
-- should + button for new tag on nut (and resulting field) be on the right side, so that it's always in the same place?
 - SHARING: should it be on a per-note basis, per-tag basis, or both? both might get messy
 - Do I want to obfuscate/uglify JS (and CSS?) https://github.com/mishoo/UglifyJS2 and/or https://npmjs.org/package/node-minify
 
@@ -295,6 +294,12 @@ or (d*)-(d*)([cw]*)([+-]+) for range
 - a tag may be defined as any search query. give example queries.
     - can you manually add nuts to a automatic tag
 - duplicate tags names not allowed, but tag names are case sensitive
+- sticky tags (float to top of any query, otherwise sorted as normal amongst themselves) - balloon or thumbtack icon?
+    - how to implement:
+        - per-note setting - little button/icon on each note
+        - actually a tag, but represented and toggled as a little icon on the note
+        - either of the above, plus ability to specify any tag as sticky
+    - leaden tags too? float to bottom. brick icon. sometimes i'm making a note just to store some data... and then want to get it out of my sight
 
 ### tag relationships
 
