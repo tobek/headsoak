@@ -425,7 +425,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
       this.nutSaver = setInterval(function() {
         $s.n.maybeUpdateNut(nut);
-      }, (nut.body.length < 5000 ? 1000 : 5000) ); // every 1s if <5000 chars long, every 5s if over. crudely saves bandwidth. digest pushes ever 4s so this will halve # of pushes
+      }, ((nut.body && nut.body.length < 5000) ? 1000 : 5000) ); // every 1s if <5000 chars long, every 5s if over. crudely saves bandwidth. digest pushes ever 4s so this will halve # of pushes
     },
     nutBlur: function(nut) {
       console.log("blur on nut "+nut.id);
@@ -444,7 +444,16 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.lunr.update({
         id: nut.id,
         body: nut.body,
-        tags: nut.tags ? nut.tags.map(function(i){ return $s.t.tags[i].name; }).join(" ") : ""
+        tags: nut.tags ? nut.tags.map(function(i){
+          if ($s.t.tags[i]) { // if this tag id actually exists in $s.t.tags
+            return $s.t.tags[i].name;
+          }
+          else {
+            // dunno how a tag id pointing to an undefined (most likely deleted) tag got in here but let's do some clean-up
+            $s.n.removeTagIdFromNut(i, nut.id);
+            return "";
+          }
+        }).join(" ") : ""
       });
     },
 
@@ -511,11 +520,11 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     removeTagIdFromNut: function(tagId, nutId) {
       console.log("removing tag "+tagId+" from nut "+nutId);
       // remove tag id from nut (check it's there first so we don't splice out -1)
-      if ($s.n.nuts[nutId].tags && $s.n.nuts[nutId].tags.indexOf(tagId) !== -1 ) {
+      if ($s.n.nuts[nutId] && $s.n.nuts[nutId].tags && $s.n.nuts[nutId].tags.indexOf(tagId) !== -1 ) {
         $s.n.nuts[nutId].tags.splice($s.n.nuts[nutId].tags.indexOf(tagId), 1);
       }
       // you get it
-      if ($s.t.tags[tagId].docs && $s.t.tags[tagId].docs.indexOf(nutId) !== -1 ) {
+      if ($s.t.tags[tagId] && $s.t.tags[tagId].docs && $s.t.tags[tagId].docs.indexOf(nutId) !== -1 ) {
         $s.t.tags[tagId].docs.splice($s.t.tags[tagId].docs.indexOf(nutId), 1);
       }
 
@@ -751,6 +760,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
      * 3: add to digest
      */
     tagUpdated: function(id, updateNut) {
+      if (!this.tags[id]) return;
       $s.digest.status = 'unsynced';
       console.log("tag "+id+" has been updated")
       this.tags[id].modified = (new Date).getTime();
