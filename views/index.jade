@@ -174,14 +174,14 @@ block content
           span.sort
             label Sort by 
               select(ng-model='t.sortBy', ng-options='o as o.name for o in t.sortOpts')
-          input.moustrap(type="text", placeholder="search tags")
+          input.moustrap(type="text", placeholder="search tags", ng-model="tagQuery")
           i.fa.fa-cogs.show-tag-options(ng-click="showOptions = showOptions ? false : true", ng-class="{on: showOptions}")
 
           ul#taglist(ng-class="{'show-options': showOptions}")
             li.tag.new-tag(ng-show="t.creatingTag")
               form(ng-submit="t.createTag({name: t.createTagName})")
                 input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';" nm-focus="t.creatingTag", placeholder="tag name")
-            li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev track by $index", ng-click="q.toggleTag(tag.id)", ng-hide="!tag")
+            li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev track by $index", ng-click="q.toggleTag(tag.id)", ng-hide="!tag", ng-show="!tagQuery || tag.name.toLowerCase().indexOf(tagQuery.toLowerCase()) !== -1")
               | {{tag.name}} ({{tag.docs ? tag.docs.length : 0}}) 
               span.icons
                 a.delete(ng-click="$event.stopPropagation(); t.deleteTag(tag)")
