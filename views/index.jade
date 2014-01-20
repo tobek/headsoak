@@ -6,11 +6,11 @@ block content
   input#blur-hack(style="position: absolute; opacity: 0;")
 
   //- only remove modal on click if logged in - otherwise we're closing the login window on a blank screen
-  div#modalclickoff(ng-click="!u.loggedIn || (m.modal = false)", ng-show="m.modal")
-  div#modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal, 'large-circle': m.modal == 'shortcuts'}", ng-click="!u.loggedIn || (m.modal = false)")
+  div#modalclickoff(ng-click="!u.loggedIn || m.closeModal()", ng-show="m.modal")
+  div#modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal, 'large-circle': m.modal == 'shortcuts' || m.modalLarge }", ng-click="!u.loggedIn || m.closeModal()")
     h1#title(ng-show="!u.loggedIn") nutmeg
     div#circle-holder
-      a#close-modal(ng-click="m.modal = false", ng-show="u.loggedIn") x
+      a#close-modal(ng-click="m.closeModal()", ng-show="u.loggedIn") x
       div.circle(ng-click="$event.stopPropagation()")
 
         div(ng-show="m.modal == 'about'")
@@ -51,7 +51,7 @@ block content
         div.feedback(ng-show="m.modal == 'feedback'")
           h3 feedback 
           //- if submitFeedback() returns true, clear fields and close modal
-          form(ng-submit="submitFeedback(feedback, name) && ((feedback='') || (name='') || (m.modal = false))")
+          form(ng-submit="submitFeedback(feedback, name) && ((feedback='') || (name='') || m.closeModal())")
             textarea(placeholder="Bug reports and suggestions are eagerly awaited. You'll hear from me personally.", ng-model="feedback")
             input(type="text", placeholder="name (optional)", ng-model="name")
             input(type="submit", value="submit")
@@ -81,7 +81,7 @@ block content
           h3 {{m.modalTitle}}
           div.custom-body(ng-bind-html="m.modalBody")
           div.button-holder
-            input(type="submit", value="{{m.modalOK}}", ng-click="m.modal = false")
+            input(type="submit", value="{{m.modalOK}}", ng-click="m.closeModal()")
 
 
   div#nonmodal(ng-class="{modalon: m.modal, loggedout: !u.loggedIn}", ng-cloak)

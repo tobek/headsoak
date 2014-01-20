@@ -8,12 +8,18 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
 
   $s.m = {
     modal: false,
-    alert: function(title, body, ok) {
+    modalLarge: false,
+    closeModal: function() {
+      this.modal = false;
+      this.modalLarge = false;
+    },
+    alert: function(title, body, ok, large) {
       $s.$apply(function() {
         $s.m.modal = "alert";
         $s.m.modalTitle = title;
         $s.m.modalBody = $sce.trustAsHtml(body);
         $s.m.modalOK = ok ? ok : "OK";
+        $s.m.modalLarge = large;
       });
     }
   };
@@ -155,7 +161,7 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
           console.log("init callback")
           $s.$apply(function() {
             $s.n.assignSortVals($s.n.sortBy);
-            $s.m.modal = false;
+            $s.m.closeModal();
             $s.u.loggedIn = true;
             $s.u.loading = false; // used for login/createaccount loading spinner
             $s.u.email = $s.u.password = $s.u.pass1 = $s.u.pass2 = ""; // clear input fields so they're not still shown there when they log out: otherwise, anyone can just hit log in again
@@ -172,7 +178,7 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
                   var feats = data.val();
                   feats.splice(0, featuresSeen); // cuts off the ones they've already seen;
                   var list = feats.map(function(val) { return "<li>"+val+"</li>"; }).join("");
-                  $s.m.alert("Since you've been gone...", "<p>In addition to tweaks and fixes, here's what's new:</p><ul>"+list+"</ul><p>As always, you can send along feedback and bug reports from the menu, which is at the bottom right of the page.</p>", "Cool");
+                  $s.m.alert("Since you've been gone...", "<p>In addition to tweaks and fixes, here's what's new:</p><ul>"+list+"</ul><p>As always, you can send along feedback and bug reports from the menu, which is at the bottom right of the page.</p>", "Cool", feats.length > 2); // if more than 2 features, show large modal
                   featuresSeenRef.set(newFeatureCount);
                 });
               }
@@ -921,7 +927,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         description: "Unfocuses from any input/textarea, closes any open modal.",
         binding: "esc",
         fn: function() {
-          $timeout(function() { $s.m.modal = false; })
+          $timeout(function() { $s.m.closeModal(); })
           angular.element("#blur-hack")[0].focus();
         },
         overkill: true,
@@ -987,7 +993,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     },
 
     save: function() {
-      $s.m.modal = false;
+      $s.m.closeModal();
       $s.s.shortcuts = angular.copy($s.s.shortcutsEditing);
       $s.s.mod = $s.s.modEditing;
       $s.s.bind();
@@ -995,7 +1001,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.s.pushBindings();
     },
     cancel: function() {
-      $s.m.modal = false;
+      $s.m.closeModal();
       $s.s.shortcutsEditing = angular.copy($s.s.shortcuts);
       $s.s.modEditing = $s.s.mod;
     },
