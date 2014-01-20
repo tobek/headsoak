@@ -633,7 +633,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         this.showAll = true;
       }
 
-      $timeout($s.n.autosizeAllNuts, 0);
+      $timeout($s.n.autosizeAllNuts, 5);
     },
 
     clear: function() {
@@ -643,6 +643,10 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     },
     focus: function() {
       angular.element('#query .search')[0].focus();
+    },
+
+    setupAutocomplete: function() {
+      $s.autocomplete(angular.element("#query .search")); // will remove any existing autocomplete
     }
   }; // end of $s.q
 
@@ -651,6 +655,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
   $("#query .search").on("keydown", function(e) {
     if (e.keyCode == 8 && $("#query .search")[0].selectionStart == 0 && $s.q.tags.length > 0) {
       $s.q.toggleTag($s.q.tags[$s.q.tags.length-1]);
+      $timeout($s.n.autosizeAllNuts, 5); // this should get called anyway but for some reason is not working when backspacing tags
     }
   });
 
@@ -777,6 +782,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
   $s.t.sortBy = $s.t.sortOpts[0]; // set initial value for tag sort select dropdown  
 
   // a nut is passed if this is being called from add tag to note input field
+  // if no nut is passed, this is being called on the query bar
   $s.autocomplete = function(el, nut) {
 
     var lookupArray; // should be array of strings
@@ -811,6 +817,10 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         if (nut) { // we're in the add tag field of a nut
           $s.n.addTagNameToNut(suggestion.value, nut, true);
           $s.n.closeAddTagField(nut);
+        }
+        else { // being called on the search query bar
+          $s.q.toggleTag($s.t.getTagIdByName(suggestion.value));
+          $s.q.query = "";
         }
       },
       lookup: lookupArray
