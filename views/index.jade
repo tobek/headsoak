@@ -121,11 +121,13 @@ block content
           div.header
             span#new-nut(ng-click="n.createNut({})")
               i.fa.fa-plus
-            span.sort
-              label Sort by 
-                select#nut-sort-select(ng-change='n.assignSortVals(n.sortBy)', ng-model='n.sortBy', ng-options='o as o.name for o in n.sortOpts', tabindex=3)
-                | 
-              i.fa.fa-refresh(ng-click='n.assignSortVals(n.sortBy); q.doQuery();')
+            span.right
+              span.count {{q.showAll ? n.nuts.length + " notes" : (q.showNuts.length == 1 ? "1 note" : q.showNuts.length + " notes")}}
+              span.sort
+                label Sort by 
+                  select#nut-sort-select(ng-change='n.assignSortVals(n.sortBy)', ng-model='n.sortBy', ng-options='o as o.name for o in n.sortOpts', tabindex=3)
+                  | 
+                i.fa.fa-refresh(ng-click='n.assignSortVals(n.sortBy); q.doQuery();')
 
           //- number of notes in search results, just need to figure out how to style:
           //- div {{q.showAll ? n.nuts.length : q.showNuts.length}}
