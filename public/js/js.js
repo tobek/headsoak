@@ -576,6 +576,21 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     getFocusedNut: function() {
       var match = document.activeElement.id.match(/^nut-(\d*)-ta$/); // ids are all e.g. nut-11-ta
       return match ? $s.n.nuts[match[1]] : null;
+    },
+
+    countShownNuts: function() {
+      var count;
+      if (!$s.n.nuts) {
+        count = 0;
+      }
+      else if ($s.q.showAll) {
+        // need to do reduce cause this is a sparse array
+        count = $s.n.nuts.reduce(function(prev, current) { return current ? prev+1 : prev; }, 0);
+      }
+      else {
+        count = $s.q.showNuts.length;
+      }
+      return count + (count == 1 ? " note" : " notes");
     }
 
   };
@@ -855,7 +870,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       {
         name: "New note",
         binding: "n",
-        fn: function() { nmScope.n.createNut({}); },
+        fn: function() { $s.n.createNut({}); },
         apply: true,
         id: 0
       }
@@ -865,7 +880,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         binding: "backspace",
         fn: function() {
           var nut = $s.n.getFocusedNut();
-          if (nut) { nmScope.n.deleteNut(nut); }
+          if (nut) { $s.n.deleteNut(nut); }
         },
         apply: true,
         id: 1
@@ -876,7 +891,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         binding: 'shift+backspace',
         fn: function() {
           var nut = $s.n.getFocusedNut();
-          if (nut) { nmScope.n.deleteNut(nut, true); }
+          if (nut) { $s.n.deleteNut(nut, true); }
         },
         overkill: true,
         apply: true,

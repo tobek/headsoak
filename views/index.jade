@@ -122,7 +122,7 @@ block content
             span#new-nut(ng-click="n.createNut({})")
               i.fa.fa-plus
             span.right
-              span.count {{q.showAll ? n.nuts.length + " notes" : (q.showNuts.length == 1 ? "1 note" : q.showNuts.length + " notes")}}
+              span.count {{n.countShownNuts()}}
               span.sort
                 label Sort by 
                   select#nut-sort-select(ng-change='n.assignSortVals(n.sortBy)', ng-model='n.sortBy', ng-options='o as o.name for o in n.sortOpts', tabindex=3)
