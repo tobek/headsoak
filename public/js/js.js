@@ -292,6 +292,12 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
      */
     createNut: function(nut) {
       var newId = this.nuts.length; // will be index of new nut
+
+      // if we've specifically passed in tags on this nut, use those. otherwise, maybe use query-filtering tags
+      if (!nut.tags && $s.c.config.addQueryTagsToNewNuts && $s.q.tags && $s.q.tags.length > 0) {
+        nut.tags = $s.q.tags;
+      }
+
       this.nuts.push($.extend({
         // default nut:
         body: null,
@@ -1216,9 +1222,8 @@ function arrayIntersect(a1, a2) {
 // takes array of arrays
 function multiArrayIntersect(arrays) {
   if (arrays.length == 0) return [];
-  else if (arrays.length == 1 ) return arrays[0];
   else {
-    var soFar = arrays[0]; // start with the 0th
+    var soFar = arrays[0].slice(); // start with the 0th. slice() to duplicate array, otherwise in the case of arrays.length==1 we end up returning a reference to that array
     for (var i = 1; i < arrays.length; i++) { // then with the first
       soFar = arrayIntersect(soFar, arrays[i]);
     };
