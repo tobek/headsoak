@@ -48,6 +48,23 @@ block content
             input(type="submit", value="defaults", ng-click="s.revert()")
             input(type="submit", value="save", ng-click="s.save()")
 
+        div.settings(ng-show="m.modal == 'settings'")
+          h3 settings
+          table
+            tbody
+              tr(ng-repeat="(setting, val) in c.configEditing", ng-show="!c.info[setting].overkill")
+                td {{c.info[setting].humanName}} 
+                  span.tooltip(ng-show="c.info[setting].description", ng-attr-data-tooltip="{{c.info[setting].description}}")
+                    i.fa.fa-info-circle
+                td
+                  label
+                    //- for ng-model we can't use `val`, see https://github.com/angular/angular.js/wiki/Understanding-Scopes
+                    input(type="checkbox", ng-model="c.configEditing[setting]")
+          div.button-holder
+            input(type="submit", value="cancel", ng-click="c.cancel()")
+            input(type="submit", value="defaults", ng-click="c.revert()")
+            input(type="submit", value="save", ng-click="c.save()")
+
         div.feedback(ng-show="m.modal == 'feedback'")
           h3 feedback 
           //- if submitFeedback() returns true, clear fields and close modal
@@ -96,7 +113,7 @@ block content
         li.incomplete export
         li.incomplete importer
         li(ng-click="m.modal='shortcuts'") shortcuts
-        li.incomplete settings
+        li(ng-click="m.modal='settings'") settings
         li.incomplete(ng-show="u.loggedIn") account
         li(ng-show="u.loggedIn", ng-click="u.auth.logout()") log out
         li(ng-show="!u.loggedIn", ng-click="m.modal='login'") log in

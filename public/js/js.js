@@ -10,8 +10,10 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
     modal: false,
     modalLarge: false,
     closeModal: function() {
-      this.modal = false;
-      this.modalLarge = false;
+      $timeout(function() {
+        $s.m.modal = false;
+        $s.m.modalLarge = false;
+      });
     },
     alert: function(title, body, ok, large) {
       $s.$apply(function() {
@@ -25,7 +27,7 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
   };
 
   $s.$watch('m.modal', function(newVal) {
-    if (['alert', 'shortcuts'].indexOf(newVal) !== -1) {
+    if (['alert', 'shortcuts', 'settings'].indexOf(newVal) !== -1) {
       // vertically align:
       $interval(function() {
         var el = angular.element(".circle > div:visible")[0];
@@ -204,13 +206,7 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
         $s.$apply();
       }
     })
-  };
-
-  $s.config = {
-    maxHistory: 0, // how many revisions of each nut to save. 0 disables
-    tagChangesChangeNutModifiedTimestamp: false,
-    addQueryTagsToNewNuts: true
-  };
+  }; // end $s.u - user account stuff
 
   $s.lunr = lunr(function () {
     // this.field('title', {boost: 10});
@@ -377,12 +373,12 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         nut = $s.n.nuts[nut];
       }
 
-      if ($s.config.maxHistory > 0) {
+      if (false && $s.c.config.maxHistory > 0) { // disabled for now
         // TODO history is a bit overzealous. this function can get called every second. at the very least, history should only be separated when the note blurs. or it could even be by session. and should maybe me stored separately from the note so that not EVERY SINGLE push sends whole history
         var oldState = $.extend(true, {}, nut); // deep clone ourself
         delete oldState.history; // no need for the history to have history
         nut.history.push(oldState); // append ourselves into history
-        if (nut.history.length > $s.config.maxHistory) {
+        if (nut.history.length > $s.c.config.maxHistory) {
           nut.history.shift(); // chuck the oldest one
         }
       }
@@ -520,7 +516,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         $s.t.tags[tagId].docs.push(nutId);
       }
 
-      this.nutUpdated(nutId, $s.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
+      this.nutUpdated(nutId, $s.c.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
       $s.t.tagUpdated(tagId);
     },
     removeTagIdFromNut: function(tagId, nutId) {
@@ -534,7 +530,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         $s.t.tags[tagId].docs.splice($s.t.tags[tagId].docs.indexOf(nutId), 1);
       }
 
-      this.nutUpdated(nutId, $s.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
+      this.nutUpdated(nutId, $s.c.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
       $s.t.tagUpdated(tagId);
     },
 
@@ -602,7 +598,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
   $s.q = {
     showAll: true,
     query: "", // modeled in query bar and watched for changes by nmQuery directive, which calls doQuery()
-    tags: [], // list of tag ids we are filtering by - will be intersected with results of lunr search. also, if $s.config.addQueryTagsToNewNuts, then... you guessed it
+    tags: [], // list of tag ids we are filtering by - will be intersected with results of lunr search. also, if $s.c.config.addQueryTagsToNewNuts, then... you guessed it
 
     toggleTag: function(tagId) {
       var i = this.tags.indexOf(tagId);
@@ -794,7 +790,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
       if (updateNut && this.tags[id].docs) {
         this.tags[id].docs.forEach(function(docId) {
-          $s.n.nutUpdated(docId, $s.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
+          $s.n.nutUpdated(docId, $s.c.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
         });
       }
     }
@@ -973,7 +969,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       }
 
       $s.s.bind();
-      $s.s.shortcutsEditing = angular.copy($s.s.shortcuts);
+      $s.s.shortcutsEditing = angular.copy($s.s.shortcuts); // this is what's actually bound to the view, so that we can easily cancel
       $s.s.modEditing = $s.s.mod;
     },
     // takes values currently in shortcuts and makes a map to push into firebase
@@ -986,6 +982,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.ref.child("shortcuts").child("modKey").set($s.s.mod);
     },
 
+    // takes $s.s.shortcuts and actually turns them into shortcuts
     bind: function() {
       Mousetrap.reset();
 
@@ -1024,10 +1021,66 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.s.shortcutsEditing = angular.copy($s.s.shortcutsDefaults);
       $s.s.modEditing = $s.s.modDefault;
     }
-  };
-  // backup a copy of defaults in case user wants to revert to default
-  $s.s.shortcutsDefaults = angular.copy($s.s.shortcuts);
+  }; // end $s.s - shortcuts
+  $s.s.shortcutsDefaults = angular.copy($s.s.shortcuts); // backup a copy of defaults in case user wants to revert to default
   $s.s.modDefault = $s.s.mod;
+
+  // configuration
+  $s.c = {
+    // these will serve as defaults
+    config: {
+      maxHistory: 0,
+      tagChangesChangeNutModifiedTimestamp: false,
+      addQueryTagsToNewNuts: true
+    },
+
+    info: {
+      addQueryTagsToNewNuts: {
+        humanName: "Add filtered tags to new notes",
+        description: "If this is checked, new notes created while searching for certain tags will have those tags too.",
+        type: "boolean",
+        value: true
+      },
+      tagChangesChangeNutModifiedTimestamp: {
+        humanName: "Tagging updates timestamps",
+        description: "If this is checked then adding, removing, and renaming tags will change the \"modified\" timestamp of notes they are attached to.",
+        type: "boolean",
+        value: false
+      },
+      maxHistory: {
+        humanName: "Note history length",
+        description: "How many revisions of each note to save. 0 disables history. TOTALLY DISABLED FOR NOW.",
+        type: "integer",
+        value: 0,
+        overkill: true
+      }
+    },
+
+    pushSettings: function() {
+      $s.ref.child("settings").set($s.c.config);
+    },
+    loadSettings: function (settings) {
+      $.extend($s.c.config, settings);
+      $.extend($s.c.configEditing, settings);
+    },
+
+    save: function() {
+      $s.m.closeModal();
+      $s.c.config = angular.copy($s.c.configEditing);
+
+      $s.c.pushSettings();
+    },
+    cancel: function() {
+      $s.m.closeModal();
+      $s.c.configEditing = angular.copy($s.c.config);
+    },
+    revert: function() {
+      $s.c.configEditing = angular.copy($s.c.configDefaults);
+    }
+  };
+  $s.c.configEditing = angular.copy($s.c.config); // this is what's actually bound to the view, so that we can easily cancel
+  $s.c.configDefaults = angular.copy($s.c.config); // backup a copy of defaults in case user wants to revert to default
+
 
   function init(uid, cb) {
     console.log("init: fetching data for user uid "+uid)
@@ -1056,6 +1109,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         console.timeEnd("building lunr index");
 
         $s.s.initBindings(data.val().shortcuts);
+        $s.c.loadSettings(data.val().settings);
 
         featuresSeen = data.val().featuresSeen;
       }
@@ -1083,7 +1137,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       tags: [0,1,2]
     },
     {
-      body: "Here is my todo list of things to implement in Nutmeg in the very near future:\n\n- Tag auto-complete\n- Customizeable programmatic tagging\n- Fix weird font sizes\n- Responsive design: usable on all different sizes of devices\n- Any design at all\n- SSL\n- Private notes\n\nPotential avenues for future feature-bloat:\n\n- Tag jiggery\n  - (Auto-suggested) tag relationships, sequences, and modifiers\n  - Auto-tagging and API for programmatic tagging - tagging based output of arbitrary functions, like...\n    - Classifiers trained on what you've tagged so far\n    - Sentiment analysis and other computational linguistics prestidigitation like unusual concentrations of domain-specific words\n    - # or % of lines matching given regex\n    - Categorizations like the Flesch Reading Ease test\n    - Whatever your little heart desires\n- Markdown, Vim, syntax highlighting, and WYSIWYG support\n- Customizable layouts\n- Integration with...\n  - Email\n  - Instant messaging protocols\n- Shortcuts and visualizations for non-linear writing - think LaTeX meets [XMind](http://www.xmind.net/)\n- Plugin API and repository\n- Sharing and collaboration\n- Autodetecting (encouraging, formalizing, visualizing) user-generated on-the-fly syntax\n- Media support\n- Life logging\n- Exporting, web-hooks, integration with: IFTTT, Zapier, WordPress...\n- Legend/You Are Here minimap",
+      body: "Here is my todo list of things to implement in Nutmeg in the very near future:\n\n- Customizeable programmatic tagging\n- Sharing and live collaboration\n- Customizeable layouts\n- Fix weird font sizes\n- Responsive design: usable on all different sizes of devices\n- Any design at all\n- SSL\n- Private notes\n\nPotential avenues for future feature-bloat:\n\n- Tag jiggery\n  - (Auto-suggested) tag relationships, sequences, and modifiers\n  - Auto-tagging and API for programmatic tagging - tagging based output of arbitrary functions, like...\n    - Classifiers trained on what you've tagged so far\n    - Sentiment analysis and other computational linguistics prestidigitation like unusual concentrations of domain-specific words\n    - # or % of lines matching given regex\n    - Categorizations like the Flesch Reading Ease test\n    - Whatever your little heart desires\n- Markdown, Vim, syntax highlighting, and WYSIWYG support\n- Integration with...\n  - Email\n  - Instant messaging protocols\n- Shortcuts and visualizations for non-linear writing - think LaTeX meets [XMind](http://www.xmind.net/)\n- Plugin API and repository\n- Autodetecting (encouraging, formalizing, visualizing) user-generated on-the-fly syntax\n- Media support\n- Life logging\n- Exporting, web-hooks, integration with: IFTTT, Zapier, WordPress...\n- Legend/You Are Here minimap",
       tags: [1]
     },
     {

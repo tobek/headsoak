@@ -16,9 +16,7 @@ ece hdd reassigned (?) sectors 32768
 - bug: you can't click on autocomplete suggestions with mouse - make sure to trigger select and also have cursor pointer. prob is probably that the input closes too quickly?
 - splash page with a tiny bit of info and demo
     - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
-- init config and pull it on refresh. also necessary so that even if they delete all notes and tags, something exists in users/simplelogin:x, so that they don't get the firstInit() again
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
-- autocomplete tags
 - rudimentary programmatic tagging (popup modal with code editor and prototype of function and examples)
 - on init, some sign that your notes are loading
 - FAQ
