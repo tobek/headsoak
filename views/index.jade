@@ -108,15 +108,26 @@ block content
 
     div#menu
       ul
-        li(ng-click="m.modal='about'") about
-        li(ng-click="m.modal='feedback'") feedback
-        li.incomplete export
-        li.incomplete importer
-        li(ng-click="m.modal='shortcuts'") shortcuts
-        li(ng-click="m.modal='settings'") settings
-        li.incomplete(ng-show="u.loggedIn") account
-        li(ng-show="u.loggedIn", ng-click="u.auth.logout()") log out
-        li(ng-show="!u.loggedIn", ng-click="m.modal='login'") log in
+        li(ng-click="m.modal='about'") about 
+          i.fa.fa-fw.fa-info-circle
+        li(ng-click="m.modal='feedback'") feedback 
+          i.fa.fa-fw.fa-comment-o
+        li.incomplete export 
+          i.fa.fa-fw.fa-share-square-o
+        li.incomplete importer 
+          i.fa.fa-fw.fa-download
+        li.incomplete layout 
+          i.fa.fa-fw.fa-list.fa-flip-horizontal
+        li(ng-click="m.modal='shortcuts'") shortcuts 
+          i.fa.fa-fw.fa-keyboard-o
+        li(ng-click="m.modal='settings'") settings 
+          i.fa.fa-fw.fa-gears
+        li.incomplete(ng-show="u.loggedIn") account 
+          i.fa.fa-fw.fa-user
+        li(ng-show="u.loggedIn", ng-click="u.auth.logout()") log out 
+          i.fa.fa-fw.fa-power-off
+        li(ng-show="!u.loggedIn", ng-click="m.modal='login'") log in 
+          i.fa.fa-fw.fa-sign-in
       img#menuimage(src="/img/nutmeg40h.png", alt="nutmeg")
 
     div#query.flex-container
@@ -192,7 +203,7 @@ block content
             label Sort by 
               select(ng-model='t.sortBy', ng-options='o as o.name for o in t.sortOpts')
           input.moustrap(type="text", placeholder="search tags", ng-model="tagQuery")
-          i.fa.fa-cogs.show-tag-options(ng-click="showOptions = showOptions ? false : true", ng-class="{on: showOptions}")
+          i.fa.fa-wrench.show-tag-options(ng-click="showOptions = showOptions ? false : true", ng-class="{on: showOptions}")
 
           ul#taglist(ng-class="{'show-options': showOptions}")
             li.tag.new-tag(ng-show="t.creatingTag")
