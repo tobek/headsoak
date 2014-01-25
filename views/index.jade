@@ -52,17 +52,34 @@ block content
           h3 settings
           table
             tbody
-              tr(ng-repeat="(setting, val) in c.configEditing", ng-show="!c.info[setting].overkill")
+              tr(ng-repeat="(setting, val) in c.config", ng-show="c.info[setting].section == 'settings' && !c.info[setting].overkill")
                 td {{c.info[setting].humanName}} 
                   span.tooltip(ng-show="c.info[setting].description", ng-attr-data-tooltip="{{c.info[setting].description}}")
                     i.fa.fa-info-circle
                 td
                   label
                     //- for ng-model we can't use `val`, see https://github.com/angular/angular.js/wiki/Understanding-Scopes
-                    input(type="checkbox", ng-model="c.configEditing[setting]")
+                    input(type="checkbox", ng-model="c.config[setting]")
           div.button-holder
-            input(type="submit", value="cancel", ng-click="c.cancel()")
-            input(type="submit", value="defaults", ng-click="c.revert()")
+            input(type="submit", value="cancel", ng-click="c.cancel('settings')")
+            input(type="submit", value="defaults", ng-click="c.revert('settings')")
+            input(type="submit", value="save", ng-click="c.save()")
+
+        div.layout(ng-show="m.modal == 'layout'")
+          h3 layout
+          table
+            tbody
+              tr(ng-repeat="(setting, val) in c.config", ng-show="c.info[setting].section == 'layout' && !c.info[setting].overkill")
+                td {{c.info[setting].humanName}} 
+                  span.tooltip(ng-show="c.info[setting].description", ng-attr-data-tooltip="{{c.info[setting].description}}")
+                    i.fa.fa-info-circle
+                td
+                  label
+                    //- for ng-model we can't use `val`, see https://github.com/angular/angular.js/wiki/Understanding-Scopes
+                    input(type="checkbox", ng-model="c.config[setting]")
+          div.button-holder
+            input(type="submit", value="cancel", ng-click="c.cancel('layout')")
+            input(type="submit", value="defaults", ng-click="c.revert('layout')")
             input(type="submit", value="save", ng-click="c.save()")
 
         div.feedback(ng-show="m.modal == 'feedback'")
@@ -116,11 +133,11 @@ block content
           i.fa.fa-fw.fa-share-square-o
         li.incomplete importer 
           i.fa.fa-fw.fa-download
-        li.incomplete layout 
+        li(ng-click="m.modal='layout'; c.backup('layout')") layout 
           i.fa.fa-fw.fa-list.fa-flip-horizontal
         li(ng-click="m.modal='shortcuts'") shortcuts 
           i.fa.fa-fw.fa-keyboard-o
-        li(ng-click="m.modal='settings'") settings 
+        li(ng-click="m.modal='settings'; c.backup('settings')") settings 
           i.fa.fa-fw.fa-gears
         li.incomplete(ng-show="u.loggedIn") account 
           i.fa.fa-fw.fa-user
@@ -141,8 +158,7 @@ block content
       span.clear-query(ng-click="q.clear()")
         i.fa.fa-times
 
-    //- can add .tab-hidden to hide right panel
-    div#main
+    div#main(ng-class="{'hide-tag-browser': !c.config.showTagBrowser}")
 
       div#left
         div#nuts

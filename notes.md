@@ -93,6 +93,7 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo backlog
 
+- merge shortcut and settings/layout functionality. they're shortcuts are just special versions of settings. also, use the id system of shortcuts for storing configs in firebase? eh clean up
 - put lunr.update() in updateNutInIndex() (even on init?) into web workers so they don't halt the page
 - while add tag to note input has focus, don't shrink scroll height?
 - deal with nuts and tags being sparse arrays full of undefineds for each thing you've deleted. `track by $index` fixes duplicates in ng-repeat, but entries still show up in the DOM but are just hidden with ng-hide="!nut". kind of ugly.

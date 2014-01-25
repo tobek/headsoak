@@ -1038,7 +1038,11 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     config: {
       maxHistory: 0,
       tagChangesChangeNutModifiedTimestamp: false,
-      addQueryTagsToNewNuts: true
+      addQueryTagsToNewNuts: true,
+
+      // layout
+      showTagBrowser: true,
+      twoColumns: false,
     },
 
     info: {
@@ -1046,20 +1050,39 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         humanName: "Add filtered tags to new notes",
         description: "If this is checked, new notes created while searching for certain tags will have those tags too.",
         type: "boolean",
-        value: true
+        section: "settings"
       },
       tagChangesChangeNutModifiedTimestamp: {
         humanName: "Tagging updates timestamps",
         description: "If this is checked then adding, removing, and renaming tags will change the \"modified\" timestamp of notes they are attached to.",
-        type: "boolean",
-        value: false
+        section: "settings"
       },
       maxHistory: {
         humanName: "Note history length",
         description: "How many revisions of each note to save. 0 disables history. TOTALLY DISABLED FOR NOW.",
         type: "integer",
-        value: 0,
+        section: "settings",
         overkill: true
+      },
+
+      //layout
+      showTagBrowser: {
+        humanName: "Show tag browser",
+        type: "boolean",
+        section: "layout"
+      },
+      twoColumns: {
+        humanName: "Show two columns of notes",
+        type: "integer",
+        section: "layout",
+        overkill: true // not implemented yet
+      },
+      stickyColumn: {
+        humanName: "Sticky column",
+        description: "Column on the left is normal, but any notes you mark as 'sticky' are removed from the left column and appear in the right column.", // right column filtered by same search AND sticky, or ONLY sticky? maybe search bar oh wait this is just a specific version of twoColumns HAHA
+        type: "integer",
+        section: "layout",
+        overkill: true // not implemented yet
       }
     },
 
@@ -1068,25 +1091,53 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     },
     loadSettings: function (settings) {
       $.extend($s.c.config, settings);
-      $.extend($s.c.configEditing, settings);
     },
 
     save: function() {
       $s.m.closeModal();
-      $s.c.config = angular.copy($s.c.configEditing);
-
       $s.c.pushSettings();
     },
-    cancel: function() {
+    cancel: function(section) {
       $s.m.closeModal();
-      $s.c.configEditing = angular.copy($s.c.config);
+      if (!section) { // all
+        $s.c.config = angular.copy($s.c.configBackup);
+      }
+      else { // just this section
+        angular.forEach($s.c.config, function(value, setting) {
+          if ($s.c.info[setting].section == section) {
+            $s.c.config[setting] = $s.c.configBackup[setting];
+          }
+        });
+      }
     },
-    revert: function() {
-      $s.c.configEditing = angular.copy($s.c.configDefaults);
+    revert: function(section) {
+      if (!section) { // revert all
+        $s.c.config = angular.copy($s.c.configDefaults);
+      }
+      else { // just revert this section
+        angular.forEach($s.c.config, function(value, setting) {
+          if ($s.c.info[setting].section == section) {
+            $s.c.config[setting] = $s.c.configDefaults[setting];
+          }
+        });
+      }
+    },
+    // called when modal is opened, so that we can revert if they cancel
+    backup: function(section) {
+      if (!section) { // backup all
+        $s.c.configBackup = angular.copy($s.c.config);
+      }
+      else { // just backup this section
+        angular.forEach($s.c.config, function(value, setting) {
+          if ($s.c.info[setting].section == section) {
+            $s.c.configBackup[setting] = $s.c.config[setting];
+          }
+        });
+      }
     }
   };
-  $s.c.configEditing = angular.copy($s.c.config); // this is what's actually bound to the view, so that we can easily cancel
   $s.c.configDefaults = angular.copy($s.c.config); // backup a copy of defaults in case user wants to revert to default
+  $s.c.configBackup = angular.copy($s.c.config); // will store backup of current settings so that users can cancel
 
 
   function init(uid, cb) {

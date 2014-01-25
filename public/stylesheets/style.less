@@ -255,6 +255,12 @@ form {
 /* =LEFT (NUTS)
 ----------------------------------------------- */
 
+.hide-tag-browser {
+  #left{
+    width: 100%;
+  }
+}
+
 #left {
   float: left;
   width: 85%;
@@ -368,7 +374,7 @@ form {
 /* =RIGHT (TAGS)
 ----------------------------------------------- */
 
-.tab-hidden {
+.hide-tag-browser {
   #right {
     display: none;
   }
@@ -633,11 +639,25 @@ form {
           }
           input {
             font-size: 85%;
-            width: 150px;
           }
         }
 
-        &.shortcuts, &.settings {
+        &.shortcuts {
+          table {
+            input {
+              width: 150px;
+            }
+          }
+        }
+        &.settings, &.layout {
+          table {
+            input {
+              width: 50px;
+            }
+          }
+        }
+
+        &.shortcuts, &.settings, &.layout {
           .button-holder { margin-top: 10px; }
           .tooltip:after {
             font-size: 90%;
@@ -658,6 +678,11 @@ form {
               bottom: -100px;
               left: 25px;
             }
+          }
+        }
+        &.settings {
+          td > td {
+            text-align: center;
           }
         }
 
