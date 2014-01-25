@@ -377,6 +377,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
       if (typeof nut == "number") {
         nut = $s.n.nuts[nut];
+        if (!nut) return;
       }
 
       if (false && $s.c.config.maxHistory > 0) { // disabled for now
@@ -388,7 +389,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
           nut.history.shift(); // chuck the oldest one
         }
       }
-      else {
+      else if (nut.history) {
         // TEMPORARY? delete any pre-existing history
         delete nut.history;
       }
