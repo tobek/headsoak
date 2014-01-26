@@ -1213,6 +1213,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
     new Firebase('https://nutmeg.firebaseio.com/feedback/').push({
       'feedback': feedback,
+      'timestamp': new Date().toString(),
       'name': name || null,
       'email': $s.u.user.email
     }, function(err) {

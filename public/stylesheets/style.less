@@ -125,13 +125,6 @@ form {
   display: inline;
 }
 
-#menuimg {
-  height: auto;
-  width: 2%;
-  float: left;
-  margin: 5px;
-}
-
 #main {
   margin: 0 2% 2% 2%;
   height: 96%;
@@ -142,6 +135,15 @@ form {
 ----------------------------------------------- */
 
 #menu {
+
+  #menuimg {
+    height: auto;
+    width: 2%;
+    float: left;
+    margin: 5px;
+  }
+
+  z-index: 100;
   position: fixed;
   bottom: 0px;
   right: 0px;
@@ -152,8 +154,10 @@ form {
   }
   ul {
     display: none;
-    margin-right: 10px;
+    margin-right: 5px;
     font-size: 80%;
+    background-color: rgba(0,0,0,0.7);
+    padding: 5px;
   }
   li:hover {
     background-color: @menuHover;
