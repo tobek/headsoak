@@ -618,7 +618,6 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.q.doQuery();
     },
 
-    // TODO tag autocomplete should start with 1 keypress and be sorted by most used (configurable?)
     // query is string, tags is array of tag IDs
     doQuery: function(query, tags) {
       query = defaultFor(query, this.query);
@@ -1250,7 +1249,13 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 .directive('nmNut', function() {
   return {
     restrict: 'E',
-    templateUrl: 'nm-nut.html'
+    templateUrl: 'nm-nut.html',
+    link: function postLink(scope, iElement, iAttrs) {
+      if (iAttrs.nutId && scope.n.nuts) {
+        scope.nut = scope.n.nuts[scope.$eval(iAttrs.nutId)];
+      }
+      // otherwise rely on/assume `nut` is already in scope, e.g. via ng-repeat
+    }
   };
 })
 .directive('nmTag', function() {

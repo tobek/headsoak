@@ -59,7 +59,15 @@ ece hdd reassigned (?) sectors 32768
 - implement sort by query match strength
 - investigate if property name length matters in firebase - if so, have some automated minifier two-way dictionary to convert prop names - nice github plugin maybe
 - dbg time for lunr search
-- autocomplete tags
+- tag autocomplete also sorts by most used?
+    - how to mix match score with most used?
+        - order by match score but highlight the most used
+        - 50/50 or something like that
+    - many definitions of most used:
+        - on the most notes
+        - searched/filtered for the most (frequency or time?)
+        - notes with this tag focused on the most
+    - most used EVER or in past year/month/day?
 - hover over clock show creation and mod times, also mention history? pencil icon to edit creation date?
 - how/where to show modified/created dates on nuts? only on hover or focus?
     - could choose which (if any) of these to display
@@ -287,15 +295,12 @@ or (d*)-(d*)([cw]*)([+-]+) for range
 
 ## tags
 
-- new tags automatically have random text color random bg color. work out some way to ensure they're always visible together. (is just brightness/value not to close alright? min saturation?). right click to randomize color to choose color
 - pseudo tag "untagged"
 - two options for what tags shown:
     - default: all tags
     - tags just in query (with numbers reflecting)
 - hover gives you options to rename, delete, and change colors.
 - does clicking add this tag to current nut, or add tag to query? both available in hover menu and configurable "default on click action" for tags?
-- a tag may be defined as any search query. give example queries.
-    - can you manually add nuts to a automatic tag
 - duplicate tags names not allowed, but tag names are case sensitive
 - sticky tags (float to top of any query, otherwise sorted as normal amongst themselves) - balloon or thumbtack icon?
     - how to implement:
@@ -303,6 +308,21 @@ or (d*)-(d*)([cw]*)([+-]+) for range
         - actually a tag, but represented and toggled as a little icon on the note
         - either of the above, plus ability to specify any tag as sticky
     - leaden tags too? float to bottom. brick icon. sometimes i'm making a note just to store some data... and then want to get it out of my sight
+
+tag types
+
+- totally manual tags
+- private, sticky, archived
+    - icons in corner of notes that are on or off
+    - but when they're on they actually add tags (visually different: just icons) to the note
+    - PLUS you can specify certain tags as always sticky/private/etc.
+      - add icon to that tag
+      - icon in corner of note should be on. if you click it (to turn it off) it should highlight the tags that have that property
+- robot tags
+- search query tags?
+  - give example queries, could be keyword search, tag combinations, other queries like date/length/etc
+
+can you manually add nuts to a automatic tag?
 
 ### adding tags to notes
 

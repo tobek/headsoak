@@ -177,9 +177,9 @@ block content
           //- div {{q.showAll ? n.nuts.length : q.showNuts.length}}
 
           ul
-            //- ng-show="nut && [...]" to avoid showing undefined nuts (happens when deleting nuts and resulting sparse arrays) and to filter by query
-            //- NOTE: maybe should let n.assignSortVals() handle both, and ng-show="nut.sortVal"
-            nm-nut(ng-repeat="nut in n.nuts | orderBy:'sortVal' track by $index", ng-show="nut && (q.showAll || q.showNuts.indexOf(nut.id) !== -1)", id="nut-{{nut.id}}")
+            //- NOTE: maybe should let n.assignSortVals() handle q.showNuts too, and ng-show="nut.sortVal" ?
+            li.nut(ng-repeat="nut in n.nuts | orderBy:'sortVal' track by $index", ng-show="q.showAll || q.showNuts.indexOf(nut.id) !== -1", id="nut-{{nut.id}}")
+              nm-nut
 
       div#right
         div#tagContainer
