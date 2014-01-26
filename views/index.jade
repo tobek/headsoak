@@ -179,35 +179,7 @@ block content
           ul
             //- ng-show="nut && [...]" to avoid showing undefined nuts (happens when deleting nuts and resulting sparse arrays) and to filter by query
             //- NOTE: maybe should let n.assignSortVals() handle both, and ng-show="nut.sortVal"
-            li.nut(ng-repeat="nut in n.nuts | orderBy:'sortVal' track by $index", ng-show="nut && (q.showAll || q.showNuts.indexOf(nut.id) !== -1)", id="nut-{{nut.id}}")
-              div.tags
-                span.tag(ng-repeat="tagId in nut.tags",  ng-click="q.toggleTag(tagId)")
-                  | {{t.tags[tagId].name}}
-                  span.tracker {{t.tags[tagId].tracker ? nut.id : ''}} 
-                  span.delete(ng-click="n.removeTagIdFromNut(tagId, nut.id)")
-                    i.fa.fa-times
-                | 
-                span.tag(ng-show="n.addingTag === nut.id")
-                  form(ng-submit="n.addTagNameToNut(n.addTagName, nut, true); n.closeAddTagField(nut)")
-                    input(type="text", ng-model="n.addTagName", ng-blur="n.closeAddTagField(nut); n.addTagHack()", nm-focus="n.addingTag === nut.id", placeholder="tag name")
-                //-
-                  HACK:
-                  want to make sure user can hit the '+' to add the tag. but blur fires too quickly and won't not fire: http://stackoverflow.com/questions/20822978/blur-event-not-firing-on-label
-                  a solution:
-                  n.addTagHack() above sets n.addTagHackFieldJustBlurred to true for 50ms, then back to false
-                  in this way we can tell, when hitting add-tag-to-nut, whether the field was just open
-                  if it was, then do addTagNameToNut() (which returns false, setting n.addingTag to false)
-                  if not, field's been closed for a while, so set n.addingTag to true to show it
-                span.add-tag-to-nut(ng-click="throwaway = n.addTagHackFieldJustBlurred ? n.addTagNameToNut(n.addTagName, nut, true) : n.openAddTagField(nut);")
-                  i.fa.fa-plus &nbsp;
-              div.clear
-              div.tawrapper
-                div.icons
-                  a.time.tooltip(ng-attr-data-tooltip='{{"created: " + (nut.created | date:"medium") + "\nmodified: " + (nut.modified | date:"medium")}}')
-                    i.fa.fa-clock-o
-                  a.delete(ng-click="n.deleteNut(nut)")
-                    i.fa.fa-trash-o
-                textarea.mousetrap(id="nut-{{nut.id}}-ta", ng-model="nut.body", ng-focus="n.nutFocus(nut)", ng-blur="n.nutBlur(nut)", ng-change="digest.status='unsynced'; n.autosizeNutById(nut.id)", tabindex=2)
+            nm-nut(ng-repeat="nut in n.nuts | orderBy:'sortVal' track by $index", ng-show="nut && (q.showAll || q.showNuts.indexOf(nut.id) !== -1)", id="nut-{{nut.id}}")
 
       div#right
         div#tagContainer
@@ -225,15 +197,4 @@ block content
             li.tag.new-tag(ng-show="t.creatingTag")
               form(ng-submit="t.createTag({name: t.createTagName})")
                 input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';" nm-focus="t.creatingTag", placeholder="tag name")
-            li.tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev track by $index", ng-click="q.toggleTag(tag.id)", ng-hide="!tag", ng-show="!tagQuery || tag.name.toLowerCase().indexOf(tagQuery.toLowerCase()) !== -1")
-              | {{tag.name}} ({{tag.docs ? tag.docs.length : 0}}) 
-              span.icons
-                a.delete(ng-click="$event.stopPropagation(); t.deleteTag(tag)")
-                  i.fa.fa-trash-o
-                a.edit(ng-click="$event.stopPropagation(); t.editTag(tag)")
-                  i.fa.fa-pencil
-                a.toggle(ng-class="{on: tag.tracker}", ng-click="tag.tracker = tag.tracker ? null : true; t.tagUpdated(tag.id); $event.stopPropagation()")
-                  i.fa.fa-eye
-                a.toggle(ng-class="{on: tag.private}", ng-click="tag.private = tag.private ? null : true; t.tagUpdated(tag.id); $event.stopPropagation()")
-                  i.fa.fa-lock
-                  i.fa.fa-unlock-alt
+            nm-tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev track by $index", ng-hide="!tag", ng-show="!tagQuery || tag.name.toLowerCase().indexOf(tagQuery.toLowerCase()) !== -1")

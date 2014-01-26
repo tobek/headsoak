@@ -1,0 +1,12 @@
+li.tag(ng-click="q.toggleTag(tag.id)")
+  | {{tag.name}} ({{tag.docs ? tag.docs.length : 0}}) 
+  span.icons
+    a.delete(ng-click="$event.stopPropagation(); t.deleteTag(tag)")
+      i.fa.fa-trash-o
+    a.edit(ng-click="$event.stopPropagation(); t.editTag(tag)")
+      i.fa.fa-pencil
+    a.toggle(ng-class="{on: tag.tracker}", ng-click="tag.tracker = tag.tracker ? null : true; t.tagUpdated(tag.id); $event.stopPropagation()")
+      i.fa.fa-eye
+    a.toggle(ng-class="{on: tag.private}", ng-click="tag.private = tag.private ? null : true; t.tagUpdated(tag.id); $event.stopPropagation()")
+      i.fa.fa-lock
+      i.fa.fa-unlock-alt

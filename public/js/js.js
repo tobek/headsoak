@@ -1246,6 +1246,18 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       nmScope.q.doQuery();
     });
   };
+})
+.directive('nmNut', function() {
+  return {
+    restrict: 'E',
+    templateUrl: 'nm-nut.html'
+  };
+})
+.directive('nmTag', function() {
+  return {
+    restrict: 'E',
+    templateUrl: 'nm-tag.html'
+  };
 });
 
 

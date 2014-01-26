@@ -7,6 +7,7 @@ var http = require('http');
 var path = require('path');
 var jade = require('jade');
 var fs = require('fs');
+var wrench = require('wrench');
 
 var app = express();
 
@@ -75,16 +76,23 @@ require('dns').resolve('www.google.com', function(err) {
     ]
   };
 
-  console.log("Compiling index.html from jade...");
-  jade.renderFile('views/index.jade', view, function (err, html) {
+  console.log("Compiling html from jade...");
+  wrench.readdirRecursive('views', function(err, files) {
     if (err) throw err;
-
-    fs.writeFile("public/index.html", html, function(err) {
-      if (err) throw err;
-
-      http.createServer(app).listen(app.get('port'), function(){
-        console.log('Express server listening on port ' + app.get('port'));
+    if (files) {
+      files.forEach(function(f) {
+        jade.renderFile('views/'+f, view, function (err, html) {
+          if (err) throw err;
+          fs.writeFile('public/'+f.replace('.jade', '.html'), html, function(err) {
+            if (err) throw err;
+          })
+        });
       });
-    }) // end fs writing index.html
-  }); // end jade rendering
+    }
+  });
+
+  http.createServer(app).listen(app.get('port'), function(){
+    console.log('Express server listening on port ' + app.get('port'));
+  });
+
 }); // end dns attempt to resolve google

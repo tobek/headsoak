@@ -1,5 +1,5 @@
 node_modules
 .*~
 public/stylesheets/style.css
-public/index.html
+public/*.html
 s3config.json
