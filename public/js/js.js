@@ -336,7 +336,13 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       });
     },
 
+    // accepts nut or nut ID
     deleteNut: function(nut, noconfirm) {
+      if (typeof nut == "number") {
+        nut = $s.n.nuts[nut];
+        if (!nut) return;
+      }
+
       if (!noconfirm && !confirm("Are you sure you want to delete this note? This can't be undone.\n\nIt's the note that goes like this: \"" + (nut.body ? nut.body.substr(0, 100) : "") + "...\"")) {
         return;
       }
@@ -472,44 +478,6 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       });
     },
 
-    addTagNameToNut: function(tagName, nut, returnFocusToNut) {
-      if (tagName) {
-        var tagId = $s.t.getTagIdByName(tagName);
-
-        if (tagId === -1) {
-          console.log("creating new tag " + tagName);
-          tagId = $s.t.createTag({name: tagName});
-        }
-
-        if (!nut.tags) nut.tags = []; // firebase doesn't store empty arrays/objects, so create it here
-        if (nut.tags.indexOf(parseInt(tagId)) !== -1) {
-          console.log("tag "+tagName+" already exists on nut "+nut.id);
-        }
-        else {
-          this.addTagIdToNut(tagId, nut.id);
-        }
-        $s.n.addTagName = '';
-      }
-      if (returnFocusToNut) {
-        this.focusOnNutId(nut.id);
-      }
-    },
-    openAddTagField: function(nut) {
-      $s.autocomplete($("#nut-"+nut.id+" .tags input"), nut);
-      $s.n.addingTag = nut.id; // this will automatically show the field and put focus on it
-    },
-    closeAddTagField: function(nut) {
-      $s.n.addingTag = false; // will automatically hide field
-      $("#nut-"+nut.id+" .tags input").autocomplete('dispose');
-    },
-    // see comment in jade file where this is called for explanation
-    addTagHack: function() {
-      $s.n.addTagHackFieldJustBlurred = true;
-      $timeout(function () {
-        $s.n.addTagHackFieldJustBlurred = false;
-      }, 50);
-    },
-
     // each nut has an array of tags and each tag has an array of nuts it belongs to. this function ensures this remains consistent when adding tags to nuts
     addTagIdToNut: function(tagId, nutId) {
       console.log("adding tag "+tagId+" to nut "+nutId);
@@ -579,6 +547,17 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     getFocusedNut: function() {
       var match = document.activeElement.id.match(/^nut-(\d*)-ta$/); // ids are all e.g. nut-11-ta
       return match ? $s.n.nuts[match[1]] : null;
+    },
+    getFocusedNutID: function() {
+      var match = document.activeElement.id.match(/^nut-(\d*)-ta$/); // ids are all e.g. nut-11-ta
+      return match ? parseInt(match[1]) : null;
+    },
+    // get scope of the controller of the currently focused nmNut directive. from here we can do things like openAddTagField()
+    getFocusedNutScope: function() {
+      // check if we are focused on a <nm-nut> element or a child of one
+      if ($(document.activeElement).parents("nm-nut").length > 0 || document.activeElement.tagName.toLowerCase() == "nm-nut") {
+        return $(document.activeElement).scope();
+      }
     },
 
     countShownNuts: function() {
@@ -838,8 +817,11 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       },
       onSelect: function(suggestion) {
         if (nut) { // we're in the add tag field of a nut
-          $s.n.addTagNameToNut(suggestion.value, nut, true);
-          $s.n.closeAddTagField(nut);
+          var scope = $s.n.getFocusedNutScope();
+          if (scope) {
+            scope.addTag(true, suggestion.value);
+            scope.closeAddTagField();
+          }
         }
         else { // being called on the search query bar
           $s.q.toggleTag($s.t.getTagIdByName(suggestion.value));
@@ -881,8 +863,8 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         description: "Deletes the note that you are currently editing.",
         binding: "backspace",
         fn: function() {
-          var nut = $s.n.getFocusedNut();
-          if (nut) { $s.n.deleteNut(nut); }
+          var id = $s.n.getFocusedNutID();
+          if (id) { $s.n.deleteNut(id); }
         },
         apply: true,
         id: 1
@@ -892,8 +874,8 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         description: "Deletes the note that you are currently editing. Does not ask \"Are you sure?\"",
         binding: 'shift+backspace',
         fn: function() {
-          var nut = $s.n.getFocusedNut();
-          if (nut) { $s.n.deleteNut(nut, true); }
+          var id = $s.n.getFocusedNutID();
+          if (id) { $s.n.deleteNut(id, true); }
         },
         overkill: true,
         apply: true,
@@ -904,8 +886,8 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         description: "Adds tag to the note that you are currently editing.",
         binding: "t",
         fn: function() {
-          var nut = $s.n.getFocusedNut();
-          if (nut) { $s.n.openAddTagField(nut); }
+          var scope = $s.n.getFocusedNutScope();
+          if (scope) { scope.openAddTagField(); }
         },
         apply: true,
         id: 3
@@ -1229,6 +1211,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
   window.nmScope = angular.element("body").scope();
 
 }]) // end of Nutmeg controller
+
 .directive('nmFocus', function($timeout) {
   return function(scope, element, attrs) {
      scope.$watch(attrs.nmFocus, function (newValue) {
@@ -1250,12 +1233,59 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
   return {
     restrict: 'E',
     templateUrl: 'nm-nut.html',
-    link: function postLink(scope, iElement, iAttrs) {
-      if (iAttrs.nutId && scope.n.nuts) {
-        scope.nut = scope.n.nuts[scope.$eval(iAttrs.nutId)];
+    link: function postLink($s, el, attrs) {
+      if (attrs.nutId && $s.n.nuts) {
+        $s.nut = $s.n.nuts[$s.$eval(attrs.nutId)];
       }
       // otherwise rely on/assume `nut` is already in scope, e.g. via ng-repeat
-    }
+    },
+    controller: ['$scope', '$element', '$timeout', function($s, $el, $timeout) {
+      // takes what's in $s.addTagName (or addTagNameOverride) and adds it to this nut
+      $s.addTag = function(returnFocusToNut, addTagNameOverride) {
+        var tagName = addTagNameOverride || $s.addTagName;
+        if (tagName) {
+          var tagId = $s.t.getTagIdByName(tagName);
+
+          if (tagId === -1) {
+            console.log("creating new tag " + tagName);
+            tagId = $s.t.createTag({name: tagName});
+          }
+
+          if (!$s.nut.tags) $s.nut.tags = []; // firebase doesn't store empty arrays/objects, so create it here
+          if ($s.nut.tags.indexOf(parseInt(tagId)) !== -1) {
+            console.log("tag "+tagName+" already exists on nut "+$s.nut.id);
+          }
+          else {
+            $s.n.addTagIdToNut(tagId, $s.nut.id);
+          }
+          $s.addTagName = '';
+        }
+        if (returnFocusToNut) {
+          $s.focus();
+        }
+      };
+      $s.openAddTagField = function() {
+        $s.autocomplete($("#nut-"+$s.nut.id+" .tags input"), $s.nut);
+        $s.addingTag = true; // this will automatically show the field and put focus on it
+      };
+      $s.closeAddTagField = function() {
+        $s.addingTag = false; // will automatically hide field
+        $("#nut-"+$s.nut.id+" .tags input").autocomplete('dispose');
+      };
+      // see comment in jade file where this is called for explanation
+      $s.addTagHack = function() {
+        $s.addTagHackFieldJustBlurred = true;
+        setTimeout(function () {
+          $s.addTagHackFieldJustBlurred = false;
+        }, 200);
+      };
+
+      $s.focus = function() {
+        $timeout(function() {
+          $($el).find("textarea")[0].focus();
+        }, 5);
+      }
+    }]
   };
 })
 .directive('nmTag', function() {
