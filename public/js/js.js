@@ -586,10 +586,16 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     query: "", // modeled in query bar and watched for changes by nmQuery directive, which calls doQuery()
     tags: [], // list of tag ids we are filtering by - will be intersected with results of lunr search. also, if $s.c.config.addQueryTagsToNewNuts, then... you guessed it
 
-    toggleTag: function(tagId) {
+    toggleTag: function(tagId, e) {
       var i = this.tags.indexOf(tagId);
       if (i == -1) {
-        this.tags.push(tagId);
+        if (e) { // being toggled from a mouse click
+          if (e.shiftKey) { this.tags.push(tagId); }
+          else { this.tags = [tagId]; }
+        }
+        else { // being toggled from, say, query autocomplete
+          this.tags.push(tagId);
+        }
       }
       else {
         this.tags.splice(i, 1);

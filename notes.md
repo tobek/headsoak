@@ -410,6 +410,10 @@ Two (or arbitrary #) of strengths with which you can attach a tag to a nut. Pers
 
 Really the way to make it extensible is a list of levels each with value, shortcut, and opacity level. With a default. Shortcuts could be multi-key, like 1-then-enter.
 
+## Tips/UI
+
+- Shift+click on a tag to select more than one tag to search for. (Details: if a tag is in the query, clicking on it removes it. Otherwise, clicking on it replaces any tags in the query with the tag you clicked on, unless you hold shift, in which case it adds it)
+
 ## RANDO
 
 - maximum BSON size is 16mb. large documents with history may reach this. deal with/alert about/trim history/whatever
