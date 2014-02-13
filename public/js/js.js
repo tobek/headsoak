@@ -837,12 +837,15 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       formatResult: function(suggestion) {
         return suggestion.highlighted;
       },
-      onSelect: function(suggestion) {
+      onSelect: function(suggestion, e) {
         if (nut) { // we're in the add tag field of a nut
           var scope = $s.n.getFocusedNutScope();
           if (scope) {
             scope.addTag(true, suggestion.value);
             scope.closeAddTagField();
+            if (e.shiftKey) { // hold shift to add another tag
+              $timeout(scope.openAddTagField, 10);
+            }
           }
         }
         else { // being called on the search query bar

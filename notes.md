@@ -413,6 +413,7 @@ Really the way to make it extensible is a list of levels each with value, shortc
 ## Tips/UI
 
 - Shift+click on a tag to select more than one tag to search for. (Details: if a tag is in the query, clicking on it removes it. Otherwise, clicking on it replaces any tags in the query with the tag you clicked on, unless you hold shift, in which case it adds it)
+- When adding a tag to a nut, hold shift to immediately open the input field again for adding another tag
 
 ## RANDO
 

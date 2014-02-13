@@ -163,8 +163,8 @@
             });
 
             // Listen for click event on suggestions list:
-            container.on('click.autocomplete', suggestionSelector, function () {
-                that.select($(this).data('index'));
+            container.on('click.autocomplete', suggestionSelector, function (e) {
+                that.select($(this).data('index'), e);
             });
 
             that.fixPosition();
@@ -332,7 +332,7 @@
                         that.hide();
                         return;
                     }
-                    that.select(that.selectedIndex);
+                    that.select(that.selectedIndex, e);
                     if (e.which === keys.TAB && that.options.tabDisabled === false) {
                         return;
                     }
@@ -622,10 +622,10 @@
             that.select(i);
         },
 
-        select: function (i) {
+        select: function (i, e) {
             var that = this;
             that.hide();
-            that.onSelect(i);
+            that.onSelect(i, e);
         },
 
         moveUp: function () {
@@ -682,7 +682,7 @@
             that.signalHint(null);
         },
 
-        onSelect: function (index) {
+        onSelect: function (index, e) {
             var that = this,
                 onSelectCallback = that.options.onSelect,
                 suggestion = that.suggestions[index];
@@ -694,7 +694,7 @@
             that.selection = suggestion;
 
             if ($.isFunction(onSelectCallback)) {
-                onSelectCallback.call(that.element, suggestion);
+                onSelectCallback.call(that.element, suggestion, e);
             }
         },
 
