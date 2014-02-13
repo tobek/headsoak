@@ -675,6 +675,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
   $("#query .search").on("keydown", function(e) {
     if (e.keyCode == 8 && $("#query .search")[0].selectionStart == 0 && $s.q.tags.length > 0) {
       $s.q.removeTag($s.q.tags[$s.q.tags.length-1]);
+      $s.q.setupAutocomplete(); // reset autocomplete so that newly removed tag is in suggestions again
       $timeout($s.n.autosizeAllNuts, 5); // this should get called anyway but for some reason is not working when backspacing tags
     }
   });
@@ -805,15 +806,18 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
   // if no nut is passed, this is being called on the query bar
   $s.autocomplete = function(el, nut) {
 
-    var lookupArray; // should be array of strings
-    if (nut && nut.tags) {
-      lookupArray = $s.t.tags.filter(function(tag) {
-        return (tag && nut.tags.indexOf(tag.id) === -1) // filter out tags that are already on this nut
-      });
-    }
-    else {
-      lookupArray = $s.t.tags.filter(function(tag) {return tag;}) // filter to remove undefineds
-    }
+    // lookupArray should end up as an array of strings
+    var lookupArray = $s.t.tags.filter(function(tag) {
+      if (!tag) return false; // filter out undefineds
+      if (nut) { // we're in the add tag field of a nut
+        if (nut.tags) {
+          return (nut.tags.indexOf(tag.id) === -1) // filter out tags that are already on this nut
+        }
+      }
+      else { // we're in the search query bar
+        return ($s.q.tags.indexOf(tag.id) === -1) // filter out tags that are already in the search query
+      }
+    });
     lookupArray = lookupArray.map(function(tag) {return tag.name; }); // convert from tag objects to strings
 
     return $(el).autocomplete({
@@ -844,6 +848,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         else { // being called on the search query bar
           $s.q.addTag($s.t.getTagIdByName(suggestion.value));
           $s.q.query = "";
+          $s.q.setupAutocomplete(); // reset autocomplete so that newly added tag will not be in suggestions
         }
       },
       lookup: lookupArray
