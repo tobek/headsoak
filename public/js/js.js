@@ -885,6 +885,20 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         id: 0
       }
       , {
+        name: "New note, add tag",
+        description: "Create a new note and immediately open the input field to add a tag to that note.",
+        binding: "shift+n",
+        fn: function() {
+          $s.n.createNut({});
+          $timeout(function() {
+            var scope = $s.n.getFocusedNutScope();
+            if (scope) { scope.openAddTagField(); }
+          }, 25);
+        },
+        apply: true,
+        id: 8
+      }
+      , {
         name: "Delete note",
         description: "Deletes the note that you are currently editing.",
         binding: "backspace",
