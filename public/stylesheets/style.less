@@ -114,11 +114,15 @@ a {
   clear: both;
   cursor: pointer;
 }
-#left .tag:hover{
-  background-color: @nutTagHover;
+#left {
+  .tag:hover{ background-color: @nutTagHover; }
+  .tag.queried{ background-color: #333; }
+  .tag.queried:hover{ background-color: saturate(lighten(@nutTagHover, 20%), 50%); }
 }
-#right .tag:hover{
-  background-color: @tagHover;
+#right {
+  .tag:hover{ background-color: @tagHover; }
+  .tag.queried{ background-color: #3F3F3F; }
+  .tag.queried:hover{ background-color: lighten(@tagHover, 10%); }
 }
 
 form {
@@ -159,6 +163,9 @@ form {
     background-color: rgba(0,0,0,0.7);
     padding: 5px;
   }
+  li {
+    cursor: pointer;
+  }
   li:hover {
     background-color: @menuHover;
   }
@@ -166,6 +173,7 @@ form {
     color: @menuActive;
   }
   .incomplete {
+    cursor: default;
     color: #AAA;
     opacity: 0.75;
   }

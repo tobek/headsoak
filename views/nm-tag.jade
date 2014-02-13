@@ -1,4 +1,4 @@
-li.tag(ng-click="q.toggleTag(tag.id)")
+li.tag(ng-click="q.toggleTag(tag.id)", ng-class="{queried: (q.tags.indexOf(tag.id) != -1)}")
   | {{tag.name}} ({{tag.docs ? tag.docs.length : 0}}) 
   span.icons
     a.delete(ng-click="$event.stopPropagation(); t.deleteTag(tag)")

@@ -1,6 +1,6 @@
 div(ng-show="nut")
   div.tags
-    span.tag(ng-repeat="tagId in nut.tags",  ng-click="q.toggleTag(tagId)")
+    span.tag(ng-repeat="tagId in nut.tags",  ng-click="q.toggleTag(tagId)", ng-class="{queried: (q.tags.indexOf(tagId) != -1)}")
       | {{t.tags[tagId].name}}
       span.tracker {{t.tags[tagId].tracker ? nut.id : ''}} 
       span.delete(ng-click="n.removeTagIdFromNut(tagId, nut.id)")
