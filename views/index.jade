@@ -150,7 +150,7 @@ block content
     div#query.flex-container
       i.fa.fa-search(ng-click="q.focus()")
       span.tags
-        span.tag(ng-repeat="tagId in q.tags", ng-click="q.toggleTag(tagId)")
+        span.tag(ng-repeat="tagId in q.tags", ng-click="q.removeTag(tagId)")
           | {{t.tags[tagId].name}}
           span.hover-cover
             i.fa.fa-times

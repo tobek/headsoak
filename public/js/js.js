@@ -589,18 +589,30 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     toggleTag: function(tagId, e) {
       var i = this.tags.indexOf(tagId);
       if (i == -1) {
-        if (e) { // being toggled from a mouse click
-          if (e.shiftKey) { this.tags.push(tagId); }
-          else { this.tags = [tagId]; }
+        if (e && e.shiftKey) { // being toggled from a mouse shift+click
+          this.addTag(tagId);
         }
-        else { // being toggled from, say, query autocomplete
-          this.tags.push(tagId);
+        else {
+          this.tags = [tagId];
+          $s.q.doQuery();
         }
       }
       else {
-        this.tags.splice(i, 1);
+        this.removeTag(tagId);
       }
-      $s.q.doQuery();
+    },
+    addTag: function(tagId) {
+      if (this.tags.indexOf(tagId) == -1) {
+        this.tags.push(tagId);
+        $s.q.doQuery();
+      }
+    },
+    removeTag: function(tagId) {
+      var i = this.tags.indexOf(tagId);
+      if (i != -1) {
+        this.tags.splice(i, 1);
+        $s.q.doQuery();
+      }
     },
 
     // query is string, tags is array of tag IDs
@@ -662,7 +674,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
   // TODO: not sure in what browsers selectionStart works, but it's not all. make sure that it doesn't always return 0 in some browsers, cause then we'll be deleting all the time
   $("#query .search").on("keydown", function(e) {
     if (e.keyCode == 8 && $("#query .search")[0].selectionStart == 0 && $s.q.tags.length > 0) {
-      $s.q.toggleTag($s.q.tags[$s.q.tags.length-1]);
+      $s.q.removeTag($s.q.tags[$s.q.tags.length-1]);
       $timeout($s.n.autosizeAllNuts, 5); // this should get called anyway but for some reason is not working when backspacing tags
     }
   });
@@ -830,7 +842,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
           }
         }
         else { // being called on the search query bar
-          $s.q.toggleTag($s.t.getTagIdByName(suggestion.value));
+          $s.q.addTag($s.t.getTagIdByName(suggestion.value));
           $s.q.query = "";
         }
       },
