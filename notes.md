@@ -12,7 +12,6 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo before jello launch
 
-- shift+enter should add tag to note and create new one
 - autocomplete tags: if score > something, offer "add new tag blah" first
 - autocomplete bug: you can't click on autocomplete suggestions with mouse - make sure to trigger select and also have cursor pointer. prob is probably that the input closes too quickly?
 - splash page with a tiny bit of info and demo
@@ -290,6 +289,9 @@ or (d*)-(d*)([cw]*)([+-]+) for range
     - change creation date
     - share/send to/export
     - bulk add/remove tags (deal like gmail with labels that some but not all in selection have)
+- on individual notes
+    - see timestamps
+    - create new note with the same tags
 - customizeable views but two default: browser and note
     - browser: full screen, tag list, shows multiple results (tiny tiny section navigation icon), search bar, menu
     - note: windowed, (transparent bg?), larger section navigation chiclet,
@@ -414,6 +416,7 @@ Really the way to make it extensible is a list of levels each with value, shortc
 
 - Shift+click on a tag to select more than one tag to search for. (Details: if a tag is in the query, clicking on it removes it. Otherwise, clicking on it replaces any tags in the query with the tag you clicked on, unless you hold shift, in which case it adds it)
 - When adding a tag to a nut, hold shift to immediately open the input field again for adding another tag
+- When deleting a note (either with the keyboard shortcut or clicking on the trash icon) hold shift to delete without confirming
 
 ## RANDO
 
@@ -440,6 +443,7 @@ could have user collection which stored name of note collection. multiple users 
 
 # Resources
 
+- disable text-selection: http://stackoverflow.com/questions/826782/css-rule-to-disable-text-selection-highlighting
 - guides (for wizards/tutorials)
     - http://linkedin.github.io/hopscotch/
     - https://github.com/jeff-optimizely/Guiders-JS

@@ -367,6 +367,18 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       console.log("nut "+nut.id+" has been deleted");
     },
 
+    // creates new nut with same tags as tags of given nut
+    // accepts nut or nut ID
+    duplicateNoteTags: function(nut) {
+      if (typeof nut == "number") {
+        nut = $s.n.nuts[nut];
+        if (!nut) return;
+      }
+      $s.n.createNut({
+        tags: nut.tags.slice() // slice to duplicate array
+      });
+    },
+
     /* call whenever a nut is updated
      * can accept nut id OR nut
      * is called, for instance, via nutBlur when textarea blurs or when tags added/removed
@@ -874,6 +886,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
    * allowOnModal (optional): by default, shortcuts are disabled when a modal is open, unless this is true
    */
 
+  // latest id: 9
   $s.s = {
     "mod": "ctrl+alt",
     "shortcuts": [
@@ -897,6 +910,17 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         },
         apply: true,
         id: 8
+      }
+      , {
+        name: "Duplicate note tags",
+        description: "Create a new note with the same tags as the currently focused note",
+        binding: "d",
+        fn: function() {
+          var id = $s.n.getFocusedNutID();
+          if (id) { $s.n.duplicateNoteTags(id); }
+        },
+        apply: true,
+        id: 9
       }
       , {
         name: "Delete note",
