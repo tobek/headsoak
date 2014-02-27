@@ -295,7 +295,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
       // if we've specifically passed in tags on this nut, use those. otherwise, maybe use query-filtering tags
       if (!nut.tags && $s.c.config.addQueryTagsToNewNuts && $s.q.tags && $s.q.tags.length > 0) {
-        nut.tags = $s.q.tags;
+        nut.tags = $s.q.tags.slice(); // slice to duplicate
       }
 
       this.nuts.push($.extend({
