@@ -6,22 +6,40 @@ l.update({"body":"yo some words", "id": 0})
 l.search("word") // returns one result
 l.search("some") // returns no results
 
-ece hdd reassigned (?) sectors 32768
 
 ## TODO
 
-### todo before jello launch
+### todo for beta: bits and bugs
 
 - autocomplete bug: you can't click on autocomplete suggestions with mouse - make sure to trigger select and also have cursor pointer. prob is probably that the input closes too quickly?
-- splash page with a tiny bit of info and demo
-    - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
+    - fix on stack overflow
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
-- rudimentary programmatic tagging (popup modal with code editor and prototype of function and examples)
 - on init, some sign that your notes are loading
 - FAQ
 - forgot password link that resets
     - reset password should be grammatical passphrase:  The <adjective> <noun> is <verb> <adverb>. The green cat is jumping wildly. have lists for the categories. with 1024 choices for each you have 40 bits of entropy.
 - listen to remote changes in Firebase (suggesting you've logged in elsewhere) and if detected, show popup saying that you've logged in and changed elsewhere, you gotta refresh or something
+- issues connecting to firebase
+    - somehow listen for connection/disconnection and alert user and change cloud to red
+    - maybe set some time in `push()`, and if `pushHackCounter>0` in `push()`, and if some length of time has passed (like 30s) then alert user and suggest something
+    - https://www.firebase.com/docs/managing-presence.html
+- daily backup of all JSON
+- more robust circular modal
+- better logo
+- favicon
+- font
+- make it not run slowly (like when autosizing)
+
+### todo for beta: 
+
+- private notes
+- rudimentary programmatic tagging (popup modal with code editor and prototype of function and examples)
+- intro page with a tiny bit of info and demo
+    - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
+        - ideally, when you create an account, it is saved?
+- mobile responsive
+- shared notes
+    - live collab
 
 ### todo next
 
@@ -40,16 +58,12 @@ ece hdd reassigned (?) sectors 32768
 - create account by invite only + 'request invite' button
     - basically give a unique URL like nutmeg.io?invite=somethingcute
     - with login, if invite query param exists and matches again firebase array i've hand-added, then show create account (nicer welcome message) and then update firebase with this invite being taken
-- issues connecting to firebase
-    - somehow listen for connection/disconnection and alert user and change cloud to red
-    - maybe set some time in `push()`, and if `pushHackCounter>0` in `push()`, and if some length of time has passed (like 30s) then alert user and suggest something
-    - https://www.firebase.com/docs/managing-presence.html
 - investigate and fix lunr weirdness
 - shortcuts
     - MOAR POWER mode: enable overkill, enable checkbox that removes modkey for that shortcut
     - new tag in general (ctrl shift t?)
     - maybe shift+enter or comma to add another tag after writing this one (customizeable). it basically just hits enter and opens another/creates a new tag and clears current and leaves focus there
-- highlight matched query in search results
+- highlight and scroll to matched query in search results
 
 ### todo eventually
 
