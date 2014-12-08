@@ -12,7 +12,6 @@ ece hdd reassigned (?) sectors 32768
 
 ### todo before jello launch
 
-- autocomplete tags: if score > something, offer "add new tag blah" first
 - autocomplete bug: you can't click on autocomplete suggestions with mouse - make sure to trigger select and also have cursor pointer. prob is probably that the input closes too quickly?
 - splash page with a tiny bit of info and demo
     - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"

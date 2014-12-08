@@ -6,6 +6,9 @@
 var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
 .controller('Nutmeg', ['$scope', '$timeout', "$interval", "$sce", "fuzzyMatchSort", function($s, $timeout, $interval, $sce, fuzzyMatchSort) {
 
+  // when adding tags to a note, option to create a new tag with the currently-entered text will appear above any suggestions with a score worse (great) than this threshold
+  var NEW_TAG_AUTOCOMPLETE_SCORE_THRESHOLD = 5;
+
   $s.m = {
     modal: false,
     modalLarge: false,
@@ -838,13 +841,24 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       triggerSelectOnValidInput: false,
       allowBubblingOnKeyCodes: [27], // escape key
       customLookup: function(query, suggestions) {
-        // suggestions is array of {value: "string"} objects, so map it
-        // return fuzzyMatchSort(query, suggestions.map(function(s) {return s.value; }));
+        // `map` because suggestions is array of {value: "string"} objects
         var results = fuzzyMatchSort(query, suggestions.map(function(s) {return s.value; }));
+
+        // on notes, offer option to add new tag with currently-entered query
         if (nut) {
-          // `highlighted` is the field that is actually displayed
-          results.push({value: query, highlighted: '<i>new tag "<b>'+query+'</b>"</i>'});
+          var newTagOption = {
+            value: query,
+            highlighted: '<i>new tag "<b>'+query+'</b>"</i>' // what is actually displayed
+          };
+
+          for (var i = 0; i < results.length+1; i++) { // length+1 to go past end and see if we haven't hit threshold yet
+            if (i === results.length || results[i].score > NEW_TAG_AUTOCOMPLETE_SCORE_THRESHOLD) {
+              results.splice(i, 0, newTagOption);
+              break;
+            }
+          }
         }
+        
         return results;
       },
       formatResult: function(suggestion) {
