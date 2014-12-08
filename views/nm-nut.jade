@@ -7,17 +7,9 @@ div(ng-show="nut")
         i.fa.fa-times
     | 
     span.tag(ng-show="addingTag")
-      form(ng-submit="addTag(true); closeAddTagField()")
-        input(type="text", ng-model="addTagName", ng-blur="closeAddTagField(); addTagHack()", nm-focus="addingTag", placeholder="tag name")
-    //-
-      HACK:
-      want to make sure user can hit the '+' to add the tag. but blur fires too quickly and won't not fire: http://stackoverflow.com/questions/20822978/blur-event-not-firing-on-label
-      a solution:
-      n.addTagHack() above sets n.addTagHackFieldJustBlurred to true for 50ms, then back to false
-      in this way we can tell, when hitting add-tag-to-nut, whether the field was just open
-      if it was, then do addTagNameToNut() (which returns false, setting n.addingTag to false)
-      if not, field's been closed for a while, so set n.addingTag to true to show it
-    span.add-tag-to-nut(ng-click="throwaway = addTagHackFieldJustBlurred ? addTag(true) : openAddTagField();")
+      form(ng-submit="addTag(true)")
+        input(type="text", ng-model="addTagName", ng-click="$event.stopPropagation()", nm-focus="addingTag", placeholder="tag name")
+    span.add-tag-to-nut(ng-click="$event.stopPropagation(); throwaway = addingTag ? addTag(true) : openAddTagField();")
       i.fa.fa-plus &nbsp;
   div.clear
   div.tawrapper

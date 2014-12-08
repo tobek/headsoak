@@ -11,8 +11,6 @@ l.search("some") // returns no results
 
 ### todo for beta: bits and bugs
 
-- autocomplete bug: you can't click on autocomplete suggestions with mouse - make sure to trigger select and also have cursor pointer. prob is probably that the input closes too quickly?
-    - fix on stack overflow
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
 - on init, some sign that your notes are loading
 - FAQ
@@ -29,6 +27,8 @@ l.search("some") // returns no results
 - favicon
 - font
 - make it not run slowly (like when autosizing)
+- tag list 0 should be at bottom
+- better login error messages
 
 ### todo for beta: 
 
@@ -40,6 +40,7 @@ l.search("some") // returns no results
 - mobile responsive
 - shared notes
     - live collab
+- "star"
 
 ### todo next
 

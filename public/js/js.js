@@ -866,7 +866,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       },
       onSelect: function(suggestion, e) {
         if (nut) { // we're in the add tag field of a nut
-          var scope = $s.n.getFocusedNutScope();
+          var scope = $s.n.getFocusedNutScope() || $('#nut-' + nut.id).scope();
           if (scope) {
             scope.addTag(true, suggestion.value);
             scope.closeAddTagField();
@@ -1342,21 +1342,22 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         if (returnFocusToNut) {
           $s.focus();
         }
+
+        $s.closeAddTagField();
       };
       $s.openAddTagField = function() {
+        $(window).click($s.closeAddTagField);
+
         $s.autocomplete($("#nut-"+$s.nut.id+" .tags input"), $s.nut);
         $s.addingTag = true; // this will automatically show the field and put focus on it
       };
-      $s.closeAddTagField = function() {
-        $s.addingTag = false; // will automatically hide field
-        $("#nut-"+$s.nut.id+" .tags input").autocomplete('dispose');
-      };
-      // see comment in jade file where this is called for explanation
-      $s.addTagHack = function() {
-        $s.addTagHackFieldJustBlurred = true;
-        setTimeout(function () {
-          $s.addTagHackFieldJustBlurred = false;
-        }, 200);
+      $s.closeAddTagField = function closeAddTagField() {
+        $(window).off('click', $s.closeAddTagField);
+
+        $timeout(function() {
+          $s.addingTag = false; // will automatically hide field
+          $("#nut-"+$s.nut.id+" .tags input").autocomplete('dispose');
+        })
       };
 
       $s.focus = function() {
