@@ -2,6 +2,7 @@
  * originally: https://github.com/devbridge/jQuery-Autocomplete
  * modified with customLookup: https://github.com/tobek/jQuery-Autocomplete
  * then Ajax components removed to reduce file size
+ * also modified to add allowBubblingOnKeyCodes
  */
 
 
@@ -76,6 +77,7 @@
                     return suggestion.value.toLowerCase().indexOf(queryLowerCase) !== -1;
                 },
                 customLookup: false,
+                allowBubblingOnKeyCodes: [],
                 paramName: 'query',
                 transformResult: function (response) {
                     return typeof response === 'string' ? $.parseJSON(response) : response;
@@ -348,7 +350,9 @@
             }
 
             // Cancel event if function did not return:
-            e.stopImmediatePropagation();
+            if (that.options.allowBubblingOnKeyCodes.indexOf(e.which) === -1) {
+                e.stopImmediatePropagation();
+            }
             e.preventDefault();
         },
 

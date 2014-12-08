@@ -836,6 +836,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       width: 150,
       autoSelectFirst: true,
       triggerSelectOnValidInput: false,
+      allowBubblingOnKeyCodes: [27], // escape key
       customLookup: function(query, suggestions) {
         // suggestions is array of {value: "string"} objects, so map it
         // return fuzzyMatchSort(query, suggestions.map(function(s) {return s.value; }));
@@ -1040,7 +1041,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
       $s.s.shortcuts.forEach(function(shortcut) {
         var binding = shortcut.nomod ? shortcut.binding : $s.s.mod + "+" + shortcut.binding;
-        Mousetrap.bind(binding, function(e) {
+        Mousetrap.bindGlobal(binding, function(e) {
           if (!$s.u.loggedIn) return;
           if ($s.m.modal && !shortcut.allowOnModal) return;
 
