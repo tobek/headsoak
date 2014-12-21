@@ -7,9 +7,9 @@ block content
 
   //- only remove modal on click if logged in - otherwise we're closing the login window on a blank screen
   div#modalclickoff(ng-click="!u.loggedIn || m.closeModal()", ng-show="m.modal")
-  div#modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal, 'large-circle': m.modal == 'shortcuts' || m.modalLarge }", ng-click="!u.loggedIn || m.closeModal()")
+  div.modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal, 'large-circle': m.modal == 'shortcuts' || m.modalLarge }", ng-click="!u.loggedIn || m.closeModal()")
     h1#title(ng-show="!u.loggedIn") nutmeg
-    div#circle-holder
+    div.circle-holder
       a#close-modal(ng-click="m.closeModal()", ng-show="u.loggedIn") x
       div.circle(ng-click="$event.stopPropagation()")
 
@@ -118,7 +118,14 @@ block content
             input(type="submit", value="{{m.modalOK}}", ng-click="m.closeModal()")
 
 
-  div#nonmodal(ng-class="{modalon: m.modal, loggedout: !u.loggedIn}", ng-cloak)
+  div#full-page-loading.modal.modalon(ng-show="u.loggedIn && u.loading && ! u.loggingIn")
+    div.circle-holder
+        div.circle
+          div.inner
+            img.logo(src="/img/nutmeg100h-white.png", alt="nutmeg")
+
+
+  div#nonmodal(ng-class="{modalon: m.modal, loggedout: !u.loggedIn}", ng-show="u.loggedIn && ! u.loading", ng-cloak)
 
     span#sync-status.tooltip(ng-class="digest.status", ng-attr-data-tooltip="Notes {{digest.status}}")
       i.cloud.fa.fa-cloud-upload

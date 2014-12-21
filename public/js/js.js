@@ -106,8 +106,11 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
 
   // user authentication
   $s.u = {
+    // when loading and !loggedIn, "go" button for login and createaccount is replaced with loading spinner
+    // when loading and loggedIn, notes of already-logged-in user are loading, and full-page loader is shown
     loggedIn: false,
-    loading: false, // when true, "go" button for login and createaccount is replaced with loading spinner
+    loggingIn: false, // different loading animation while logging in
+    loading: false,
 
     createAccount: function(email, pass1, pass2) {
       console.log("createAccount() called");
@@ -144,6 +147,7 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
       if (!calledFromCreateAccount && $s.u.loading) return;
 
       $s.u.loading = true;
+      $s.u.loggingIn = true;
       $s.u.auth.login('password', {
         'email': email,
         'password': password,
@@ -161,14 +165,18 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
       else if (user) {
         // user authenticated with Firebase
         console.log('Logged in, user id: ' + user.id + ', provider: ' + user.provider);
+        $timeout(function() {
+          $s.u.loading = true; // while notes are loading
+          $s.u.loggedIn = true;
+        });
         $s.u.user = user;
         init(user.uid, function(featuresSeen) {
           console.log("init callback")
           $s.$apply(function() {
             $s.n.assignSortVals($s.n.sortBy);
             $s.m.closeModal();
-            $s.u.loggedIn = true;
             $s.u.loading = false; // used for login/createaccount loading spinner
+            $s.u.loggingIn = false;
             $s.u.email = $s.u.password = $s.u.pass1 = $s.u.pass2 = ""; // clear input fields so they're not still shown there when they log out: otherwise, anyone can just hit log in again
           });
 

@@ -23,7 +23,7 @@ l.search("some") // returns no results
     - https://www.firebase.com/docs/managing-presence.html
 - daily backup of all JSON
 - more robust circular modal
-- better logo
+- better nutmeg logo
 - favicon
 - font
 - make it not run slowly (like when autosizing)

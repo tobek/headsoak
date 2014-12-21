@@ -135,6 +135,39 @@ form {
   width: 96%;
 }
 
+@keyframes rocking {
+  from {
+    transform: rotate(-15deg) translateX(-15px);
+    animation-timing-function: ease-in-out;
+  }
+  to {
+    transform: rotate(10deg) translateX(10px);
+    animation-timing-function: ease-in-out;
+  }
+}
+@-webkit-keyframes rocking {
+  from {
+    -webkit-transform: rotate(-17deg) translateX(-17px);
+    -webkit-animation-timing-function: ease-in-out;
+  }
+  to {
+    -webkit-transform: rotate(12deg) translateX(12px);
+    -webkit-animation-timing-function: ease-in-out;
+  }
+}
+
+#full-page-loading {
+  .inner {
+    text-align: center;
+    margin-top: -12%;
+  }
+  .logo {
+    animation: rocking 1.5s infinite alternate;
+    -webkit-animation: rocking 1.5s infinite alternate;
+    margin-left: -10px;
+  }
+}
+
 /* =MENU
 ----------------------------------------------- */
 
@@ -504,16 +537,16 @@ form {
   opacity: 0;
 }
 
-#modal.modalon {
+.modal.modalon {
   opacity: 1;
   visibility: visible;
 }
-#modal.modaloff {
+.modal.modaloff {
   opacity: 0;
   height: 0;
   visibility: hidden;
 }
-#modal {
+.modal {
   -webkit-transition:all ease 0.5s;
   transition:all ease 0.5s;
   text-align: center;
@@ -530,7 +563,7 @@ form {
     }
   }
 
-  #circle-holder {
+  .circle-holder {
     width: 30%;
     min-width: 380px;
     margin: auto;
