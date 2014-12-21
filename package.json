@@ -14,7 +14,9 @@
     "jade": "1.x",
     "knox": "0.8.x",
     "less-middleware": "0.1.x",
-    "wrench": "1.5.x"
+    "wrench": "1.5.x",
+    "firebase": "~2.0.6",
+    "firebase-token-generator": "~2.0.0"
   },
   "engine": "node 0.10.x"
 }

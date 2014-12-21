@@ -2,4 +2,6 @@ node_modules
 .*~
 public/stylesheets/style.css
 public/*.html
-s3config.json
+/s3config.json
+/config.json
+/backups
