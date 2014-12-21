@@ -1,5 +1,9 @@
 /**
  * watches FB ref and emails me if a new user signs up
+ *
+ * example server invocation:
+ *
+ *     nohup node /home/ubuntu/nutmeg/watcher.js >> /var/log/nutmeg/watcher.log &
  */
 
 var _ = require('lodash');
@@ -13,7 +17,7 @@ var config = require('./config.json');
 var mailTransporter = nodemailer.createTransport();
 var defaultMailOptions = {
     from: 'Nutmeg <notifications@nutmeg.io>', // TODO more interesting from address
-    to: 'tobyfox@gmail.com',
+    to: 'how@toby.is',
     subject: 'New user signed up!',
     text: '[default message]'
 };

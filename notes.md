@@ -21,7 +21,9 @@ l.search("some") // returns no results
     - somehow listen for connection/disconnection and alert user and change cloud to red
     - maybe set some time in `push()`, and if `pushHackCounter>0` in `push()`, and if some length of time has passed (like 30s) then alert user and suggest something
     - https://www.firebase.com/docs/managing-presence.html
-- new user welcome message (have to store email in user object)
+- new user welcome message
+    - have to store email in user object when account is created
+    - have to set up reverse DNS and other bulkmail stuff, or free account somewhere
 - more robust circular modal
 - better nutmeg logo
 - favicon
