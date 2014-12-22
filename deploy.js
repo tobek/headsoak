@@ -1,11 +1,13 @@
-var includeRegex = /\.(html|js|css)$/;
+var config = require('./config.json');
+
+var includeRegex = /\.(html|js|css|gif|png|jpg)$/;
 var excludeRegex = /\/offline\//;
 
 // ====================
 
 var fs = require('fs');
 var wrench = require('wrench');
-var s3config = JSON.parse(fs.readFileSync('s3config.json')); // config needs properties key, secret, and bucket
+var s3config = config.s3; // config needs properties key, secret, and bucket
 var client = require('knox').createClient(s3config);
 
 wrench.readdirRecursive('public', function(err, files) {

@@ -31,6 +31,7 @@ l.search("some") // returns no results
 - make it not run slowly (like when autosizing)
 - tag list 0 should be at bottom
 - better login error messages
+- invite only?
 
 ### todo for beta: 
 
@@ -46,6 +47,7 @@ l.search("some") // returns no results
 
 ### todo next
 
+- highlight and scroll to matched query in search results
 - new shortcut potential conflicts
   - message: "HI: new keyboard shortcuts have been added. If you've changed shortcuts away from the defaults, you should check out the shortcuts menu to make sure there are no conflicts."
   - shortcutsChanged and user-stored shortcutChangeIDSeen or something. add it into new features modal
@@ -66,7 +68,7 @@ l.search("some") // returns no results
     - MOAR POWER mode: enable overkill, enable checkbox that removes modkey for that shortcut
     - new tag in general (ctrl shift t?)
     - maybe shift+enter or comma to add another tag after writing this one (customizeable). it basically just hits enter and opens another/creates a new tag and clears current and leaves focus there
-- highlight and scroll to matched query in search results
+- browser compatibility warning
 
 ### todo eventually
 
