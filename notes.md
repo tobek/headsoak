@@ -15,7 +15,9 @@ l.search("some") // returns no results
 - FAQ
 - forgot password link that resets
     - reset password should be grammatical passphrase:  The <adjective> <noun> is <verb> <adverb>. The green cat is jumping wildly. have lists for the categories. with 1024 choices for each you have 40 bits of entropy.
-- listen to remote changes in Firebase (suggesting you've logged in elsewhere) and if detected, show popup saying that you've logged in and changed elsewhere, you gotta refresh or something
+- listen to remote changes (maybe lastLogin - actually only if there's a change i guess?) in Firebase (suggesting you've logged in elsewhere) and if detected, show popup saying that you've logged in and changed elsewhere, you gotta refresh or something
+    - "Hey, it looks like you've logged into Nutmeg somewhere else, either from another device or another browser window on this device.\n\nNutmeg doesn't yet support simultaneous editing from multiple sessions. Please <a>refresh</a> this window to load any changes you've made in other sessions and close any other open sessions.\n\nOr, continue in read-only mode."
+        - Glowing red connection cloud, on hover: "Currently in read-only mode because you have logged in to Nutmeg from somewhere else. Please refresh to load those changes and continue editing."
 - issues connecting to firebase
     - somehow listen for connection/disconnection and alert user and change cloud to red
     - maybe set some time in `push()`, and if `pushHackCounter>0` in `push()`, and if some length of time has passed (like 30s) then alert user and suggest something

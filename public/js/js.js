@@ -1235,6 +1235,8 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
           if (!tag.docs) tag.docs = [];
         });
 
+        $s.ref.child('user/lastLogin').set(Date.now());
+
         console.time("building lunr index");
         $s.n.nuts.forEach($s.n.updateNutInIndex);
         console.timeEnd("building lunr index");
@@ -1258,6 +1260,13 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
   }
 
   function firstInit() {
+    console.log("init: initializing new user info in user ref");
+    $s.ref.child('user').update({
+      email: $s.u.user.email,
+      provider: $s.u.user.provider,
+      lastLogin: Date.now()
+    });
+
     $s.n.nuts = [];
     $s.t.tags = [];
 

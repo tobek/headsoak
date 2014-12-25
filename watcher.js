@@ -18,7 +18,7 @@ var mailTransporter = nodemailer.createTransport();
 var defaultMailOptions = {
     from: 'Nutmeg <notifications@nutmeg.io>', // TODO more interesting from address
     to: 'how@toby.is',
-    subject: 'New user signed up!',
+    subject: 'Nutmeg notification',
     text: '[default message]'
 };
 
@@ -70,7 +70,10 @@ ref.on('child_added', function(child) {
 
 
 function newUserAdded(user) {
-  sendMail({text: 'new user!\n\n' + JSON.stringify(user)}); // todo just send user info
+  sendMail({
+    subject: 'New user signed up!',
+    text: 'New user:\n\n' + JSON.stringify(user.user)
+  });
 
   // TODO send them welcome email
 }
