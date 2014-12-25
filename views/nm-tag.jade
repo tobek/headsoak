@@ -1,5 +1,5 @@
 li.tag(ng-click="q.toggleTag(tag.id, $event)", ng-class="{queried: (q.tags.indexOf(tag.id) != -1)}")
-  | {{tag.name}} ({{tag.docs ? tag.docs.length : 0}}) 
+  | {{tag.name}} ({{ tag.docs.length }}) 
   span.icons
     a.delete(ng-click="$event.stopPropagation(); t.deleteTag(tag)")
       i.fa.fa-trash-o

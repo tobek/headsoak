@@ -721,7 +721,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     tags: [],
 
     sortOpts: [
-      {field: "docs.length", rev: true, name: "Most used"}, // TODO firebase doesn't store empty arrays, so docs.length is undefined for unused tags. hacked to dispay (0) anyway but sort is off. maybe if dropdown switches to one of these then scan through all tags and fix? would pulling changes from firebase then obliterate?
+      {field: "docs.length", rev: true, name: "Most used"},
       {field: "docs.length", rev: false, name: "Least used"},
       {field: "modified", rev: true, name: "Recently modified"},
       {field: "modified", rev: false, name: "Oldest modified"},
@@ -1076,7 +1076,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
           return false;
         });
-      })
+      });
     },
 
     save: function() {
@@ -1209,7 +1209,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
 
   function init(uid, cb) {
-    console.log("init: fetching data for user uid "+uid)
+    console.log("init: fetching data for user uid "+uid);
     $s.ref = new Firebase('https://nutmeg.firebaseio.com/users/' + uid);
 
     $s.ref.once('value', function(data) {
@@ -1229,6 +1229,11 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         // arrayFromObj also ensures that even if the value is undefined, we get back []
         $s.n.nuts = data.val().nuts instanceof Array ? data.val().nuts : arrayFromObj(data.val().nuts);
         $s.t.tags = data.val().tags instanceof Array ? data.val().tags : arrayFromObj(data.val().tags);
+
+        // firebase doesn't store empty arrays, so we get undefined for unused tags. which screws up sorting by tag usage
+        $s.t.tags.forEach(function(tag) {
+          if (!tag.docs) tag.docs = [];
+        });
 
         console.time("building lunr index");
         $s.n.nuts.forEach($s.n.updateNutInIndex);

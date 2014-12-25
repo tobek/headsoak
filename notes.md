@@ -12,7 +12,6 @@ l.search("some") // returns no results
 ### todo for beta: bits and bugs
 
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
-- on init, some sign that your notes are loading
 - FAQ
 - forgot password link that resets
     - reset password should be grammatical passphrase:  The <adjective> <noun> is <verb> <adverb>. The green cat is jumping wildly. have lists for the categories. with 1024 choices for each you have 40 bits of entropy.
@@ -29,7 +28,6 @@ l.search("some") // returns no results
 - favicon
 - font
 - make it not run slowly (like when autosizing)
-- tag list 0 should be at bottom
 - better login error messages
 - invite only?
 
