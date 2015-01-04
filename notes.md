@@ -11,10 +11,9 @@ l.search("some") // returns no results
 
 ### todo for beta: bits and bugs
 
+- check feedback works (move to watcher?)
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
 - FAQ
-- forgot password link that resets
-    - reset password should be grammatical passphrase:  The <adjective> <noun> is <verb> <adverb>. The green cat is jumping wildly. have lists for the categories. with 1024 choices for each you have 40 bits of entropy.
 - listen to remote changes (maybe lastLogin - actually only if there's a change i guess?) in Firebase (suggesting you've logged in elsewhere) and if detected, show popup saying that you've logged in and changed elsewhere, you gotta refresh or something
     - "Hey, it looks like you've logged into Nutmeg somewhere else, either from another device or another browser window on this device.\n\nNutmeg doesn't yet support simultaneous editing from multiple sessions. Please <a>refresh</a> this window to load any changes you've made in other sessions and close any other open sessions.\n\nOr, continue in read-only mode."
         - Glowing red connection cloud, on hover: "Currently in read-only mode because you have logged in to Nutmeg from somewhere else. Please refresh to load those changes and continue editing."
@@ -29,9 +28,8 @@ l.search("some") // returns no results
 - favicon
 - font
 - make it not run slowly (like when autosizing)
-- better login error messages
 - invite only?
-- @nutmeg.io email address. I have support@, what about for general stuff? contact@ is boring
+- @nutmeg.io email address. I have support@ (and toby@ and ece@), what about for general stuff? contact@ is boring
 
 ### todo for beta: 
 
@@ -73,6 +71,10 @@ l.search("some") // returns no results
 
 ### todo eventually
 
+- encryption
+    - only private notes
+    - ALL notes
+    - should both be options, or just all notes? only reasons to not encrypt all notes: marginally slower, lose everything if you lose password
 - email me when new users (and answer http://stackoverflow.com/questions/17723195/is-there-any-way-to-do-email-confirmation-for-firebase-user-creation-and-or-pass)
 - remove all instances of `alert()` and replace with some single modal function. on chrome and FF at least, alert windows begin with "The page at https://megnut.s3.amazonaws.com says:"
 - implement sort by query match strength

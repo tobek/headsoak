@@ -65,6 +65,21 @@ block content
             input(type="submit", value="defaults", ng-click="c.revert('settings')")
             input(type="submit", value="save", ng-click="c.save()")
 
+        div.account(ng-show="m.modal == 'account'")
+          h3 change password
+          form(ng-submit="u.changePassword()")
+            input(type="password", placeholder="current password", ng-model="u.password")
+            br
+            input(type="password", placeholder="new password", ng-model="u.newPass1")
+            br
+            input(type="password", placeholder="repeat new password", ng-model="u.newPass2")
+            br
+            input(type="submit", value="change password")
+            br
+
+          h3 change email
+          p To change the email address associated with your account, please email <a href="mailto:support@nutmeg.io">support@nutmeg.io</a> and we'll get you sorted.
+
         div.layout(ng-show="m.modal == 'layout'")
           h3 layout
           table
@@ -148,7 +163,7 @@ block content
           i.fa.fa-fw.fa-keyboard-o
         li(ng-click="m.modal='settings'; m.modalLarge=true; c.backup('settings')") settings 
           i.fa.fa-fw.fa-gears
-        li.incomplete(ng-show="u.loggedIn") account 
+        li(ng-show="u.loggedIn", ng-click="m.modal='account'; m.modalLarge=true") account
           i.fa.fa-fw.fa-user
         li(ng-show="u.loggedIn", ng-click="u.auth.logout()") log out 
           i.fa.fa-fw.fa-power-off

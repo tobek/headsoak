@@ -30,7 +30,7 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
   };
 
   $s.$watch('m.modal', function(newVal) {
-    if (['alert', 'shortcuts', 'settings'].indexOf(newVal) !== -1) {
+    if (['alert', 'shortcuts', 'settings', 'account'].indexOf(newVal) !== -1) {
       // vertically align:
       $interval(function() {
         var el = angular.element(".circle > div:visible")[0];
@@ -174,6 +174,45 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
         $s.u.password = '';
 
         // TODO: set some flag in firebase user info to remind user, when logging in, to reset password
+      });
+
+      return false;
+    },
+
+    changePassword: function(foo) {
+      if (!$s.u.password) {
+        alert("You didn't enter your current password!");
+        return;
+      }
+      else if ($s.u.newPass1 !== $s.u.newPass2) {
+        alert("New passwords don't match!");
+        return;
+      }
+      else if (!$s.u.newPass1) {
+        alert("You didn't enter a new password!");
+        return;
+      }
+      else if ($s.u.newPass1 === $s.u.password) {
+        alert("New password is the same as your current password!");
+        return;
+      }
+
+      $s.u.auth.changePassword($s.u.user.email, $s.u.password, $s.u.newPass1, function(err) {
+        if (err) {
+          if (err.code == 'INVALID_PASSWORD') {
+            alert('Incorrect current password');
+            $s.u.password = '';
+            $s.$apply();
+          }
+          else {
+            alert('Failed to change password: ' + err.code);
+          }
+          return;
+        }
+
+        alert ('Password changed successfully!');
+        $s.u.password = $s.u.newPass1 = $s.u.newPass2 = '';
+        $s.$apply();
       });
 
       return false;
