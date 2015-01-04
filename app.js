@@ -57,7 +57,7 @@ require('dns').resolve('www.google.com', function(err) {
       //"//ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular-animate.min.js",
       "//cdn.firebase.com/v0/firebase.js",
       //"//cdn.firebase.com/libs/angularfire/0.3.0/angularfire.min.js",
-      "https://cdn.firebase.com/v0/firebase-simple-login.js"
+      "https://cdn.firebase.com/js/simple-login/1.6.4/firebase-simple-login.js"
     ];
   }
 

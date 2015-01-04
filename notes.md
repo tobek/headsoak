@@ -31,6 +31,7 @@ l.search("some") // returns no results
 - make it not run slowly (like when autosizing)
 - better login error messages
 - invite only?
+- @nutmeg.io email address. I have support@, what about for general stuff? contact@ is boring
 
 ### todo for beta: 
 

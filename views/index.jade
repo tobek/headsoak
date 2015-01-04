@@ -90,7 +90,7 @@ block content
             input(type="text", placeholder="name (optional)", ng-model="name")
             input(type="submit", value="submit")
 
-        div(ng-show="m.modal == 'login'")
+        div.login(ng-show="m.modal == 'login'")
           h3 log in
           form(ng-submit="u.login(u.email, u.password);")
             input(type="email", placeholder="email", ng-model="u.email")
@@ -98,10 +98,12 @@ block content
             input(type="submit", value="go", ng-hide="u.loading")
             p.loader(ng-show="u.loading")
               img(src="/img/loader-white.gif")
+          p 
+            a(ng-click="u.forgotPassword()") forgot password?
           p or 
             a(ng-click="m.modal='createaccount'") create an account
 
-        div(ng-show="m.modal == 'createaccount'")
+        div.create-account(ng-show="m.modal == 'createaccount'")
           form(ng-submit="u.createAccount(u.email, u.pass1, u.pass2);")
             h3 create an account
             input(type="email", placeholder="email", ng-model="u.email")

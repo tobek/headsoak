@@ -136,10 +136,47 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
           $s.u.login(email, pass1, true);
         }
         else {
+          switch (error.code) {
+            case "INVALID_EMAIL":
+              alert("The specified user account email is invalid.");
+              break;
+            case "EMAIL_TAKEN":
+              alert("TODO");
+              break;
+            case "INVALID_USER":
+              alert("The specified user account does not exist.");
+              break;
+            case "NETWORK_ERROR":
+              alert("TODO");
+              break;
+            default:
+              alert("Error logging in: " + JSON.stringify(error));
+          }
           alert("Error creating account: " + JSON.stringify(error));
           $s.u.loading = false;
         }
       });
+    },
+
+    forgotPassword: function() {
+      var email = prompt('Please enter your email:', $s.u.email);
+      if (!email) return false;
+
+      // TODO set some "loading" indicator while we wait for password reset callback
+
+      $s.u.auth.sendPasswordResetEmail(email, function(err) {
+        if (err) {
+          alert('Sorry, something went wrong, please try again later'); // TODO
+          console.log(err);
+          return;
+        }
+        alert('Password reset email successfully sent to ' + email + '! Please check your email.');
+        $s.u.password = '';
+
+        // TODO: set some flag in firebase user info to remind user, when logging in, to reset password
+      });
+
+      return false;
     },
 
     login: function(email, password, calledFromCreateAccount) {
@@ -158,7 +195,19 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
     auth: new FirebaseSimpleLogin(new Firebase('https://nutmeg.firebaseio.com/'), function(error, user) {
       if (error) {
         // an error occurred while attempting login
-        alert("Error logging in: " + JSON.stringify(error));
+        switch (error.code) {
+          case "INVALID_EMAIL":
+          case "INVALID_PASSWORD":
+          case "INVALID_USER":
+            alert("Incorrect account credentials."); // TODO friendlier message
+            $s.u.password = '';
+            break;
+          case "NETWORK_ERROR":
+            alert("TODO");
+            break;
+          default:
+            alert("Error logging in: " + JSON.stringify(error));
+        }
         $s.u.loading = false; // so that they get the button back and can try again
         $s.$apply();
       }
