@@ -1079,7 +1079,32 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       });
     },
 
+    validModKeys: ['ctrl', 'shift', 'alt', 'option', 'meta', 'mod', 'command'],
+
     save: function() {
+      var cancel = null;
+      if ($s.s.modEditing) {
+        // check it's valid
+        $s.s.modEditing.split('+').forEach(function(modKey) {
+          if ($s.s.validModKeys.indexOf(modKey) === -1) {
+            alert('"' + modKey + '" is not a valid modifier key. Valid modifier keys are: ' + $s.s.validModKeys.join(', '));
+            cancel = true;
+          }
+        });
+      }
+      else {
+        $s.s.shortcutsEditing.forEach(function(shortcut) {
+          if (cancel !== null) return; // they've already ok'd or canceled
+
+          if (shortcut.binding.indexOf('+') === -1) {
+            // they have no global modifier key and this shortcut has no modifer key
+            cancel = ! confirm('Warning: you have entered no global modifier key and your shortcut for "' + shortcut.name + '" is "' + shortcut.binding + '".\n\nThis means that whenever you press "' + shortcut.binding + '", this shortcut will be run.\n\nHit "OK" to keep this setting, or cancel to use default modifier key.');
+            if (cancel) $s.s.modEditing = $s.s.modDefault; // reset to default
+          }
+        })
+      }
+      if (cancel) return false;
+
       $s.m.closeModal();
       $s.s.shortcuts = angular.copy($s.s.shortcutsEditing);
       $s.s.mod = $s.s.modEditing;
