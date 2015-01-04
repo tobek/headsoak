@@ -1220,6 +1220,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       maxHistory: 0,
       tagChangesChangeNutModifiedTimestamp: false,
       addQueryTagsToNewNuts: true,
+      showNoteIds: false,
 
       // layout
       showTagBrowser: true,
@@ -1230,18 +1231,24 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       addQueryTagsToNewNuts: {
         humanName: "Add filtered tags to new notes",
         description: "If this is checked, new notes created while searching for certain tags will have those tags too.",
-        type: "boolean",
+        type: "boolean", // only boolean supported for now
         section: "settings"
       },
       tagChangesChangeNutModifiedTimestamp: {
         humanName: "Tagging updates timestamps",
         description: "If this is checked then adding, removing, and renaming tags will change the \"modified\" timestamp of notes they are attached to.",
+        type: "boolean",
+        section: "settings"
+      },
+      showNoteIds: {
+        humanName: "Show note IDs",
+        type: "boolean",
         section: "settings"
       },
       maxHistory: {
         humanName: "Note history length",
         description: "How many revisions of each note to save. 0 disables history. TOTALLY DISABLED FOR NOW.",
-        type: "integer",
+        type: "integer", // integer not supported yet
         section: "settings",
         overkill: true
       },
@@ -1254,14 +1261,14 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       },
       twoColumns: {
         humanName: "Show two columns of notes",
-        type: "integer",
+        type: "integer", // integer not supported yet
         section: "layout",
         overkill: true // not implemented yet
       },
       stickyColumn: {
         humanName: "Sticky column",
         description: "Column on the left is normal, but any notes you mark as 'sticky' are removed from the left column and appear in the right column.", // right column filtered by same search AND sticky, or ONLY sticky? maybe search bar oh wait this is just a specific version of twoColumns HAHA
-        type: "integer",
+        type: "integer", // integer not supported yet
         section: "layout",
         overkill: true // not implemented yet
       }
