@@ -25,7 +25,6 @@ l.search("some") // returns no results
 - new user welcome message
     - have to store email in user object when account is created
     - have to set up reverse DNS and other bulkmail stuff, or free account somewhere
-- more robust circular modal
 - better nutmeg logo
 - favicon
 - font
@@ -44,6 +43,7 @@ l.search("some") // returns no results
 - shared notes
     - live collab
 - "star"
+- tag browser collapse/expand?
 
 ### todo next
 

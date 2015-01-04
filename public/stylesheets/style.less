@@ -557,7 +557,7 @@ form {
 
   &.large-circle {
     top: 10%;
-    #circle-holder {
+    .circle-holder {
       width: 40%;
       min-width: 600px;
     }
@@ -693,6 +693,9 @@ form {
             input {
               width: 150px;
             }
+            tbody {
+              font-size: 90%;
+            }
           }
         }
         &.settings, &.layout {
@@ -782,6 +785,7 @@ form {
 
 .tooltip {
   position: relative;
+  cursor: pointer;
 }
 .tooltip:after, .tooltip:before {
   /* At time of this creation, only Fx4 doing pseduo transitions */

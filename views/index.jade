@@ -7,7 +7,7 @@ block content
 
   //- only remove modal on click if logged in - otherwise we're closing the login window on a blank screen
   div#modalclickoff(ng-click="!u.loggedIn || m.closeModal()", ng-show="m.modal")
-  div.modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal, 'large-circle': m.modal == 'shortcuts' || m.modalLarge }", ng-click="!u.loggedIn || m.closeModal()")
+  div.modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal, 'large-circle': m.modalLarge }", ng-click="!u.loggedIn || m.closeModal()")
     h1#title(ng-show="!u.loggedIn") nutmeg
     div.circle-holder
       a#close-modal(ng-click="m.closeModal()", ng-show="u.loggedIn") x
@@ -142,9 +142,9 @@ block content
           i.fa.fa-fw.fa-download
         li(ng-click="m.modal='layout'; c.backup('layout')") layout 
           i.fa.fa-fw.fa-list.fa-flip-horizontal
-        li(ng-click="m.modal='shortcuts'") shortcuts 
+        li(ng-click="m.modal='shortcuts'; m.modalLarge=true") shortcuts 
           i.fa.fa-fw.fa-keyboard-o
-        li(ng-click="m.modal='settings'; c.backup('settings')") settings 
+        li(ng-click="m.modal='settings'; m.modalLarge=true; c.backup('settings')") settings 
           i.fa.fa-fw.fa-gears
         li.incomplete(ng-show="u.loggedIn") account 
           i.fa.fa-fw.fa-user
