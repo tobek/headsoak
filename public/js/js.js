@@ -197,6 +197,8 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
         return;
       }
 
+      // TODO: show loading thing until Firebase callback (remove change pass button)
+
       $s.u.auth.changePassword($s.u.user.email, $s.u.password, $s.u.newPass1, function(err) {
         if (err) {
           if (err.code == 'INVALID_PASSWORD') {
@@ -507,7 +509,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         }
       }
       else if (nut.history) {
-        // TEMPORARY? delete any pre-existing history
+        // TEMPORARY: while feature is disabled, delete any pre-existing history
         delete nut.history;
       }
 
@@ -690,6 +692,17 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
   $s.n.sortBy = $s.n.sortOpts[0]; // set initial value for nut sort select dropdown TODO: this should be remembered and drawn from config
 
+  // ==== PRIVACY STUFF ==== //
+
+  $s.p = {
+    privateMode: false,
+
+    togglePrivateMode: function() {
+      $s.p.privateMode = ! $s.p.privateMode;
+      $s.q.doQuery(); // re-filter which notes to show
+    }
+  };
+
   // ==== QUERY STUFF ==== //
 
   $s.q = {
@@ -733,13 +746,15 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
       console.log("queried \""+query+"\" with tags "+JSON.stringify(tags));
 
+      var filteredByTags, filteredByString, filteredByPrivate;
+
       // FIRST get the docs filtered by tags
       if (tags && tags.length > 0) {
         var arrays = [];
         tags.forEach(function(tagId) {
           arrays.push($s.t.tags[tagId].docs);
         });
-        var filteredByTags = multiArrayIntersect(arrays);
+        filteredByTags = multiArrayIntersect(arrays);
       }
 
       // NEXT get the docs filtered by any string
@@ -747,18 +762,32 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         var results = $s.lunr.search(query); // by default ANDs spaces: "foo bar" will search foo AND bar
         // results is array of objects each containing `ref` and `score`
         // ignoring score for now
-        var filteredByString = results.map(function(doc){ return parseInt(doc.ref); }); // gives us an array
+        filteredByString = results.map(function(doc){ return parseInt(doc.ref); }); // gives us an array
       }
 
-      this.showAll = false;
-      if (filteredByTags && filteredByString) {
-        this.showNuts = arrayIntersect(filteredByTags, filteredByString);
+      // ALSO check private notes
+      if (! $s.p.privateMode && $s.n.nuts && $s.n.nuts.length) {
+        // private mode off, so hide private notes. get array of note IDs that aren't private:
+        filteredByPrivate = ($s.n.nuts
+                             .filter(function(nut) { return !nut.private; })
+                             .map(function(nut) { return nut.id; }) );
+
+        if (filteredByPrivate.length === 0) {
+          // *every* note is private (and private mode is off) so we're done:
+          this.showAll = false;
+          this.showNuts = [];
+          return;
+        }
       }
-      else if (filteredByTags) {
-        this.showNuts = filteredByTags;
-      }
-      else if (filteredByString) {
-        this.showNuts = filteredByString;
+
+      var filterArrays = [];
+      if (filteredByTags && filteredByTags.length) filterArrays.push(filteredByTags);
+      if (filteredByString && filteredByString.length) filterArrays.push(filteredByString);
+      if (filteredByPrivate && filteredByPrivate.length) filterArrays.push(filteredByPrivate);
+
+      if (filterArrays.length) {
+        this.showAll = false;
+        this.showNuts = multiArrayIntersect(filterArrays);
       }
       else {
         this.showAll = true;
@@ -1365,6 +1394,8 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         $s.c.loadSettings(data.val().settings);
 
         featuresSeen = data.val().featuresSeen;
+
+        $s.q.doQuery();
       }
 
       // sync to server every 4s
@@ -1451,6 +1482,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
   };
 })
 .directive('nmNut', function() {
+  // in link and controller here, $s appears to be its own isolated scope but containing properties pointing to all of properties in [parent?] Nutmeg controller $s. e.g. $s != window.nmScope, but $s.n == window.nmScope.n && $s.t == window.nmScope.t, etc...
   return {
     restrict: 'E',
     templateUrl: 'nm-nut.html',
@@ -1501,6 +1533,15 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
           $("#nut-"+$s.nut.id+" .tags input").autocomplete('dispose');
         })
       };
+
+      $s.togglePrivate = function togglePrivate() {
+        $s.nut.private = ! $s.nut.private;
+        $s.n.nutUpdated($s.nut, false, false);
+        if (! $s.p.privateMode) {
+          // private mode is off, so we need to filter which notes to show:
+          $s.q.doQuery();
+        }
+      }
 
       $s.focus = function() {
         $timeout(function() {

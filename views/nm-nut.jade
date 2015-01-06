@@ -15,10 +15,13 @@ div(ng-show="nut")
   div.clear
   div.tawrapper
     div.icons
-      a.duplicate.tooltip(ng-click="n.duplicateNoteTags(nut)", data-tooltip="Create new note with same tags")
+      a.duplicate.wide.tooltip(ng-click="n.duplicateNoteTags(nut)", data-tooltip="Create new note with same tags")
         i.fa.fa-copy
-      a.time.tooltip(ng-attr-data-tooltip='{{"created: " + (nut.created | date:"medium") + "\nmodified: " + (nut.modified | date:"medium")}}')
-        i.fa.fa-clock-o
-      a.delete(ng-click="n.deleteNut(nut, $event.shiftKey)")
+      a.privacy.wide.tooltip(ng-click="togglePrivate()", ng-attr-data-tooltip="Make this note {{ nut.private ? 'not' : '' }} private", ng-class="nut.private ? 'is-private' : ''")
+        i.fa.fa-lock
+        i.fa.fa-unlock-alt
+      a.delete.tooltip(ng-click="n.deleteNut(nut, $event.shiftKey)", data-tooltip="Delete note")
         i.fa.fa-trash-o
+      a.time.wide.tooltip(ng-attr-data-tooltip='{{"created: " + (nut.created | date:"medium") + "\nmodified: " + (nut.modified | date:"medium")}}')
+        i.fa.fa-clock-o
     textarea.mousetrap(id="nut-{{nut.id}}-ta", ng-model="nut.body", ng-focus="n.nutFocus(nut)", ng-blur="n.nutBlur(nut)", ng-change="digest.status='unsynced'; n.autosizeNutById(nut.id)", tabindex=2)

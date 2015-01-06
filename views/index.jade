@@ -161,6 +161,9 @@ block content
           i.fa.fa-fw.fa-list.fa-flip-horizontal
         li(ng-click="m.modal='shortcuts'; m.modalLarge=true") shortcuts 
           i.fa.fa-fw.fa-keyboard-o
+        li.private-mode.tooltip.on-left(ng-click="p.togglePrivateMode()", ng-class="p.privateMode ? 'on' : ''", ng-attr-data-tooltip="private notes currently {{ p.privateMode ? 'visible' : 'hidden' }}, click to {{ p.privateMode ? 'hide' : 'show' }}") private mode
+          i.fa.fa-fw.fa-unlock-alt
+          i.fa.fa-fw.fa-lock
         li(ng-click="m.modal='settings'; m.modalLarge=true; c.backup('settings')") settings 
           i.fa.fa-fw.fa-gears
         li(ng-show="u.loggedIn", ng-click="m.modal='account'; m.modalLarge=true") account
@@ -173,8 +176,12 @@ block content
 
     div#query.flex-container
       i.fa.fa-search(ng-click="q.focus()")
+      span.private-mode.chiclet(ng-show="p.privateMode", ng-click="p.togglePrivateMode()")
+        | private mode
+        span.hover-cover
+          i.fa.fa-times
       span.tags
-        span.tag(ng-repeat="tagId in q.tags", ng-click="q.removeTag(tagId)")
+        span.tag.chiclet(ng-repeat="tagId in q.tags", ng-click="q.removeTag(tagId)")
           | {{t.tags[tagId].name}}
           span.hover-cover
             i.fa.fa-times
@@ -197,11 +204,9 @@ block content
                   | 
                 i.fa.fa-refresh(ng-click='n.assignSortVals(n.sortBy); q.doQuery();')
 
-          //- number of notes in search results, just need to figure out how to style:
-          //- div {{q.showAll ? n.nuts.length : q.showNuts.length}}
-
           ul
             //- NOTE: maybe should let n.assignSortVals() handle q.showNuts too, and ng-show="nut.sortVal" ?
+            //- NOTE: we sort EVERYTHING and then "filter" with ng-show. should filter first and then sort if sorting is slow
             li.nut(ng-repeat="nut in n.nuts | orderBy:'sortVal' track by $index", ng-show="q.showAll || q.showNuts.indexOf(nut.id) !== -1", id="nut-{{nut.id}}")
               nm-nut
 

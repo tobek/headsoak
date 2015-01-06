@@ -11,7 +11,6 @@ l.search("some") // returns no results
 
 ### todo for beta: bits and bugs
 
-- check feedback works (move to watcher?)
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
 - FAQ
 - listen to remote changes (maybe lastLogin - actually only if there's a change i guess?) in Firebase (suggesting you've logged in elsewhere) and if detected, show popup saying that you've logged in and changed elsewhere, you gotta refresh or something
@@ -30,6 +29,8 @@ l.search("some") // returns no results
 - make it not run slowly (like when autosizing)
 - invite only?
 - @nutmeg.io email address. I have support@ (and toby@ and ece@), what about for general stuff? contact@ is boring
+- space at bottom of page?
+- move note actions into menu?
 
 ### todo for beta: 
 
@@ -41,8 +42,9 @@ l.search("some") // returns no results
 - mobile responsive
 - shared notes
     - live collab
-- "star"
-- tag browser collapse/expand?
+- maybe:
+    - "star"
+    - tag browser collapse/expand
 
 ### todo next
 
@@ -75,6 +77,7 @@ l.search("some") // returns no results
     - only private notes
     - ALL notes
     - should both be options, or just all notes? only reasons to not encrypt all notes: marginally slower, lose everything if you lose password
+- move feedback from zapier to watcher.js
 - email me when new users (and answer http://stackoverflow.com/questions/17723195/is-there-any-way-to-do-email-confirmation-for-firebase-user-creation-and-or-pass)
 - remove all instances of `alert()` and replace with some single modal function. on chrome and FF at least, alert windows begin with "The page at https://megnut.s3.amazonaws.com says:"
 - implement sort by query match strength
