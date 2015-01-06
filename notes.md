@@ -31,6 +31,9 @@ l.search("some") // returns no results
 - @nutmeg.io email address. I have support@ (and toby@ and ece@), what about for general stuff? contact@ is boring
 - space at bottom of page?
 - move note actions into menu?
+- ideally:
+    - copy to yeoman with versioning and create nutmeg-app S3 bucket? uglify JS at least
+    - SSL
 
 ### todo for beta: 
 
@@ -49,6 +52,25 @@ l.search("some") // returns no results
 ### todo next
 
 - highlight and scroll to matched query in search results
+- private note/tags improvements
+    - tutorial-ish stuff:
+        - permanently-dissmissable message when turning on private mode:
+            - 'You have enabled "private" mode. All tags you have marked as "private" will be visible.\n\nThis mode will remain enabled until you close this window or switch it off manually.'
+        - perm-diss when switching on private on note/tag
+            - 'You are setting this note/tag as "private". It will be hidden from view unless you select "private mode" from the menu' OK/OK don't show again/cancel
+    - tag-wide. instead of note-level private flag, check if union of privateTags and note tags is not empty
+        - note level private click adds special "private" tag
+            - check tags structure, is negative value ok?
+            - add "show system tags" setting to show untagged or private
+        - make tag private/unprivate
+            - add/remove from privateTags list
+        - if you un-private a note which has a private tag, remove system tag "private" but then ask: 'You have selected to make this note not private, but it has the tag "TAG", which is private. What would you like to do?'
+            - 'Leave this note private'
+            - 'Remove "TAG" tag'
+            - 'Make all "TAG" notes not private'
+        - transform existing data, right?
+        - hide tag itself from list when not in private mode (and display similar (sharing optout flag though?) message 'You are setting this tag as private, will be hidden...' as enabling private mode on note)
+    - auto-expiration of private mode? like, x minutes turn it back off
 - new shortcut potential conflicts
   - message: "HI: new keyboard shortcuts have been added. If you've changed shortcuts away from the defaults, you should check out the shortcuts menu to make sure there are no conflicts."
   - shortcutsChanged and user-stored shortcutChangeIDSeen or something. add it into new features modal

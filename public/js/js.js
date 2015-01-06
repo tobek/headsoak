@@ -718,10 +718,52 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     privateMode: false,
 
     togglePrivateMode: function() {
-      $s.p.privateMode = ! $s.p.privateMode;
-      $s.q.doQuery(); // re-filter which notes to show
+      if (! $s.p.privateMode) {
+        // it's off: we're turning it on. ask for password
+        $s.m.prompt({
+          message: 'Please enter your login password to view private notes:',
+          passwordInput: true,
+          cb: function(password) {
+            if (! password) return;
+
+            // TODO: implement some loading indicator in prompt while we wait for password checking
+
+            checkPassword(password, function(passwordCorrect) {
+              if (! passwordCorrect) {
+                alert('Incorrect password!');
+              }              
+              else {
+                $s.p.privateMode = true;
+                $s.q.doQuery(); // re-filter which notes to show
+                $s.$apply();
+              }
+            });
+          }
+        });
+      }
+      else {
+        // private mode was on: we're turning it off.
+        $s.p.privateMode = false;
+        $s.q.doQuery(); // re-filter which notes to show
+      }
     }
   };
+
+  /** calls cb with true/false if password is correct/incorrect */
+  function checkPassword(password, cb) {
+    if (! password) return cb(false);
+
+    if (! $s.u.user && ! $s.u.user.email) {
+      console.error('user not logged in or there was a problem initializing user info');
+      return cb(false);
+    }
+
+    // HACK: we try to change their firebase password using supplied password. but the password we change it *to* is the same password, so if it's correct, result is nothing happens. if password is incorrect, however, we get an error
+    $s.u.auth.changePassword($s.u.user.email, password, password, function(err) {
+      if (err) return cb(false);
+      else return cb(true);
+    });
+  }
 
   // ==== QUERY STUFF ==== //
 
