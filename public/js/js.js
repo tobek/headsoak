@@ -301,7 +301,7 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
                   var feats = data.val();
                   feats.splice(0, featuresSeen); // cuts off the ones they've already seen;
                   var list = feats.map(function(val) { return "<li>"+val+"</li>"; }).join("");
-                  $s.m.alert("Since you've been gone...", "<p>In addition to tweaks and fixes, here's what's new:</p><ul>"+list+"</ul><p>As always, you can send along feedback and bug reports from the menu, which is at the bottom right of the page.</p>", "Cool", feats.length > 2); // if more than 2 features, show large modal
+                  $s.m.alert("Since you've been gone...", "<p>In addition to tweaks and fixes, here's what's new:</p><ul>"+list+"</ul><p>As always, you can send along feedback and bug reports from the menu, which is at the bottom right of the page.</p>", "Cool", feats.length > 1); // if more than 1 feature, show large modal
                   featuresSeenRef.set(newFeatureCount);
                 });
               }
