@@ -13,24 +13,44 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
     modal: false,
     modalLarge: false,
     closeModal: function() {
+      if ($s.m.dynamic && $s.m.dynamic.cb) {
+        // call the callback with whatever arguments were passed in to closeModal()
+        $s.m.dynamic.cb.apply(null, arguments);
+        delete $s.m.dynamic.cb;
+      }
+
       $timeout(function() {
         $s.m.modal = false;
         $s.m.modalLarge = false;
       });
     },
-    alert: function(title, body, ok, large) {
-      $s.$apply(function() {
-        $s.m.modal = "alert";
-        $s.m.modalTitle = title;
-        $s.m.modalBody = $sce.trustAsHtml(body);
-        $s.m.modalOK = ok ? ok : "OK";
+    alert: function(title, bodyHTML, okText, large) {
+      $timeout(function() {
+        $s.m.modal = "dynamic";
+        $s.m.dynamic = {
+          title: title,
+          bodyHTML: $sce.trustAsHtml(bodyHTML),
+          okText: okText
+        };
         $s.m.modalLarge = large;
+      });
+    },
+    prompt: function(opts) {
+      $timeout(function() {
+        $s.m.modal = "dynamic";
+        $s.m.dynamic = {
+          message: opts.message,
+          passwordInput: opts.passwordInput,
+          cancel: true,
+          cb: opts.cb
+        };
+        $s.m.modalLarge = opts.large;
       });
     }
   };
 
   $s.$watch('m.modal', function(newVal) {
-    if (['alert', 'shortcuts', 'settings', 'account'].indexOf(newVal) !== -1) {
+    if (['dynamic', 'shortcuts', 'settings', 'account'].indexOf(newVal) !== -1) {
       // vertically align:
       $interval(function() {
         var el = angular.element(".circle > div:visible")[0];

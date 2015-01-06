@@ -128,11 +128,18 @@ block content
             p.loader(ng-show="u.loading")
               img(src="/img/loader-white.gif")
 
-        div(ng-show="m.modal == 'alert'")
-          h3 {{m.modalTitle}}
-          div.custom-body(ng-bind-html="m.modalBody")
+        div.dynamic(ng-show="m.modal == 'dynamic'")
+          h3(ng-show="m.dynamic.title") {{ m.dynamic.title }}
+
+          div.custom-body(ng-bind-html="m.dynamic.bodyHTML", ng-show="m.dynamic.bodyHTML")
+          p(ng-show="m.dynamic.message") {{ m.dynamic.message }}
+
+          form(ng-submit="m.closeModal(m.dynamic.inputVal)")
+            input(type="password", ng-show="m.dynamic.passwordInput", ng-model='m.dynamic.inputVal')
+
           div.button-holder
-            input(type="submit", value="{{m.modalOK}}", ng-click="m.closeModal()")
+            input(type="submit", value="{{ m.dynamic.okText || 'ok' }}", ng-click="m.closeModal(m.dynamic.inputVal)")
+            input(type="submit", value="{{ m.dynamic.cancelText || 'cancel' }}", ng-click="m.closeModal()", ng-show="m.dynamic.cancel")
 
 
   div#full-page-loading.modal.modalon(ng-show="u.loggedIn && u.loading && ! u.loggingIn")
