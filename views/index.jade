@@ -5,12 +5,11 @@ block content
   // we can call focus on this in order to blur all
   input#blur-hack(style="position: absolute; opacity: 0;")
 
-  //- only remove modal on click if logged in - otherwise we're closing the login window on a blank screen
-  div#modalclickoff(ng-click="!u.loggedIn || m.closeModal()", ng-show="m.modal")
-  div.modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal, 'large-circle': m.modalLarge }", ng-click="!u.loggedIn || m.closeModal()")
+  div#modalclickoff(ng-click="m.closeModal()", ng-show="m.modal")
+  div.modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal, 'large-circle': m.modalLarge }", ng-click="m.closeModal()")
     h1#title(ng-show="!u.loggedIn") nutmeg
     div.circle-holder
-      a#close-modal(ng-click="m.closeModal()", ng-show="u.loggedIn") x
+      a#close-modal(ng-click="m.closeModal()", ng-show="u.loggedIn && !m.lockedOut") x
       div.circle(ng-click="$event.stopPropagation()")
 
         div(ng-show="m.modal == 'about'")
@@ -143,7 +142,7 @@ block content
             pre }
 
           div.button-holder
-            input(type="submit", value="{{ m.dynamic.okText || 'ok' }}", ng-click="m.closeModal(m.dynamic.inputVal)")
+            input(type="submit", value="{{ m.dynamic.okText || 'ok' }}", ng-click="m.closeModal(m.dynamic.inputVal)", ng-show="m.dynamic.ok")
             input(type="submit", value="{{ m.dynamic.cancelText || 'cancel' }}", ng-click="m.closeModal()", ng-show="m.dynamic.cancel")
 
 

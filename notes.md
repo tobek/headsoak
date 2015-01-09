@@ -26,9 +26,6 @@ programmatic tags todo
 
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
 - FAQ
-- listen to remote changes (maybe lastLogin - actually only if there's a change i guess?) in Firebase (suggesting you've logged in elsewhere) and if detected, show popup saying that you've logged in and changed elsewhere, you gotta refresh or something
-    - "Hey, it looks like you've logged into Nutmeg somewhere else, either from another device or another browser window on this device.\n\nNutmeg doesn't yet support simultaneous editing from multiple sessions. Please <a>refresh</a> this window to load any changes you've made in other sessions and close any other open sessions.\n\nOr, continue in read-only mode."
-        - Glowing red connection cloud, on hover: "Currently in read-only mode because you have logged in to Nutmeg from somewhere else. Please refresh to load those changes and continue editing."
 - issues connecting to firebase
     - somehow listen for connection/disconnection and alert user and change cloud to red
     - maybe set some time in `push()`, and if `pushHackCounter>0` in `push()`, and if some length of time has passed (like 30s) then alert user and suggest something
@@ -118,6 +115,9 @@ programmatic tags todo
 - load html and angular REAL fast and then async all the other shit
 - remove all instances of `alert()` and replace with some single modal function. on chrome and FF at least, alert windows begin with "The page at https://megnut.s3.amazonaws.com says:"
 - implement sort by query match strength
+- for "no simultaneous editing" warning, maybe option to enter readonly mode?
+    - Glowing red connection cloud, on hover: "Currently in read-only mode because you have logged in to Nutmeg from somewhere else. Please refresh to load those changes and continue editing."
+    - would be better to just allow simultaneous editing
 - investigate if property name length matters in firebase - if so, have some automated minifier two-way dictionary to convert prop names - nice github plugin maybe
 - dbg time for lunr search
 - tag autocomplete also sorts by most used?

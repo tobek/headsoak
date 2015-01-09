@@ -18,6 +18,12 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
     modal: false,
     modalLarge: false,
     closeModal: function() {
+      // only close modal if logged in - otherwise we're closing the login window on a blank screen:
+      if (! $s.u.loggedIn) return;
+
+      // we can make the modal lock the user out:
+      if ($s.m.lockedOut) return;
+
       if ($s.m.dynamic) {
         if ($s.m.dynamic.cb) {
           // call the callback with whatever arguments were passed in to closeModal()
@@ -36,15 +42,17 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
         $s.m.modalLarge = false;
       });
     },
-    alert: function(title, bodyHTML, okText, large) {
+    alert: function(opts) {
       $timeout(function() {
         $s.m.modal = "dynamic";
         $s.m.dynamic = {
-          title: title,
-          bodyHTML: $sce.trustAsHtml(bodyHTML),
-          okText: okText
+          title: opts.title,
+          message: opts.message,
+          bodyHTML: $sce.trustAsHtml(opts.bodyHTML),
+          ok: !! opts.okText,
+          okText: opts.okText
         };
-        $s.m.modalLarge = large;
+        $s.m.modalLarge = opts.large;
       });
     },
     prompt: function(opts) {
@@ -53,6 +61,7 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
         $s.m.dynamic = {
           message: opts.message,
           passwordInput: opts.passwordInput,
+          ok: true,
           cancel: true,
           cb: opts.cb
         };
@@ -65,6 +74,7 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
         $s.m.dynamic = {
           title: 'algorithmic tag: "' + tag.name + '"',
           progTag: tag,
+          ok: true,
           okText: 'save and run',
           cancel: true,
           cb: cb
@@ -351,7 +361,14 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
                   var feats = data.val();
                   feats.splice(0, featuresSeen); // cuts off the ones they've already seen;
                   var list = feats.map(function(val) { return "<li>"+val+"</li>"; }).join("");
-                  $s.m.alert("Since you've been gone...", "<p>In addition to tweaks and fixes, here's what's new:</p><ul>"+list+"</ul><p>As always, you can send along feedback and bug reports from the menu, which is at the bottom right of the page.</p>", "Cool", feats.length > 1); // if more than 1 feature, show large modal
+
+                  $s.m.alert({
+                    title: "Since you've been gone...",
+                    bodyHTML: "<p>In addition to tweaks and fixes, here's what's new:</p><ul>" + list + "</ul><p>As always, you can send along feedback and bug reports from the menu, which is at the bottom right of the page.</p>",
+                    okText: 'Cool',
+                    large: feats.length > 1 // if more than 1 feature, show large modal
+                  });
+
                   featuresSeenRef.set(newFeatureCount);
                 });
               }
@@ -1516,7 +1533,13 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
           if (!tag.docs) tag.docs = [];
         });
 
-        $s.ref.child('user/lastLogin').set(Date.now());
+        $s.ref.child('user/lastLogin').set(Date.now(), function(err) {
+          if (err) {
+            console.error('problem setting lastLogin...');
+            return;
+          }
+          $s.ref.child('user').on('child_changed', newSessionStarted);
+        });
 
         console.time("building lunr index");
         $s.n.nuts.forEach($s.n.updateNutInIndex);
@@ -1533,7 +1556,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       // sync to server every 4s
       // if there are no changes this does nothing, so that's fine
       $s.u.digestInterval = window.setInterval($s.digest.push, 4000);
-      window.beforeunload = $s.digest.push; // TODO since push() isn't synchronous, probably won't work. TODO: check if there is an issue with "this"
+      window.beforeunload = $s.digest.push; // TODO since push() isn't synchronous, probably won't work.
 
       cb(featuresSeen);
     });
@@ -1548,6 +1571,12 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       email: $s.u.user.email,
       provider: $s.u.user.provider,
       lastLogin: Date.now()
+    }, function(err) {
+      if (err) {
+        console.error('problem setting user info...');
+        return;
+      }
+      $s.ref.child('user').on('child_changed', newSessionStarted);
     });
 
     $s.n.nuts = [];
@@ -1567,6 +1596,17 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       body: "Hey, welcome to Nutmeg. These are your personal notes, accessible by you from anywhere. Here are some things you can do with Nutmeg:\n\n- Write notes\n- Tag notes\n- Everything is synced to the cloud within seconds: you write, it's saved, kind of like paper.\n- See and edit your notes from any device\n- Instant searching through your notes, by tag and by keyword\n\nYou can delete notes by hitting the trash can in the top right of each note. You can figure out how to edit and delete tags.\n\nNutmeg is under active development, so bear with me on any weirdness. In the menu in the lower right corner of the screen you can log out, view/customize keyboard shortcuts, and submit any bug reports, feature requests, or thoughts as feedback, which I hope you do.",
       tags: [1]
     }]);
+  }
+
+  function newSessionStarted(newUserChild) {
+    // child_changed on $s.ref.child('user') - probably lastLogin
+    console.warn('nutmeg session started from elsewhere!');
+
+    $s.m.lockedOut = true; // prevent user from closing the following modal
+    $s.m.alert({
+      bodyHTML: "<p>Hey, it looks like you've logged into Nutmeg somewhere else, either from another device or another browser window on this device.</p><p>Nutmeg doesn't yet support simultaneous editing from multiple sessions. Please <a href='#' onclick='document.location.reload()'>refresh</a> this window to load any changes made in other sessions and continue.</p>",
+      large: true
+    });
   }
 
   $s.submitFeedback = function(feedback, name) {
