@@ -504,18 +504,20 @@ form {
       float: left;
       width: 90%;
 
-      &:hover .icons { display: inline-block; }
+      &:hover .icons a { display: inline; }
       .icons {
-        display: none;
         font-size: 75%;
 
+        a {
+          display: none;
+          color: #999;
+        }
         a + a { margin-left: 3px; } // all a's except the first one
-        a { color: #999; }
         a:hover {color: #DDD !important;}
         a:active { color: white !important; }
 
-        a.toggle { color: #555; }
-        a.toggle.on { color: red; }
+        a.toggle { color: #999; }
+        a.toggle.on { color: red; display: inline; }
         a.toggle.on:hover { color: lighten(red, 20%) !important; }
 
         a.toggle .fa-lock { display: none; }
@@ -791,6 +793,26 @@ form {
             margin-bottom: 5%;
             width: 90%;
           }
+
+          .prog-tag-editor {
+            pre, textarea {
+              font-size: 16px;
+              line-height: 100%;
+              font-family: 'Consolas', 'Courier', monospace;
+              -webkit-font-smoothing: antialiased;
+            }
+            pre {
+              padding-left: 5px;
+            }
+          }
+
+            #prog-tag-editor-field {
+              width: 110%;
+              left: -5%;
+              height: 300px;
+              margin: 5px 0;
+              border-radius: 3px;
+            }
         }
 
       }

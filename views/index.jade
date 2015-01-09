@@ -135,7 +135,12 @@ block content
           p(ng-show="m.dynamic.message") {{ m.dynamic.message }}
 
           form(ng-submit="m.closeModal(m.dynamic.inputVal)")
-            input(type="password", ng-show="m.dynamic.passwordInput", ng-model='m.dynamic.inputVal')
+            input(type="password", ng-show="m.dynamic.passwordInput", ng-model="m.dynamic.inputVal")
+
+          div.prog-tag-editor(ng-show="m.dynamic.progTag")
+            pre function(note) {
+            pre#prog-tag-editor-field
+            pre }
 
           div.button-holder
             input(type="submit", value="{{ m.dynamic.okText || 'ok' }}", ng-click="m.closeModal(m.dynamic.inputVal)")

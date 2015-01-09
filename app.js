@@ -45,6 +45,8 @@ require('dns').resolve('www.google.com', function(err) {
       "/js/offline/firebase.js",
       //"/js/offline/angularfire.min.js",
       "/js/offline/firebase-simple-login.js"
+      // missing ace editor
+      // and lodash
     ];
   }
   else { // connected
@@ -57,7 +59,9 @@ require('dns').resolve('www.google.com', function(err) {
       //"//ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular-animate.min.js",
       "//cdn.firebase.com/js/client/2.0.6/firebase.js",
       //"//cdn.firebase.com/libs/angularfire/0.3.0/angularfire.min.js",
-      "//cdn.firebase.com/js/simple-login/1.6.4/firebase-simple-login.js"
+      "//cdn.firebase.com/js/simple-login/1.6.4/firebase-simple-login.js",
+      "//cdn.jsdelivr.net/ace/1.1.8/min/ace.js",
+      "//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js",
     ];
   }
 

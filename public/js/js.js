@@ -9,14 +9,26 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
   // when adding tags to a note, option to create a new tag with the currently-entered text will appear above any suggestions with a score worse (great) than this threshold
   var NEW_TAG_AUTOCOMPLETE_SCORE_THRESHOLD = 5;
 
+  var PROG_TAG_EXAMPLES = [
+    '// return true if note should contain tag "TAGNAME". example:\n\nif (note.body.indexOf(\'TAGNAME\') !== -1) {\n  return true;\n}\nelse {\n  return false;\n}',
+  ];
+  var PROG_TAG_INFO = '\n/**\n * example `note` argument:\n *\n * {\n *   id: 42, // won\'t change\n *   body: \'the text of the note...\',\n *   created: 1420250076086,\n *   modified: 1420250076108,\n *   private: false,\n *   tags: [3, 12, 35] // tag IDs (the function `getTagNameById` is in scope)\n * }\n *\n */';
+
   $s.m = {
     modal: false,
     modalLarge: false,
     closeModal: function() {
-      if ($s.m.dynamic && $s.m.dynamic.cb) {
-        // call the callback with whatever arguments were passed in to closeModal()
-        $s.m.dynamic.cb.apply(null, arguments);
-        delete $s.m.dynamic.cb;
+      if ($s.m.dynamic) {
+        if ($s.m.dynamic.cb) {
+          // call the callback with whatever arguments were passed in to closeModal()
+          $s.m.dynamic.cb.apply(null, arguments);
+          delete $s.m.dynamic.cb;
+        }
+        if ($s.m.dynamic.editor) {
+          // $s.m.dynamic.editor.getValue(); // TODO use
+          $s.m.dynamic.editor.destroy();
+          delete $s.m.dynamic.editor;
+        }
       }
 
       $timeout(function() {
@@ -46,7 +58,45 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
         };
         $s.m.modalLarge = opts.large;
       });
-    }
+    },
+    progTagEditor: function(tag, cb) {
+      $timeout(function() {
+        $s.m.modal = "dynamic";
+        $s.m.dynamic = {
+          title: 'algorithmic tag: "' + tag.name + '"',
+          progTag: tag,
+          okText: 'save and run',
+          cancel: true,
+          cb: cb
+        };
+        $s.m.modalLarge = true;
+
+        setTimeout(function () {
+          $s.m.dynamic.editor = ace.edit('prog-tag-editor-field');
+          $s.m.dynamic.editor.setTheme('ace/theme/dawn');
+          var sesh = $s.m.dynamic.editor.getSession()
+          sesh.setMode('ace/mode/javascript');
+          sesh.setUseWrapMode(true);
+          sesh.setTabSize(2);
+          sesh.setUseSoftTabs(true);
+
+          var currentValue;
+          if (tag.TODO) {
+            currentValue = tag.TODO;
+          }
+          else {
+            currentValue = _.sample(PROG_TAG_EXAMPLES).replace('TAGNAME', tag.name);
+          }
+
+          if (currentValue.indexOf(PROG_TAG_INFO) === -1) {
+            currentValue += '\n' + PROG_TAG_INFO;
+          }
+
+          $s.m.dynamic.editor.setValue(currentValue);
+          $s.m.dynamic.editor.gotoLine(0, 0);
+        }, 550); // modal opening animation takes 500ms
+      });
+    },
   };
 
   $s.$watch('m.modal', function(newVal) {
@@ -953,6 +1003,11 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       return -1;
     },
 
+    getTagNameById: function(id) {
+      if (this.tags[id]) return this.tags[id].name;
+      else return null;
+    },
+
     deleteTag: function(tag) {
       if (!confirm('Are you sure you want to delete the tag "'+tag.name+'"? This can\'t be undone.')) {
         return;
@@ -979,6 +1034,21 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         tag.name = newName;
         console.log("tag "+tag.id+"'s name updated to "+tag.name);
         this.tagUpdated(tag.id, true);
+      }
+    },
+
+    /** make or unmake tag programmatic */
+    tagProgToggle: function(tag) {
+      if (! tag.prog) {
+        $s.m.progTagEditor(tag, function(tagFuncString) {
+          if (!tagFuncString) return;
+
+          // TODO
+          tag.prog = true;
+        });
+      }
+      else {
+        tag.prog = false;
       }
     },
 

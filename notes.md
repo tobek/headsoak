@@ -9,6 +9,19 @@ l.search("some") // returns no results
 
 ## TODO
 
+programmatic tags todo
+
+- pass value back to cb
+  - cut out PROG_TAG_INFO
+- display instructions and info
+  - true/false for has/doesn't have tag
+  - properites of note and/or example note
+- why xxxxx when i open bolt again and again? does it happen later?
+- store func in tag, pre-fill with that or default, instead of putting it in jade
+- run tag func
+  - make sure getTagNameById is in scope
+- whitelist and blacklist
+
 ### todo for beta: bits and bugs
 
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
@@ -27,6 +40,9 @@ l.search("some") // returns no results
 - favicon
 - font
 - make it not run slowly (like when autosizing)
+    - maybe use `slyPreventEvaluationWhenHidden` https://github.com/scalyr/angular/blob/3f1cbbba31689339694bd2132e411ca2eabb9480/src/js/directives/slyEvaluate.js
+    - https://www.airpair.com/angularjs/posts/angularjs-performance-large-applications
+    - one-way data binding?
 - invite only?
 - @nutmeg.io email address. I have support@ (and toby@ and ece@), what about for general stuff? contact@ is boring
 - space at bottom of page?
@@ -37,7 +53,6 @@ l.search("some") // returns no results
 
 ### todo for beta: 
 
-- private notes
 - rudimentary programmatic tagging (popup modal with code editor and prototype of function and examples)
 - intro page with a tiny bit of info and demo
     - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
@@ -100,7 +115,7 @@ l.search("some") // returns no results
     - ALL notes
     - should both be options, or just all notes? only reasons to not encrypt all notes: marginally slower, lose everything if you lose password
 - move feedback from zapier to watcher.js
-- email me when new users (and answer http://stackoverflow.com/questions/17723195/is-there-any-way-to-do-email-confirmation-for-firebase-user-creation-and-or-pass)
+- load html and angular REAL fast and then async all the other shit
 - remove all instances of `alert()` and replace with some single modal function. on chrome and FF at least, alert windows begin with "The page at https://megnut.s3.amazonaws.com says:"
 - implement sort by query match strength
 - investigate if property name length matters in firebase - if so, have some automated minifier two-way dictionary to convert prop names - nice github plugin maybe
