@@ -700,7 +700,12 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     },
 
     // each nut has an array of tags and each tag has an array of nuts it belongs to. this function ensures this remains consistent when adding tags to nuts
-    addTagIdToNut: function(tagId, nutId) {
+    addTagIdToNut: function(tagId, nutId, viaProg) {
+      if ($s.t.tags[tagId].prog && ! viaProg) {
+        $s.t.progTagCantChangeAlert(tagId);
+        return;
+      }
+
       console.log("adding tag "+tagId+" to nut "+nutId);
       // add tag id to nut if it's not already there
       if ($s.n.nuts[nutId].tags.indexOf(tagId) === -1 ) {
@@ -1142,7 +1147,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       var classifier = new Function('note', tag.progFuncString); // this line excites me
 
       $s.n.nuts.forEach(function(nut) {
-        if (classifier(nut) === true) $s.n.addTagIdToNut(tag.id, nut.id);
+        if (classifier(nut) === true) $s.n.addTagIdToNut(tag.id, nut.id, true);
         else $s.n.removeTagIdFromNut(tag.id, nut.id);
       });
     },
@@ -1155,7 +1160,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       if (!tag) return;
 
       $s.m.confirm({
-        bodyHTML: '<p>This is an algorithmic tag controlled by the function you entered - it cannot be added or removed manually.</p><p>Would you like to change this tag\'s settings?</p>',
+        bodyHTML: '<p>"' + tag.name  + '" is an algorithmic tag controlled by the function you entered - it cannot be added or removed manually.</p><p>Would you like to change this tag\'s settings?</p>',
         okText: 'yes',
         okCb: function() {
           // closeModal was just called, so open up new modal in a different tick:
