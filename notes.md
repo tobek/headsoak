@@ -11,16 +11,16 @@ l.search("some") // returns no results
 
 programmatic tags todo
 
-- pass value back to cb
-  - cut out PROG_TAG_INFO
-- display instructions and info
-  - true/false for has/doesn't have tag
-  - properites of note and/or example note
-- why xxxxx when i open bolt again and again? does it happen later?
-- store func in tag, pre-fill with that or default, instead of putting it in jade
 - run tag func
   - make sure getTagNameById is in scope
-- whitelist and blacklist
+  - check it handles errors
+  - handles it's a function
+- whenever note changes (debounce or on blur) run classifiers again
+- show lightning on note itself
+- more examples and example button
+- whitelist and blacklist later?
+    - on hover, can't remove or alert
+    - not in autosuggest
 
 ### todo for beta: bits and bugs
 
@@ -44,9 +44,11 @@ programmatic tags todo
 - @nutmeg.io email address. I have support@ (and toby@ and ece@), what about for general stuff? contact@ is boring
 - space at bottom of page?
 - move note actions into menu?
+- logout should clear nuts and stuff from scope etc!
 - ideally:
     - copy to yeoman with versioning and create nutmeg-app S3 bucket? uglify JS at least
     - SSL
+- alert to unsaved changes if you close window
 - status messages for loading stuff
     - function 'update status message' after various key stages, which chooses a random one
     - loaded from firebase so it's not in JS source and harder to see
@@ -187,6 +189,7 @@ programmatic tags todo
 
 ### todo next
 
+- on cancel modal, if dynamic prog tag editor and text has changed, confirm
 - 'security' or 'privacy' settings section
     - ask password for viewing private notes - default on
     - ask password for programmatic notes - default off

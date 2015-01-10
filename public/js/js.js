@@ -10,9 +10,9 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
   var NEW_TAG_AUTOCOMPLETE_SCORE_THRESHOLD = 5;
 
   var PROG_TAG_EXAMPLES = [
-    '// return true if note should contain tag "TAGNAME". example:\n\nif (note.body.indexOf(\'TAGNAME\') !== -1) {\n  return true;\n}\nelse {\n  return false;\n}',
+    '// return true if note should contain tag "TAGNAME". example:\n\nif (note.body.indexOf("TAGNAME") !== -1) {\n  return true;\n}\nelse {\n  return false;\n}',
   ];
-  var PROG_TAG_INFO = '\n/**\n * example `note` argument:\n *\n * {\n *   id: 42, // won\'t change\n *   body: \'the text of the note...\',\n *   created: 1420250076086,\n *   modified: 1420250076108,\n *   private: false,\n *   tags: [3, 12, 35] // tag IDs (the function `getTagNameById` is in scope)\n * }\n *\n */';
+  var PROG_TAG_INFO = '\n/**\n * example `note` argument:\n *\n * {\n *   id: 42, // won\'t change\n *   body: "the text of the note...",\n *   created: 1420250076086,\n *   modified: 1420250076108,\n *   private: false,\n *   tags: [3, 12, 35] // tag IDs (the function `getTagNameById` is in scope)\n * }\n *\n */';
 
   $s.m = {
     modal: false,
@@ -90,7 +90,7 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
         }, 50);
       });
     },
-    progTagEditor: function(tag, cb) {
+    progTagEditor: function(tag, funcString, cb) {
       $timeout(function() {
         $s.m.modal = "dynamic";
         $s.m.dynamic = {
@@ -103,30 +103,21 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
         };
         $s.m.modalLarge = true;
 
+
+        $s.m.dynamic.editor = ace.edit('prog-tag-editor-field');
+        $s.m.dynamic.editor.setTheme('ace/theme/dawn');
+        var sesh = $s.m.dynamic.editor.getSession()
+        sesh.setMode('ace/mode/javascript');
+        sesh.setUseWrapMode(true);
+        sesh.setTabSize(2);
+        sesh.setUseSoftTabs(true);
+
+        $s.m.dynamic.editor.setValue(funcString);
+        $s.m.dynamic.editor.gotoLine(0, 0); // deselect and go to beginning (setValue sometimes selects all and/or puts cursor at end)
         setTimeout(function () {
-          $s.m.dynamic.editor = ace.edit('prog-tag-editor-field');
-          $s.m.dynamic.editor.setTheme('ace/theme/dawn');
-          var sesh = $s.m.dynamic.editor.getSession()
-          sesh.setMode('ace/mode/javascript');
-          sesh.setUseWrapMode(true);
-          sesh.setTabSize(2);
-          sesh.setUseSoftTabs(true);
-
-          var currentValue;
-          if (tag.TODO) {
-            currentValue = tag.TODO;
-          }
-          else {
-            currentValue = _.sample(PROG_TAG_EXAMPLES).replace('TAGNAME', tag.name);
-          }
-
-          if (currentValue.indexOf(PROG_TAG_INFO) === -1) {
-            currentValue += '\n' + PROG_TAG_INFO;
-          }
-
-          $s.m.dynamic.editor.setValue(currentValue);
-          $s.m.dynamic.editor.gotoLine(0, 0);
+          $s.m.dynamic.editor.resize();
         }, 550); // modal opening animation takes 500ms
+
       });
     },
   };
@@ -1079,19 +1070,56 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     /** make or unmake tag programmatic */
     tagProgToggle: function(tag) {
       if (! tag.prog) {
-        $s.m.progTagEditor(tag, function(tagFuncString) {
-          if (!tagFuncString) return;
+        // modal with code editor for user to enter function:
+        $s.m.progTagEditor(tag, $s.t.getTagProgFuncString(tag), function(funcString) {
+          if (!funcString) return;
 
-          // TODO
+          funcString = funcString.replace(PROG_TAG_INFO, '').trim(); // no need to store this, and we add it back on when we display it anyway
+
+          tag.progFuncString = funcString;
+
+          // TODO validate
+
           tag.prog = true;
+          $s.t.tagUpdated(tag);
+          $s.t.progTagProcessAll(tag);
         });
       }
       else {
         tag.prog = false;
+        $s.t.tagUpdated(tag);
       }
     },
 
-    /* call whenever a tag is updated
+    getTagProgFuncString: function(tag) {
+      var funcString;
+      if (tag.progFuncString) {
+        funcString = tag.progFuncString;
+      }
+      else {
+        var tagNameString = JSON.stringify(tag.name); // handles quotes and other special chars
+        funcString = _.sample(PROG_TAG_EXAMPLES).replace(new RegExp('"TAGNAME"', 'g'), tagNameString);
+      }
+
+      if (funcString.indexOf(PROG_TAG_INFO) === -1) {
+        funcString += '\n' + PROG_TAG_INFO;
+      }
+
+      return funcString;
+    },
+
+    /** for programmatic tag, go through all notes and tag appropriate */
+    progTagProcessAll: function(tag) {
+      if (!tag.prog) return;
+
+      var classifier = new Function('note', tag.progFuncString); // this line excites me for some reason
+
+      $s.n.nuts.forEach(function(nut) {
+        if (classifier(nut)) $s.n.addTagIdToNut(tag.id, nut.id);
+        else $s.n.removeTagIdFromNut(tag.id, nut.id);
+      });
+    },
+
     /* call whenever a tag is updated. accepts tag or tag id
      * 1: updates `modified`
      * 2: updateNutInIndex() too if updateNut == true, e.g. if the name has changed
