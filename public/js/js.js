@@ -96,7 +96,7 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
         }, 50);
       });
     },
-    progTagEditor: function(tag, funcString, cb) {
+    progTagEditor: function(tag, funcString, opts) {
       $timeout(function() {
         $s.m.modal = "dynamic";
         $s.m.dynamic = {
@@ -105,7 +105,9 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
           ok: true,
           okText: 'save and run',
           cancel: true,
-          okCb: cb
+          okCb: opts.cb,
+          thirdButton: opts.thirdButton,
+          thirdButtonCb: opts.thirdButtonCb,
         };
         $s.m.modalLarge = true;
 
@@ -1074,10 +1076,10 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     },
 
     /** make or unmake tag programmatic */
-    tagProgToggle: function(tag) {
-      if (! tag.prog) {
-        // modal with code editor for user to enter function:
-        $s.m.progTagEditor(tag, $s.t.getTagProgFuncString(tag), function(funcString) {
+    tagProgSettings: function(tag) {
+      // modal with code editor for user to enter function:
+      $s.m.progTagEditor(tag, $s.t.getTagProgFuncString(tag), {
+        cb: function(funcString) {
           if (!funcString) return;
 
           funcString = funcString.replace(PROG_TAG_INFO, '').trim(); // no need to store this, and we add it back on when we display it anyway
@@ -1089,12 +1091,16 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
           tag.prog = true;
           $s.t.tagUpdated(tag);
           $s.t.progTagProcessAll(tag);
-        });
-      }
-      else {
-        tag.prog = false;
-        $s.t.tagUpdated(tag);
-      }
+        },
+
+        // if tag is already programmatic, menu lets them undo that:
+        thirdButton: tag.prog ? 'revert to normal tag' : null,
+        thirdButtonCb: tag.prog ? function() {
+          tag.prog = false;
+          $s.t.tagUpdated(tag);
+          $s.m.closeModal();
+        } : null,
+      });
     },
 
     getTagProgFuncString: function(tag) {
@@ -1137,7 +1143,10 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         bodyHTML: '<p>This is an algorithmic tag controlled by the function you entered - it cannot be added or removed manually.</p><p>Would you like to change this tag\'s settings?</p>',
         okText: 'yes',
         okCb: function() {
-          $s.t.tagProgToggle(tag);
+          // closeModal was just called, so open up new modal in a different tick:
+          $timeout(function() {
+            $s.t.tagProgSettings(tag);
+          }, 50);
         },
         cancel: true, // angular template interprets "no" as falsey so we have to do this...
         cancelText: 'no'
