@@ -437,9 +437,12 @@ form {
             color: cyan;
           }
           .icon {
-            margin-left: 4px;
             color: @icon-gray;
             cursor: pointer;
+
+            // really does make them look more balanced:;
+            margin-left: 1px;
+            &.delete { margin-left: 2px; }
           }
           .icon:hover {
             color: black; 

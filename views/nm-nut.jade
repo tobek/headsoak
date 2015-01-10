@@ -3,9 +3,9 @@ div(ng-show="nut")
     span.tag(ng-repeat="tagId in nut.tags",  ng-click="q.toggleTag(tagId, $event)", ng-class="{queried: (q.tags.indexOf(tagId) != -1)}")
       | {{t.tags[tagId].name}}
       span.delete.icon(ng-click="n.removeTagIdFromNut(tagId, nut.id)", ng-show="! t.tags[tagId].prog")
-        i.fa.fa-times
+        i.fa.fa-fw.fa-times
       span.prog.icon.wide.tooltip(ng-click="$event.stopPropagation(); t.progTagCantChangeAlert(tagId)", ng-show="t.tags[tagId].prog", data-tooltip="algorithmic tag")
-        i.fa.fa-bolt.fa-fw
+        i.fa.fa-fw.fa-bolt
     span.tag.note-id(ng-show="c.config.showNoteIds")
       | {{ nut.id }} 
     | 
