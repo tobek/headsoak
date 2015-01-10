@@ -1082,9 +1082,24 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         cb: function(funcString) {
           if (!funcString) return;
 
-          funcString = funcString.replace(PROG_TAG_INFO, '').trim(); // no need to store this, and we add it back on when we display it anyway
+          funcString = funcString.replace(PROG_TAG_INFO, '').trim(); // no need to store PROG_TAG_INFO, and we add it back on when we display it anyway
 
           tag.progFuncString = funcString;
+
+          if (!tag.prog && tag.docs.length) {
+            // if tag was not programmatic and already had some documents
+            var singular = tag.docs.length === 1;
+            var cancel = ! confirm('Warning: you currently have ' + tag.docs.length + ' note' + (singular ? '' : 's') + ' tagged with "' + tag.name + '". ' + (singular ? 'It' : 'They') + ' will be untagged if ' + (singular ? 'it doesn\'t' : 'they don\'t') + ' return true for this function.\n\nAre you sure you wish to continue?');
+
+            if (cancel) {
+              // modal has just been closed, so reopen it in another tick
+              $timeout(function() {
+                $s.t.tagProgSettings(tag);
+              }, 50);
+              
+              return;
+            }
+          }
 
           // TODO validate
 
