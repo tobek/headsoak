@@ -142,8 +142,8 @@ block content
             pre }
 
           div.button-holder
-            input(type="submit", value="{{ m.dynamic.okText || 'ok' }}", ng-click="m.finishModal(m.dynamic.inputVal)", ng-show="m.dynamic.ok")
-            input(type="submit", value="{{ m.dynamic.cancelText || 'cancel' }}", ng-click="m.cancelModal()", ng-show="m.dynamic.cancel")
+            input(type="submit", value="{{ m.dynamic.okText || 'ok' }}", ng-click="m.finishModal(m.dynamic.inputVal)", ng-show="m.dynamic.ok || m.dynamic.okText")
+            input(type="submit", value="{{ m.dynamic.cancelText || 'cancel' }}", ng-click="m.cancelModal()", ng-show="m.dynamic.cancel || m.dynamic.cancelText")
 
 
   div#full-page-loading.modal.modalon(ng-show="u.loggedIn && u.loading && ! u.loggingIn")

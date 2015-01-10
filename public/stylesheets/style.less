@@ -10,6 +10,8 @@
 @tagColor: white;
 @tagHover: lighten(@mainbg, 15%);
 
+@icon-gray: #999;
+
 @textareaBG: #DDD;
 @textareaFocusBG: desaturate(lighten(@mainbg, 85%), 8%);
 
@@ -434,12 +436,12 @@ form {
           &.note-id {
             color: cyan;
           }
-          .delete {
+          .icon {
             margin-left: 4px;
-            color: gray;
+            color: @icon-gray;
             cursor: pointer;
           }
-          .delete:hover {
+          .icon:hover {
             color: black; 
           }
         }
@@ -510,20 +512,22 @@ form {
 
         a {
           display: none;
-          color: #999;
+          color: @icon-gray;
         }
         a + a { margin-left: 3px; } // all a's except the first one
         a:hover {color: #DDD !important;}
         a:active { color: white !important; }
 
-        a.toggle { color: #999; }
-        a.toggle.on { color: red; display: inline; }
+        a.toggle { color: @icon-gray; }
+        a.toggle.on { display: inline; }
         a.toggle.on:hover { color: lighten(red, 20%) !important; }
 
         a.toggle .fa-lock { display: none; }
         a.toggle.on .fa-lock { display: inline-block; }
         a.toggle.on .fa-unlock-alt { display: none; }
       }
+      .icons a.toggle.on { color: @icon-gray; }
+      &:hover .icons a.toggle.on { color: red; }
     }
   }
 }
@@ -888,6 +892,10 @@ form {
   font-size: 13px;
 }
 .wide.tooltip:after {
+  left: -65px;
+  width: 130px;
+}
+.widest.tooltip:after {
   left: -100px;
   width: 230px;
 }

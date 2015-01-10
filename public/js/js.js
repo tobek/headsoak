@@ -23,11 +23,11 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
       if ($s.m.dynamic) {
         if ($s.m.dynamic.editor) {
           // pass editor value back to callback:
-          $s.m.dynamic.cb($s.m.dynamic.editor.getValue());
+          $s.m.dynamic.okCb($s.m.dynamic.editor.getValue());
         }
-        else if ($s.m.dynamic.cb) {
+        else if ($s.m.dynamic.okCb) {
           // call the callback with whatever arguments were passed in to finishModal()
-          $s.m.dynamic.cb.apply(null, arguments);
+          $s.m.dynamic.okCb.apply(null, arguments);
         }
       }
 
@@ -64,11 +64,17 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
           title: opts.title,
           message: opts.message,
           bodyHTML: $sce.trustAsHtml(opts.bodyHTML),
-          ok: !! opts.okText,
-          okText: opts.okText
+          ok: opts.ok !== false, // show okay unless explicitly set to false
+          okText: opts.okText,
+          okCb: opts.okCb,
+          cancel: opts.cancel,
+          cancelText: opts.cancelText,
         };
         $s.m.modalLarge = opts.large;
       });
+    },
+    confirm: function(opts) {
+      $s.m.alert(opts); // alias
     },
     prompt: function(opts) {
       $timeout(function() {
@@ -78,7 +84,7 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
           passwordInput: opts.passwordInput,
           ok: true,
           cancel: true,
-          cb: opts.cb
+          okCb: opts.okCb
         };
         $s.m.modalLarge = opts.large;
 
@@ -99,7 +105,7 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
           ok: true,
           okText: 'save and run',
           cancel: true,
-          cb: cb
+          okCb: cb
         };
         $s.m.modalLarge = true;
 
@@ -803,7 +809,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         $s.m.prompt({
           message: 'Please enter your login password to view private notes:',
           passwordInput: true,
-          cb: function(password) {
+          okCb: function(password) {
             if (! password) return;
 
             // TODO: implement some loading indicator in prompt while we wait for password checking
@@ -1112,11 +1118,29 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     progTagProcessAll: function(tag) {
       if (!tag.prog) return;
 
-      var classifier = new Function('note', tag.progFuncString); // this line excites me for some reason
+      var classifier = new Function('note', tag.progFuncString); // this line excites me
 
       $s.n.nuts.forEach(function(nut) {
-        if (classifier(nut)) $s.n.addTagIdToNut(tag.id, nut.id);
+        if (classifier(nut) === true) $s.n.addTagIdToNut(tag.id, nut.id);
         else $s.n.removeTagIdFromNut(tag.id, nut.id);
+      });
+    },
+
+    /** alert user that they can't add/remove this tag, let them change it if they need */
+    progTagCantChangeAlert: function(tag) {
+      if (typeof tag === "number") { // tag id
+        tag = $s.t.tags[tag];
+      }
+      if (!tag) return;
+
+      $s.m.confirm({
+        bodyHTML: '<p>This is an algorithmic tag controlled by the function you entered - it cannot be added or removed manually.</p><p>Would you like to change this tag\'s settings?</p>',
+        okText: 'yes',
+        okCb: function() {
+          $s.t.tagProgToggle(tag);
+        },
+        cancel: true, // angular template interprets "no" as falsey so we have to do this...
+        cancelText: 'no'
       });
     },
 
@@ -1126,7 +1150,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
      * 3: add to digest
      */
     tagUpdated: function(tag, updateNut) {
-      if (typeof tag === "number") {
+      if (typeof tag === "number") { // tag id
         tag = $s.t.tags[tag];
       }
       if (!tag) return;
@@ -1660,6 +1684,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     $s.m.lockedOut = true; // prevent user from closing the following modal
     $s.m.alert({
       bodyHTML: "<p>Hey, it looks like you've logged into Nutmeg somewhere else, either from another device or another browser window on this device.</p><p>Nutmeg doesn't yet support simultaneous editing from multiple sessions. Please <a href='#' onclick='document.location.reload()'>refresh</a> this window to load any changes made in other sessions and continue.</p>",
+      ok: false,
       large: true
     });
   }
