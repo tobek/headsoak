@@ -14,9 +14,8 @@ programmatic tags todo
 - run tag func
   - make sure getTagNameById is in scope
   - check it handles errors
-  - handles it's a function
+  - checks it's a function
 - whenever note changes (debounce or on blur) run classifiers again
-- show lightning on note itself
 - more examples and example button
 - whitelist and blacklist later?
     - on hover, can't remove or alert
