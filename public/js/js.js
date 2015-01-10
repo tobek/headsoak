@@ -66,6 +66,13 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
           cb: opts.cb
         };
         $s.m.modalLarge = opts.large;
+
+        // now focus on the input. for some reason won't work in the same tick, do it in a sec instead
+        setTimeout(function() {
+          if (opts.passwordInput) { // the only kind of prompt we have for now
+            $('.modal .dynamic input[type=password]').focus(); // horribly un Angular-ish...
+          }
+        }, 50);
       });
     },
     progTagEditor: function(tag, cb) {
