@@ -17,7 +17,26 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
   $s.m = {
     modal: false,
     modalLarge: false,
-    closeModal: function() {
+
+    /** user has accepted or completed modal */
+    finishModal: function() {
+      if ($s.m.dynamic) {
+        if ($s.m.dynamic.editor) {
+          // pass editor value back to callback:
+          $s.m.dynamic.cb($s.m.dynamic.editor.getValue());
+        }
+        else if ($s.m.dynamic.cb) {
+          // call the callback with whatever arguments were passed in to finishModal()
+          $s.m.dynamic.cb.apply(null, arguments);
+        }
+      }
+
+      $s.m.closeModal();      
+    },
+    cancelModal: function() {
+      $s.m.closeModal();      
+    },
+    closeModal: function(userInput) {
       // only close modal if logged in - otherwise we're closing the login window on a blank screen:
       if (! $s.u.loggedIn) return;
 
@@ -25,16 +44,11 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
       if ($s.m.lockedOut) return;
 
       if ($s.m.dynamic) {
-        if ($s.m.dynamic.cb) {
-          // call the callback with whatever arguments were passed in to closeModal()
-          $s.m.dynamic.cb.apply(null, arguments);
-          delete $s.m.dynamic.cb;
-        }
         if ($s.m.dynamic.editor) {
-          // $s.m.dynamic.editor.getValue(); // TODO use
-          $s.m.dynamic.editor.destroy();
-          delete $s.m.dynamic.editor;
+          $s.m.dynamic.editor.destroy(); // doesn't seem to be doing anything?
         }
+
+        delete $s.m.dynamic;
       }
 
       $timeout(function() {
@@ -42,6 +56,7 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
         $s.m.modalLarge = false;
       });
     },
+
     alert: function(opts) {
       $timeout(function() {
         $s.m.modal = "dynamic";
@@ -1286,7 +1301,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         description: "Unfocuses from any input/textarea, closes any open modal.",
         binding: "esc",
         fn: function() {
-          $timeout(function() { $s.m.closeModal(); })
+          $timeout(function() { $s.m.cancelModal(); })
           angular.element("#blur-hack")[0].focus();
         },
         overkill: true,
@@ -1386,7 +1401,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.s.pushBindings();
     },
     cancel: function() {
-      $s.m.closeModal();
+      $s.m.cancelModal();
       $s.s.shortcutsEditing = angular.copy($s.s.shortcuts);
       $s.s.modEditing = $s.s.mod;
     },
@@ -1471,7 +1486,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.c.pushSettings();
     },
     cancel: function(section) {
-      $s.m.closeModal();
+      $s.m.cancelModal();
       if (!section) { // all
         $s.c.config = angular.copy($s.c.configBackup);
       }
