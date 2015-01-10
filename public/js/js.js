@@ -1092,19 +1092,24 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     },
 
     /* call whenever a tag is updated
+    /* call whenever a tag is updated. accepts tag or tag id
      * 1: updates `modified`
      * 2: updateNutInIndex() too if updateNut == true, e.g. if the name has changed
      * 3: add to digest
      */
-    tagUpdated: function(id, updateNut) {
-      if (!this.tags[id]) return;
-      $s.digest.status = 'unsynced';
-      console.log("tag "+id+" has been updated")
-      this.tags[id].modified = (new Date).getTime();
-      $s.digest.tags[id] = this.tags[id];
+    tagUpdated: function(tag, updateNut) {
+      if (typeof tag === "number") {
+        tag = $s.t.tags[tag];
+      }
+      if (!tag) return;
 
-      if (updateNut && this.tags[id].docs) {
-        this.tags[id].docs.forEach(function(docId) {
+      $s.digest.status = 'unsynced';
+      console.log("tag "+tag.id+" has been updated")
+      tag.modified = (new Date).getTime();
+      $s.digest.tags[tag.id] = tag;
+
+      if (updateNut && tag.docs) {
+        tag.docs.forEach(function(docId) {
           $s.n.nutUpdated(docId, $s.c.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
         });
       }
