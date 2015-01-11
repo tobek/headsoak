@@ -1741,6 +1741,21 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
           }
         });
 
+        // TODO: temporary for old users who did firstInit before it saved these things
+        $s.ref.child('user').update({
+          email: $s.u.user.email,
+          provider: $s.u.user.provider,
+          lastLogin: Date.now()
+        }, function(err) {
+          if (err) {
+            console.error('problem setting user info...');
+            return;
+          }
+          $s.ref.child('user').on('child_changed', newSessionStarted);
+        });
+        $s.ref.root().child('emailToId/' + formatForFirebase($s.u.user.email)).set($s.u.user.uid);
+        // TODO: end temporary thing. when removing this, using the following instead:
+        /*
         $s.ref.child('user/lastLogin').set(Date.now(), function(err) {
           if (err) {
             console.error('problem setting lastLogin...');
@@ -1748,6 +1763,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
           }
           $s.ref.child('user').on('child_changed', newSessionStarted);
         });
+        */
 
         console.time("building lunr index");
         $s.n.nuts.forEach($s.n.updateNutInIndex);
@@ -1786,6 +1802,8 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       }
       $s.ref.child('user').on('child_changed', newSessionStarted);
     });
+
+    $s.ref.root().child('emailToId/' + formatForFirebase($s.u.user.email)).set($s.u.user.uid);
 
     $s.n.nuts = [];
     $s.t.tags = [];
@@ -1973,4 +1991,10 @@ function multiArrayIntersect(arrays) {
     };
     return soFar;
   }
+}
+
+/** firebase paths can't contain: ".", "#", "$", "[", or "]" */
+function formatForFirebase(s) {
+  // just base64 encode it eh
+  return btoa(s);
 }

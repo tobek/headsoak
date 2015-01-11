@@ -1,11 +1,20 @@
 {
   "rules": {
+
     "users": {
       "$uid": {
+        // you can only read/write your own stuff:
         ".read": "$uid == auth.uid",
         ".write": "$uid == auth.uid"
       }
     },
+    "emailToId": {
+      ".read": true,
+      "$email": {
+        ".write": "newData.val() === auth.uid"
+      }
+    },
+
     "feedback": {
       ".read": false,
       ".write": true
