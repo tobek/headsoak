@@ -9,6 +9,68 @@ l.search("some") // returns no results
 
 ## TODO
 
+shared notes
+
+- investigate firepad for storing/transmitting note and live collaboration
+    - does note live with "owner" or in a separate collection?
+    - modify security permissions so user A can access (some of) user B's notes
+- to share something with someone else:
+    - hit group icon on tag, sharing window opens
+    - add sharer
+        - search (by email address or user name) or choose from past sharers/share-ees
+            - if no user found AND if it's a valid email address "No Nutmeg user found. Would you like to email EMAIL and invite them to join Nutmeg?" <-- not ready yet ugh this is a whole flow
+    - if we don't have your name, ask to fill in
+        - pre fill with your email
+        - save in user details
+        - check for uniqueness of slug-ified name (later slug-ified would be used as profile url, but changeable)
+    - choose read-only or can-edit
+    - 'USER will be able to see/edit all notes tagged with "TAGNAME", including notes that you later add this tag to. Are you sure?'
+        - yes
+        - yes, don't ask me again
+        - no
+- when someone shares something with you:
+    - when you login: 'USER has shared their tag "TAGNAME" with you [as read-only]OR[and invited you to edit].' a [more info] link expands to: 'Shared notes and tags show up alongside your personal notes and tags, but with the [person] icon. You can modify (add your own tags, set to private, etc.) shared notes as normal.'
+        - Accept
+        - Accept all sharing offers from USER
+        - Decline
+    - tag shows up with person icon
+    - if user tries to delete note someone shared with them: 'This note is in your Nutmeg because USER has shared their tag "TAGNAME" with you. To delete it you must remove this shared tag.'
+        - OK
+        - Change sharing settings
+    - if user tries to delete shared tag, similar message as above
+    - shared tag doesn't have edit/programmatic/share icons
+    - if you (share-ee) decline or unshare, update sharing info for sharer too
+- sharing icon in menu. window that breaks down by tag > person or person > tag (or checkbox/radio to control which view?)
+    - my tags shared with others
+    - others' tags shared with me
+    - indicating read-only or edit, which can be changed for your sharing
+- icons:
+    - someone shared this with me: person icon
+        - on hover: "Shared by USER"
+    - i'm sharing this note with others: group icon
+        - on hover: bulleted list "Shared with: - user 1, - user 2"
+- information required
+    - user
+        - sharing
+            - "friends" (people you've shared something with or they've shared with you). global id, populated on app startup with their name
+    - tag
+        - shared by: {friend global id, readonly or edit}
+        - shared with, list of one more more:
+            - {friend global id, readonly or edit}
+- LATER:
+    - what if user A shares something with user B, and user B tags a note with a tag they're sharing with user C?
+        - if A -> B is read-only, B shouldn't be able to "forward" the share
+        - if A -> B is editable, we have collaborative editing between multiple people, pass on appropriate IDs...
+        - question. either:
+            - when sharing something with someone so they can edit, say "USER will also be able to share your shared notes with others", OR
+            - 3 levels of sharing: read-only, edit, admin. only admin can share forward
+        - user A should be able to see that a certain note is ALSO visible by user C...
+    - should tagging shared notes also be shared? eh. prob not.
+    - email notifications when user shares something with you (first time from that user only?).
+        - some special link so that it highlights shared tag(s) to you...
+    - search for only notes shared with you/notes you shared with others
+    - block user
+
 ### todo for beta: bits and bugs
 
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
@@ -33,7 +95,7 @@ l.search("some") // returns no results
 - move note actions into menu?
 - logout should clear nuts and stuff from scope etc!
 - ideally:
-    - copy to yeoman with versioning and create nutmeg-app S3 bucket? uglify JS at least
+    - copy to yeoman with versioning and create nutmeg-app S3 bucket? uglify JS at least. http://lauterry.github.io/ngTailor/
     - SSL
 - alert to unsaved changes if you close window
 - status messages for loading stuff
@@ -182,6 +244,7 @@ l.search("some") // returns no results
     - ask password for viewing private notes - default on
     - ask password for programmatic notes - default off
     - report anonymous statistics - default on (nicer name)
+    - hidden user - default off. when on, other nutmeg users can't search for you by email or username in order to share things with you must... what? share something with them? what if you don't want to? "friend" them?
 - debounce textarea editing?
 - highlight and scroll to matched query in search results
 - private note/tags improvements
