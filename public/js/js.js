@@ -396,7 +396,7 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
                     title: "Since you've been gone...",
                     bodyHTML: "<p>In addition to tweaks and fixes, here's what's new:</p><ul>" + list + "</ul><p>As always, you can send along feedback and bug reports from the menu, which is at the bottom right of the page.</p>",
                     okText: 'Cool',
-                    large: feats.length > 1 // if more than 1 feature, show large modal
+                    large: true
                   });
 
                   featuresSeenRef.set(newFeatureCount);
