@@ -207,6 +207,8 @@ l.search("some") // returns no results
     - more examples and example button
     - whitelist and blacklist so you can add/remove tag from notes despite programmatic
     - async option where cb is passed in
+    - warning somewhere: Be careful of infinite loops. If this tag "a" function adds or removes a tag from a note, that note is run through all tag functions again (in case some tag "b" function would classify differently based on added/removed tag). If tag "a" functions returns a *different* answer in its second run, an infinite loop is possible.
+        - ugh example maybe with two tags "has more than 3" and "has less than 4" or something where they keep changing each other
 - new shortcut potential conflicts
   - message: "HI: new keyboard shortcuts have been added. If you've changed shortcuts away from the defaults, you should check out the shortcuts menu to make sure there are no conflicts."
   - shortcutsChanged and user-stored shortcutChangeIDSeen or something. add it into new features modal

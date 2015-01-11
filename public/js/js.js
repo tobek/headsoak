@@ -635,11 +635,17 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.digest.nuts[nut.id] = nut;
 
       if (fullUpdate) {
-        $s.n.updateNutInIndex(nut);
-        $s.n.runProgTags(nut);
+        $s.n.nutDoFullUpdate(nut);
       }
 
       console.log("nut "+nut.id+" has been updated");
+    },
+
+    nutDoFullUpdate: function(nut) {
+      console.log('doing full update of nut ' + nut.id);
+      $s.n.updateNutInIndex(nut);
+      $s.n.runProgTags(nut);
+      delete nut.fullUpdateRequired;
     },
 
     nutSaver: null, // to hold what setInterval() returns
@@ -659,7 +665,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         console.log("nut changed!");
         $s.n.nutUpdated(nut, true, blurred); // true for updateModified (default), full update (update index, prog tags) only when blurring
         if (!blurred) {
-          $s.n.fullUpdateRequired = nut.id; // we haven't blurred now, so we're not doing full update. need to make sure we full update (update lunr index and prog tags) later even if nut is unchanged by the time we blur
+          nut.fullUpdateRequired = true; // we haven't blurred now, so we're not doing full update. need to make sure we full update (update lunr index and prog tags) later even if nut is unchanged by the time we blur
         }
         $s.n.nutWas = nut.body;
       }
@@ -679,19 +685,20 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       clearInterval(this.nutSaver);
 
       // because we don't update index/prog tags while typing/focused because it can be slow
-      if ($s.n.fullUpdateRequired) {
-        $s.n.updateNutInIndex(nut);
-        $s.n.runProgTags(nut);
-        $s.n.fullUpdateRequired = false;
+      if (nut.fullUpdateRequired) {
+        $s.n.nutDoFullUpdate(nut);
       }
     },
 
     runProgTags: function(nut) {
+      console.log('running prog tags for nut ' + nut.id + ':');
+      console.groupCollapsed();
       $s.t.tags.forEach(function(tag) {
         if (tag.prog) {
           $s.t.runProgTagOnNut(tag, nut);
         }
       });
+      console.groupEnd();
     },
 
     updateNutInIndex: function(nut) {
@@ -725,8 +732,6 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         return;
       }
 
-      console.log("adding tag "+tagId+" to nut "+nutId);
-
       var updated = false;
 
       // add tag id to nut if it's not already there
@@ -741,13 +746,12 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       }
 
       if (updated) {
+        console.log("added tag "+tagId+" to nut "+nutId);
         this.nutUpdated(nutId, $s.c.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
         $s.t.tagUpdated(tagId);
       }
     },
     removeTagIdFromNut: function(tagId, nutId) {
-      console.log("removing tag "+tagId+" from nut "+nutId);
-
       var updated = false;
 
       // remove tag id from nut (check it's there first so we don't splice out -1)
@@ -762,6 +766,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       }
 
       if (updated) {
+        console.log("removed tag "+tagId+" from nut "+nutId);
         this.nutUpdated(nutId, $s.c.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
         $s.t.tagUpdated(tagId);
       }
@@ -1178,9 +1183,12 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
       var classifier = $s.t.progTagGetClassifier(tag);
 
+      console.log('running prog tag ' + tag.id + ' on all notes:');
+      console.groupCollapsed();
       $s.n.nuts.forEach(function(nut) {
         $s.t.runProgTagOnNut(tag, nut, classifier);
       });
+      console.groupEnd();
     },
 
     /** for given programmatic tag and nut, see if nut should have that tag */
@@ -1191,9 +1199,11 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       }
 
       if (classifier(nut) === true) {
+        console.log('user classifier for tag ' + tag.id + ' returned true for nut ' + nut.id);
         $s.n.addTagIdToNut(tag.id, nut.id, true);
       }
       else {
+        console.log('user classifier for tag ' + tag.id + ' returned false for nut ' + nut.id);
         $s.n.removeTagIdFromNut(tag.id, nut.id);
       }
     },
@@ -1721,6 +1731,14 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         // firebase doesn't store empty arrays, so we get undefined for unused tags. which screws up sorting by tag usage
         $s.t.tags.forEach(function(tag) {
           if (!tag.docs) tag.docs = [];
+        });
+
+        // if user was disconnected while editing a note, we won't have done a full update (which we only do on blur), so do that now
+        $s.n.nuts.forEach(function(nut) {
+          if (nut.fullUpdateRequired) {
+            console.log('nut ' + nut.id + ' was saved but requires a full update');
+            $s.n.nutDoFullUpdate(nut);
+          }
         });
 
         $s.ref.child('user/lastLogin').set(Date.now(), function(err) {
