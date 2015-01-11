@@ -11,9 +11,11 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
 
   var PROG_TAG_EXAMPLES = [
     '// return true if note should contain tag "TAGNAME". example:\n\nif (note.body.indexOf("TAGNAME") !== -1) {\n  return true;\n}\nelse {\n  return false;\n}',
-    '// return true if note should contain tag \"TAGNAME\". example: programmatically create a general \"nutmeg\" parent tag.\n\n// let\'s also use some lo-dash/underscore\n\nvar noteTagNames = _.map(note.tags, function(tagId) {\n  return getTagNameById(tagId);\n});\nconsole.log(noteTagNames);\n\nvar nutmegTags = ["nutmeg bugs", "nutmeg features", "nutmeg faq", "nutmeg shortcodes", "nutmeg inspiration"];\n\nvar intersection = _.intersection(nutmegTags, noteTagNames);\n\nconsole.log(intersection);\n\nif (intersection.length) {\n  return true;\n}\nelse {\n  return false;\n}'
+    '// return true if note should contain tag \"TAGNAME\". example: programmatically create a general \"nutmeg\" parent tag.\n\n// let\'s also use some lo-dash/underscore\n\nvar noteTagNames = _.map(note.tags, function(tagId) {\n  return getTagNameById(tagId);\n});\n\nvar nutmegTags = ["nutmeg bugs", "nutmeg features", "nutmeg faq", "nutmeg shortcodes", "nutmeg inspiration"];\n\nvar intersection = _.intersection(nutmegTags, noteTagNames);\n\nif (intersection.length) {\n  return true;\n}\nelse {\n  return false;\n}',
+    '// return true if note should contain tag "TAGNAME". example: programmatically tag untagged notes\n\nif (note.tags.length === 0) {\n  return true;\n}\nelse if (note.tags.length === 1 && note.tags[0] === this.id) {\n  // note has only one tag and it\'s this one!\n  return true;\n}\nelse {\n  return false;\n}'
   ];
-  var PROG_TAG_INFO = '\n/**\n * example `note` argument:\n *\n * {\n *   id: 42, // won\'t change\n *   body: "the text of the note...",\n *   created: 1420250076086,\n *   modified: 1420250076108,\n *   private: false,\n *   tags: [3, 12, 35] // tag IDs (the function `getTagNameById` is in scope)\n * }\n *\n * lo-dash is also in scope as _\n *\n */';
+  var PROG_TAG_INFO = '\n/**\n * example `note` argument:\n *\n * {\n *   id: 42, // won\'t change\n *   body: "the text of the note...",\n *   created: 1420250076086,\n *   modified: 1420250076108,\n *   private: false,\n *   tags: [3, 12, 35] // tag IDs\n * }\n *\n * also in scope:\n * \n * - this: the current tag object, e.g. {id: 17, name: the tag\'s name"}\n * - getTagNameById(id): function returning tag name from tag ID\n * - _: lo-dash library\n *\n */';
+
 
   $s._ = _; // make lodash available to view template
 
@@ -1168,7 +1170,8 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       }
       else {
         var tagNameString = JSON.stringify(tag.name); // handles quotes and other special chars
-        funcString = _.sample(PROG_TAG_EXAMPLES).replace(new RegExp('"TAGNAME"', 'g'), tagNameString);
+        // funcString = _.sample(PROG_TAG_EXAMPLES).replace(new RegExp('"TAGNAME"', 'g'), tagNameString);
+        funcString = PROG_TAG_EXAMPLES[2].replace(new RegExp('"TAGNAME"', 'g'), tagNameString); // TODO temporary just use this one
       }
 
       if (funcString.indexOf(PROG_TAG_INFO) === -1) {
@@ -1209,14 +1212,14 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       }
     },
 
-    /** return a function that takes a note and runs it through user's function, handling errors and in-scope functions accessible to user */
+    /** return a function that takes a note and runs it through user's function, handling errors and in-scope variables accessible to user */
     progTagGetClassifier: function(tag) {
       var classifier = new Function('note', 'getTagNameById', tag.progFuncString); // this line excites me
 
       // the function we'll actually call:
       return function(nut) {
         try {
-          return classifier(nut, $s.t.getTagNameById);
+          return classifier.apply(tag, [nut, $s.t.getTagNameById]);
         }
         catch (err) {
           $s.t.progTagError(tag, err);
@@ -1804,8 +1807,11 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
           if (!tag.docs) tag.docs = [];
         });
 
-        // if user was disconnected while editing a note, we won't have done a full update (which we only do on blur), so do that now
         $s.n.nuts.forEach(function(nut) {
+          // ditto firebase not storying empty arrays
+          if (!nut.tags) nut.tags = [];
+
+          // if user was disconnected while editing a note, we won't have done a full update (which we only do on blur), so do that now
           if (nut.fullUpdateRequired) {
             console.log('nut ' + nut.id + ' was saved but requires a full update');
             $s.n.nutDoFullUpdate(nut);
