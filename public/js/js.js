@@ -11,8 +11,9 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
 
   var PROG_TAG_EXAMPLES = [
     '// return true if note should contain tag "TAGNAME". example:\n\nif (note.body.indexOf("TAGNAME") !== -1) {\n  return true;\n}\nelse {\n  return false;\n}',
+    '// return true if note should contain tag \"TAGNAME\". example: programmatically create a general \"nutmeg\" parent tag.\n\n// let\'s also use some lo-dash/underscore\n\nvar noteTagNames = _.map(note.tags, function(tagId) {\n  return getTagNameById(tagId);\n});\nconsole.log(noteTagNames);\n\nvar nutmegTags = ["nutmeg bugs", "nutmeg features", "nutmeg faq", "nutmeg shortcodes", "nutmeg inspiration"];\n\nvar intersection = _.intersection(nutmegTags, noteTagNames);\n\nconsole.log(intersection);\n\nif (intersection.length) {\n  return true;\n}\nelse {\n  return false;\n}'
   ];
-  var PROG_TAG_INFO = '\n/**\n * example `note` argument:\n *\n * {\n *   id: 42, // won\'t change\n *   body: "the text of the note...",\n *   created: 1420250076086,\n *   modified: 1420250076108,\n *   private: false,\n *   tags: [3, 12, 35] // tag IDs (the function `getTagNameById` is in scope)\n * }\n *\n */';
+  var PROG_TAG_INFO = '\n/**\n * example `note` argument:\n *\n * {\n *   id: 42, // won\'t change\n *   body: "the text of the note...",\n *   created: 1420250076086,\n *   modified: 1420250076108,\n *   private: false,\n *   tags: [3, 12, 35] // tag IDs (the function `getTagNameById` is in scope)\n * }\n *\n * lo-dash is also in scope as _\n *\n */';
 
   $s.m = {
     modal: false,

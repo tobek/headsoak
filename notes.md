@@ -12,14 +12,9 @@ l.search("some") // returns no results
 programmatic tags todo
 
 - run tag func
-  - make sure getTagNameById is in scope
   - check it handles errors
   - checks it's a function
 - whenever note changes (debounce or on blur) run classifiers again
-- more examples and example button
-- whitelist and blacklist later?
-    - on hover, can't remove or alert
-    - not in autosuggest
 
 ### todo for beta: bits and bugs
 
@@ -214,6 +209,10 @@ programmatic tags todo
         - transform existing data, right?
         - hide tag itself from list when not in private mode (and display similar (sharing optout flag though?) message 'You are setting this tag as private, will be hidden...' as enabling private mode on note)
     - auto-expiration of private mode? like, x minutes turn it back off
+- programmatic tags
+    - more examples and example button
+    - whitelist and blacklist so you can add/remove tag from notes despite programmatic
+    - async option where cb is passed in
 - new shortcut potential conflicts
   - message: "HI: new keyboard shortcuts have been added. If you've changed shortcuts away from the defaults, you should check out the shortcuts menu to make sure there are no conflicts."
   - shortcutsChanged and user-stored shortcutChangeIDSeen or something. add it into new features modal
