@@ -11,9 +11,6 @@ l.search("some") // returns no results
 
 programmatic tags todo
 
-- run tag func
-  - check it handles errors
-  - checks it's a function
 - whenever note changes (debounce or on blur) run classifiers again
 
 ### todo for beta: bits and bugs
@@ -167,6 +164,7 @@ programmatic tags todo
             - Eyeing your breakfast/lunch/dinner...
             - Watching the sunset/sunrise...
             - Shaking off sleep...
+- why doesn't it remember my username and password?
 
 ### todo for beta: 
 
@@ -183,6 +181,7 @@ programmatic tags todo
 
 ### todo next
 
+- click and drag to outside of modal closes modal (sucks on prog tag screen...)
 - on cancel modal, if dynamic prog tag editor and text has changed, confirm
 - 'security' or 'privacy' settings section
     - ask password for viewing private notes - default on

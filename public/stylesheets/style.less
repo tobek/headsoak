@@ -103,6 +103,15 @@ select, option, #right label, #left label {
   font-size: 75%;
 }
 
+pre {
+  font-size: 16px;
+  line-height: 100%;
+  font-family: 'Consolas', 'Courier', monospace;
+  -webkit-font-smoothing: antialiased;
+  padding: 10px;
+  white-space: normal;
+}
+
 
 a {
   color: #00B7FF;
@@ -662,7 +671,7 @@ form {
           line-height: 25px;
           margin: 3% 2%;
         }
-        p, ul, table {
+        p, ul, table  {
           font-size: 60%;
           line-height: 115%;
         }
@@ -806,22 +815,16 @@ form {
           }
 
           .prog-tag-editor {
-            pre, textarea {
-              font-size: 16px;
-              line-height: 100%;
-              font-family: 'Consolas', 'Courier', monospace;
-              -webkit-font-smoothing: antialiased;
-            }
             pre {
-              padding-left: 5px;
+              padding: 0;
             }
           }
-
             #prog-tag-editor-field {
               width: 110%;
               left: -5%;
               height: 300px;
               margin: 5px 0;
+              padding: 0;
               border-radius: 3px;
             }
         }

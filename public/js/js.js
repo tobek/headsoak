@@ -35,6 +35,10 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
       $s.m.closeModal();      
     },
     cancelModal: function() {
+      if ($s.m.dynamic && $s.m.dynamic.cancelCb) {
+        $s.m.dynamic.cancelCb();
+      }
+
       $s.m.closeModal();      
     },
     closeModal: function(userInput) {
@@ -68,8 +72,9 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
           ok: opts.ok !== false, // show okay unless explicitly set to false
           okText: opts.okText,
           okCb: opts.okCb,
-          cancel: opts.cancel,
+          cancel: opts.cancel || !! opts.cancelText, // angular template interprets "no" as falsey so we have to do this...
           cancelText: opts.cancelText,
+          cancelCb: opts.cancelCb,
         };
         $s.m.modalLarge = opts.large;
       });
@@ -1048,7 +1053,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     },
 
     getTagNameById: function(id) {
-      if (this.tags[id]) return this.tags[id].name;
+      if ($s.t.tags[id]) return $s.t.tags[id].name;
       else return null;
     },
 
@@ -1092,22 +1097,22 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
           tag.progFuncString = funcString;
 
+          var cancel;
+
           if (!tag.prog && tag.docs.length) {
             // if tag was not programmatic and already had some documents
             var singular = tag.docs.length === 1;
-            var cancel = ! confirm('Warning: you currently have ' + tag.docs.length + ' note' + (singular ? '' : 's') + ' tagged with "' + tag.name + '". ' + (singular ? 'It' : 'They') + ' will be untagged if ' + (singular ? 'it doesn\'t' : 'they don\'t') + ' return true for this function.\n\nAre you sure you wish to continue?');
-
-            if (cancel) {
-              // modal has just been closed, so reopen it in another tick
-              $timeout(function() {
-                $s.t.tagProgSettings(tag);
-              }, 50);
-              
-              return;
-            }
+            cancel = ! confirm('Warning: you currently have ' + tag.docs.length + ' note' + (singular ? '' : 's') + ' tagged with "' + tag.name + '". ' + (singular ? 'It' : 'They') + ' will be untagged if ' + (singular ? 'it doesn\'t' : 'they don\'t') + ' return true for this function.\n\nAre you sure you wish to continue?');
           }
 
-          // TODO validate
+          if (cancel) {
+            // modal has just been closed, so reopen it in another tick
+            $timeout(function() {
+              $s.t.tagProgSettings(tag);
+            }, 50);
+            
+            return;
+          }
 
           tag.prog = true;
           $s.t.tagUpdated(tag);
@@ -1145,12 +1150,39 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     progTagProcessAll: function(tag) {
       if (!tag.prog) return;
 
-      var classifier = new Function('note', tag.progFuncString); // this line excites me
+      try {
+        var classifier = new Function('note', 'getTagNameById', tag.progFuncString); // this line excites me
 
-      $s.n.nuts.forEach(function(nut) {
-        if (classifier(nut) === true) $s.n.addTagIdToNut(tag.id, nut.id, true);
-        else $s.n.removeTagIdFromNut(tag.id, nut.id);
-      });
+        console.log('about to test all');
+        $s.n.nuts.forEach(function(nut) {
+          if (classifier(nut, $s.t.getTagNameById) === true) $s.n.addTagIdToNut(tag.id, nut.id, true);
+          else $s.n.removeTagIdFromNut(tag.id, nut.id);
+        });
+        console.log('tested all');
+      }
+      catch (e) {
+        console.error('error when running user programmatic tag function:', e);
+
+        // closeModal may have been just called, so open up new modal in a different tick:
+        $timeout(function() {
+          $s.m.confirm({
+            bodyHTML: '<p>There was an error when running your function for tag "' + tag.name  + '":</p><pre>  ' + e + '</pre><p>Would you like to change this tag\'s function or revert to normal tag?</p>',
+            okText: 'change function',
+            okCb: function() {
+              // closeModal may have been just called, so...
+              $timeout(function() {
+                $s.t.tagProgSettings(tag);
+              }, 50);
+            },
+            cancelText: 'revert tag',
+            cancelCb: function() {
+              tag.prog = false;
+              $s.t.tagUpdated(tag);
+            },
+            large: true,
+          });
+        }, 50);
+      }
     },
 
     /** alert user that they can't add/remove this tag, let them change it if they need */
@@ -1169,7 +1201,6 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
             $s.t.tagProgSettings(tag);
           }, 50);
         },
-        cancel: true, // angular template interprets "no" as falsey so we have to do this...
         cancelText: 'no'
       });
     },
