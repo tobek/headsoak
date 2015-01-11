@@ -600,11 +600,12 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
      * 1: updates history. NOTE: we store entire state of nut in each history entry. could instead store just changes if this gets to big. NOTE 2: by the time this is called, the view and model have already changed. we are actually storing the CHANGED version in history.
      * 2: updates `modified` (default - pass false in as second param to disable)
      * 3: updates lunr index (default - pass false in as third param to disable). note, this can be slow: 0.5s for 40k char text on one machine)
-     * 4: adds to digest to be saved to firebase
+     * 4: runs through all programmatic tags (default - pass false in as third param to disable). might be slow depending on user functions
+     * 5: adds to digest to be saved to firebase
      */
-    nutUpdated: function(nut, updateModified, updateIndex) {
+    nutUpdated: function(nut, updateModified, fullUpdate) {
       updateModified = defaultFor(updateModified, true);
-      updateIndex = defaultFor(updateIndex, true);
+      fullUpdate = defaultFor(fullUpdate, true);
 
       $s.digest.status = 'unsynced';
 
@@ -633,8 +634,9 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
       $s.digest.nuts[nut.id] = nut;
 
-      if (updateIndex) {
-        this.updateNutInIndex(nut);
+      if (fullUpdate) {
+        $s.n.updateNutInIndex(nut);
+        $s.n.runProgTags(nut);
       }
 
       console.log("nut "+nut.id+" has been updated");
@@ -655,8 +657,10 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       }
       else {
         console.log("nut changed!");
-        $s.n.nutUpdated(nut, true, blurred); // true for updateModified (default), blurred to only update index (slow operation) when blurring
-        $s.n.indexNeedsUpdating = nut.id; // need to make sure we updated lunr index later even if nut is unchanged by the time we blur
+        $s.n.nutUpdated(nut, true, blurred); // true for updateModified (default), full update (update index, prog tags) only when blurring
+        if (!blurred) {
+          $s.n.fullUpdateRequired = nut.id; // we haven't blurred now, so we're not doing full update. need to make sure we full update (update lunr index and prog tags) later even if nut is unchanged by the time we blur
+        }
         $s.n.nutWas = nut.body;
       }
     },
@@ -667,18 +671,27 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
       this.nutSaver = setInterval(function() {
         $s.n.maybeUpdateNut(nut);
-      }, ((nut.body && nut.body.length < 5000) ? 1000 : 5000) ); // every 1s if <5000 chars long, every 5s if over. crudely saves bandwidth. digest pushes ever 4s so this will halve # of pushes
+      }, ((nut.body && nut.body.length < 5000) ? 1000 : 5000) ); // every 1s if <5000 chars long, every 5s if over. crudely saves bandwidth. digest pushes every 4s so this will halve # of pushes
     },
     nutBlur: function(nut) {
       console.log("blur on nut "+nut.id);
       this.maybeUpdateNut(nut, true);
       clearInterval(this.nutSaver);
 
-      // because we don't update index while typing/focused because it can be slow
-      if ($s.n.indexNeedsUpdating) {
+      // because we don't update index/prog tags while typing/focused because it can be slow
+      if ($s.n.fullUpdateRequired) {
         $s.n.updateNutInIndex(nut);
-        $s.n.indexNeedsUpdating = false;
+        $s.n.runProgTags(nut);
+        $s.n.fullUpdateRequired = false;
       }
+    },
+
+    runProgTags: function(nut) {
+      $s.t.tags.forEach(function(tag) {
+        if (tag.prog) {
+          $s.t.runProgTagOnNut(tag, nut);
+        }
+      });
     },
 
     updateNutInIndex: function(nut) {
@@ -713,32 +726,45 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       }
 
       console.log("adding tag "+tagId+" to nut "+nutId);
+
+      var updated = false;
+
       // add tag id to nut if it's not already there
       if ($s.n.nuts[nutId].tags.indexOf(tagId) === -1 ) {
         $s.n.nuts[nutId].tags.push(tagId);
+        updated = true;
       }
       // add nut id to tag if it's not already there
-      if (!$s.t.tags[tagId].docs) $s.t.tags[tagId].docs = []; // firebase doesn't store empty arrays/objects, so create it here
       if ($s.t.tags[tagId].docs.indexOf(nutId) === -1 ) {
         $s.t.tags[tagId].docs.push(nutId);
+        updated = true;
       }
 
-      this.nutUpdated(nutId, $s.c.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
-      $s.t.tagUpdated(tagId);
+      if (updated) {
+        this.nutUpdated(nutId, $s.c.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
+        $s.t.tagUpdated(tagId);
+      }
     },
     removeTagIdFromNut: function(tagId, nutId) {
       console.log("removing tag "+tagId+" from nut "+nutId);
+
+      var updated = false;
+
       // remove tag id from nut (check it's there first so we don't splice out -1)
       if ($s.n.nuts[nutId] && $s.n.nuts[nutId].tags && $s.n.nuts[nutId].tags.indexOf(tagId) !== -1 ) {
         $s.n.nuts[nutId].tags.splice($s.n.nuts[nutId].tags.indexOf(tagId), 1);
+        updated = true;
       }
       // you get it
       if ($s.t.tags[tagId] && $s.t.tags[tagId].docs && $s.t.tags[tagId].docs.indexOf(nutId) !== -1 ) {
         $s.t.tags[tagId].docs.splice($s.t.tags[tagId].docs.indexOf(nutId), 1);
+        updated = true;
       }
 
-      this.nutUpdated(nutId, $s.c.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
-      $s.t.tagUpdated(tagId);
+      if (updated) {
+        this.nutUpdated(nutId, $s.c.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
+        $s.t.tagUpdated(tagId);
+      }
     },
 
     autosizeAllNuts: function() {
@@ -1116,7 +1142,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
           tag.prog = true;
           $s.t.tagUpdated(tag);
-          $s.t.progTagProcessAll(tag);
+          $s.t.runProgTagOnAllNuts(tag);
         },
 
         // if tag is already programmatic, menu lets them undo that:
@@ -1146,43 +1172,67 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       return funcString;
     },
 
-    /** for programmatic tag, go through all notes and tag appropriate */
-    progTagProcessAll: function(tag) {
+    /** for programmatic tag, go through all notes and tag according to function */
+    runProgTagOnAllNuts: function(tag) {
       if (!tag.prog) return;
 
-      try {
-        var classifier = new Function('note', 'getTagNameById', tag.progFuncString); // this line excites me
+      var classifier = $s.t.progTagGetClassifier(tag);
 
-        console.log('about to test all');
-        $s.n.nuts.forEach(function(nut) {
-          if (classifier(nut, $s.t.getTagNameById) === true) $s.n.addTagIdToNut(tag.id, nut.id, true);
-          else $s.n.removeTagIdFromNut(tag.id, nut.id);
+      $s.n.nuts.forEach(function(nut) {
+        $s.t.runProgTagOnNut(tag, nut, classifier);
+      });
+    },
+
+    /** for given programmatic tag and nut, see if nut should have that tag */
+    runProgTagOnNut: function(tag, nut, classifier) {
+      if (! classifier) {
+        // when processing all, only need to create classifier once and pass it in, otherwise we make it here
+        classifier = $s.t.progTagGetClassifier(tag);
+      }
+
+      if (classifier(nut) === true) {
+        $s.n.addTagIdToNut(tag.id, nut.id, true);
+      }
+      else {
+        $s.n.removeTagIdFromNut(tag.id, nut.id);
+      }
+    },
+
+    /** return a function that takes a note and runs it through user's function, handling errors and in-scope functions accessible to user */
+    progTagGetClassifier: function(tag) {
+      var classifier = new Function('note', 'getTagNameById', tag.progFuncString); // this line excites me
+
+      // the function we'll actually call:
+      return function(nut) {
+        try {
+          return classifier(nut, $s.t.getTagNameById);
+        }
+        catch (err) {
+          $s.t.progTagError(tag, err);
+        }
+      };
+    },
+
+    progTagError: function(tag, err) {
+      // closeModal may have been just called, so open up new modal in a different tick:
+      $timeout(function() {
+        $s.m.confirm({
+          bodyHTML: '<p>There was an error when running your function for tag "' + tag.name  + '":</p><pre>  ' + err + '</pre><p>Would you like to change this tag\'s function or revert to normal tag?</p>',
+          okText: 'change function',
+          okCb: function() {
+            // closeModal may have been just called, so...
+            $timeout(function() {
+              $s.t.tagProgSettings(tag);
+            }, 50);
+          },
+          cancelText: 'revert tag',
+          cancelCb: function() {
+            tag.prog = false;
+            $s.t.tagUpdated(tag);
+          },
+          large: true,
         });
-        console.log('tested all');
-      }
-      catch (e) {
-        console.error('error when running user programmatic tag function:', e);
-
-        // closeModal may have been just called, so open up new modal in a different tick:
-        $timeout(function() {
-          $s.m.confirm({
-            bodyHTML: '<p>There was an error when running your function for tag "' + tag.name  + '":</p><pre>  ' + e + '</pre><p>Would you like to change this tag\'s function or revert to normal tag?</p>',
-            okText: 'change function',
-            okCb: function() {
-              // closeModal may have been just called, so...
-              $timeout(function() {
-                $s.t.tagProgSettings(tag);
-              }, 50);
-            },
-            cancelText: 'revert tag',
-            cancelCb: function() {
-              tag.prog = false;
-              $s.t.tagUpdated(tag);
-            },
-            large: true,
-          });
-        }, 50);
-      }
+      }, 50);
     },
 
     /** alert user that they can't add/remove this tag, let them change it if they need */
@@ -1849,7 +1899,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
       $s.togglePrivate = function togglePrivate() {
         $s.nut.private = ! $s.nut.private;
-        $s.n.nutUpdated($s.nut, false, false);
+        $s.n.nutUpdated($s.nut, false, false); // TODO: 3rd param should be true, to update prog tags, in case prog tag checks private status... but i don't want to slow things down with index and prog tag update when you click private icon. when we have web workers, then do full update
         if (! $s.p.privateMode) {
           // private mode is off, so we need to filter which notes to show:
           $s.q.doQuery();

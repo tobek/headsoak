@@ -9,10 +9,6 @@ l.search("some") // returns no results
 
 ## TODO
 
-programmatic tags todo
-
-- whenever note changes (debounce or on blur) run classifiers again
-
 ### todo for beta: bits and bugs
 
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
@@ -168,7 +164,6 @@ programmatic tags todo
 
 ### todo for beta: 
 
-- rudimentary programmatic tagging (popup modal with code editor and prototype of function and examples)
 - intro page with a tiny bit of info and demo
     - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
         - ideally, when you create an account, it is saved?
