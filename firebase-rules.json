@@ -5,6 +5,18 @@
         ".read": "$uid == auth.uid",
         ".write": "$uid == auth.uid"
       }
+    },
+    "feedback": {
+      ".read": false,
+      ".write": true
+    },
+    "newFeatures": {
+      ".read": true,
+      ".write": false
+    },
+    "newFeatureCount": {
+      ".read": true,
+      ".write": false
     }
   }
 }
