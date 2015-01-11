@@ -135,6 +135,7 @@ block content
 
           form(ng-submit="m.finishModal(m.dynamic.inputVal)")
             input(type="password", ng-show="m.dynamic.passwordInput", ng-model="m.dynamic.inputVal")
+            input(type="text", ng-show="m.dynamic.textInput", placeholder="{{ m.dynamic.placeholder }}", ng-model="m.dynamic.inputVal")
 
           div.prog-tag-editor(ng-show="m.dynamic.progTag")
             pre function(note) {
@@ -173,7 +174,9 @@ block content
           i.fa.fa-fw.fa-list.fa-flip-horizontal
         li(ng-click="m.modal='shortcuts'; m.modalLarge=true") shortcuts 
           i.fa.fa-fw.fa-keyboard-o
-        li.private-mode.tooltip.on-left(ng-click="p.togglePrivateMode()", ng-class="p.privateMode ? 'on' : ''", ng-attr-data-tooltip="private notes currently {{ p.privateMode ? 'visible' : 'hidden' }}, click to {{ p.privateMode ? 'hide' : 'show' }}") private mode
+        li(ng-click="m.modal='sharing'; m.modalLarge=true") sharing 
+          i.fa.fa-fw.fa-users
+        li.private-mode.tooltip.on-left(ng-click="p.togglePrivateMode()", ng-class="p.privateMode ? 'on' : ''", ng-attr-data-tooltip="private notes currently {{ p.privateMode ? 'visible' : 'hidden' }}, click to {{ p.privateMode ? 'hide' : 'show' }}") private mode 
           i.fa.fa-fw.fa-unlock-alt
           i.fa.fa-fw.fa-lock
         li(ng-click="m.modal='settings'; m.modalLarge=true; c.backup('settings')") settings 

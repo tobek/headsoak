@@ -9,13 +9,47 @@ l.search("some") // returns no results
 
 ## TODO
 
-shared notes
+### shared notes
+
+##### share settings modal mockup
+
+    # sharing with others
+
+    quote (4)
+    -----------------
+    [search for user by email or name](autocompletes with friends)
+    +
+
+    futurism (1)
+    -----------------
+    spoon           x
+    fiasco          x
+
+##### now
+
+- add share info into nuts
+- for share-ee, check share upon init
+    - prob use https://github.com/firebase/firebase-util/blob/master/src/join/README.md
+    - get each tag, name/id/docs. if necessary do:
+        - add tag
+        - rename tag
+        - remove tag
+        - add note
+        - update note
+        - remove note
+    - do shared notes live in $s.n.sharedNuts with IDs as uid of owner? regardless there is NO reason to write them fully to sharee's firebase. maybe just $s.n.nuts but stub with just tags and private, and rest is updated on init BUT HIDDEN FROM SYNC
+- fetch local representation of friend names
+- bug: share modal can't press enter
+
+##### overview
 
 - investigate firepad for storing/transmitting note and live collaboration
     - does note live with "owner" or in a separate collection?
     - modify security permissions so user A can access (some of) user B's notes
 - to share something with someone else:
-    - hit group icon on tag, sharing window opens
+    - hit group icon on tag
+        - if no sharing on this tag, do prompt
+        - if sharing already, open up sharing settings (and scroll to that tag)
     - add sharer
         - search (by email address or user name) or choose from past sharers/share-ees
             - if no user found AND if it's a valid email address "No Nutmeg user found. Would you like to email EMAIL and invite them to join Nutmeg?" <-- not ready yet ugh this is a whole flow
@@ -28,6 +62,7 @@ shared notes
         - yes
         - yes, don't ask me again
         - no
+    - unshare: save 'x' into share-ee's share thing
 - when someone shares something with you:
     - when you login: 'USER has shared their tag "TAGNAME" with you [as read-only]OR[and invited you to edit].' a [more info] link expands to: 'Shared notes and tags show up alongside your personal notes and tags, but with the [person] icon. You can modify (add your own tags, set to private, etc.) shared notes as normal.'
         - Accept
@@ -58,6 +93,7 @@ shared notes
         - shared with, list of one more more:
             - {friend global id, readonly or edit}
 - LATER:
+    - should private notes be shared? they currently are
     - what if user A shares something with user B, and user B tags a note with a tag they're sharing with user C?
         - if A -> B is read-only, B shouldn't be able to "forward" the share
         - if A -> B is editable, we have collaborative editing between multiple people, pass on appropriate IDs...
@@ -70,6 +106,16 @@ shared notes
         - some special link so that it highlights shared tag(s) to you...
     - search for only notes shared with you/notes you shared with others
     - block user
+
+testing firebase in console:
+
+    function fbGet(childRef) {
+      new Firebase('https://nutmeg.firebaseio.com/' + childRef).once('value', function foo(data) {console.log(data.val())}, function(err) {console.warn(err)});
+    }
+    function fbSet(childRef, val) {
+      new Firebase('https://nutmeg.firebaseio.com/' + childRef).set(val, function foo(err) {console.log('done', err)});
+    }
+    fbGet('users/simplelogin:1/nuts/0')
 
 ### todo for beta: bits and bugs
 
@@ -292,7 +338,7 @@ shared notes
     - MOAR POWER mode: enable overkill, enable checkbox that removes modkey for that shortcut
     - new tag in general (ctrl shift t?)
     - maybe shift+enter or comma to add another tag after writing this one (customizeable). it basically just hits enter and opens another/creates a new tag and clears current and leaves focus there
-- browser compatibility warning
+- browser compatibility warning (we only support IE10 and up)
 
 ### todo eventually
 
@@ -303,8 +349,11 @@ shared notes
 - move feedback from zapier to watcher.js
 - load html and angular REAL fast and then async all the other shit
 - manifest that lets you install web app as android application? and then post to http://mobilewebappsftw.tumblr.com/
-- email me when new users (and answer http://stackoverflow.com/questions/17723195/is-there-any-way-to-do-email-confirmation-for-firebase-user-creation-and-or-pass)
+- login via fb/google/github/whatevs
+    - are user id numbers unique or do i need e.g. 'simplelogin:46'? if not... migrate away from provider in user id for /users and /emailToId
+- check $s.u.user.isTemporaryPassword and if so direct them to change password page - it means they used works-for-24h-only token
 - remove all instances of `alert()` and replace with some single modal function. on chrome and FF at least, alert windows begin with "The page at https://megnut.s3.amazonaws.com says:"
+- dynamic modals should have space/functionality for a reponse, like "user not found" or "incorrect password", while modal stays open, instead of closing and re-opening. then also tiny loading animation while it's fetching
 - implement sort by query match strength
 - for "no simultaneous editing" warning, maybe option to enter readonly mode?
     - Glowing red connection cloud, on hover: "Currently in read-only mode because you have logged in to Nutmeg from somewhere else. Please refresh to load those changes and continue editing."

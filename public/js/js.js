@@ -15,6 +15,8 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
   ];
   var PROG_TAG_INFO = '\n/**\n * example `note` argument:\n *\n * {\n *   id: 42, // won\'t change\n *   body: "the text of the note...",\n *   created: 1420250076086,\n *   modified: 1420250076108,\n *   private: false,\n *   tags: [3, 12, 35] // tag IDs (the function `getTagNameById` is in scope)\n * }\n *\n * lo-dash is also in scope as _\n *\n */';
 
+  $s._ = _; // make lodash available to view template
+
   $s.m = {
     modal: false,
     modalLarge: false,
@@ -85,19 +87,17 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
     prompt: function(opts) {
       $timeout(function() {
         $s.m.modal = "dynamic";
-        $s.m.dynamic = {
-          message: opts.message,
-          passwordInput: opts.passwordInput,
+        $s.m.dynamic = angular.extend({
+          // defaults:
           ok: true,
           cancel: true,
-          okCb: opts.okCb
-        };
+        }, opts);
         $s.m.modalLarge = opts.large;
 
         // now focus on the input. for some reason won't work in the same tick, do it in a sec instead
         setTimeout(function() {
           if (opts.passwordInput) { // the only kind of prompt we have for now
-            $('.modal .dynamic input[type=password]').focus(); // horribly un Angular-ish...
+            angular.element('.modal .dynamic input[type=password]').focus(); // horribly un Angular-ish...
           }
         }, 50);
       });
@@ -125,6 +125,7 @@ var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
         sesh.setUseWrapMode(true);
         sesh.setTabSize(2);
         sesh.setUseSoftTabs(true);
+        sesh.setUseWorker(false);
 
         $s.m.dynamic.editor.setValue(funcString);
         $s.m.dynamic.editor.gotoLine(0, 0); // deselect and go to beginning (setValue sometimes selects all and/or puts cursor at end)
@@ -515,7 +516,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
       this.nuts.push($.extend({
         // default nut:
-        body: null,
+        body: '',
         tags: [], // array of tag ids
         created: (new Date).getTime(),
         modified: (new Date).getTime(),
@@ -1263,6 +1264,76 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         },
         cancelText: 'no'
       });
+    },
+
+    /** tag has a `share` object that maps `uid` to permission ('r' for readonly, 'w' for read/write) */
+    sharingSettings: function(tag) {
+      if (!tag.share) {
+        // tag not currently shared with anyone, so do simple share prompt:
+
+        var failed = function(userSearchQuery, err) {
+          console.warn('error trying to find user by email "' + userSearchQuery + '":', err);
+          alert('No Nutmeg user found with email "'+ userSearchQuery +'"'); // TODO something about inviting them
+          $timeout(function() {
+            $s.t.sharingSettings(tag);
+          }, 50);
+        }
+
+        var perms = 'r'; // read only
+
+        $s.m.prompt({
+          title: 'Sharing "' + tag.name + '"',
+          message: 'Please enter the email of another Nutmeg user to share with:',
+          textInput: true,
+          placeholder: 'email', // TODO only email works
+          okCb: function(userSearchQuery) {
+            if (userSearchQuery === $s.u.user.email) {
+              alert('That\'s your email address!'); 
+            }
+            else if (userSearchQuery.match(/.+@.+\...+/)) { // ultra basic email regex
+              $s.ref.root().child('emailToId/' + btoa(userSearchQuery)).once('value', function(data) {
+                if (data.exists()) {
+                  // TODO ask for your name
+
+                  var shareeUid = data.val();
+
+                  $s.t.shareTagWithUser(tag, shareeUid, perms);
+                  // TODO only continue on success callback
+
+                  // TODO grab user name if it exists and use that instead
+                  $s.m.alert({
+                    message: 'Now sharing tag "'+ tag.name +'" with "'+ userSearchQuery +'"'
+                    // should be "ok" or "go to sharing settings"
+                  });
+                  tag.share = {};
+                  tag.share[data.val()] = perms;
+                  $s.t.tagUpdated(tag);
+                }
+                else {
+                  failed(userSearchQuery, 'email doesn\'t exist in firebase');
+                }
+              }, function(err) {
+                failed(userSearchQuery, err);
+              });
+            }
+            else {
+              failed(userSearchQuery, 'not a valid email address');
+            }
+          }
+        });
+      }
+      else {
+        // tag is currently being shared
+        // TODO open sharing settings
+        alert('Tag "'+ tag.name +'" is now not shared with anyone');
+        delete tag.share; // for now just get rid of it
+        $s.t.tagUpdated(tag);
+      }
+    },
+
+    shareTagWithUser: function(tag, shareeUid, perms) {
+      var tagSharePath = 'users/' + shareeUid + '/share/' + $s.u.user.uid + '/' + tag.id;
+      $s.ref.root().child(tagSharePath).set(perms);
     },
 
     /* call whenever a tag is updated. accepts tag or tag id

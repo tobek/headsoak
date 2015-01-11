@@ -4,8 +4,35 @@
     "users": {
       "$uid": {
         // you can only read/write your own stuff:
-        ".read": "$uid == auth.uid",
-        ".write": "$uid == auth.uid"
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        
+        // exception for some public user info:
+        "user": {
+          "name": {
+            ".read": true
+          }
+        },
+        // and for shared tags/notes:
+        "tags": {
+          "$tagId": {
+            // kind of the canonical data
+            ".read": "data.child('/share/' + auth.uid).exists()"
+          }
+        },
+        "nuts": {
+          "$nutId": {
+            // duplicated by client for ease of security rule checking
+            ".read": "data.child('/share/' + auth.uid).exists()"
+          }
+        },
+        // and somewhere for other users to write their own share invites to
+        "share": {
+          "$sharerUid": {
+            // will contain tag id -> permissions ('r' or 'w')
+            ".write": "$sharerUid === auth.uid"
+          }
+        }
       }
     },
     "emailToId": {

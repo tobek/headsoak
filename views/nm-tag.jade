@@ -1,11 +1,13 @@
 li.tag(ng-click="q.toggleTag(tag.id, $event)", ng-class="{queried: (q.tags.indexOf(tag.id) != -1)}")
   | {{tag.name}} ({{ tag.docs.length }}) 
   span.icons
-    a.prog.toggle(ng-click="$event.stopPropagation(); t.tagProgSettings(tag)", ng-class="tag.prog ? 'on' : ''")
+    a.prog.toggle(title="algorithmic", ng-click="$event.stopPropagation(); t.tagProgSettings(tag)", ng-class="tag.prog ? 'on' : ''")
       i.fa.fa-bolt.fa-fw
-    a.edit(ng-click="$event.stopPropagation(); t.editTag(tag)")
+    a.prog.toggle(title="sharing", ng-click="$event.stopPropagation(); t.sharingSettings(tag)", ng-class="tag.share ? 'on' : ''")
+      i.fa.fa-users.fa-fw
+    a.edit(title="rename", ng-click="$event.stopPropagation(); t.editTag(tag)")
       i.fa.fa-pencil.fa-fw
-    a.delete(ng-click="$event.stopPropagation(); t.deleteTag(tag)")
+    a.delete(title="delete", ng-click="$event.stopPropagation(); t.deleteTag(tag)")
       i.fa.fa-trash-o.fa-fw
     //- a.toggle(ng-class="{on: tag.private}", ng-click="tag.private = tag.private ? null : true; t.tagUpdated(tag.id); $event.stopPropagation()")
       i.fa.fa-lock
