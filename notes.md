@@ -120,11 +120,6 @@ testing firebase in console:
 ### todo for beta: bits and bugs
 
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
-- FAQ
-- issues connecting to firebase
-    - somehow listen for connection/disconnection and alert user and change cloud to red
-    - maybe set some time in `push()`, and if `pushHackCounter>0` in `push()`, and if some length of time has passed (like 30s) then alert user and suggest something
-    - https://www.firebase.com/docs/managing-presence.html
 - new user welcome message
     - have to store email in user object when account is created
     - have to set up reverse DNS and other bulkmail stuff, or free account somewhere
@@ -135,14 +130,12 @@ testing firebase in console:
     - maybe use `slyPreventEvaluationWhenHidden` https://github.com/scalyr/angular/blob/3f1cbbba31689339694bd2132e411ca2eabb9480/src/js/directives/slyEvaluate.js
     - https://www.airpair.com/angularjs/posts/angularjs-performance-large-applications
     - one-way data binding?
-- invite only?
+- invite only
 - @nutmeg.io email address. I have support@ (and toby@ and ece@), what about for general stuff? contact@ is boring
 - space at bottom of page?
 - move note actions into menu?
 - logout should clear nuts and stuff from scope etc!
-- ideally:
-    - copy to yeoman with versioning and create nutmeg-app S3 bucket? uglify JS at least. http://lauterry.github.io/ngTailor/
-    - SSL
+- copy to yeoman with versioning and create nutmeg-app S3 bucket? uglify JS at least. http://lauterry.github.io/ngTailor/
 - alert to unsaved changes if you close window
 - status messages for loading stuff
     - function 'update status message' after various key stages, which chooses a random one
@@ -278,12 +271,18 @@ testing firebase in console:
 - mobile responsive
 - shared notes
     - live collab
-- maybe:
-    - "star"
-    - tag browser collapse/expand
 
 ### todo next
 
+- "star"
+- tag browser collapse/expand
+- esc not working for add tag field? https://bitbucket.org/tobyfox/nutmeg/commits/dc98900d84aeb68dd45deee71e232fdf99dfa855
+- SSL
+- FAQ
+- issues connecting to firebase
+    - somehow listen for connection/disconnection and alert user and change cloud to red
+    - maybe set some time in `push()`, and if `pushHackCounter>0` in `push()`, and if some length of time has passed (like 30s) then alert user and suggest something
+    - https://www.firebase.com/docs/managing-presence.html
 - click and drag to outside of modal closes modal (sucks on prog tag screen...)
 - on cancel modal, if dynamic prog tag editor and text has changed, confirm
 - 'security' or 'privacy' settings section
@@ -318,6 +317,7 @@ testing firebase in console:
     - async option where cb is passed in
     - warning somewhere: Be careful of infinite loops. If this tag "a" function adds or removes a tag from a note, that note is run through all tag functions again (in case some tag "b" function would classify differently based on added/removed tag). If tag "a" functions returns a *different* answer in its second run, an infinite loop is possible.
         - ugh example maybe with two tags "has more than 3" and "has less than 4" or something where they keep changing each other
+        - "untagged" is a great example - it'll add, then remove, then add...
 - new shortcut potential conflicts
   - message: "HI: new keyboard shortcuts have been added. If you've changed shortcuts away from the defaults, you should check out the shortcuts menu to make sure there are no conflicts."
   - shortcutsChanged and user-stored shortcutChangeIDSeen or something. add it into new features modal
