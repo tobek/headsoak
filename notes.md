@@ -4,7 +4,7 @@ l = lunr(function () {
 })
 l.update({"body":"yo some words", "id": 0})
 l.search("word") // returns one result
-l.search("some") // returns no results
+l.search("some") // returns no results - is "some" just a stop word? if so, and l.search("some word") works, we're good
 
 
 ## TODO
@@ -276,7 +276,6 @@ testing firebase in console:
 
 - "star"
 - tag browser collapse/expand
-- esc not working for add tag field? https://bitbucket.org/tobyfox/nutmeg/commits/dc98900d84aeb68dd45deee71e232fdf99dfa855
 - SSL
 - FAQ
 - issues connecting to firebase

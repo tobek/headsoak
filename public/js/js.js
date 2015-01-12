@@ -1553,7 +1553,16 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         description: "Unfocuses from any input/textarea, closes any open modal.",
         binding: "esc",
         fn: function() {
-          $timeout(function() { $s.m.cancelModal(); })
+          var nutScope = $s.n.getFocusedNutScope();
+          if (nutScope) {
+            nutScope.closeAddTagField();
+            nutScope.focus();
+          }
+
+          $timeout(function() {
+            $s.m.cancelModal();
+          });
+
           angular.element("#blur-hack")[0].focus();
         },
         overkill: true,
