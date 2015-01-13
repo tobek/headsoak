@@ -25,12 +25,26 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
     spoon           x
     fiasco          x
 
+##### sharing structure
+
+- sharer has in each tag (and duplicated in each note) a sharer child with {'simplelogin:23': 'r', 's...': 'w'} for read write. share-ees can read all info about these tags (to find which docs) and notes.
+- share-ee has /user/uid/share/sharer-uid/tag-id/r|w|x. this is set by the *sharer*. share-ee can look in /user/uid/share to get all info about stuff shared with them
+- share-ee creates tags and notes with uid:tag/note-id on them
+    - tags have no info (maybe just private?), but name etc. are populated on startup.
+    - notes just have private + tags. body, modified, etc. are populated on startup.
+
 ##### now
 
-- add share info into nuts
+- add share info into nuts on sharer side
 - for share-ee, check share upon init
+    - tag and nut id's are simplelogin:1
     - prob use https://github.com/firebase/firebase-util/blob/master/src/join/README.md
-    - get each tag, name/id/docs. if necessary do:
+    - get shared
+        - if 
+    - get notes
+        - so list of paths: /user/simplelogin:1/tags/4, /user/simplelogin:1/tags/20, /user/simplelogin:52/tags/0, etc.
+        - then list of notes: /user/s:1/notes/42...
+    - now we have a bunch of notes
         - add tag
         - rename tag
         - remove tag
@@ -38,6 +52,9 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
         - update note
         - remove note
     - do shared notes live in $s.n.sharedNuts with IDs as uid of owner? regardless there is NO reason to write them fully to sharee's firebase. maybe just $s.n.nuts but stub with just tags and private, and rest is updated on init BUT HIDDEN FROM SYNC
+- removing:
+    - sharer updates 'share' child objs in their notes/tags, and puts a uid:'x' in share-ee's share obj
+    - share-ee see's the x, and delete's local notes and the uid:'x'
 - fetch local representation of friend names
 - bug: share modal can't press enter
 
@@ -93,6 +110,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
         - shared with, list of one more more:
             - {friend global id, readonly or edit}
 - LATER:
+    - sharer shares a prog tag. share-ee sees sharer's notes that were programatically tagged. does it also programamtically tag share-ee's notes? i guess the more general question is whether the share-ee can apply a sharer's tag to their own nets. note merging etc...
     - should private notes be shared? they currently are
     - what if user A shares something with user B, and user B tags a note with a tag they're sharing with user C?
         - if A -> B is read-only, B shouldn't be able to "forward" the share
@@ -119,6 +137,8 @@ testing firebase in console:
 
 ### todo for beta: bits and bugs
 
+- bug: deleting programmatically-tagged note and tag still lists it in its docs list, prob cause it doesn't let you remove it because it's prog?
+- bug? something about adding a new note and it preventing you from adding prog tag to it?
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
 - new user welcome message
     - have to store email in user object when account is created

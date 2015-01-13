@@ -13,7 +13,7 @@
             ".read": true
           }
         },
-        // and for shared tags/notes:
+        // and for shared tags/notes (set by sharer on sharer's docs):
         "tags": {
           "$tagId": {
             // kind of the canonical data
@@ -22,11 +22,12 @@
         },
         "nuts": {
           "$nutId": {
-            // duplicated by client for ease of security rule checking
+            // duplicated by sharer client for ease of security rule checking
             ".read": "data.child('/share/' + auth.uid).exists()"
           }
         },
-        // and somewhere for other users to write their own share invites to
+
+        // and somewhere for other users to write their own share invites to (set by sharer on share-ee's object)
         "share": {
           "$sharerUid": {
             // will contain tag id -> permissions ('r' or 'w')

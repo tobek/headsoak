@@ -1916,7 +1916,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
     $s.m.lockedOut = true; // prevent user from closing the following modal
     $s.m.alert({
-      bodyHTML: "<p>Hey, it looks like you've logged into Nutmeg somewhere else, either from another device or another browser window on this device.</p><p>Nutmeg doesn't yet support simultaneous editing from multiple sessions. Please <a href='#' onclick='document.location.reload()'>refresh</a> this window to load any changes made in other sessions and continue.</p>",
+      bodyHTML: "<p>Hey, it looks like you've logged into Nutmeg from another device or browser window.</p><p>Nutmeg doesn't yet support editing from multiple sessions at the same time. Please <a href='#' onclick='document.location.reload()'>refresh</a> this window to load any changes made in other sessions and continue.</p>",
       ok: false,
       large: true
     });
