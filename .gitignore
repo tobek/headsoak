@@ -1,7 +1,8 @@
 node_modules
 .*~
-public/stylesheets/style.css
-public/*.html
+/app/*.html
+/app/css
+/app/vendor
 /s3config.json
 /config.json
 /backups
