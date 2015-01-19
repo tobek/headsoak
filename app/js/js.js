@@ -1954,8 +1954,10 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
   }
 
   function newSessionStarted(newUserChild) {
-    // child_changed on $s.ref.child('user') - probably lastLogin
-    console.warn('nutmeg session started from elsewhere!');
+    if (newUserChild.key() !== 'lastLogin') return;
+
+    // lastLogin changed on $s.ref.child('user')
+    console.warn('nutmeg session started from elsewhere at ' + newUserChild.val() + '!');
 
     $s.m.lockedOut = true; // prevent user from closing the following modal
     $s.m.alert({
