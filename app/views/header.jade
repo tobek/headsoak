@@ -10,6 +10,9 @@ html(lang='en', ng-app='nutmeg')
     link(rel="shortcut icon", href="/favicon.png")
 
 
+    -each style in cdnStyles
+      link(rel='stylesheet', href= style)
+
     // build:css css/nutmeg.css
 
     //- bower:css

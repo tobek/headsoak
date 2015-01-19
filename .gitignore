@@ -4,6 +4,7 @@ node_modules
 /app/css
 /app/vendor
 /dist
+/.tmp
 /reports
 
 /s3config.json

@@ -255,9 +255,11 @@ module.exports = function(grunt) {
                 options: {
                     pretty: true, // indentation - useminPrepare seems to break without it
                     data: {
+                        cdnStyles: [
+                            '//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css',
+                        ],
                         styles: [
                             'css/app.css',
-                            '//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css',
                         ],
                         cdnScripts: [
                             '//cdn.firebase.com/js/client/2.0.6/firebase.js',
@@ -288,9 +290,8 @@ module.exports = function(grunt) {
         shell: {
             // grunt-compress was producing empty gzipped files for me so let's use shell
             gzip: {
-                // TODO don't do this for images
-                // recursively in-place gzip everything in here, then remove .gz extension:
-                command: 'find <%= distDir %> -type f -exec gzip -v9 "{}" \\; -exec mv "{}.gz" "{}" \\;'
+                // recursively in-place gzip everything (except images) in here, then remove .gz extension:
+                command: 'find <%= distDir %> -type f ! -iname "*.png" ! -iname "*.gif" ! -iname "*.jpg" -exec gzip -v9 "{}" \\; -exec mv "{}.gz" "{}" \\;'
             }
         },
         aws_s3: {
@@ -303,9 +304,6 @@ module.exports = function(grunt) {
             production: {
                 options: {
                     bucket: '<%= s3cfg.appBucket %>',
-                    params: {
-                        ContentEncoding: 'gzip' // TODO when we start uploading images, don't gzip them (adding a new rule to )
-                    },
                     // debug: true, // do a dry run
                 },
                 files: [
@@ -315,6 +313,7 @@ module.exports = function(grunt) {
                         src: ['**/*.html'],
                         dest: '/',
                         params: {
+                            ContentEncoding: 'gzip',
                             CacheControl: 'max-age=86400, public',
                             Expires: new Date(Date.now() + 86400)
                         }
@@ -322,7 +321,18 @@ module.exports = function(grunt) {
                     {
                         expand: true,
                         cwd: '<%= distDir %>',
-                        src: ['**/*.js', '**/*.css'], // TODO images
+                        src: ['**/*.{js,css}'],
+                        dest: '/',
+                        params: {
+                            ContentEncoding: 'gzip',
+                            CacheControl: 'max-age=630720000, public',
+                            Expires: new Date(Date.now() + 63072000000)
+                        }
+                    },
+                    {
+                        expand: true,
+                        cwd: '<%= distDir %>',
+                        src: ['**/*.{png,gif,jpg}'],
                         dest: '/',
                         params: {
                             CacheControl: 'max-age=630720000, public',
