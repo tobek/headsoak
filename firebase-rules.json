@@ -26,8 +26,7 @@
             ".read": "data.child('/share/' + auth.uid).exists()"
           }
         },
-
-        // and somewhere for other users to write their own share invites to (set by sharer on share-ee's object)
+        // and somewhere for sharers to write their own share invites to (set by sharer on recipient's object)
         "share": {
           "$sharerUid": {
             // will contain tag id -> permissions ('r' or 'w')

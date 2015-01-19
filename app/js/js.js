@@ -99,9 +99,8 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
 
         // now focus on the input. for some reason won't work in the same tick, do it in a sec instead
         setTimeout(function() {
-          if (opts.passwordInput) { // the only kind of prompt we have for now
-            angular.element('.modal .dynamic input[type=password]').focus(); // horribly un Angular-ish...
-          }
+          var selector = '.modal .dynamic input[type='+ (opts.passwordInput ? 'password' : 'text') +']';
+          angular.element(selector).focus(); // horribly un Angular-ish...
         }, 50);
       });
     },
@@ -638,11 +637,11 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         nut.modified = (new Date).getTime()
       }
 
-      $s.digest.nuts[nut.id] = nut;
-
       if (fullUpdate) {
         $s.n.nutDoFullUpdate(nut);
       }
+
+      $s.digest.nuts[nut.id] = nut;
 
       console.log("nut "+nut.id+" has been updated");
     },
@@ -1278,6 +1277,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       if (!tag.share) {
         // tag not currently shared with anyone, so do simple share prompt:
 
+        // there are several points at which sharing can fail, so define what happens here:
         var failed = function(userSearchQuery, err) {
           console.warn('error trying to find user by email "' + userSearchQuery + '":', err);
           alert('No Nutmeg user found with email "'+ userSearchQuery +'"'); // TODO something about inviting them
@@ -1286,7 +1286,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
           }, 50);
         }
 
-        var perms = 'r'; // read only
+        var perms = 'r'; // read only is all we can do for now
 
         $s.m.prompt({
           title: 'Sharing "' + tag.name + '"',
@@ -1302,19 +1302,10 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
                 if (data.exists()) {
                   // TODO ask for your name
 
-                  var shareeUid = data.val();
+                  var recipientUid = data.val();
 
-                  $s.t.shareTagWithUser(tag, shareeUid, perms);
-                  // TODO only continue on success callback
-
-                  // TODO grab user name if it exists and use that instead
-                  $s.m.alert({
-                    message: 'Now sharing tag "'+ tag.name +'" with "'+ userSearchQuery +'"'
-                    // should be "ok" or "go to sharing settings"
-                  });
-                  tag.share = {};
-                  tag.share[data.val()] = perms;
-                  $s.t.tagUpdated(tag);
+                  // TODO grab user name if it exists and use that instead of userSearchQuery here
+                  $s.t.shareTagWithUser(tag, recipientUid, userSearchQuery, perms);
                 }
                 else {
                   failed(userSearchQuery, 'email doesn\'t exist in firebase');
@@ -1338,9 +1329,37 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       }
     },
 
-    shareTagWithUser: function(tag, shareeUid, perms) {
-      var tagSharePath = 'users/' + shareeUid + '/share/' + $s.u.user.uid + '/' + tag.id;
-      $s.ref.root().child(tagSharePath).set(perms);
+    shareTagWithUser: function(tag, recipientUid, recipientName, perms) {
+      // mark in the *recipient*'s data that we've shared this tag with them
+      var recipientTagSharePath = 'users/' + recipientUid + '/share/' + $s.u.user.uid + '/' + tag.id;
+      $s.ref.root().child(recipientTagSharePath).set(perms);
+
+      // TODO should actually only continue on success callback
+
+      $s.m.alert({
+        message: 'Now sharing tag "'+ tag.name +'" with "'+ recipientName +'"'
+        // should be "ok" or "go to sharing settings"
+      });
+      if (!tag.share) tag.share = {};
+      tag.share[recipientUid] = perms;
+      $s.t.tagUpdated(tag);
+
+      $s.t.updateNoteShareInfo(tag);
+    },
+
+    /** share info (mapping from uid -> sharing permissions) is duplicated in nuts so that firebase security rules can check it to see if other users can read the note **/
+    updateNoteShareInfo: function(tag) {
+      if (!tag.share) return;
+
+      // TODO test on new tag with no notes, old tag with no notes
+      tag.docs.forEach(function (docId) {
+        var nut = $s.n.nuts[docId];
+
+        if (!nut.share) nut.share = {};
+        _.extend(nut.share, tag.share);
+
+        $s.n.nutUpdated(nut, false, false); // TODO should we fullupdate in case prog tags want to depend on sharing? they have the right to be able to do so, but... don't care right now
+      });
     },
 
     /* call whenever a tag is updated. accepts tag or tag id

@@ -27,7 +27,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### sharing structure
 
-- sharer has in each tag (and duplicated in each note) a sharer child with {'simplelogin:23': 'r', 's...': 'w'} for read write. share-ees can read all info about these tags (to find which docs) and notes.
+- sharer has in each tag (and duplicated in each note) a `sharer` child object with {'simplelogin:23': 'r', 's...': 'w'} for read write. share-ees can read all info about these tags (to find which docs) and notes.
 - share-ee has /user/uid/share/sharer-uid/tag-id/r|w|x. this is set by the *sharer*. share-ee can look in /user/uid/share to get all info about stuff shared with them
 - share-ee creates tags and notes with uid:tag/note-id on them
     - tags have no info (maybe just private?), but name etc. are populated on startup.
@@ -35,7 +35,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### now
 
-- add share info into nuts on sharer side
+- ask for name
 - for share-ee, check share upon init
     - tag and nut id's are simplelogin:1
     - prob use https://github.com/firebase/firebase-util/blob/master/src/join/README.md
@@ -347,6 +347,7 @@ testing firebase in console:
     - warning somewhere: Be careful of infinite loops. If this tag "a" function adds or removes a tag from a note, that note is run through all tag functions again (in case some tag "b" function would classify differently based on added/removed tag). If tag "a" functions returns a *different* answer in its second run, an infinite loop is possible.
         - ugh example maybe with two tags "has more than 3" and "has less than 4" or something where they keep changing each other
         - "untagged" is a great example - it'll add, then remove, then add...
+- wrap all firebase calls with something that has a default CB with message for failure, logs the error upstream, etc.
 
 ##### bits and bugs
 
@@ -357,7 +358,7 @@ testing firebase in console:
     - https://github.com/angular-app/angular-app
     - http://briantford.com/blog/huuuuuge-angular-apps.html
     - http://briantford.com/blog/angular-yeoman.html
-- minify HTML without breaking usemin
+- minify HTML without breaking usemin or tooltips with line breaks (like in shortcuts modal)
 - click and drag to outside of modal closes modal (sucks on prog tag screen...)
 - on cancel modal, if dynamic prog tag editor and text has changed, confirm
 - debounce textarea editing?
