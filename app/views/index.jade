@@ -158,6 +158,9 @@ block content
             input(type="submit", value="{{ m.dynamic.cancelText || 'cancel' }}", ng-click="m.cancelModal()", ng-show="m.dynamic.cancel || m.dynamic.cancelText")
             input(type="submit", value="{{ m.dynamic.thirdButton }}", ng-click="m.dynamic.thirdButtonCb()", ng-show="m.dynamic.thirdButton")
 
+        div.working-overlay(ng-class="{working: m.working}")
+          div.inner
+            img.logo(src="/img/nutmeg100h-white.png", alt="nutmeg")
 
   div#full-page-loading.modal.modalon(ng-show="u.loggedIn && u.loading && ! u.loggingIn")
     div.circle-holder

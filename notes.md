@@ -410,7 +410,6 @@ testing firebase in console:
 - load html and angular REAL fast and then async all the other shit
 - dynamic modals should have:
     - space/functionality for a reponse, like "user not found" or "incorrect password", or checkmark, while modal stays open, instead of closing and re-opening
-    - loading animation and disable button when fetching
 
 ### todo not thought through
 

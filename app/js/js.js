@@ -39,7 +39,12 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
         }
       }
 
-      $s.m.closeModal();      
+      if ($s.m.dynamic && $s.m.dynamic.dontCloseOnOk) {
+        return;
+      }
+      else {
+        $s.m.closeModal();      
+      }
     },
     cancelModal: function() {
       if ($s.m.dynamic && $s.m.dynamic.cancelCb) {
@@ -48,7 +53,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
 
       $s.m.closeModal();      
     },
-    closeModal: function(userInput) {
+    closeModal: function() {
       // only close modal if logged in - otherwise we're closing the login window on a blank screen:
       if (! $s.u.loggedIn) return;
 
@@ -69,7 +74,12 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
       });
     },
 
+    /** pass in string to display to user, or object with various options */
     alert: function(opts) {
+      if (typeof opts === 'string') {
+        opts = {message: opts};
+      }
+
       $timeout(function() {
         $s.m.modal = "dynamic";
         $s.m.dynamic = {
@@ -884,20 +894,23 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         $s.m.prompt({
           message: 'Please enter your login password to view private notes:',
           passwordInput: true,
+          dontCloseOnOk: true,
           okCb: function(password) {
             if (! password) return;
 
-            // TODO: implement some loading indicator in prompt while we wait for password checking
+            $s.m.working = true;
 
             checkPassword(password, function(passwordCorrect) {
               if (! passwordCorrect) {
                 alert('Incorrect password!');
               }              
               else {
+                $s.m.closeModal();
                 $s.p.privateMode = true;
                 $s.q.doQuery(); // re-filter which notes to show
-                $s.$apply();
               }
+              $s.m.working = false;
+              $s.$apply();
             });
           }
         });
