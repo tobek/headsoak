@@ -69,8 +69,8 @@ block content
             span.tooltip-holder
               span.tooltip(data-tooltip="Your display name is visible to others if you share any notes. It does not have to be unique and may contain any characters.")
                 i.fa.fa-info-circle
-          form(ng-submit="u.changeUsername(_newDisplayName)")
-            input(type="text", placeholder="{{ u.user.displayName }}", ng-model="_newDisplayName")
+          form(ng-submit="u.changeDisplayName(u.user.displayName)")
+            input(type="text", ng-model="u.user.displayName")
             br
             input(type="submit", value="{{ u.user.displayName ? 'change name' : 'set name' }}")
 

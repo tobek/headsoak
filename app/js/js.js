@@ -69,6 +69,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
       }
 
       $timeout(function() {
+        $s.m.working = false;
         $s.m.modal = false;
         $s.m.modalLarge = false;
       });
@@ -325,41 +326,51 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
 
       // TODO: show loading thing until Firebase callback (remove change pass button)
 
+      $s.m.working = true;
+
       $s.u.auth.changePassword($s.u.user.email, $s.u.password, $s.u.newPass1, function(err) {
         if (err) {
           if (err.code == 'INVALID_PASSWORD') {
             alert('Incorrect current password');
             $s.u.password = '';
-            $s.$apply();
           }
           else {
             alert('Failed to change password: ' + err.code);
           }
-          return;
+        }
+        else {
+          alert ('Password changed successfully!');
+          $s.u.password = $s.u.newPass1 = $s.u.newPass2 = '';
         }
 
-        alert ('Password changed successfully!');
-        $s.u.password = $s.u.newPass1 = $s.u.newPass2 = '';
+        $s.m.working = false;
         $s.$apply();
       });
 
       return false;
     },
 
-    changeDisplayName: function(newName, quiet) {
+    /** UI function to change display name */
+    changeDisplayName: function(newName) {
       if (!newName) return;
 
+      $s.m.working = true;
+      $s.u._changeDisplayName(newName, function(err) {
+        alert('Display name successfully set to "' + newName + '"'); // TODO inline checkmark will do
+        $s.m.working = false;
+        $s.$apply();
+      });
+    },
+    /** actually save changed display name on server and in local user object */
+    _changeDisplayName: function(newName, cb) {
       console.log('changing display name from', $s.u.user.displayName, 'to', newName);
 
-      // TODO show waiting...
       $s.ref.child('user/displayName').set(newName, function(err) {
+        cb(err);
+
         if (err) {
           console.error('problem setting display name...');
           return;
-        }
-
-        if (!quiet) {
-          alert('Display name successfully set to "' + newName + '"'); // TODO inline checkmark will do
         }
 
         $s.u.user.displayName = newName;
@@ -1353,7 +1364,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
                       okCb: function(displayName) {
                         if (!displayName) displayName = suggestedDisplayName;
 
-                        $s.u.changeDisplayName(displayName, true);
+                        $s.u._changeDisplayName(displayName);
 
                         $s.t.shareTagWithUser(tag, recipientUid, recipientName, perms);
                       }
