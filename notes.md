@@ -135,28 +135,35 @@ testing firebase in console:
     }
     fbGet('users/simplelogin:1/nuts/0')
 
-### todo for beta: bits and bugs
+### todo for beta
 
-- bug: deleting programmatically-tagged note and tag still lists it in its docs list, prob cause it doesn't let you remove it because it's prog?
-- bug? something about adding a new note and it preventing you from adding prog tag to it?
-- mention in firstInit() notes something about if you're interested then... or if you want to help out
-- new user welcome message
-    - have to store email in user object when account is created
+##### notable features
+
+- intro page with a tiny bit of info and demo
+    - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
+        - ideally, when you create an account, it is saved?
+- mobile responsive
+- shared notes
+    - live collab
+- programmatic tags
+    - more examples and example UI
+
+##### minor features
+
+- new user welcome email
     - have to set up reverse DNS and other bulkmail stuff, or free account somewhere
 - better nutmeg logo
 - favicon
-- font
 - make it not run slowly (like when autosizing)
     - maybe use `slyPreventEvaluationWhenHidden` https://github.com/scalyr/angular/blob/3f1cbbba31689339694bd2132e411ca2eabb9480/src/js/directives/slyEvaluate.js
     - https://www.airpair.com/angularjs/posts/angularjs-performance-large-applications
     - one-way data binding?
-- invite only
-- @nutmeg.io email address. I have support@ (and toby@ and ece@), what about for general stuff? contact@ is boring
-- space at bottom of page?
+- create account by invite only + 'request invite' button
+    - basically give a unique URL like nutmeg.io?invite=somethingcute
+    - with login, if invite query param exists and matches again firebase array i've hand-added, then show create account (nicer welcome message) and then update firebase with this invite being taken
 - move note actions into menu?
-- logout should clear nuts and stuff from scope etc!
-- copy to yeoman with versioning and create nutmeg-app S3 bucket? uglify JS at least. http://lauterry.github.io/ngTailor/
 - alert to unsaved changes if you close window
+- font
 - status messages for loading stuff
     - function 'update status message' after various key stages, which chooses a random one
     - loaded from firebase so it's not in JS source and harder to see
@@ -281,37 +288,41 @@ testing firebase in console:
             - Eyeing your breakfast/lunch/dinner...
             - Watching the sunset/sunrise...
             - Shaking off sleep...
+
+##### bits and bugs
+
+- bug: deleting programmatically-tagged note and tag still lists it in its docs list, prob cause it doesn't let you remove it because it's prog?
+- bug? something about adding a new note and it preventing you from adding prog tag to it?
+- logout should clear nuts and stuff from scope etc!
+- mention in firstInit() notes something about if you're interested then... or if you want to help out
+- @nutmeg.io email address. I have support@ (and toby@ and ece@), what about for general stuff? contact@ is boring
+- space at bottom of page?
 - why doesn't it remember my username and password?
 
-### todo for beta: 
-
-- intro page with a tiny bit of info and demo
-    - demo: set some variable which basically disables digest (replaces it with dummy?). make sure to have an alert saying "WARNING: none of the changes you make here will be saved"
-        - ideally, when you create an account, it is saved?
-- mobile responsive
-- shared notes
-    - live collab
-
 ### todo next
+
+##### notable features
 
 - "star"
 - tag browser collapse/expand
 - SSL
+    - http://engagingcomms.com/Easy-way-to-Configure-SSL-for-Amazon-S3-bucket-via-Cloudflare-115
 - FAQ
+
+##### minor features
+
 - issues connecting to firebase
     - somehow listen for connection/disconnection and alert user and change cloud to red
     - maybe set some time in `push()`, and if `pushHackCounter>0` in `push()`, and if some length of time has passed (like 30s) then alert user and suggest something
     - https://www.firebase.com/docs/managing-presence.html
-- click and drag to outside of modal closes modal (sucks on prog tag screen...)
-- on cancel modal, if dynamic prog tag editor and text has changed, confirm
 - 'security' or 'privacy' settings section
     - ask password for viewing private notes - default on
     - ask password for programmatic notes - default off
     - report anonymous statistics - default on (nicer name)
     - hidden user - default off. when on, other nutmeg users can't search for you by email or username in order to share things with you must... what? share something with them? what if you don't want to? "friend" them?
-- debounce textarea editing?
 - highlight and scroll to matched query in search results
 - private note/tags improvements
+    - see "private notes/tags" section below
     - tutorial-ish stuff:
         - permanently-dissmissable message when turning on private mode:
             - 'You have enabled "private" mode. All tags you have marked as "private" will be visible.\n\nThis mode will remain enabled until you close this window or switch it off manually.'
@@ -331,27 +342,29 @@ testing firebase in console:
         - hide tag itself from list when not in private mode (and display similar (sharing optout flag though?) message 'You are setting this tag as private, will be hidden...' as enabling private mode on note)
     - auto-expiration of private mode? like, x minutes turn it back off
 - programmatic tags
-    - more examples and example button
     - whitelist and blacklist so you can add/remove tag from notes despite programmatic
     - async option where cb is passed in
     - warning somewhere: Be careful of infinite loops. If this tag "a" function adds or removes a tag from a note, that note is run through all tag functions again (in case some tag "b" function would classify differently based on added/removed tag). If tag "a" functions returns a *different* answer in its second run, an infinite loop is possible.
         - ugh example maybe with two tags "has more than 3" and "has less than 4" or something where they keep changing each other
         - "untagged" is a great example - it'll add, then remove, then add...
-- new shortcut potential conflicts
-  - message: "HI: new keyboard shortcuts have been added. If you've changed shortcuts away from the defaults, you should check out the shortcuts menu to make sure there are no conflicts."
-  - shortcutsChanged and user-stored shortcutChangeIDSeen or something. add it into new features modal
-- refactor entire app, with tests, split up into multiple files, with build and minification, etc
+
+##### bits and bugs
+
+- refactor file structure (e.g. break out js.js, put in controllers/, directives/ folders etc)
     - http://vesparny.github.io/ng-kickstart
     - http://joshdmiller.github.io/ng-boilerplate/
     - https://github.com/angular/angular-seed
     - https://github.com/angular-app/angular-app
     - http://briantford.com/blog/huuuuuge-angular-apps.html
     - http://briantford.com/blog/angular-yeoman.html
+- minify HTML without breaking usemin
+- click and drag to outside of modal closes modal (sucks on prog tag screen...)
+- on cancel modal, if dynamic prog tag editor and text has changed, confirm
+- debounce textarea editing?
+- new shortcut potential conflicts
+  - message: "HI: new keyboard shortcuts have been added. If you've changed shortcuts away from the defaults, you should check out the shortcuts menu to make sure there are no conflicts."
+  - shortcutsChanged and user-stored shortcutChangeIDSeen or something. add it into new features modal
 - do something about font sizes (proportional to screen yes, try out on a) 1920x1080, b) smaller screen, c) tablet, d) phone)
-- roll back functionality in deploy.js. first GET, then create archive with date/time of deployment
-- create account by invite only + 'request invite' button
-    - basically give a unique URL like nutmeg.io?invite=somethingcute
-    - with login, if invite query param exists and matches again firebase array i've hand-added, then show create account (nicer welcome message) and then update firebase with this invite being taken
 - investigate and fix lunr weirdness
 - shortcuts
     - MOAR POWER mode: enable overkill, enable checkbox that removes modkey for that shortcut
@@ -361,44 +374,12 @@ testing firebase in console:
 
 ### todo eventually
 
+##### notable features
+
 - encryption
     - ALL notes <-- important, required option. like spideroak
     - only private notes <-- necessary?
     - only reasons to *not* encrypt all notes: marginally slower (user won't notice or care), lose everything if you lose password (user would care)
-- move feedback from zapier to watcher.js
-- load html and angular REAL fast and then async all the other shit
-- manifest that lets you install web app as android application? and then post to http://mobilewebappsftw.tumblr.com/
-- login via fb/google/github/whatevs
-    - are user id numbers unique or do i need e.g. 'simplelogin:46'? if not... migrate away from provider in user id for /users and /emailToId
-- check $s.u.user.isTemporaryPassword and if so direct them to change password page - it means they used works-for-24h-only token
-- remove all instances of `alert()` and replace with some single modal function. on chrome and FF at least, alert windows begin with "The page at https://megnut.s3.amazonaws.com says:"
-- dynamic modals should have space/functionality for a reponse, like "user not found" or "incorrect password", while modal stays open, instead of closing and re-opening. then also tiny loading animation while it's fetching
-- implement sort by query match strength
-- for "no simultaneous editing" warning, maybe option to enter readonly mode?
-    - Glowing red connection cloud, on hover: "Currently in read-only mode because you have logged in to Nutmeg from somewhere else. Please refresh to load those changes and continue editing."
-    - would be better to just allow simultaneous editing
-- for custom modal warnings, would be nice to have cracked-open nutmeg graphic
-- investigate if property name length matters in firebase - if so, have some automated minifier two-way dictionary to convert prop names - nice github plugin maybe
-- dbg time for lunr search
-- tag autocomplete also sorts by most used?
-    - how to mix match score with most used?
-        - order by match score but highlight the most used
-        - 50/50 or something like that
-    - many definitions of most used:
-        - on the most notes
-        - searched/filtered for the most (frequency or time?)
-        - notes with this tag focused on the most
-    - most used EVER or in past year/month/day?
-- hover over clock show creation and mod times, also mention history? pencil icon to edit creation date?
-- how/where to show modified/created dates on nuts? only on hover or focus?
-    - could choose which (if any) of these to display
-    - could be like tags, all the way to the right, with icon (clock for modified, star explosion for created?) instead of delete tag button
-    - hover or right click menu would let you not show/show times
-- right now i always display everything in #nuts. this could get unwieldy. this will have to be fixed in various places
-- add config to control how tags are sorted on an individual nut? alphabetical, most/fewest docs, recently/oldest modified/created
-    - highlighting the tags with the fewest docs is cool. generic ones like "quote" or "list" may be less salient. could maybe change opacity or size accordingly
-- ctrl+z. how best to implement? ask on quora or stack overflow? stack of actions, each with a `do` and `undo` action you can execute (`do` needed so you can redo). e.g. if you do deleteTag(4), you'd push an object onto the stack with `do` = `deleteTag(4)` and `undo` = `createTag({whatever})` having saved the state of the tag and all the docs it was on
-- consider browser spell-checking - option to disable? if we switch to div content editable, will we lose it?
 - export (in the future all of these should optionally apply to current selection)
     - Word Document (how to phrase?)
         - "This feature isn't fully implemented yet. Click here to download your notes as an HTML file, which any word processor will be able to open."
@@ -413,22 +394,57 @@ testing firebase in console:
         - http://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server/3665147#3665147
         - http://eligrey.com/blog/post/saving-generated-files-on-the-client-side
         - https://developer.mozilla.org/en-US/docs/Web/API/URL.createObjectURL?redirectlocale=en-US&redirectslug=URL.createObjectURL
+- login via fb/google/github/whatevs
+    - are user id numbers unique or do i need e.g. 'simplelogin:46'? if not... migrate away from provider in user id for /users and /emailToId
+
+##### minor features
+
+- manifest that lets you install web app as android application? and then post to http://mobilewebappsftw.tumblr.com/
+- check $s.u.user.isTemporaryPassword and if so direct them to change password page - it means they used works-for-24h-only token
+- remove all instances of `alert()` and replace with some single modal function. on chrome and FF at least, alert windows begin with "The page at https://megnut.s3.amazonaws.com says:"
+- implement sort by query match strength
+
+##### bits and bugs
+
+- move feedback from zapier to watcher.js
+- load html and angular REAL fast and then async all the other shit
+- dynamic modals should have space/functionality for a reponse, like "user not found" or "incorrect password", while modal stays open, instead of closing and re-opening. then also tiny loading animation while it's fetching
+
+### todo not thought through
+
 - tutorial/wizard/helper/cheat mode. maybe some bar along the bottom that displays some info for everything you hover on and every state you're in. would adapt to your shortcuts. so while you are in a nut it would have ctrl+t for tag writing. while you're tag adding it would have enter to add tag, comma to add tag and add another, etc.
     - some mild animation, a pulse or something, when helper text changes
     - would we ever need more? like arrows pointing at the add tag button? options:
         - not needed
         - helper mode also shows overlays
         - some text ("the plus icon") is dashed-underlined and when you hover, it shows the arrow overlay
+- for "no simultaneous editing" warning, maybe option to enter readonly mode?
+    - Glowing red connection cloud, on hover: "Currently in read-only mode because you have logged in to Nutmeg from somewhere else. Please refresh to load those changes and continue editing."
+    - would be better to just allow simultaneous editing
+- for custom modal warnings, would be nice to have cracked-open nutmeg graphic
+- investigate if property name length matters in firebase - if so, have some automated minifier two-way dictionary to convert prop names - nice github plugin maybe
+- tag autocomplete also sorts by most used?
+    - how to mix match score with most used?
+        - order by match score but highlight the most used
+        - 50/50 or something like that
+    - many definitions of most used:
+        - on the most notes
+        - searched/filtered for the most (frequency or time?)
+        - notes with this tag focused on the most
+    - most used EVER or in past year/month/day?
+- add config to control how tags are sorted on an individual nut? alphabetical, most/fewest docs, recently/oldest modified/created
+    - highlighting the tags with the fewest docs is cool. generic ones like "quote" or "list" may be less salient. could maybe change opacity or size accordingly
+- ctrl+z. how best to implement? ask on quora or stack overflow? stack of actions, each with a `do` and `undo` action you can execute (`do` needed so you can redo). e.g. if you do deleteTag(4), you'd push an object onto the stack with `do` = `deleteTag(4)` and `undo` = `createTag({whatever})` having saved the state of the tag and all the docs it was on
+- consider browser spell-checking - option to disable? if we switch to div content editable, will we lose it?
 
 ### todo backlog
 
+- dbg time for lunr search
 - merge shortcut and settings/layout functionality. they're shortcuts are just special versions of settings. also, use the id system of shortcuts for storing configs in firebase? eh clean up
 - put lunr.update() in updateNutInIndex() (even on init?) into web workers so they don't halt the page
 - while add tag to note input has focus, don't shrink scroll height?
 - deal with nuts and tags being sparse arrays full of undefineds for each thing you've deleted. `track by $index` fixes duplicates in ng-repeat, but entries still show up in the DOM but are just hidden with ng-hide="!nut". kind of ugly.
     - might help https://github.com/angular/angular.js/issues/1286
-- esc exits modal
-- gzip before uploading the S3 and set headers appopriately: http://www.jamiebegin.com/serving-compressed-gzipped-static-files-from-amazon-s3-or-cloudfront/ (just make sure no .gz extension)
 - bugs in IE10
     - modal overlay isn't working (menu and sync status show, you can still focus on stuff)
     - some tooltips work, some don't
