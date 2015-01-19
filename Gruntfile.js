@@ -135,7 +135,7 @@ module.exports = function(grunt) {
             },
             jade: {
                 files: ['<%= assetsDir %>/**/*.jade'],
-                tasks: ['jade']
+                tasks: ['newer:jade:compile']
             },
             css: {
                 files: ['<%= assetsDir %>/css/**/*.css'],
@@ -164,6 +164,7 @@ module.exports = function(grunt) {
             }
         },
         connect: {
+            /*
             test : {
                 options: {
                     port: 8887,
@@ -173,6 +174,7 @@ module.exports = function(grunt) {
                         open: false
                 }
             },
+            */
             plato : {
                 options: {
                     port: 8889,
@@ -182,6 +184,7 @@ module.exports = function(grunt) {
                 }
             }
         },
+        /*
         karma: {
             dev_unit: {
                 options: {
@@ -211,6 +214,7 @@ module.exports = function(grunt) {
                 }
             }
         },
+        */
         plato : {
             options: {
                 jshint : grunt.file.readJSON('.jshintrc'),
@@ -344,14 +348,53 @@ module.exports = function(grunt) {
         }
     });
 
-    // tests commented out for now as they're totally un-implemented
+    // tests commented out for now here and throughout as they're totally un-implemented
     // grunt.registerTask('test:e2e', ['connect:test', 'karma:e2e']);
     // grunt.registerTask('test:unit', ['karma:dist_unit:start']);
-    grunt.registerTask('report', ['plato', 'connect:plato']);
-    grunt.registerTask('dev', ['less:all', 'jade:compile', 'browser_sync', /*'karma:dev_unit:start',*/ 'watch']);
-    grunt.registerTask('build', ['jshint', 'clean', 'less:all', 'jade', 'useminPrepare', 'copy', 'concat', 'ngmin', 'uglify', 'cssmin', 'rev', 'imagemin', 'usemin']);
-    grunt.registerTask('deploy', ['shell:gzip', 'aws_s3:production']);
-    grunt.registerTask('ci', ['build', /*'connect:test', 'karma:dist_unit:start', 'karma:e2e',*/ 'deploy', 'plato']);
+
+    grunt.registerTask('report', [
+        'plato',
+        'connect:plato',
+    ]);
+
+    grunt.registerTask('dev', [
+        'less:all',
+        'jade:compile',
+        'browser_sync',
+        // 'karma:dev_unit:start',
+        'watch',
+    ]);
+
+    grunt.registerTask('build', [
+        'jshint',
+        'clean',
+        'less:all',
+        'jade:compile',
+        'useminPrepare',
+        'copy',
+        'concat',
+        'ngmin',
+        'uglify',
+        'cssmin',
+        'rev',
+        'imagemin',
+        'usemin',
+    ]);
+
+    grunt.registerTask('deploy', [
+        'shell:gzip',
+        'aws_s3:production',
+    ]);
+
+    grunt.registerTask('ci', [
+        'build',
+        // 'connect:test',
+        // 'karma:dist_unit:start',
+        // 'karma:e2e',
+        'deploy',
+        'report',
+    ]);
+
     grunt.registerTask('ls', ['availabletasks']);
 
 };
