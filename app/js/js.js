@@ -1951,7 +1951,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
 }]) // end of Nutmeg controller
 
-.directive('nmFocus', function($timeout) {
+.directive('nmFocus', ['$timeout', function($timeout) {
   return function(scope, element, attrs) {
      scope.$watch(attrs.nmFocus, function (newValue) {
         // not sure why $timeout is necessary here, but seems like otherwise input gets focus BEFORE ng-show on parent <li> kicks in
@@ -1960,7 +1960,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         }, 0);
      });
   };
-})
+}])
 .directive('nmQuery', function() {
   return function(scope, element, attrs) {
     scope.$watch(attrs.nmQuery, function(newQ) {
