@@ -17,6 +17,8 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
   ];
   var PROG_TAG_INFO = '\n/**\n * example `note` argument:\n *\n * {\n *   id: 42, // won\'t change\n *   body: "the text of the note...",\n *   created: 1420250076086,\n *   modified: 1420250076108,\n *   private: false,\n *   tags: [3, 12, 35] // tag IDs\n * }\n *\n * also in scope:\n * \n * - this: the current tag object, e.g. {id: 17, name: the tag\'s name"}\n * - getTagNameById(id): function returning tag name from tag ID\n * - _: lo-dash library\n *\n */';
 
+  var SAMPLE_DISPLAY_NAMES = ['Napoléon Bonaparte', 'Marco Polo', 'Nikola Tesla', 'Edgar Allan Poe', 'Florence Nightingale', 'Marilyn Monroe', 'Joan of Arc', 'Catherine the Great', 'Vlad the Impaler'];
+
 
   $s._ = _; // make lodash available to view template
 
@@ -88,6 +90,8 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
       $s.m.alert(opts); // alias
     },
     prompt: function(opts) {
+      if (opts.bodyHTML) opts.bodyHTML = $sce.trustAsHtml(opts.bodyHTML);
+
       $timeout(function() {
         $s.m.modal = "dynamic";
         $s.m.dynamic = angular.extend({
@@ -291,7 +295,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
       return false;
     },
 
-    changePassword: function(foo) {
+    changePassword: function() {
       if (!$s.u.password) {
         alert("You didn't enter your current password!");
         return;
@@ -332,8 +336,10 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
       return false;
     },
 
-    changeDisplayName: function(newName) {
+    changeDisplayName: function(newName, quiet) {
       if (!newName) return;
+
+      console.log('changing display name from', $s.u.user.displayName, 'to', newName);
 
       // TODO show waiting...
       $s.ref.child('user/displayName').set(newName, function(err) {
@@ -342,7 +348,9 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
           return;
         }
 
-        alert('Display name successfully set to "' + newName + '"'); // TODO inline checkmark will do
+        if (!quiet) {
+          alert('Display name successfully set to "' + newName + '"'); // TODO inline checkmark will do
+        }
 
         $s.u.user.displayName = newName;
         $s.$apply();
@@ -1317,12 +1325,30 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
             else if (userSearchQuery.match(/.+@.+\...+/)) { // ultra basic email regex
               $s.ref.root().child('emailToId/' + btoa(userSearchQuery)).once('value', function(data) {
                 if (data.exists()) {
-                  // TODO ask for your name
-
+                  var recipientName = userSearchQuery; // TODO actually grab name
                   var recipientUid = data.val();
 
-                  // TODO grab user name if it exists and use that instead of userSearchQuery here
-                  $s.t.shareTagWithUser(tag, recipientUid, userSearchQuery, perms);
+                  if (! $s.u.user.displayName) {
+                    // prompt them for it!
+
+                    var suggestedDisplayName = _.sample(SAMPLE_DISPLAY_NAMES);
+
+                    $s.m.prompt({
+                      bodyHTML: '<p>What do you want to go by?</p><p>You haven\'t selected a display name yet. Please enter a name to identify yourself to users you share with.</p>',
+                      textInput: true,
+                      placeholder: suggestedDisplayName,
+                      okCb: function(displayName) {
+                        if (!displayName) displayName = suggestedDisplayName;
+
+                        $s.u.changeDisplayName(displayName, true);
+
+                        $s.t.shareTagWithUser(tag, recipientUid, recipientName, perms);
+                      }
+                    });
+                  }
+                  else {
+                    $s.t.shareTagWithUser(tag, recipientUid, recipientName, perms);
+                  }
                 }
                 else {
                   failed(userSearchQuery, 'email doesn\'t exist in firebase');
@@ -1353,10 +1379,13 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
       // TODO should actually only continue on success callback
 
-      $s.m.alert({
-        message: 'Now sharing tag "'+ tag.name +'" with "'+ recipientName +'"'
-        // should be "ok" or "go to sharing settings"
-      });
+      $timeout(function() {
+        $s.m.alert({
+          message: 'Now sharing tag "'+ tag.name +'" with "'+ recipientName +'"'
+          // should be "ok" or "go to sharing settings"
+        });
+      }, 50);
+
       if (!tag.share) tag.share = {};
       tag.share[recipientUid] = perms;
       $s.t.tagUpdated(tag);

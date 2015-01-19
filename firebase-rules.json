@@ -9,7 +9,7 @@
         
         // exception for some public user info:
         "user": {
-          "name": {
+          "displayName": {
             ".read": true
           }
         },

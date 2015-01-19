@@ -35,7 +35,6 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### now
 
-- ask for name
 - for share-ee, check share upon init
     - tag and nut id's are simplelogin:1
     - prob use https://github.com/firebase/firebase-util/blob/master/src/join/README.md
