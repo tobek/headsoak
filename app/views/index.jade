@@ -136,6 +136,8 @@ block content
           form(ng-submit="m.finishModal(m.dynamic.inputVal)")
             input(type="password", ng-show="m.dynamic.passwordInput", ng-model="m.dynamic.inputVal")
             input(type="text", ng-show="m.dynamic.textInput", placeholder="{{ m.dynamic.placeholder }}", ng-model="m.dynamic.inputVal")
+            //- slightly byzantine rules for whether ng-submit gets called means that since we have more than one input, a submit button has to be here in order for `enter` in an input field to call ng-submit: https://docs.angularjs.org/api/ng/directive/form#submitting-a-form-and-preventing-the-default-action
+            input(type="submit", ng-hide="true")
 
           div.prog-tag-editor(ng-show="m.dynamic.progTag")
             pre function(note) {

@@ -56,7 +56,6 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
     - sharer updates 'share' child objs in their notes/tags, and puts a uid:'x' in share-ee's share obj
     - share-ee see's the x, and delete's local notes and the uid:'x'
 - fetch local representation of friend names
-- bug: share modal can't press enter
 
 ##### overview
 
@@ -291,6 +290,7 @@ testing firebase in console:
 
 ##### bits and bugs
 
+- enter or spacebar should exit alert modals
 - bug: deleting programmatically-tagged note and tag still lists it in its docs list, prob cause it doesn't let you remove it because it's prog?
 - bug? something about adding a new note and it preventing you from adding prog tag to it?
 - logout should clear nuts and stuff from scope etc!
