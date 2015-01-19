@@ -332,19 +332,19 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
       return false;
     },
 
-    changeUsername: function(newUsername) {
-      if (!newUsername) return;
+    changeDisplayName: function(newName) {
+      if (!newName) return;
 
       // TODO show waiting...
-      $s.ref.child('user/username').set(newUsername, function(err) {
+      $s.ref.child('user/displayName').set(newName, function(err) {
         if (err) {
-          console.error('problem setting username...');
+          console.error('problem setting display name...');
           return;
         }
 
-        alert('Username successfully set to "' + newUsername + '"'); // TODO inline checkmark will do
+        alert('Display name successfully set to "' + newName + '"'); // TODO inline checkmark will do
 
-        $s.u.user.username = newUsername;
+        $s.u.user.displayName = newName;
         $s.$apply();
       });
     },

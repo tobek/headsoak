@@ -775,7 +775,7 @@ form {
           }
         }
 
-        &.shortcuts, &.settings, &.layout {
+        &.shortcuts, &.settings, &.layout, &.account {
           .button-holder { margin-top: 10px; }
           .tooltip:after {
             font-size: 90%;
@@ -813,6 +813,10 @@ form {
           }
           input {
             font-size: 14px;
+          }
+          .tooltip {
+            margin-left: 10px;
+            font-size: 75%;
           }
         }
 
@@ -892,6 +896,13 @@ form {
 .tooltip {
   position: relative;
   cursor: pointer;
+}
+.tooltip-holder {
+  // for when the tooltip icon is pushing shit around
+  position: relative;
+  .tooltip {
+    position: absolute;
+  }
 }
 .tooltip:after, .tooltip:before {
   /* At time of this creation, only Fx4 doing pseduo transitions */

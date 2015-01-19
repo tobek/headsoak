@@ -65,11 +65,14 @@ block content
             input(type="submit", value="save", ng-click="c.save()")
 
         div.account(ng-show="m.modal == 'account'")
-          h4 {{ u.user.username ? 'change username' : 'choose username' }}
-          form(ng-submit="u.changeUsername(_newUsername)")
-            input(type="text", placeholder="{{ u.user.username }}", ng-model="_newUsername")
+          h4 {{ u.user.displayName ? 'change display name' : 'choose display name' }}
+            span.tooltip-holder
+              span.tooltip(data-tooltip="Your display name is visible to others if you share any notes. It does not have to be unique and may contain any characters.")
+                i.fa.fa-info-circle
+          form(ng-submit="u.changeUsername(_newDisplayName)")
+            input(type="text", placeholder="{{ u.user.displayName }}", ng-model="_newDisplayName")
             br
-            input(type="submit", value="{{ u.user.username ? 'change username' : 'set username' }}")
+            input(type="submit", value="{{ u.user.displayName ? 'change name' : 'set name' }}")
 
           h4 change password
           form(ng-submit="u.changePassword()")
