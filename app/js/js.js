@@ -145,7 +145,9 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
       // vertically align:
       $interval(function() {
         var el = angular.element(".circle > div:visible")[0];
-        el.style.setProperty('margin-top', (el.offsetHeight/(-2)) + 'px');
+        if (el) {
+          el.style.setProperty('margin-top', (el.offsetHeight/(-2)) + 'px');
+        }
       }, 10, 50, false); // check every 10ms for 500ms, don't invoke $apply
     }
   });
