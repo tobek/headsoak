@@ -650,6 +650,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.n.updateNutInIndex(nut);
       $s.n.runProgTags(nut);
       delete nut.fullUpdateRequired;
+      $s.n.nutUpdated(nut, false, false);
     },
 
     nutSaver: null, // to hold what setInterval() returns
