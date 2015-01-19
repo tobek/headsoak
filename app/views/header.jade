@@ -8,12 +8,33 @@ html(lang='en', ng-app='nutmeg')
 
     title nutmeg
     link(rel="shortcut icon", href="/favicon.png")
-    link(rel="author", href="https://plus.google.com/+TobyFox/posts")
+
+
+    // build:css css/nutmeg.css
+
+    //- bower:css
+    //- endbower
 
     -each style in styles
       link(rel='stylesheet', href= style)
-    -each script in scripts
-      script(src= script)
+
+    // endbuild
 
   body(ng-controller="Nutmeg")
     block content
+
+
+    -each script in cdnScripts
+      script(src= script)
+
+    // build:js js/nutmeg.js
+
+    //- bower:js
+    script(src='vendor/mousetrap/mousetrap.js')
+    script(src='vendor/mousetrap-global-bind/index.js')
+    //- endbower
+
+    -each script in scripts
+      script(src= script)
+
+    // endbuild

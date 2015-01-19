@@ -3,6 +3,9 @@ node_modules
 /app/*.html
 /app/css
 /app/vendor
+/dist
+/reports
+
 /s3config.json
 /config.json
 /backups

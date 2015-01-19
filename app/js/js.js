@@ -1,10 +1,11 @@
+/* jshint ignore:start */ // TODO actually clean up
 "use strict";
 
 // https://github.com/andyet/ConsoleDummy.js
 (function(b){function c(){}for(var d="error,group,groupCollapsed,groupEnd,log,time,timeEnd,warn".split(","),a;a=d.pop();)b[a]=b[a]||c})(window.console=window.console||{});
 
-var ngApp = angular.module('nutmeg', ['fuzzyMatchSorter'])
-.controller('Nutmeg', ['$scope', '$timeout', "$interval", "$sce", "fuzzyMatchSort", function($s, $timeout, $interval, $sce, fuzzyMatchSort) {
+angular.module('nutmeg', ['fuzzyMatchSorter'])
+.controller('Nutmeg', ['$scope', '$timeout', "$interval", "$sce", "fuzzyMatchSort", function ($s, $timeout, $interval, $sce, fuzzyMatchSort) {
 
   // when adding tags to a note, option to create a new tag with the currently-entered text will appear above any suggestions with a score worse (great) than this threshold
   var NEW_TAG_AUTOCOMPLETE_SCORE_THRESHOLD = 5;
