@@ -332,6 +332,23 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
       return false;
     },
 
+    changeUsername: function(newUsername) {
+      if (!newUsername) return;
+
+      // TODO show waiting...
+      $s.ref.child('user/username').set(newUsername, function(err) {
+        if (err) {
+          console.error('problem setting username...');
+          return;
+        }
+
+        alert('Username successfully set to "' + newUsername + '"'); // TODO inline checkmark will do
+
+        $s.u.user.username = newUsername;
+        $s.$apply();
+      });
+    },
+
     login: function(email, password, calledFromCreateAccount) {
       console.log("login() called")
       if (!calledFromCreateAccount && $s.u.loading) return;
@@ -1833,6 +1850,9 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         // arrayFromObj also ensures that even if the value is undefined, we get back []
         $s.n.nuts = data.val().nuts instanceof Array ? data.val().nuts : arrayFromObj(data.val().nuts);
         $s.t.tags = data.val().tags instanceof Array ? data.val().tags : arrayFromObj(data.val().tags);
+
+        // get their username and any other info
+        _.extend($s.u.user, data.val().user);
 
         // firebase doesn't store empty arrays, so we get undefined for unused tags. which screws up sorting by tag usage
         $s.t.tags.forEach(function(tag) {

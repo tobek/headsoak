@@ -402,14 +402,16 @@ testing firebase in console:
 
 - manifest that lets you install web app as android application? and then post to http://mobilewebappsftw.tumblr.com/
 - check $s.u.user.isTemporaryPassword and if so direct them to change password page - it means they used works-for-24h-only token
-- remove all instances of `alert()` and replace with some single modal function. on chrome and FF at least, alert windows begin with "The page at https://megnut.s3.amazonaws.com says:"
+- remove all instances of `alert()` and replace with dynamic modal. on chrome and FF at least, alert windows begin with "The page at https://megnut.s3.amazonaws.com says:"
 - implement sort by query match strength
 
 ##### bits and bugs
 
 - move feedback from zapier to watcher.js
 - load html and angular REAL fast and then async all the other shit
-- dynamic modals should have space/functionality for a reponse, like "user not found" or "incorrect password", while modal stays open, instead of closing and re-opening. then also tiny loading animation while it's fetching
+- dynamic modals should have:
+    - space/functionality for a reponse, like "user not found" or "incorrect password", or checkmark, while modal stays open, instead of closing and re-opening
+    - loading animation and disable button when fetching
 
 ### todo not thought through
 

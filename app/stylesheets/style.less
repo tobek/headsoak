@@ -665,12 +665,17 @@ form {
           padding: 2%;
           margin-left: 13%;
         }
-        h3, input, p {
+        input, p {
           margin: 2% 0;
         }
         h3 {
           line-height: 25px;
           margin: 3% 2%;
+        }
+        h4 {
+          line-height: 12px;
+          margin: 3% 2%;
+          font-size: 24px;
         }
         p, ul, table  {
           font-size: 60%;
@@ -800,8 +805,14 @@ form {
         }
 
         &.account {
-          input[type=password] {
+          input[type=password], input[type=text] {
             width: 70%;
+          }
+          input[type=submit] {
+            width: auto;
+          }
+          input {
+            font-size: 14px;
           }
         }
 

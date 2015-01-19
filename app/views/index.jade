@@ -65,7 +65,13 @@ block content
             input(type="submit", value="save", ng-click="c.save()")
 
         div.account(ng-show="m.modal == 'account'")
-          h3 change password
+          h4 {{ u.user.username ? 'change username' : 'choose username' }}
+          form(ng-submit="u.changeUsername(_newUsername)")
+            input(type="text", placeholder="{{ u.user.username }}", ng-model="_newUsername")
+            br
+            input(type="submit", value="{{ u.user.username ? 'change username' : 'set username' }}")
+
+          h4 change password
           form(ng-submit="u.changePassword()")
             input(type="password", placeholder="current password", ng-model="u.password")
             br
@@ -76,7 +82,7 @@ block content
             input(type="submit", value="change password")
             br
 
-          h3 change email
+          h4 change email
           p To change the email address associated with your account, please email <a href="mailto:support@nutmeg.io">support@nutmeg.io</a> and we'll get you sorted.
 
         div.layout(ng-show="m.modal == 'layout'")
