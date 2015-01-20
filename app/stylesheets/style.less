@@ -134,6 +134,8 @@ a {
   .tag:hover{ background-color: @tagHover; }
   .tag.queried{ background-color: #3F3F3F; }
   .tag.queried:hover{ background-color: lighten(@tagHover, 10%); }
+  .tag.read-only{ background-color: darken(@tagBG, 10%); color: darken(@tagColor, 25%); }
+  .tag.read-only:hover{ background-color: darken(@tagHover, 10%); }
 }
 
 form {
@@ -541,6 +543,28 @@ form {
       }
       .icons a.toggle.on { color: @icon-gray; }
       &:hover .icons a.toggle.on { color: red; }
+
+      // getting ugly... anyway essentially disable all buttons except delete (TODO and private) for read-only
+      &.read-only {
+        .icons {
+          a { display: none !important; } // don't show any icons
+          a:hover { color: @icon-gray !important; } // for ones that are shown, don't change the color
+          a.toggle.on {
+            // and toggled-on switches
+            display: inline !important;
+            &:hover { color: @icon-gray !important; }
+          }
+        }
+        &:hover .icons {
+          a.delete, a.toggle.on {
+            // do show delete
+            display: inline !important;
+            &:hover { color: #DDD !important; }
+          } 
+          a.toggle.on { color: @icon-gray !important; }
+        }
+      } // end of read-only
+
     }
   }
 }

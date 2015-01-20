@@ -2132,6 +2132,8 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     tag.docs = tag.docs.map(function(docId) {
       return sharerUid + ':' + docId; // because sharer's doc IDs might collide with ours
     });
+    tag.readOnly = true; // TODO handle other permissions
+    tag.sharedBy = sharerUid; // TODO get user's display name
 
     // all the other fields set on the tag by the sharer we can leave as is
 
