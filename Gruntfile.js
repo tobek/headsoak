@@ -90,10 +90,10 @@ module.exports = function(grunt) {
                 options: {
                     watchTask: true,
                     ghostMode: {
-                        clicks: true,
-                        scroll: true,
+                        clicks: false,
+                        scroll: false,
                         links: false, // must be false to avoid interfering with angular routing
-                        forms: true
+                        forms: false
                     },
                     server: {
                         baseDir: "<%= assetsDir %>"
