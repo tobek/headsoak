@@ -318,8 +318,8 @@ module.exports = function(grunt) {
                         dest: '/',
                         params: {
                             ContentEncoding: 'gzip',
-                            CacheControl: 'max-age=86400, public',
-                            Expires: new Date(Date.now() + 86400)
+                            CacheControl: 'public, max-age=86400',
+                            Expires: new Date(Date.now() + 1000*60*60*24)
                         }
                     },
                     {
@@ -329,8 +329,8 @@ module.exports = function(grunt) {
                         dest: '/',
                         params: {
                             ContentEncoding: 'gzip',
-                            CacheControl: 'max-age=630720000, public',
-                            Expires: new Date(Date.now() + 63072000000)
+                            CacheControl: 'public, max-age=31536000',
+                            Expires: new Date(Date.now() + 1000*60*60*24*365)
                         }
                     },
                     {
@@ -339,8 +339,8 @@ module.exports = function(grunt) {
                         src: ['**/*.{png,gif,jpg}'],
                         dest: '/',
                         params: {
-                            CacheControl: 'max-age=630720000, public',
-                            Expires: new Date(Date.now() + 63072000000)
+                            CacheControl: 'public, max-age=31536000',
+                            Expires: new Date(Date.now() + 1000*60*60*24*365)
                         }
                     },
                 ]
