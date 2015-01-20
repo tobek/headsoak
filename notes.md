@@ -60,67 +60,50 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### now
 
-- test appropriate shared stuff is logged
-- for recipient, check share upon init
-    - now we have a bunch of notes
-        - add tag
-        - rename tag
-        - remove tag
-        - add note
-        - update note
-        - remove note
-    - do shared notes live in $s.n.sharedNuts with IDs as uid of owner? regardless there is NO reason to write them fully to sharee's firebase. maybe just $s.n.nuts but stub with just tags and private, and rest is updated on init BUT HIDDEN FROM SYNC
-- removing:
-    - recipient see's the x, and delete's local notes and the uid:'x'
+- create shared tags on recipient
+    - tag shows up with person icon
+- create shared notes on recipient
+- alert on recipient "blah wants to share blah with you"
+    - when you login: 'USER has shared their tag "TAGNAME" with you [as read-only]OR[and invited you to edit].' a [more info] link expands to: 'Shared notes and tags show up alongside your personal notes and tags, but with the [person] icon. You can modify (add your own tags, set to private, etc.) shared notes as normal.'
+        - Accept
+        - Accept all sharing offers from USER
+        - Decline
 - fetch local representation of friend names
+- icons and tooltips
+    - someone shared this with me: person icon
+        - on hover: "Shared by USER"
+    - i'm sharing this note with others: group icon
+        - on hover: bulleted list "Shared with: - user 1, - user 2"
 
-##### overview
+##### soon
 
-- investigate firepad for storing/transmitting note and live collaboration
-    - does note live with "owner" or in a separate collection?
-    - modify security permissions so user A can access (some of) user B's notes
-- to share something with someone else:
-    - hit group icon on tag
-        - if no sharing on this tag, do prompt
-        - if sharing already, open up sharing settings (and scroll to that tag)
-    - add sharer
-        - search (by email address or user name) or choose from past sharers/recipients
-            - if no user found AND if it's a valid email address "No Nutmeg user found. Would you like to email EMAIL and invite them to join Nutmeg?" <-- not ready yet ugh this is a whole flow
+- sharer removes:
+    - recipient sees the x, and delete's local notes and the 'x'
+- recipient removes:
+    - if user tries to delete note someone shared with them: 'This note is in your Nutmeg because USER has shared their tag "TAGNAME" with you. To delete it, remove this shared tag.'
+        - OK
+        - Change sharing settings
+    - if user tries to delete shared tag, similar message as above
+    - if they unshare or decline initial request: write nulls (delete) into tags and notes of sharer?
+- sharing settings. window that breaks down by tag > person or person > tag (or checkbox/radio to control which view?)
+    - my tags shared with others
+    - others' tags shared with me
+    - indicating read-only or edit, which can be changed for your sharing
+- if you click on sharing icon of tag and you're already sharing, open sharing settings and scroll to (and highlight?) it
+- add share recipient (from wherever)
+    - search (by email address or user name) or choose from past sharers/recipients
+        - if no user found AND if it's a valid email address "No Nutmeg user found. Would you like to email EMAIL and invite them to join Nutmeg?" <-- not ready yet ugh this is a whole flow
     - choose read-only or can-edit
     - 'USER will be able to see/edit all notes tagged with "TAGNAME", including notes that you later add this tag to. Are you sure?'
         - yes
         - yes, don't ask me again
         - no
-- when someone shares something with you:
-    - when you login: 'USER has shared their tag "TAGNAME" with you [as read-only]OR[and invited you to edit].' a [more info] link expands to: 'Shared notes and tags show up alongside your personal notes and tags, but with the [person] icon. You can modify (add your own tags, set to private, etc.) shared notes as normal.'
-        - Accept
-        - Accept all sharing offers from USER
-        - Decline
-    - tag shows up with person icon
-    - if user tries to delete note someone shared with them: 'This note is in your Nutmeg because USER has shared their tag "TAGNAME" with you. To delete it, remove this shared tag.'
-        - OK
-        - Change sharing settings
-    - if user tries to delete shared tag, similar message as above
-    - shared tag doesn't have edit/programmatic/share icons
-    - if you (recipient) decline or unshare, update sharing info for sharer too
-- sharing icon in menu. window that breaks down by tag > person or person > tag (or checkbox/radio to control which view?)
-    - my tags shared with others
-    - others' tags shared with me
-    - indicating read-only or edit, which can be changed for your sharing
-- icons:
-    - someone shared this with me: person icon
-        - on hover: "Shared by USER"
-    - i'm sharing this note with others: group icon
-        - on hover: bulleted list "Shared with: - user 1, - user 2"
-- information required
-    - user
-        - sharing
-            - "friends" (people you've shared something with or they've shared with you). global id, populated on app startup with their name
-    - tag
-        - shared by: {friend global id, readonly or edit}
-        - shared with, list of one more more:
-            - {friend global id, readonly or edit}
-- LATER:
+- edit permissions
+    - investigate firepad for storing/transmitting note and live collaboration
+        - does note live with "owner" or in a separate collection?
+        - modify security permissions so user A can access (some of) user B's notes
+- **LATER**:
+    - keep track of "friends"? (people you've shared something with or they've shared with you). global id, populated on app startup with their name
     - sharer shares a prog tag. recipient sees sharer's notes that were programatically tagged. does it also programamtically tag recipient's notes? i guess the more general question is whether the recipient can apply a sharer's tag to their own nets. note merging etc...
     - should private notes be shared? they currently are
     - what if user A shares something with user B, and user B tags a note with a tag they're sharing with user C?
@@ -135,16 +118,6 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
         - some special link so that it highlights shared tag(s) to you...
     - search for only notes shared with you/notes you shared with others
     - block user
-
-testing firebase in console:
-
-    function fbGet(childRef) {
-      new Firebase('https://nutmeg.firebaseio.com/' + childRef).once('value', function foo(data) {console.log(data.val())}, function(err) {console.warn(err)});
-    }
-    function fbSet(childRef, val) {
-      new Firebase('https://nutmeg.firebaseio.com/' + childRef).set(val, function foo(err) {console.log('done', err)});
-    }
-    fbGet('users/simplelogin:1/nuts/0')
 
 ### todo for beta
 
@@ -794,6 +767,18 @@ data to store:
 one collection/user vs 50 collections vs 1 collection for everyone, 50 probably best: http://www.colinhowe.co.uk/2012/jul/09/mongodb-collection-per-user-performance/
 
 could have user collection which stored name of note collection. multiple users in same note collection.
+
+# Dev Tools and Snippets
+
+testing firebase in console:
+
+    function fbGet(childRef) {
+      new Firebase('https://nutmeg.firebaseio.com/' + childRef).once('value', function foo(data) {console.log(data.val())}, function(err) {console.warn(err)});
+    }
+    function fbSet(childRef, val) {
+      new Firebase('https://nutmeg.firebaseio.com/' + childRef).set(val, function foo(err) {console.log('done', err)});
+    }
+    fbGet('users/simplelogin:1/nuts/0')
 
 # Resources
 

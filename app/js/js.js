@@ -2055,29 +2055,33 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
   function sharedWithMeInit(shareInfo) {
     if (_.isEmpty(shareInfo) || _.isEmpty(shareInfo.tags)) return;
-    console.time('intializing shared stuff');
+    console.log('sharedWithMeInit: starting initializing shared stuff');
+    console.time('sharedWithMeInit: intializing shared stuff');
 
     // level 0. tags has sharerUid -> tagId - > perm, so we can build a list of tag paths
-    var tagPaths = [];
+    var tagPaths = []; // will fill with objects like {uid: 'simplelogin:....', path: 'users/...'}
 
     _.each(shareInfo.tags, function(tagsFromThisUser, sharerUid) {
-      _.each(tagsFromThisUser, function(tagId, permission) {
-        tagPaths.push('users/' + sharerUid + '/tags/' + tagId);
+      _.each(tagsFromThisUser, function(permission, tagId) {
+        if (permission === 'r') { // TODO handle other permissions of course
+          tagPaths.push({uid: sharerUid, path: 'users/' + sharerUid + '/tags/' + tagId});
+        }
       });
     });
 
     // now we need to fetch each tag (level 1). each tag has a list of docs. so then we need to fetch *each* of those nuts (level 2).
-    async.each(tagPaths, function(tagPath, cb) {
-      fetchSharedNutsFromTagPath(tagPath, sharerUid, cb);
+    async.each(tagPaths, function(tagPathObj, cb) {
+      fetchSharedNutsFromTagPath(tagPathObj.path, tagPathObj.uid, cb);
 
     }, function(err) {
-      if (err) console.error('error while initializing shared stuff:', err);
-      console.timeEnd('intializing shared stuff');
+      if (err) console.error('sharedWithMeInit: error while initializing shared stuff:', err);
+      else console.log('sharedWithMeInit: done initializing shared stuff');
+      console.timeEnd('sharedWithMeInit: intializing shared stuff');
     });
   }
   // level 1: get nut ids from a shared tag
   function fetchSharedNutsFromTagPath(tagPath, sharerUid, cb) {
-    console.log('fetching shared nuts from', tagPath);
+    console.log('sharedWithMeInit: fetching shared tag info from', tagPath);
 
     $s.ref.root().child(tagPath).once('value', function(data) {
       if (! data.val()) return cb(new Error('fetched tag is empty'));
@@ -2099,20 +2103,21 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       });
 
     }, function(err) {
-      console.error('failed to fetch tag from', tagPath);
+      console.error('sharedWithMeInit: failed to fetch tag from', tagPath);
       cb(err);
     });
   }
   // level 2: get the actual nuts
   function initializeSharedNutFromPath(nutPath, sharerUid, cb) {
-    console.log('fetching shared nut from', nutPath);
+    console.log('sharedWithMeInit: fetching shared nut from', nutPath);
 
     $s.ref.root().child(nutPath).once('value', function(data) {
       if (! data.val()) return cb(new Error('fetched nut is empty'));
 
+      cb();
       handleSharedWithMeNut(data.val(), sharerUid);
     }, function(err) {
-      console.error('failed to fetch nut from', nutPath);
+      console.error('sharedWithMeInit: failed to fetch nut from', nutPath);
       cb(err);
     });
   }
@@ -2120,7 +2125,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
   /** given another user's tag, handle special local version of that tag for this user */
   function handleSharedWithMeTag(tag, sharerUid) {
     var localTagId = sharerUid + ':' + tag.id;
-    FOOP
+    // FOOP
   }
   /** given another user's nut, handle special local version of that nut for this user */
   function handleSharedWithMeNut(nut, sharerUid) {
