@@ -368,7 +368,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
       console.log('changing display name from', $s.u.user.displayName, 'to', newName);
 
       $s.ref.child('user/displayName').set(newName, function(err) {
-        cb(err);
+        if (cb) cb(err);
 
         if (err) {
           console.error('problem setting display name...');
@@ -1911,7 +1911,13 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
         // get their username and any other info
         _.extend($s.u.user, data.val().user);
-        if ($s.u.user.displayName) $s.u.displayNameSet = true; // silly tidbit for changing account dialog text
+
+        if ($s.u.user.displayName) {
+          $s.u.displayNameSet = true; // silly tidbit for changing account dialog text
+        }
+        else {
+          $s.u.displayNamePlaceholder = 'e.g. ' + _.sample(SAMPLE_DISPLAY_NAMES);
+        }
 
         // firebase doesn't store empty arrays, so we get undefined for unused tags. which screws up sorting by tag usage
         $s.t.tags.forEach(function(tag) {
