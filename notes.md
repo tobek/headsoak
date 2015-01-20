@@ -27,12 +27,8 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### sharing structure
 
-
-
-the request: 
-
-- sharer has in each tag (and duplicated in each note) a `sharer` child object with {'simplelogin:23': 'r', 's...': 'w'} for read write. recipients can read all info about these tags (to find which docs) and notes.
-- recipient has /user/uid/share/sharer-uid/tag-id/r|w|x. this is set by the *sharer*. recipient can look in /user/uid/share to get all info about stuff shared with them
+- sharer has in each tag (and duplicated in each note) a `sharer` child object with {'simplelogin:23': 'r', 's...': 'w'} for read write. recipients can read all info about these tags (to find which notes) and notes themselves.
+- recipient has /user/uid/sharedWithMe/tags/sharer-uid/tag-id/r|w|x|d. this is set by the *sharer*. recipient can look in /user/uid/sharedWithMe to get all info about stuff shared with them
 - recipient creates tags and notes with uid:tag/note-id on them
     - tags have no info (maybe just private?), but name etc. are populated on startup.
     - notes just have private + tags. body, modified, etc. are populated on startup.
@@ -70,7 +66,6 @@ the request:
         - remove note
     - do shared notes live in $s.n.sharedNuts with IDs as uid of owner? regardless there is NO reason to write them fully to sharee's firebase. maybe just $s.n.nuts but stub with just tags and private, and rest is updated on init BUT HIDDEN FROM SYNC
 - removing:
-    - sharer updates 'share' child objs in their notes/tags, and puts a uid:'x' in recipient's share obj
     - recipient see's the x, and delete's local notes and the uid:'x'
 - fetch local representation of friend names
 

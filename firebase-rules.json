@@ -27,10 +27,12 @@
           }
         },
         // and somewhere for sharers to write their own share invites to (set by sharer on recipient's object)
-        "share": {
-          "$sharerUid": {
-            // will contain tag id -> permissions ('r' or 'w')
-            ".write": "$sharerUid === auth.uid"
+        "sharedWithMe": {
+          "tags": {
+            "$sharerUid": {
+              // will contain tag id -> permissions ('r' or 'w')
+              ".write": "$sharerUid === auth.uid"
+            }
           }
         }
       }

@@ -1422,9 +1422,13 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       }
     },
 
+    getRecipientTagSharePath: function(tag, recipientUid) {
+      return 'users/' + recipientUid + '/sharedWithMe/tags/' + $s.u.user.uid + '/' + tag.id;
+    },
+
     shareTagWithUser: function(tag, recipientUid, recipientName, perms) {
       // mark in the *recipient*'s data that we've shared this tag with them
-      var recipientTagSharePath = 'users/' + recipientUid + '/share/' + $s.u.user.uid + '/' + tag.id;
+      var recipientTagSharePath = $s.t.getRecipientTagSharePath(tag, recipientUid);
       $s.ref.root().child(recipientTagSharePath).set(perms);
 
       // TODO should actually only continue on success callback
@@ -1445,7 +1449,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
     unshareTagWithUser: function(tag, recipientUid) {
       // mark in the *recipient*'s data that they should delete this tag
-      var recipientTagSharePath = 'users/' + recipientUid + '/share/' + $s.u.user.uid + '/' + tag.id;
+      var recipientTagSharePath = $s.t.getRecipientTagSharePath(tag, recipientUid);
       $s.ref.root().child(recipientTagSharePath).set('d');
 
       delete tag.share[recipientUid];
