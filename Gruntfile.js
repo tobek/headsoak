@@ -34,11 +34,10 @@ module.exports = function(grunt) {
         },
         wiredep: {
             task: {
-                src: '<%= assetsDir %>/index.jade',
+                src: ['<%= assetsDir %>/views/header.jade'],
 
                 options: {
-                    ignorePath: '<%= assetsDir %>/',
-                    verbose: true
+                    ignorePath: '../', // wiredep will want to go up one directory because of /views/ folder, but since HTML ends up in assetsDir folder, that's unnecessary
                 }
             }
         },

@@ -1955,16 +1955,6 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         $s.n.nuts = data.val().nuts instanceof Array ? data.val().nuts : arrayFromObj(data.val().nuts);
         $s.t.tags = data.val().tags instanceof Array ? data.val().tags : arrayFromObj(data.val().tags);
 
-        // get their username and any other info
-        _.extend($s.u.user, data.val().user);
-
-        if ($s.u.user.displayName) {
-          $s.u.displayNameSet = true; // silly tidbit for changing account dialog text
-        }
-        else {
-          $s.u.displayNamePlaceholder = 'e.g. ' + _.sample(SAMPLE_DISPLAY_NAMES);
-        }
-
         // firebase doesn't store empty arrays, so we get undefined for unused tags. which screws up sorting by tag usage
         $s.t.tags.forEach(function(tag) {
           if (!tag.docs) tag.docs = [];
@@ -1980,6 +1970,16 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
             $s.n.nutDoFullUpdate(nut);
           }
         });
+
+        // get their username and any other info
+        _.extend($s.u.user, data.val().user);
+
+        if ($s.u.user.displayName) {
+          $s.u.displayNameSet = true; // silly tidbit for changing account dialog text
+        }
+        else {
+          $s.u.displayNamePlaceholder = 'e.g. ' + _.sample(SAMPLE_DISPLAY_NAMES);
+        }
 
         // TODO: temporary for old users who did firstInit before it saved these things
         $s.ref.child('user').update({
