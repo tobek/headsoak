@@ -27,15 +27,33 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### sharing structure
 
-- sharer has in each tag (and duplicated in each note) a `sharer` child object with {'simplelogin:23': 'r', 's...': 'w'} for read write. share-ees can read all info about these tags (to find which docs) and notes.
-- share-ee has /user/uid/share/sharer-uid/tag-id/r|w|x. this is set by the *sharer*. share-ee can look in /user/uid/share to get all info about stuff shared with them
-- share-ee creates tags and notes with uid:tag/note-id on them
+
+
+the request: 
+
+- sharer has in each tag (and duplicated in each note) a `sharer` child object with {'simplelogin:23': 'r', 's...': 'w'} for read write. recipients can read all info about these tags (to find which docs) and notes.
+- recipient has /user/uid/share/sharer-uid/tag-id/r|w|x. this is set by the *sharer*. recipient can look in /user/uid/share to get all info about stuff shared with them
+- recipient creates tags and notes with uid:tag/note-id on them
     - tags have no info (maybe just private?), but name etc. are populated on startup.
     - notes just have private + tags. body, modified, etc. are populated on startup.
+- permissions:
+    - 'r' read only
+        - textarea grayed out a bit on recipient
+        - if recipient adds sharing tag to read-only shared note, tag's chiclet on that note has group icon with strikethrough and tooltip text 'Normally you are sharing all notes taged with "' + tag.name + '" with ' + BLAHSHARERECIPIENTS + '. However, this note was shared by ' + BLAHUSER + ' with you as read-only, so you cannot share it onwards with others'. UNLESS it's shared only back with the sharer, in which case... just leave the icon as normal
+        - if sharer unshares or deletes tag, they get removed from recipient
+    - 'w' read/write.
+        - can recipient share onwards?
+        - what happens if note owner deletes or unshares?
+            - a: gone without a trace from recipient (sucks)
+            - b: goes into some kind of read-only, still-unshareable mode, 'owner of this note as delete the note or unshared it with you. the latest version is archived here BLAH' and some kind of strikethrough/grayed out shared tag
+            - c: some kind of forked thing where it graduates to 'your' note...?
+    - 'x' admin
+        - only necessary if recipient of 'w' *can't* share or depending on 'w' behavior of sharer deleting/unsharing
+    - 'd' deleted. only found in recipient's /user/uid/share document, indicates recipient should update their sharing info accordingly, and then can delete the 'd' record
 
 ##### now
 
-- for share-ee, check share upon init
+- for recipient, check share upon init
     - tag and nut id's are simplelogin:1
     - prob use https://github.com/firebase/firebase-util/blob/master/src/join/README.md
     - get shared
@@ -52,8 +70,8 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
         - remove note
     - do shared notes live in $s.n.sharedNuts with IDs as uid of owner? regardless there is NO reason to write them fully to sharee's firebase. maybe just $s.n.nuts but stub with just tags and private, and rest is updated on init BUT HIDDEN FROM SYNC
 - removing:
-    - sharer updates 'share' child objs in their notes/tags, and puts a uid:'x' in share-ee's share obj
-    - share-ee see's the x, and delete's local notes and the uid:'x'
+    - sharer updates 'share' child objs in their notes/tags, and puts a uid:'x' in recipient's share obj
+    - recipient see's the x, and delete's local notes and the uid:'x'
 - fetch local representation of friend names
 
 ##### overview
@@ -66,7 +84,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
         - if no sharing on this tag, do prompt
         - if sharing already, open up sharing settings (and scroll to that tag)
     - add sharer
-        - search (by email address or user name) or choose from past sharers/share-ees
+        - search (by email address or user name) or choose from past sharers/recipients
             - if no user found AND if it's a valid email address "No Nutmeg user found. Would you like to email EMAIL and invite them to join Nutmeg?" <-- not ready yet ugh this is a whole flow
     - if we don't have your name, ask to fill in
         - pre fill with your email
@@ -77,7 +95,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
         - yes
         - yes, don't ask me again
         - no
-    - unshare: save 'x' into share-ee's share thing
+    - unshare: save 'x' into recipient's share thing
 - when someone shares something with you:
     - when you login: 'USER has shared their tag "TAGNAME" with you [as read-only]OR[and invited you to edit].' a [more info] link expands to: 'Shared notes and tags show up alongside your personal notes and tags, but with the [person] icon. You can modify (add your own tags, set to private, etc.) shared notes as normal.'
         - Accept
@@ -89,7 +107,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
         - Change sharing settings
     - if user tries to delete shared tag, similar message as above
     - shared tag doesn't have edit/programmatic/share icons
-    - if you (share-ee) decline or unshare, update sharing info for sharer too
+    - if you (recipient) decline or unshare, update sharing info for sharer too
 - sharing icon in menu. window that breaks down by tag > person or person > tag (or checkbox/radio to control which view?)
     - my tags shared with others
     - others' tags shared with me
@@ -108,7 +126,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
         - shared with, list of one more more:
             - {friend global id, readonly or edit}
 - LATER:
-    - sharer shares a prog tag. share-ee sees sharer's notes that were programatically tagged. does it also programamtically tag share-ee's notes? i guess the more general question is whether the share-ee can apply a sharer's tag to their own nets. note merging etc...
+    - sharer shares a prog tag. recipient sees sharer's notes that were programatically tagged. does it also programamtically tag recipient's notes? i guess the more general question is whether the recipient can apply a sharer's tag to their own nets. note merging etc...
     - should private notes be shared? they currently are
     - what if user A shares something with user B, and user B tags a note with a tag they're sharing with user C?
         - if A -> B is read-only, B shouldn't be able to "forward" the share

@@ -802,6 +802,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       }
 
       if (updated) {
+        $s.n.rebuildNoteSharing($s.n.nuts[nutId]);
         console.log("added tag "+tagId+" to nut "+nutId);
         this.nutUpdated(nutId, $s.c.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
         $s.t.tagUpdated(tagId);
@@ -822,10 +823,26 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       }
 
       if (updated) {
+        $s.n.rebuildNoteSharing($s.n.nuts[nutId]);
         console.log("removed tag "+tagId+" from nut "+nutId);
         this.nutUpdated(nutId, $s.c.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
         $s.t.tagUpdated(tagId);
       }
+    },
+
+    /**
+     * takes one note loops through all its tags and updates sharing info here accordingly (for firebase security rules convenience). 
+     * TODO: right now this doesn't run nutUpdated, because it gets called from stuff (like removeTagIdFromNut) that also alls nutUpdated, so it can get ridiculous... need to build a debounce function that understands arguments so that we can safely call it from here
+     */
+    rebuildNoteSharing: function(nut) {
+      var newShare = {};
+
+      _.each(nut.tags, function(tagId) {
+        // TODO: if one tag is sharing with one person as 'r' and another tag is also on this note sharing with the same person as 'w', the 'w' should take precedence. right now precedence is essentially random, so fix it
+        _.extend(newShare, $s.t.tags[tagId].share);
+      });
+
+      nut.share = newShare;
     },
 
     autosizeAllNuts: function() {
@@ -1152,12 +1169,14 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         return;
       }
 
-      // tag.docs.slice() returns a duplicate of the array. necessary, because removeTagIdFromNut() splices tag.docs - if we splice out stuff while iterating over it with forEach, we won't iterate over them all
+      // tag.docs.slice() returns a duplicate of the array. necessary, because removeTagIdFromNut() splices actual `tag.docs` - if we splice out stuff while iterating over it with forEach, we won't iterate over them all
       if (tag.docs) {
         tag.docs.slice().forEach(function(docId) {
           $s.n.removeTagIdFromNut(tag.id, docId);
         });
       }
+
+      // TODO if this tag is shared, unshare
 
       delete this.tags[tag.id];
 
@@ -1397,7 +1416,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         // tag is currently being shared
         // TODO open sharing settings
         alert('Tag "'+ tag.name +'" is now not shared with anyone');
-        delete tag.share; // for now just get rid of it
+        delete tag.share; // TODO for now just get rid of it
         $s.t.tagUpdated(tag);
       }
     },
@@ -1423,7 +1442,10 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.t.updateNoteShareInfo(tag);
     },
 
-    /** share info (mapping from uid -> sharing permissions) is duplicated in nuts so that firebase security rules can check it to see if other users can read the note **/
+    /**
+     * takes one tag and updates share info of all the notes associated with it.
+     * share info (mapping from uid -> sharing permissions) is duplicated in nuts so that firebase security rules can check it to see if other users can read the note
+     */
     updateNoteShareInfo: function(tag) {
       if (!tag.share) return;
 
@@ -1431,7 +1453,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         var nut = $s.n.nuts[docId];
 
         if (!nut.share) nut.share = {};
-        _.extend(nut.share, tag.share);
+        _.extend(nut.share, tag.share); // TODO see note in $s.n.rebuildNoteSharing about precedence of permissions...
 
         $s.n.nutUpdated(nut, false, false); // TODO should we fullupdate in case prog tags want to depend on sharing? they have the right to be able to do so, but... don't care right now
       });
