@@ -289,9 +289,11 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
       var email = prompt('Please enter your email:', $s.u.email);
       if (!email) return false;
 
-      // TODO set some "loading" indicator while we wait for password reset callback
+      $s.m.working = true;
 
       $s.u.auth.sendPasswordResetEmail(email, function(err) {
+        $s.m.working = false;
+
         if (err) {
           alert('Sorry, something went wrong, please try again later'); // TODO
           console.log(err);
@@ -300,7 +302,9 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
         alert('Password reset email successfully sent to ' + email + '! Please check your email.');
         $s.u.password = '';
 
-        // TODO: set some flag in firebase user info to remind user, when logging in, to reset password
+        $s.$apply();
+
+        // TODO: firebase lets you detect if user logged in with temporary token. should do so, and alert user to change password
       });
 
       return false;
@@ -323,8 +327,6 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
         alert("New password is the same as your current password!");
         return;
       }
-
-      // TODO: show loading thing until Firebase callback (remove change pass button)
 
       $s.m.working = true;
 
@@ -1224,8 +1226,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       }
       else {
         var tagNameString = JSON.stringify(tag.name); // handles quotes and other special chars
-        // funcString = _.sample(PROG_TAG_EXAMPLES).replace(new RegExp('"TAGNAME"', 'g'), tagNameString);
-        funcString = PROG_TAG_EXAMPLES[2].replace(new RegExp('"TAGNAME"', 'g'), tagNameString); // TODO temporary just use this one
+        funcString = _.sample(PROG_TAG_EXAMPLES).replace(new RegExp('"TAGNAME"', 'g'), tagNameString);
       }
 
       if (funcString.indexOf(PROG_TAG_INFO) === -1) {
@@ -1344,12 +1345,15 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
           message: 'Please enter the email of another Nutmeg user to share with:',
           textInput: true,
           placeholder: 'email', // TODO only email works
+          dontCloseOnOk: true,
           okCb: function(userSearchQuery) {
             if (userSearchQuery === $s.u.user.email) {
               alert('That\'s your email address!'); 
             }
             else if (userSearchQuery.match(/.+@.+\...+/)) { // ultra basic email regex
+              $s.m.working = true;
               $s.ref.root().child('emailToId/' + btoa(userSearchQuery)).once('value', function(data) {
+                $s.m.closeModal(); // clears `working`, and we have to open new modal anyway after this
                 if (data.exists()) {
                   var recipientName = userSearchQuery; // TODO actually grab name
                   var recipientUid = data.val();
@@ -1423,7 +1427,6 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     updateNoteShareInfo: function(tag) {
       if (!tag.share) return;
 
-      // TODO test on new tag with no notes, old tag with no notes
       tag.docs.forEach(function (docId) {
         var nut = $s.n.nuts[docId];
 
@@ -1666,7 +1669,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         id: 6
       }
 
-      // TODO: clear search query. scroll up/down?
+      // TODO: scroll up/down?
     ],
 
     initBindings: function(shortcutConfig) {
@@ -1969,8 +1972,6 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
       cb(featuresSeen);
     });
-
-    // TODO also put child add/changed/removed on nuts config and tags? or does it work on entire ref?
 
   }
 
