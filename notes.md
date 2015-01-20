@@ -29,9 +29,20 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 - sharer has in each tag (and duplicated in each note) a `sharer` child object with {'simplelogin:23': 'r', 's...': 'w'} for read write. recipients can read all info about these tags (to find which notes) and notes themselves.
 - recipient has /user/uid/sharedWithMe/tags/sharer-uid/tag-id/r|w|x|d. this is set by the *sharer*. recipient can look in /user/uid/sharedWithMe to get all info about stuff shared with them
-- recipient creates tags and notes with uid:tag/note-id on them
-    - tags have no info (maybe just private?), but name etc. are populated on startup.
-    - notes just have private + tags. body, modified, etc. are populated on startup.
+- recipient creates tags and notes on their end. their IDs are `uid:tagId/noteId`
+    - both tags and notes:
+        - have `sharedBy: {uid: 'whatever', perm: 'r'}`
+        - created/updated on startup
+        - have a permanent presence in recipient's documenter similar but different to regular notes/tags
+    - tags
+        - all fields (except make private) are locked: names, docs (can't be added/removed), prog, timestamps
+        - when created/updated, each id in `docs` gets prefaced with their uid + ':'
+    - notes 
+        - blank body, and sharedBody that gets pulled in on load, and *doesn't* get saved by digest
+        - `tags` has `uid:tagid` in it, and can't be removed, but other than that user controls tags
+        - user controls privacy
+        - timestamps get updated
+        - `share` is removed
 - permissions:
     - 'r' read only
         - textarea grayed out a bit on recipient
@@ -49,14 +60,8 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### now
 
+- test appropriate shared stuff is logged
 - for recipient, check share upon init
-    - tag and nut id's are simplelogin:1
-    - prob use https://github.com/firebase/firebase-util/blob/master/src/join/README.md
-    - get shared
-        - if 
-    - get notes
-        - so list of paths: /user/simplelogin:1/tags/4, /user/simplelogin:1/tags/20, /user/simplelogin:52/tags/0, etc.
-        - then list of notes: /user/s:1/notes/42...
     - now we have a bunch of notes
         - add tag
         - rename tag
@@ -81,23 +86,18 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
     - add sharer
         - search (by email address or user name) or choose from past sharers/recipients
             - if no user found AND if it's a valid email address "No Nutmeg user found. Would you like to email EMAIL and invite them to join Nutmeg?" <-- not ready yet ugh this is a whole flow
-    - if we don't have your name, ask to fill in
-        - pre fill with your email
-        - save in user details
-        - check for uniqueness of slug-ified name (later slug-ified would be used as profile url, but changeable)
     - choose read-only or can-edit
     - 'USER will be able to see/edit all notes tagged with "TAGNAME", including notes that you later add this tag to. Are you sure?'
         - yes
         - yes, don't ask me again
         - no
-    - unshare: save 'x' into recipient's share thing
 - when someone shares something with you:
     - when you login: 'USER has shared their tag "TAGNAME" with you [as read-only]OR[and invited you to edit].' a [more info] link expands to: 'Shared notes and tags show up alongside your personal notes and tags, but with the [person] icon. You can modify (add your own tags, set to private, etc.) shared notes as normal.'
         - Accept
         - Accept all sharing offers from USER
         - Decline
     - tag shows up with person icon
-    - if user tries to delete note someone shared with them: 'This note is in your Nutmeg because USER has shared their tag "TAGNAME" with you. To delete it you must remove this shared tag.'
+    - if user tries to delete note someone shared with them: 'This note is in your Nutmeg because USER has shared their tag "TAGNAME" with you. To delete it, remove this shared tag.'
         - OK
         - Change sharing settings
     - if user tries to delete shared tag, similar message as above
@@ -302,6 +302,7 @@ testing firebase in console:
 
 ##### bits and bugs
 
+- bug: esc when in nut textarea immediately returns focus back to nut textarea
 - enter or spacebar should exit alert modals
 - bug: deleting programmatically-tagged note and tag still lists it in its docs list, prob cause it doesn't let you remove it because it's prog?
 - bug? something about adding a new note and it preventing you from adding prog tag to it?

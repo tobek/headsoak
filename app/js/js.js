@@ -558,14 +558,25 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
      * returns ID of created nut
      */
     createNut: function(nut) {
-      var newId = getUnusedKeyFromObj($s.n.nuts); // will be id of new nut
+      var newId;
+      var tempSortVal; // we want to ensure that this new nut is always sorted first until stuff is re-sorted
+
+      if (nut.id) {
+        if ($s.n.nuts[nut.id]) throw new Error('You\'re trying to create a new nut with an id ('+ nut.id +') that\'s already taken!');
+        newId = nut.id
+        tempSortVal = _.keys($s.n.nuts).length * -10;
+      }
+      else {
+        newId = getUnusedKeyFromObj($s.n.nuts);
+        tempSortVal = -1 * newId;
+      }
 
       // if we've specifically passed in tags on this nut, use those. otherwise, maybe use query-filtering tags
       if (!nut.tags && $s.c.config.addQueryTagsToNewNuts && $s.q.tags && $s.q.tags.length > 0) {
         nut.tags = $s.q.tags.slice(); // slice to duplicate
       }
 
-      this.nuts[newId] = $.extend({
+      this.nuts[newId] = _.extend({
         // default nut:
         body: '',
         tags: [], // array of tag ids
@@ -573,7 +584,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         modified: (new Date).getTime(),
         history: [], // an array of nuts, last is the latest
         id: newId,
-        sortVal: -1 * newId // ensures that this new nut is always sorted first until stuff is re-sorted
+        sortVal: tempSortVal
       }, nut);
 
       if (nut.tags && nut.tags.length > 0) {
@@ -1123,7 +1134,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         console.error(tag);
         return -1;
       }
-      var newId = getUnusedKeyFromObj($s.t.tags); // will be index of new tag
+      var newId = tag.id ? tag.id : getUnusedKeyFromObj($s.t.tags);
       this.tags[newId] = $.extend({
         docs: [], // array of doc ids that have this
         created: (new Date).getTime(),
@@ -2000,6 +2011,8 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         });
         */
 
+        sharedWithMeInit(data.val().sharedWithMe);
+
         console.time("intializing lunr index");
         _.each($s.n.nuts, $s.n.updateNutInIndex);
         console.timeEnd("intializing lunr index");
@@ -2039,6 +2052,81 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.t.tagUpdated(tag, false);
     });
   }
+
+  function sharedWithMeInit(shareInfo) {
+    if (_.isEmpty(shareInfo) || _.isEmpty(shareInfo.tags)) return;
+    console.time('intializing shared stuff');
+
+    // level 0. tags has sharerUid -> tagId - > perm, so we can build a list of tag paths
+    var tagPaths = [];
+
+    _.each(shareInfo.tags, function(tagsFromThisUser, sharerUid) {
+      _.each(tagsFromThisUser, function(tagId, permission) {
+        tagPaths.push('users/' + sharerUid + '/tags/' + tagId);
+      });
+    });
+
+    // now we need to fetch each tag (level 1). each tag has a list of docs. so then we need to fetch *each* of those nuts (level 2).
+    async.each(tagPaths, function(tagPath, cb) {
+      fetchSharedNutsFromTagPath(tagPath, sharerUid, cb);
+
+    }, function(err) {
+      if (err) console.error('error while initializing shared stuff:', err);
+      console.timeEnd('intializing shared stuff');
+    });
+  }
+  // level 1: get nut ids from a shared tag
+  function fetchSharedNutsFromTagPath(tagPath, sharerUid, cb) {
+    console.log('fetching shared nuts from', tagPath);
+
+    $s.ref.root().child(tagPath).once('value', function(data) {
+      if (! data.val()) return cb(new Error('fetched tag is empty'));
+
+      var nutPaths = [];
+
+      _.each(data.val().docs, function(nutId) {
+        nutPaths.push('users/' + sharerUid + '/nuts/' + nutId);
+      });
+
+      async.each(nutPaths, function(nutPath, _cb) {
+        initializeSharedNutFromPath(nutPath, sharerUid, _cb);
+      }, function(err) {
+        if (err) return cb(err);
+        else {
+          handleSharedWithMeTag(data.val(), sharerUid);
+          return cb();
+        }
+      });
+
+    }, function(err) {
+      console.error('failed to fetch tag from', tagPath);
+      cb(err);
+    });
+  }
+  // level 2: get the actual nuts
+  function initializeSharedNutFromPath(nutPath, sharerUid, cb) {
+    console.log('fetching shared nut from', nutPath);
+
+    $s.ref.root().child(nutPath).once('value', function(data) {
+      if (! data.val()) return cb(new Error('fetched nut is empty'));
+
+      handleSharedWithMeNut(data.val(), sharerUid);
+    }, function(err) {
+      console.error('failed to fetch nut from', nutPath);
+      cb(err);
+    });
+  }
+
+  /** given another user's tag, handle special local version of that tag for this user */
+  function handleSharedWithMeTag(tag, sharerUid) {
+    var localTagId = sharerUid + ':' + tag.id;
+    FOOP
+  }
+  /** given another user's nut, handle special local version of that nut for this user */
+  function handleSharedWithMeNut(nut, sharerUid) {
+    var localNutId = sharerUid + ':' + nut.id;
+  }
+
 
   function firstInit() {
     console.log("init: initializing new user info in user ref");
