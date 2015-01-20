@@ -236,7 +236,7 @@ block content
           ul
             //- NOTE: maybe should let n.assignSortVals() handle q.showNuts too, and ng-show="nut.sortVal" ?
             //- NOTE: we sort EVERYTHING and then "filter" with ng-show. should filter first and then sort if sorting is slow
-            li.nut(ng-repeat="nut in n.nuts | orderBy:'sortVal' track by $index", ng-show="q.showAll || q.showNuts.indexOf(nut.id) !== -1", id="nut-{{nut.id}}")
+            li.nut(ng-repeat="nut in n.nuts | orderObjectBy:'sortVal' track by $index", ng-show="q.showAll || q.showNuts.indexOf(nut.id) !== -1", id="nut-{{nut.id}}")
               nm-nut
 
       div#right
@@ -255,4 +255,4 @@ block content
             li.tag.new-tag(ng-show="t.creatingTag")
               form(ng-submit="t.createTag({name: t.createTagName})")
                 input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';" nm-focus="t.creatingTag", placeholder="tag name")
-            nm-tag(ng-repeat="tag in t.tags | orderBy:t.sortBy.field:t.sortBy.rev track by $index", ng-hide="!tag", ng-show="!tagQuery || tag.name.toLowerCase().indexOf(tagQuery.toLowerCase()) !== -1")
+            nm-tag(ng-repeat="tag in t.tags | orderObjectBy:t.sortBy.field:t.sortBy.rev track by $index", ng-hide="!tag", ng-show="!tagQuery || tag.name.toLowerCase().indexOf(tagQuery.toLowerCase()) !== -1")

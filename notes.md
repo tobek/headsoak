@@ -363,6 +363,7 @@ testing firebase in console:
 
 ##### bits and bugs
 
+- migrate off of firebase simple login
 - refactor file structure (e.g. break out js.js, put in controllers/, directives/ folders etc)
     - http://vesparny.github.io/ng-kickstart
     - http://joshdmiller.github.io/ng-boilerplate/
@@ -389,6 +390,7 @@ testing firebase in console:
 
 ##### notable features
 
+- re-investigate orderObjectBy, benchmark to see if it makes sense or is an issue
 - encryption
     - ALL notes <-- important, required option. like spideroak
     - only private notes <-- necessary?

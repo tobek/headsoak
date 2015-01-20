@@ -4,7 +4,7 @@
 // https://github.com/andyet/ConsoleDummy.js
 (function(b){function c(){}for(var d="error,group,groupCollapsed,groupEnd,log,time,timeEnd,warn".split(","),a;a=d.pop();)b[a]=b[a]||c})(window.console=window.console||{});
 
-angular.module('nutmeg', ['fuzzyMatchSorter'])
+angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
 .controller('Nutmeg', ['$scope', '$timeout', "$interval", "$sce", "fuzzyMatchSort", function ($s, $timeout, $interval, $sce, fuzzyMatchSort) {
 
   // when adding tags to a note, option to create a new tag with the currently-entered text will appear above any suggestions with a score worse (great) than this threshold
@@ -166,7 +166,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
     }
   });
 
-  // keeps track of changes. nuts and tags will map from id to reference to actual object nut/tag object in $s
+  // keeps track of changes. nuts and tags will map from id to reference to actual nut/tag object in $s
   $s.digest = {
     reset: function() {
       this.config = {};
@@ -185,13 +185,13 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
       // console.log("digest: checking for changes to push");
       var updated = false;
       ['config', 'nuts', 'tags'].forEach(function(field) {
-        if (Object.keys($s.digest[field]).length != 0) {
+        if (_.keys($s.digest[field]).length > 0) {
           $s.digest.pushHackCounter++;
-          var dupe = angular.copy($s.digest[field]);
+          var updates = angular.copy($s.digest[field]); // updates maps from id -> copy of full object
 
           // now we have to go through every prop of every obj and strip out anything from excludeProps
           if ($s.digest.excludeProps[field]) {
-            angular.forEach(dupe, function(obj){ // for every object...
+            angular.forEach(updates, function(obj){ // for every object...
               if (!obj) return; // could be null: deleting the value from Firebase
               $s.digest.excludeProps[field].forEach(function(prop) { // for every excludeProp...
                 if (obj[prop] !== undefined) delete obj[prop];
@@ -200,7 +200,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter'])
           }
 
           $s.digest.status = 'syncing';
-          $s.ref.child(field).update(dupe, $s.digest.pushCB);
+          $s.ref.child(field).update(updates, $s.digest.pushCB);
           updated = true;
         }
       });
@@ -519,35 +519,31 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
      *
      * 1. make a copy of nuts
      * 2. sort it
-     * 3. iterate through and assign $s.n.nuts[id].sortVal = index in sorted copy
+     * 3. iterate through and assign $s.n.nuts[id].sortVal = (index in sorted copy)
      */
     assignSortVals: function(sortOpt) {
       if (!$s.n.nuts) return; // sometimes we get called before anything has been set up
       console.log("sorting...");
 
       // STEP 1
-      var dupe = angular.copy($s.n.nuts);
+      var nutsCopy = angular.copy($s.n.nuts);
 
       // STEP 2
-      if (sortOpt.field.indexOf(".") !== -1 ) { // e.g. field might be "tags.length"
+      if (sortOpt.field.indexOf(".") !== -1 ) { // e.g. field might be `tags.length`
         var fields = sortOpt.field.split(".");
-        dupe.sort(function(a, b) {
-          var aVal = a[fields[0]] ? a[fields[0]][fields[1]] : 0;
-          var bVal = b[fields[0]] ? b[fields[0]][fields[1]] : 0;
-          return aVal - bVal;
-        })
+        nutsCopy = _.sortBy(nutsCopy, function(nut) {
+          return nut[fields[0]] ? nut[fields[0]][fields[1]] : 0;
+        });
       }
-      else { // e.g. "created"
-        dupe.sort(function(a, b) {
-          return a[sortOpt.field] - b[sortOpt.field];
-        })
+      else { // e.g. `created`
+        nutsCopy = _.sortBy(nutsCopy, sortOpt.field);
       }
       // NOTE: this is a more generic way to deal with this indexing of sub-objects by dot-notation string: http://stackoverflow.com/a/6394168
 
-      if (sortOpt.rev) dupe.reverse();
+      if (sortOpt.rev) nutsCopy.reverse();
 
       // STEP 3
-      dupe.forEach(function(sortedNut, sortedIndex) {
+      nutsCopy.forEach(function(sortedNut, sortedIndex) {
         if (sortedNut) { // some will be undefiend
           $s.n.nuts[sortedNut.id].sortVal = sortedIndex;
         }
@@ -559,16 +555,17 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     /* 
      * merge passed nut with defaults and store it
      * NOTE: this is allowing totally empty nuts... that's how we make blank new nuts. also would be a minor pain to disallow (what if you create non-empty and then update to empty?) and i can't see it causing problems so it's okay. we can do a "this nut is empty would you like to delete?" message maybe
+     * returns ID of created nut
      */
     createNut: function(nut) {
-      var newId = this.nuts.length; // will be index of new nut
+      var newId = getUnusedKeyFromObj($s.n.nuts); // will be id of new nut
 
       // if we've specifically passed in tags on this nut, use those. otherwise, maybe use query-filtering tags
       if (!nut.tags && $s.c.config.addQueryTagsToNewNuts && $s.q.tags && $s.q.tags.length > 0) {
         nut.tags = $s.q.tags.slice(); // slice to duplicate
       }
 
-      this.nuts.push($.extend({
+      this.nuts[newId] = $.extend({
         // default nut:
         body: '',
         tags: [], // array of tag ids
@@ -577,7 +574,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         history: [], // an array of nuts, last is the latest
         id: newId,
         sortVal: -1 * newId // ensures that this new nut is always sorted first until stuff is re-sorted
-      }, nut));
+      }, nut);
 
       if (nut.tags && nut.tags.length > 0) {
         // add this doc id to each of the tags
@@ -608,7 +605,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
     // accepts nut or nut ID
     deleteNut: function(nut, noconfirm) {
-      if (typeof nut == "number") {
+      if (typeof nut == "number" || typeof nut == "string") {
         nut = $s.n.nuts[nut];
         if (!nut) return;
       }
@@ -640,7 +637,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     // creates new nut with same tags as tags of given nut
     // accepts nut or nut ID
     duplicateNoteTags: function(nut) {
-      if (typeof nut == "number") {
+      if (typeof nut == "number" || typeof nut == "string") {
         nut = $s.n.nuts[nut];
         if (!nut) return;
       }
@@ -664,7 +661,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
       $s.digest.status = 'unsynced';
 
-      if (typeof nut == "number") {
+      if (typeof nut == "number" || typeof nut == "string") {
         nut = $s.n.nuts[nut];
         if (!nut) return;
       }
@@ -749,8 +746,8 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     runProgTags: function(nut) {
       console.log('running prog tags for nut ' + nut.id + ':');
       console.groupCollapsed();
-      $s.t.tags.forEach(function(tag) {
-        if (tag.prog) {
+      _.each($s.t.tags, function(tag) {
+        if (tag && tag.prog) {
           $s.t.runProgTagOnNut(tag, nut);
         }
       });
@@ -902,8 +899,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         count = 0;
       }
       else if ($s.q.showAll) {
-        // need to do reduce cause this is a sparse array
-        count = $s.n.nuts.reduce(function(prev, current) { return current ? prev+1 : prev; }, 0);
+        count = _.keys($s.n.nuts).length;
       }
       else {
         count = $s.q.showNuts.length;
@@ -1034,11 +1030,10 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       }
 
       // ALSO check private notes
-      if (! $s.p.privateMode && $s.n.nuts && $s.n.nuts.length) {
+      if (! $s.p.privateMode && $s.n.nuts && ! _.isEmpty($s.n.nuts)) {
         // private mode off, so hide private notes. get array of note IDs that aren't private:
-        filteredByPrivate = ($s.n.nuts
-                             .filter(function(nut) { return !nut.private; })
-                             .map(function(nut) { return nut.id; }) );
+        filteredByPrivate = (_.filter($s.n.nuts, function(nut) { return !nut.private; })
+                              .map(function(nut) { return nut.id; }) );
 
         if (filteredByPrivate.length === 0) {
           // *every* note is private (and private mode is off) so we're done:
@@ -1128,13 +1123,13 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         console.error(tag);
         return -1;
       }
-      var newId = this.tags.length; // will be index of new nut
-      this.tags.push($.extend({
+      var newId = getUnusedKeyFromObj($s.t.tags); // will be index of new tag
+      this.tags[newId] = $.extend({
         docs: [], // array of doc ids that have this
         created: (new Date).getTime(),
         modified: (new Date).getTime(),
         id: newId
-      }, tag));
+      }, tag);
       this.tagUpdated(newId);
       this.createTagName = ""; // clear input
       this.creatingTag = false; // hide input
@@ -1148,15 +1143,10 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       });
     },
 
-    // return -1 if not found
-    // TODO gotta be a better way than looping through the whole thing. keep a reverse index?
+    // returns undefined if not found
+    // TODO should we be keeping a reverse index?
     getTagIdByName: function(name) {
-      for (var i = this.tags.length - 1; i >= 0; i--) {
-        if (this.tags[i] && name === this.tags[i].name ) {
-          return i;
-        }
-      };
-      return -1;
+      return _.findKey($s.t.tags, {name: name});
     },
 
     getTagNameById: function(id) {
@@ -1265,7 +1255,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
       console.log('running prog tag ' + tag.id + ' on all notes:');
       console.groupCollapsed();
-      $s.n.nuts.forEach(function(nut) {
+      _.each($s.n.nuts, function(nut) {
         $s.t.runProgTagOnNut(tag, nut, classifier);
       });
       console.groupEnd();
@@ -1327,7 +1317,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
     /** alert user that they can't add/remove this tag, let them change it if they need */
     progTagCantChangeAlert: function(tag) {
-      if (typeof tag === "number") { // tag id
+      if (typeof tag === "number" || typeof tag == "string") { // tag id
         tag = $s.t.tags[tag];
       }
       if (!tag) return;
@@ -1489,7 +1479,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
      * 3: add to digest
      */
     tagUpdated: function(tag, updateNut) {
-      if (typeof tag === "number") { // tag id
+      if (typeof tag === "number" || typeof tag === "string") { // tag id
         tag = $s.t.tags[tag];
       }
       if (!tag) return;
@@ -1514,7 +1504,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
   $s.autocomplete = function(el, nut) {
 
     // lookupArray should end up as an array of strings
-    var lookupArray = $s.t.tags.filter(function(tag) {
+    var lookupArray = _.filter($s.t.tags, function(tag) {
       if (!tag) return false; // filter out undefineds
       if (nut) { // we're in the add tag field of a nut
         if (nut.tags) {
@@ -1949,18 +1939,20 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       }
       else {
         console.log("init: fetched user data");
-        // under some conditions (no 0th index?) firebase returns objects
-        // need arrays in order to do push and length etc. also IIRC arrays made ng-repeat easier?
-        // arrayFromObj also ensures that even if the value is undefined, we get back []
-        $s.n.nuts = data.val().nuts instanceof Array ? data.val().nuts : arrayFromObj(data.val().nuts);
-        $s.t.tags = data.val().tags instanceof Array ? data.val().tags : arrayFromObj(data.val().tags);
+
+        // firebase stores as objects but if data is "array-like" then we get back arrays. we need objects because we may have non-numeric keys, and because we migrated to string keys. TODO may not be necessary in the futre, see also idsMigrated which was done at the same time
+        $s.n.nuts = objFromArray(data.val().nuts);
+        $s.t.tags = objFromArray(data.val().tags);
 
         // firebase doesn't store empty arrays, so we get undefined for unused tags. which screws up sorting by tag usage
-        $s.t.tags.forEach(function(tag) {
+        _.each($s.t.tags, function(tag) {
+          if (!tag) return;
           if (!tag.docs) tag.docs = [];
         });
 
-        $s.n.nuts.forEach(function(nut) {
+        _.each($s.n.nuts, function(nut) {
+          if (!nut) return;
+
           // ditto firebase not storying empty arrays
           if (!nut.tags) nut.tags = [];
 
@@ -1974,6 +1966,8 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         // get their username and any other info
         _.extend($s.u.user, data.val().user);
 
+        if (! $s.u.user.idsMigrated) migrateIds(); // TODO this migration happened Jan 2015. can safely remove this and related code if all users have lastLogin after than, or if we finish off migration manually
+
         if ($s.u.user.displayName) {
           $s.u.displayNameSet = true; // silly tidbit for changing account dialog text
         }
@@ -1985,6 +1979,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         $s.ref.child('user').update({
           email: $s.u.user.email,
           provider: $s.u.user.provider,
+          idsMigrated: true, // janky, but in order to get here we will have called migrateIds() above
           lastLogin: Date.now()
         }, function(err) {
           if (err) {
@@ -2005,9 +2000,9 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         });
         */
 
-        console.time("building lunr index");
-        $s.n.nuts.forEach($s.n.updateNutInIndex);
-        console.timeEnd("building lunr index");
+        console.time("intializing lunr index");
+        _.each($s.n.nuts, $s.n.updateNutInIndex);
+        console.timeEnd("intializing lunr index");
 
         $s.s.initBindings(data.val().shortcuts);
         $s.c.loadSettings(data.val().settings);
@@ -2025,6 +2020,24 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       cb(featuresSeen);
     });
 
+  }
+
+  /** the shift from nuts and tags being arrays to being objects means that all keys are now strings, so tag.docs and nut.tags have to be updated */
+  function migrateIds() {
+    _.each($s.n.nuts, function(nut) {
+      nut.id = String(nut.id);
+      if (nut.tags && nut.tags.length) {
+        nut.tags = nut.tags.map(String);
+      }
+      $s.n.nutUpdated(nut, false, false);
+    });
+    _.each($s.t.tags, function(tag) {
+      tag.id = String(tag.id);
+      if (tag.docs && tag.docs.length) {
+        tag.docs = tag.docs.map(String);
+      }
+      $s.t.tagUpdated(tag, false);
+    });
   }
 
   function firstInit() {
@@ -2138,12 +2151,11 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         if (tagName) {
           var tagId = $s.t.getTagIdByName(tagName);
 
-          if (tagId === -1) {
+          if (tagId === undefined) {
             console.log("creating new tag " + tagName);
             tagId = $s.t.createTag({name: tagName});
           }
 
-          if (!$s.nut.tags) $s.nut.tags = []; // firebase doesn't store empty arrays/objects, so create it here
           if ($s.nut.tags.indexOf(parseInt(tagId)) !== -1) {
             console.log("tag "+tagName+" already exists on nut "+$s.nut.id);
           }
@@ -2214,6 +2226,21 @@ function arrayFromObj(obj) {
     arr[key] = value; // discards non-numerical keys
   });
   return arr;
+}
+
+function objFromArray(arr) {
+  if (! _.isArray(arr)) return arr; 
+
+  return _.extend({}, arr);
+}
+
+// finds a (numeric) key not currently in given object
+function getUnusedKeyFromObj(obj) {
+  var key = _.keys(obj).length; // best guess
+  while (obj[key]) {
+    key++;
+  }
+  return key;
 }
 
 function arrayIntersect(a1, a2) {
