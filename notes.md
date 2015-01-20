@@ -31,7 +31,8 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 - recipient has /user/uid/sharedWithMe/tags/sharer-uid/tag-id/r|w|x|d. this is set by the *sharer*. recipient can look in /user/uid/sharedWithMe to get all info about stuff shared with them
 - recipient creates tags and notes on their end. their IDs are `uid:tagId/noteId`
     - both tags and notes:
-        - have `sharedBy: {uid: 'whatever', perm: 'r'}`
+        - have sharer-set `shared[$s.u.user.uid]` set to the permission ('r', etc) for detecting it's shared
+        - have `readOnly` attribute if appropriate
         - created/updated on startup
         - have a permanent presence in recipient's documenter similar but different to regular notes/tags
     - tags
@@ -60,9 +61,11 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### now
 
-- create shared tags on recipient
-    - tag shows up with person icon
 - create shared notes on recipient
+- remove readOnly tags from autocomplete
+- check getTagIdByName - there could be conflicts, do they matter?
+- proper tooltips on tag share icons (should entire tag trigger tooltip?)
+- on init share stuff, don't tagupdated and sync to firebase if nothing changed
 - alert on recipient "blah wants to share blah with you"
     - when you login: 'USER has shared their tag "TAGNAME" with you [as read-only]OR[and invited you to edit].' a [more info] link expands to: 'Shared notes and tags show up alongside your personal notes and tags, but with the [person] icon. You can modify (add your own tags, set to private, etc.) shared notes as normal.'
         - Accept

@@ -1130,17 +1130,20 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
      */
     createTag: function(tag) {
       if (!tag.name) {
-        console.error("Attempted to add tag with no name. Tried to add:");
-        console.error(tag);
+        console.error("Attempted to add tag with no name:", tag);
         return -1;
       }
+
+      if (tag.id && $s.t.tags[tag.id]) throw new Error('You\'re trying to create a new tag with an id ('+ tag.id +') that\'s already taken!');
       var newId = tag.id ? tag.id : getUnusedKeyFromObj($s.t.tags);
+
       this.tags[newId] = $.extend({
         docs: [], // array of doc ids that have this
         created: (new Date).getTime(),
         modified: (new Date).getTime(),
         id: newId
       }, tag);
+
       this.tagUpdated(newId);
       this.createTagName = ""; // clear input
       this.creatingTag = false; // hide input
@@ -2125,7 +2128,19 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
   /** given another user's tag, handle special local version of that tag for this user */
   function handleSharedWithMeTag(tag, sharerUid) {
     var localTagId = sharerUid + ':' + tag.id;
-    // FOOP
+    tag.id = localTagId;
+    tag.docs = tag.docs.map(function(docId) {
+      return sharerUid + ':' + docId; // because sharer's doc IDs might collide with ours
+    });
+
+    // all the other fields set on the tag by the sharer we can leave as is
+
+    // TODO how to handle if sharer has set it as private? and we should be able to have private/not private ourselves, probably
+
+    if (! $s.t.tags[localTagId]) $s.t.tags[localTagId] = {};
+    _.extend($s.t.tags[localTagId], tag);
+
+    $s.t.tagUpdated(localTagId);
   }
   /** given another user's nut, handle special local version of that nut for this user */
   function handleSharedWithMeNut(nut, sharerUid) {
