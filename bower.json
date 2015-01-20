@@ -5,7 +5,8 @@
     "mousetrap": "~1.4.6",
     "mousetrap-global-bind": "https://raw.githubusercontent.com/ccampbell/mousetrap/master/plugins/global-bind/mousetrap-global-bind.js",
     "ace": "~1.1.8",
-    "async": "~0.9.2"
+    "async": "~0.9.2",
+    "firebase": "~2.1.1"
   },
   "devDependencies": {
     "angular-mocks": ""

@@ -265,7 +265,6 @@ module.exports = function(grunt) {
                             'css/app.css',
                         ],
                         cdnScripts: [
-                            '//cdn.firebase.com/js/client/2.0.6/firebase.js',
                             '//cdn.firebase.com/js/simple-login/1.6.4/firebase-simple-login.js',
                             '//cdn.jsdelivr.net/g/ace@1.1,lodash@2.4,jquery@2.1,angularjs@1.3', // ALL the libraries in one CDN file, neat! (note that jsdelivr's lodash appears to be a custom build, but seems to have everything we've needed so far)
                         ],

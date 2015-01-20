@@ -3,7 +3,7 @@ div(ng-show="nut")
     span.tag(ng-repeat="tagId in nut.tags",  ng-click="q.toggleTag(tagId, $event)", ng-class="{queried: (q.tags.indexOf(tagId) != -1)}")
       | {{t.tags[tagId].name}}
       span.shared.icon.wide.tooltip(ng-click="$event.stopPropagation();", ng-show="t.tags[tagId].share", ng-attr-data-tooltip="shared with {{ _.keys(t.tags[tagId].share).join(',') }}")
-        // TODO this will give simplelogin:xx, need to get names instead
+        //- TODO this will give simplelogin:xx, need to get names instead
         i.fa.fa-fw.fa-users
       span.delete.icon(ng-click="n.removeTagIdFromNut(tagId, nut.id)", ng-show="! t.tags[tagId].prog")
         i.fa.fa-fw.fa-times
@@ -15,7 +15,7 @@ div(ng-show="nut")
     span.tag(ng-show="addingTag")
       form(ng-submit="addTag(true)")
         input(type="text", ng-model="addTagName", ng-click="$event.stopPropagation()", nm-focus="addingTag", placeholder="tag name")
-    span.add-tag-to-nut(ng-click="$event.stopPropagation(); throwaway = addingTag ? addTag(true) : openAddTagField();")
+    span.add-tag-to-nut(ng-click="$event.stopPropagation(); _throwaway = addingTag ? addTag(true) : openAddTagField();")
       i.fa.fa-plus &nbsp;
   div.clear
   div.tawrapper
