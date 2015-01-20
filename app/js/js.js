@@ -1176,7 +1176,9 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         });
       }
 
-      // TODO if this tag is shared, unshare
+      if (tag.share) {
+        $s.t.unshareTagWithAll(tag);
+      }
 
       delete this.tags[tag.id];
 
@@ -1345,7 +1347,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
     /** tag has a `share` object that maps `uid` to permission ('r' for readonly, 'w' for read/write) */
     sharingSettings: function(tag) {
-      if (!tag.share) {
+      if (_.isEmpty(tag.share)) {
         // tag not currently shared with anyone, so do simple share prompt:
 
         // there are several points at which sharing can fail, so define what happens here:
@@ -1416,8 +1418,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         // tag is currently being shared
         // TODO open sharing settings
         alert('Tag "'+ tag.name +'" is now not shared with anyone');
-        delete tag.share; // TODO for now just get rid of it
-        $s.t.tagUpdated(tag);
+        $s.t.unshareTagWithAll(tag); // TODO for now just get rid of it
       }
     },
 
@@ -1439,21 +1440,40 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       tag.share[recipientUid] = perms;
       $s.t.tagUpdated(tag);
 
-      $s.t.updateNoteShareInfo(tag);
+      $s.t.updateNotesShareInfo(tag);
+    },
+
+    unshareTagWithUser: function(tag, recipientUid) {
+      // mark in the *recipient*'s data that they should delete this tag
+      var recipientTagSharePath = 'users/' + recipientUid + '/share/' + $s.u.user.uid + '/' + tag.id;
+      $s.ref.root().child(recipientTagSharePath).set('d');
+
+      delete tag.share[recipientUid];
+      $s.t.tagUpdated(tag);
+
+      $s.t.updateNotesShareInfo(tag);
+    },
+    unshareTagWithAll: function(tag) {
+      if (!tag.share) return;
+
+      console.log('unsharing tag', tag, 'with all users it was shared with');
+
+      _.each(tag.share, function(perm, recipientUid) {
+        $s.t.unshareTagWithUser(tag, recipientUid);
+      });
     },
 
     /**
      * takes one tag and updates share info of all the notes associated with it.
      * share info (mapping from uid -> sharing permissions) is duplicated in nuts so that firebase security rules can check it to see if other users can read the note
      */
-    updateNoteShareInfo: function(tag) {
+    updateNotesShareInfo: function(tag) {
       if (!tag.share) return;
 
       tag.docs.forEach(function (docId) {
         var nut = $s.n.nuts[docId];
 
-        if (!nut.share) nut.share = {};
-        _.extend(nut.share, tag.share); // TODO see note in $s.n.rebuildNoteSharing about precedence of permissions...
+        $s.n.rebuildNoteSharing(nut);
 
         $s.n.nutUpdated(nut, false, false); // TODO should we fullupdate in case prog tags want to depend on sharing? they have the right to be able to do so, but... don't care right now
       });
