@@ -283,7 +283,6 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 - show tag icons (prog, shared) in query bar?
 - bug: esc when in nut textarea immediately returns focus back to nut textarea
 - enter or spacebar should exit alert modals
-- bug: deleting programmatically-tagged note and tag still lists it in its docs list, prob cause it doesn't let you remove it because it's prog?
 - bug? something about adding a new note and it preventing you from adding prog tag to it?
 - logout should clear nuts and stuff from scope etc!
 - mention in firstInit() notes something about if you're interested then... or if you want to help out

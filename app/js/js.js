@@ -1172,6 +1172,8 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         return;
       }
 
+      tag.prog = false; // so that we don't get added back by any programmatic logic when updating nut while removing ourselves
+
       // tag.docs.slice() returns a duplicate of the array. necessary, because removeTagIdFromNut() splices actual `tag.docs` - if we splice out stuff while iterating over it with forEach, we won't iterate over them all
       if (tag.docs) {
         tag.docs.slice().forEach(function(docId) {
