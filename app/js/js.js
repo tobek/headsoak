@@ -626,7 +626,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       // see comment on deleteTag() for why we need slice()
       if (nut.tags) {
         nut.tags.slice().forEach(function(tagId) {
-          $s.n.removeTagIdFromNut(tagId, nut.id);
+          $s.n.removeTagIdFromNut(tagId, nut.id, false); // false to not do fullUpdate, no need to update index and prog tags
         });
       }
 
@@ -813,7 +813,9 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         $s.t.tagUpdated(tagId);
       }
     },
-    removeTagIdFromNut: function(tagId, nutId) {
+    removeTagIdFromNut: function(tagId, nutId, fullUpdate) {
+      fullUpdate = defaultFor(fullUpdate, true);
+
       var updated = false;
 
       // remove tag id from nut (check it's there first so we don't splice out -1)
@@ -830,7 +832,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       if (updated) {
         $s.n.rebuildNoteSharing($s.n.nuts[nutId]);
         console.log("removed tag "+tagId+" from nut "+nutId);
-        this.nutUpdated(nutId, $s.c.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
+        this.nutUpdated(nutId, $s.c.config.tagChangesChangeNutModifiedTimestamp, fullUpdate); // update history, maybe modified (depends on config), and, if fullUpdate, update index, prog tags, etc.
         $s.t.tagUpdated(tagId);
       }
     },
