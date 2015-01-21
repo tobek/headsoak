@@ -61,9 +61,6 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### now
 
-- bug when you try to add tag to shared note
-- remove readOnly tags from autocomplete
-- check getTagIdByName - there could be conflicts, do they matter?
 - proper tooltips on tag share icons (should entire tag trigger tooltip?)
 - alert on recipient "blah wants to share blah with you"
     - when you login: 'USER has shared their tag "TAGNAME" with you [as read-only]OR[and invited you to edit].' a [more info] link expands to: 'Shared notes and tags show up alongside your personal notes and tags, but with the [person] icon. You can modify (add your own tags, set to private, etc.) shared notes as normal.'
@@ -368,6 +365,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
     - new tag in general (ctrl shift t?)
     - maybe shift+enter or comma to add another tag after writing this one (customizeable). it basically just hits enter and opens another/creates a new tag and clears current and leaves focus there
 - browser compatibility warning (we only support IE10 and up)
+- what to do with multiple tags with the same name? we can disallow it for local tags, but might happen with shared tags. should be given the option to merge or rename - either way we need to store some map on recipient's end
 
 ### todo eventually
 

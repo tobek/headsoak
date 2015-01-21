@@ -1155,7 +1155,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     },
 
     // returns undefined if not found
-    // TODO should we be keeping a reverse index?
+    // TODO doesn't handle duplicate tag names. those need to be handled generally
     getTagIdByName: function(name) {
       return _.findKey($s.t.tags, {name: name});
     },
@@ -1516,17 +1516,23 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
     // lookupArray should end up as an array of strings
     var lookupArray = _.filter($s.t.tags, function(tag) {
-      if (!tag) return false; // filter out undefineds
       if (nut) { // we're in the add tag field of a nut
+        if (tag.readOnly) return false; // can't add readOnly tags
+        // TODO also hide prog tags here? on the one hand, trying to add a prog tag shows progTagCantChangeAlert, so you might ask "why did you put it in autocomplete in the first place?". on the other hand, if we hide it, users might be like "why isn't this tag showing up?"
         if (nut.tags) {
-          return (nut.tags.indexOf(tag.id) === -1) // filter out tags that are already on this nut
+          // filter out tags that are already on this nut
+          if (nut.tags.indexOf(tag.id) !== -1) return false; 
         }
       }
       else { // we're in the search query bar
-        return ($s.q.tags.indexOf(tag.id) === -1) // filter out tags that are already in the search query
+        // filter out tags that are already in the search query
+        if ($s.q.tags.indexOf(tag.id) !== -1) return false;
       }
+
+      return true;
     });
     lookupArray = lookupArray.map(function(tag) {return tag.name; }); // convert from tag objects to strings
+    console.log('initializing autocomplete with:', lookupArray);
 
     return $(el).autocomplete({
       width: 150,
