@@ -176,7 +176,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
     },
     // properties that should not be uploaded to firebase - map of field -> array of props
     excludeProps: {
-      "nuts": ["sortVal"]
+      'nuts': ['sortVal', 'sharedBody']
     },
     push: function() {
       if ($s.digest.pushHackCounter > 0) return;
@@ -861,6 +861,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
     // hack, needed because ngChange doesn't pass element
     autosizeNutById: function(id) {
+      id = id.replace(/\:/g, '\\:'); // escape colons
       this.autosizeNutByEl(angular.element("#nut-"+id+"-ta")[0]);
     },
 
@@ -2100,10 +2101,11 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       }, function(err) {
         if (err) return cb(err);
         else {
-          handleSharedWithMeTag(data.val(), sharerUid);
           return cb();
         }
       });
+
+      handleSharedWithMeTag(data.val(), sharerUid);
 
     }, function(err) {
       console.error('sharedWithMeInit: failed to fetch tag from', tagPath);
@@ -2147,6 +2149,45 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
   /** given another user's nut, handle special local version of that nut for this user */
   function handleSharedWithMeNut(nut, sharerUid) {
     var localNutId = sharerUid + ':' + nut.id;
+    nut.id = localNutId;
+    nut.tags = nut.tags.map(function(tagId) {
+      return sharerUid + ':' + tagId; // because sharer's tag IDs might collide with ours
+    })
+    .filter(function(tagId) {
+      // we only want sharer's tags that are also on our system
+      // NOTE: handleSharedWithMeTag() for the tag whose sharing introduced this note should have been called before this, because it runs synchronously from the code path that asynchronously results in handleSharedWithMeNut(), so sharer's tags should already exist locally. however TODO there is an edge case where sharer has multiple tags on this note which are also shared with this user, one of which has been handled but the other which has not, so one tag could go missing...
+      return !! $s.t.tags[tagId];
+    });
+
+    nut.readOnly = true; // TODO handle other permissions
+    nut.sharedBy = sharerUid; // TODO get user's display name
+
+    // no need to save entire body on our end too
+    nut.sharedBody = nut.body; // sharedBody is ignored in digest
+    nut.body = null;
+
+    // all the other fields set on the nut by the sharer we can leave as is
+
+    // TODO how to handle if sharer has set it as private? and we should be able to have private/not private ourselves, probably
+
+    if ($s.n.nuts[localNutId]) {
+      // _.extend will overwrite arrays, so before we do that, preserve and tags we've locally added to this shared note
+      $s.n.nuts[localNutId].tags = $s.n.nuts[localNutId].tags.filter(function(tagId) {
+        // remove any tags on this note that belong to the sharer. they might have changed even if they haven't, we'll merge them back in in a sec:
+        return tagId.indexOf(sharerUid) !== 0;
+      });
+      nut.tags = _.union(nut.tags, $s.n.nuts[localNutId].tags);
+    }
+    else {
+      $s.n.nuts[localNutId] = {};
+    }
+
+    _.extend($s.n.nuts[localNutId], nut);
+
+    $s.$apply();
+    $s.n.autosizeNutById(localNutId);
+
+    $s.n.nutUpdated(localNutId, false, true);
   }
 
 

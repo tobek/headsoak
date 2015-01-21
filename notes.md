@@ -61,11 +61,10 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### now
 
-- create shared notes on recipient
+- bug when you try to add tag to shared note
 - remove readOnly tags from autocomplete
 - check getTagIdByName - there could be conflicts, do they matter?
 - proper tooltips on tag share icons (should entire tag trigger tooltip?)
-- on init share stuff, don't tagupdated and sync to firebase if nothing changed
 - alert on recipient "blah wants to share blah with you"
     - when you login: 'USER has shared their tag "TAGNAME" with you [as read-only]OR[and invited you to edit].' a [more info] link expands to: 'Shared notes and tags show up alongside your personal notes and tags, but with the [person] icon. You can modify (add your own tags, set to private, etc.) shared notes as normal.'
         - Accept
@@ -77,9 +76,13 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
         - on hover: "Shared by USER"
     - i'm sharing this note with others: group icon
         - on hover: bulleted list "Shared with: - user 1, - user 2"
+- consistent styles
 
 ##### soon
 
+- on init share stuff, don't tagupdated and sync to firebase if nothing changed
+- @name system tag
+- ability to select single note to share (essentially adding that system tag)
 - sharer removes:
     - recipient sees the x, and delete's local notes and the 'x'
 - recipient removes:
@@ -88,6 +91,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
         - Change sharing settings
     - if user tries to delete shared tag, similar message as above
     - if they unshare or decline initial request: write nulls (delete) into tags and notes of sharer?
+- duplicate note tags removes shared tags from new note, same with query bar
 - sharing settings. window that breaks down by tag > person or person > tag (or checkbox/radio to control which view?)
     - my tags shared with others
     - others' tags shared with me
@@ -121,6 +125,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
         - some special link so that it highlights shared tag(s) to you...
     - search for only notes shared with you/notes you shared with others
     - block user
+    - instead of share recipients storing their local info about shared notes/tags in their document store, maybe have them store it in the sharer's version of the document? security rules could let users write into `nuts[id].share[shareRecipientUid]` (only if it was already pre-propulated cause that's where permissions live, or maybe they just can't write to the permissions key). then the recipient's digest needs to understand where to write stuff to if ID begins with 'simplelogin:' etc.
 
 ### todo for beta
 
@@ -278,6 +283,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### bits and bugs
 
+- show tag icons (prog, shared) in query bar?
 - bug: esc when in nut textarea immediately returns focus back to nut textarea
 - enter or spacebar should exit alert modals
 - bug: deleting programmatically-tagged note and tag still lists it in its docs list, prob cause it doesn't let you remove it because it's prog?
