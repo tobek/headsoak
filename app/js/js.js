@@ -861,8 +861,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
     // hack, needed because ngChange doesn't pass element
     autosizeNutById: function(id) {
-      id = id.replace(/\:/g, '\\:'); // escape colons
-      this.autosizeNutByEl(angular.element("#nut-"+id+"-ta")[0]);
+      this.autosizeNutByEl(document.getElementById("nut-"+id+"-ta"));
     },
 
     autosizeNutByEl: function(el) {
@@ -1563,7 +1562,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       },
       onSelect: function(suggestion, e) {
         if (nut) { // we're in the add tag field of a nut
-          var scope = $s.n.getFocusedNutScope() || $('#nut-' + nut.id).scope();
+          var scope = $s.n.getFocusedNutScope() || safer$('#nut-' + nut.id).scope();
           if (scope) {
             scope.addTag(true, suggestion.value);
             scope.closeAddTagField();
@@ -2324,7 +2323,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.openAddTagField = function() {
         $(window).click($s.closeAddTagField);
 
-        $s.autocomplete($("#nut-"+$s.nut.id+" .tags input"), $s.nut);
+        $s.autocomplete(safer$("#nut-"+$s.nut.id+" .tags input"), $s.nut);
         $s.addingTag = true; // this will automatically show the field and put focus on it
       };
       $s.closeAddTagField = function closeAddTagField() {
@@ -2332,7 +2331,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
         $timeout(function() {
           $s.addingTag = false; // will automatically hide field
-          $("#nut-"+$s.nut.id+" .tags input").autocomplete('dispose');
+          safer$("#nut-"+$s.nut.id+" .tags input").autocomplete('dispose');
         })
       };
 
@@ -2415,4 +2414,20 @@ function multiArrayIntersect(arrays) {
 function formatForFirebase(s) {
   // just base64 encode it eh
   return btoa(s);
+}
+
+/** since jQuery trips up on IDs that have colons (firebase UIDs have colons) this wrapper handles that */
+function safer$(selector) {
+  if (selector.indexOf('#') !== 0) {
+    console.warn('safer$ doesn\'t support selectors that don\'t start with "#", just using jQuery...');
+    return $(selector);
+  }
+  else if (selector.indexOf(' ') === -1) {
+    // it's just the ID, so strip the # and return:
+    return $(document.getElementById(selector.substr(1)));
+  }
+  else {
+    var parent = $(document.getElementById(selector.substring(1, selector.indexOf(' '))));
+    return parent.find(selector.substr(selector.indexOf(' ')+1));
+  }
 }
