@@ -283,7 +283,6 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 - show tag icons (prog, shared) in query bar?
 - bug: esc when in nut textarea immediately returns focus back to nut textarea
 - enter or spacebar should exit alert modals
-- bug? something about adding a new note and it preventing you from adding prog tag to it?
 - logout should clear nuts and stuff from scope etc!
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
 - @nutmeg.io email address. I have support@ (and toby@ and ece@), what about for general stuff? contact@ is boring
@@ -343,7 +342,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 ##### bits and bugs
 
 - migrate off of firebase simple login
-- refactor file structure (e.g. break out js.js, put in controllers/, directives/ folders etc)
+- refactor file structure (e.g. break out js.js, put in controllers/, directives/ folders etc) (and put "use strict" inside of scope in each)
     - http://vesparny.github.io/ng-kickstart
     - http://joshdmiller.github.io/ng-boilerplate/
     - https://github.com/angular/angular-seed

@@ -551,7 +551,6 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
     /* 
      * merge passed nut with defaults and store it
-     * NOTE: this is allowing totally empty nuts... that's how we make blank new nuts. also would be a minor pain to disallow (what if you create non-empty and then update to empty?) and i can't see it causing problems so it's okay. we can do a "this nut is empty would you like to delete?" message maybe
      * returns ID of created nut
      */
     createNut: function(nut) {
@@ -570,7 +569,10 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
 
       // if we've specifically passed in tags on this nut, use those. otherwise, maybe use query-filtering tags
       if (!nut.tags && $s.c.config.addQueryTagsToNewNuts && $s.q.tags && $s.q.tags.length > 0) {
-        nut.tags = $s.q.tags.slice(); // slice to duplicate
+        nut.tags = $s.q.tags.filter(function(tagId) {
+          // remove prog and readOnly tags
+          return (! $s.t.tags[tagId].prog && ! $s.t.tags[tagId].readOnly);
+        })
       }
 
       this.nuts[newId] = _.extend({
@@ -650,7 +652,10 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         if (!nut) return;
       }
       $s.n.createNut({
-        tags: nut.tags.slice() // slice to duplicate array
+        tags: nut.tags.filter(function(tagId) {
+          // remove prog and readOnly tags
+          return (! $s.t.tags[tagId].prog && ! $s.t.tags[tagId].readOnly);
+        })
       });
     },
 
