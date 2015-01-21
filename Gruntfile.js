@@ -235,6 +235,20 @@ module.exports = function(grunt) {
                 }
             }
         },
+        uglify: {
+            options: {
+                compress: {
+                    pure_funcs: [
+                        "console.log",
+                        "console.group",
+                        "console.groupCollapsed",
+                        "console.groupEnd",
+                        "console.time",
+                        "console.timeEnd",
+                    ]
+                }
+            }
+        },
         imagemin : {
             dist : {
                 options : {

@@ -1,9 +1,6 @@
 /* jshint ignore:start */ // TODO actually clean up
 "use strict";
 
-// https://github.com/andyet/ConsoleDummy.js
-(function(b){function c(){}for(var d="error,group,groupCollapsed,groupEnd,log,time,timeEnd,warn".split(","),a;a=d.pop();)b[a]=b[a]||c})(window.console=window.console||{});
-
 angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
 .controller('Nutmeg', ['$scope', '$timeout', "$interval", "$sce", "fuzzyMatchSort", function ($s, $timeout, $interval, $sce, fuzzyMatchSort) {
 
