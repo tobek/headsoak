@@ -1234,7 +1234,8 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         });
       }
 
-      if (tag.share) {
+      if (tag.share && !tag.sharedBy) {
+        // shared tag *not* shared from someone else else
         $s.t.unshareTagWithAll(tag);
       }
 
@@ -1405,6 +1406,12 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
     /** tag has a `share` object that maps `uid` to permission ('r' for readonly, 'w' for read/write) */
     sharingSettings: function(tag) {
+      if (tag.sharedBy) {
+        // this is shared from someone else
+        // TODO open up share info, offer to delete, etc.
+        return;
+      }
+
       if (_.isEmpty(tag.share)) {
         // tag not currently shared with anyone, so do simple share prompt:
 
@@ -1413,11 +1420,12 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
           console.warn('error trying to find user by email "' + userSearchQuery + '":', err);
           alert('No Nutmeg user found with email "'+ userSearchQuery +'"'); // TODO something about inviting them
           $timeout(function() {
+            $s.m.working = false;
             $s.t.sharingSettings(tag);
           }, 50);
         }
 
-        var perms = 'r'; // read only is all we can do for now
+        var permission = 'r?'; // read only is all we can do for now
 
         $s.m.prompt({
           title: 'Sharing "' + tag.name + '"',
@@ -1432,6 +1440,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
             else if (userSearchQuery.match(/.+@.+\...+/)) { // ultra basic email regex
               $s.m.working = true;
               $s.ref.root().child('emailToId/' + btoa(userSearchQuery)).once('value', function(data) {
+                $s.m.working = false;
                 if (data.exists()) {
                   var recipientUid = data.val();
 
@@ -1449,12 +1458,12 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
                         $s.u._changeDisplayName(displayName);
 
-                        $s.t.shareTagWithUser(tag, recipientUid, perms);
+                        $s.t.shareTagWithUser(tag, recipientUid, permission);
                       }
                     });
                   }
                   else {
-                    $s.t.shareTagWithUser(tag, recipientUid, perms);
+                    $s.t.shareTagWithUser(tag, recipientUid, permission);
                   }
                 }
                 else {
@@ -1473,7 +1482,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       else {
         // tag is currently being shared
         // TODO open sharing settings
-        alert('Tag "'+ tag.name +'" is now not shared with anyone');
+        $s.m.alert('Tag "'+ tag.name +'" has been unshared with ' + $s.t.getSharedWithNames(tag));
         $s.t.unshareTagWithAll(tag); // TODO for now just get rid of it
       }
     },
@@ -1482,12 +1491,12 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       return 'users/' + recipientUid + '/sharedWithMe/tags/' + $s.u.user.uid + '/' + tag.id;
     },
 
-    shareTagWithUser: function(tag, recipientUid, perms) {
+    shareTagWithUser: function(tag, recipientUid, permission) {
       async.parallel([
         function(cb) {
           // mark in the *recipient*'s data that we've shared this tag with them
           var recipientTagSharePath = $s.t.getRecipientTagSharePath(tag, recipientUid);
-          $s.ref.root().child(recipientTagSharePath).set(perms, cb);
+          $s.ref.root().child(recipientTagSharePath).set(permission, cb);
         },
         function(cb) {
           $s.users.fetchUserDisplayName(recipientUid, cb);
@@ -1502,7 +1511,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         }
 
         if (!tag.share) tag.share = {};
-        tag.share[recipientUid] = perms;
+        tag.share[recipientUid] = permission;
         $s.t.tagUpdated(tag);
 
         $s.t.updateNotesShareInfo(tag);
@@ -1511,7 +1520,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         $timeout(function() {
           $s.m.working = false;
           $s.m.alert({
-            message: 'Now sharing tag "'+ tag.name +'" with "'+ $s.users[recipientUid] +'"'
+            message: 'Now sharing tag "'+ tag.name +'" with '+ $s.users[recipientUid]
             // TODO: should be "ok" or "go to sharing settings"
           });
         }, 50);
@@ -1559,17 +1568,20 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     setShareTooltip: function(tag) {
       // TODO this is un-angular-ish i think, but more efficient than setting watchers on tag.share/tag.sharedBy of every tag... what's the best way here?
 
-      if (! tag.share) {
+      if (! tag.share || _.isEmpty(tag.share)) {
         tag.shareTooltip = 'share this tag';
       }
       else if (tag.sharedBy) {
         tag.shareTooltip = $s.users[tag.sharedBy] + ' is sharing this with you';
       }
       else {
-        tag.shareTooltip = 'sharing with ' + _.map(tag.share, function(perm, uid) {
-          return $s.users[uid];
-        }).join(',');
+        tag.shareTooltip = 'sharing with ' + $s.t.getSharedWithNames(tag);
       }
+    },
+    getSharedWithNames: function(tag) {
+      return _.map(tag.share, function(perm, uid) {
+        return $s.users[uid];
+      }).join(',');
     },
 
     /* call whenever a tag is updated. accepts tag or tag id
@@ -2173,6 +2185,8 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       if (err) console.error('sharedWithMeInit: error while initializing shared stuff:', err);
       else console.log('sharedWithMeInit: done initializing shared stuff');
       console.timeEnd('sharedWithMeInit: intializing shared stuff');
+
+      $s.n.assignSortVals($s.n.sortBy); // resort
     });
   }
   // level 1: get nut ids from a shared tag
