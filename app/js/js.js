@@ -1069,12 +1069,12 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       }
     },
 
-    // query is string, tags is array of tag IDs
+    /** query is string, tags is array of tag IDs */
     doQuery: function(query, tags) {
-      query = defaultFor(query, this.query);
-      tags = defaultFor(tags, this.tags);
+      query = defaultFor(query, $s.q.query);
+      tags = defaultFor(tags, $s.q.tags);
 
-      console.log("queried \""+query+"\" with tags "+JSON.stringify(tags));
+      console.log('queried "' + query + '" with tags', tags);
 
       var filteredByTags, filteredByString, filteredByPrivate;
 
@@ -1126,9 +1126,9 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     },
 
     clear: function() {
-      this.query = "";
-      this.tags = [];
-      this.doQuery();
+      $s.q.query = "";
+      $s.q.tags = [];
+      $s.q.doQuery();
     },
     focus: function() {
       angular.element('#query .search')[0].focus();
@@ -1145,7 +1145,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     if (e.keyCode == 8 && $("#query .search")[0].selectionStart == 0 && $s.q.tags.length > 0) {
       $s.q.removeTag($s.q.tags[$s.q.tags.length-1]);
       $s.q.setupAutocomplete(); // reset autocomplete so that newly removed tag is in suggestions again
-      $timeout($s.n.autosizeAllNuts, 5); // this should get called anyway but for some reason is not working when backspacing tags
+      $timeout($s.n.autosizeAllNuts, 5); // HACK: gets called anyway but too quickly, before present notes have been updating, so... call it again in a sec
     }
   });
 
@@ -2445,8 +2445,12 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 }])
 .directive('nmQuery', function() {
   return function(scope, element, attrs) {
+    // debounced so that it doesn't fire needlessly while typing
+    var debouncedDoQuery = _.debounce(nmScope.q.doQuery, 250, {maxWait: 5000});
+
     scope.$watch(attrs.nmQuery, function(newQ) {
-      nmScope.q.doQuery();
+      // don't need to pass in newQ, $s.q.doQuery looks at scope variables (probably un-angularish)
+      debouncedDoQuery();
     });
   };
 })
