@@ -1,4 +1,4 @@
-div(ng-show="nut")
+div(ng-show="nut && (!nut.sharedBy || nut.sharedBody)")
   div.tags
     span.tag(ng-repeat="tagId in nut.tags",  ng-click="q.toggleTag(tagId, $event)", ng-class="{queried: (q.tags.indexOf(tagId) != -1)}")
       | {{t.tags[tagId].name}}
