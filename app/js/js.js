@@ -1092,10 +1092,11 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         var results = $s.lunr.search(query); // by default ANDs spaces: "foo bar" will search foo AND bar
         // results is array of objects each containing `ref` and `score`
         // ignoring score for now
-        filteredByString = results.map(function(doc){ return parseInt(doc.ref); }); // gives us an array
+        filteredByString = results.map(function(doc){ return doc.ref; }); // gives us an array
       }
 
       // ALSO check private notes
+      // TODO would probably be faster to filter the inverse and subtract from other lists? because probably few private notes
       if (! $s.p.privateMode && $s.n.nuts && ! _.isEmpty($s.n.nuts)) {
         // private mode off, so hide private notes. get array of note IDs that aren't private:
         filteredByPrivate = (_.filter($s.n.nuts, function(nut) { return !nut.private; })
