@@ -515,7 +515,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
       }
 
       $s.ref.root().child('users/' + uid + '/user/displayName').once('value', function(data) {
-        $s.users[uid] = data.val();
+        $s.users[uid] = data.exists() ? data.val() : fallbackName;
         return cb(null, $s.users[uid]);
       }, function(err) {
         console.error('failed to get display name for user ', uid, err);
