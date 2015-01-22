@@ -2204,6 +2204,12 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
   }
   // level 1a: grab shared tag info
   function fetchSharedTag(tagPath, sharerUid, permission, cb) {
+    if (permission === 'd?' || permission === 'd') { // TODO which are we using?
+      // TODO delete it
+      // no need to fetch the tag
+      return cb();
+    }
+
     console.log('sharedWithMeInit: fetching shared tag info from', tagPath);
 
     $s.ref.root().child(tagPath).once('value', function(data) {
@@ -2212,16 +2218,12 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       initSharedTag(data.val(), sharerUid, permission, cb);
     }, function(err) {
       console.error('sharedWithMeInit: failed to fetch tag from', tagPath);
-      cb(err);
+      cb(); // not passing the error in - we can continue
     });
   }
   // level 1b: decide what to do with shared tag based on permission
   function initSharedTag(tag, sharerUid, permission, cb) {
-    if (permission === 'd?') {
-      // TODO delete it
-      return cb();
-    }
-    else if (permission === 'r?') {
+    if (permission === 'r?') {
       // sharer is requesting to share something with us as read-only
 
       // first get their display name (NOTE: this may produce duplicate requests since we called fetchUserDisplayNames with all sharer UIDs in sharedWithMeInit. request may have come back already in which case there won't be a second round-trip now. if not, there will be. alternative is to not call initSharedTag until after fetchUserDisplayNames is done, which needlessly makes the process longer. proper option would be to detect if it's a new user (requiring us to display this dialog) and fetch just those display names before calling this, fetching others in the background)
@@ -2281,7 +2283,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       createLocalSharedWithMeNut(data.val(), sharerUid);
     }, function(err) {
       console.error('sharedWithMeInit: failed to fetch nut from', nutPath);
-      cb(err);
+      cb(); // not passing the error in, we can continue
     });
   }
 
