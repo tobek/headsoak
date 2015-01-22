@@ -757,6 +757,8 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     },
 
     runProgTags: function(nut) {
+      if (nut.readOnly) return; // we can't add tags to it anyway
+
       console.log('running prog tags for nut ' + nut.id + ':');
       console.groupCollapsed();
       _.each($s.t.tags, function(tag) {

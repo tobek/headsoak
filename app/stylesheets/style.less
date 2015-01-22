@@ -454,7 +454,7 @@ form {
             // really does make them look more balanced:;
             margin-left: 1px;
             &.delete { margin-left: 2px; }
-            &.shared { margin-left: 5px; }
+            &.share { margin-left: 5px; }
           }
           .icon:hover {
             color: black; 
@@ -780,6 +780,7 @@ form {
 
         .tooltip:after {
           width: 200px;
+          text-align: left;
         }
         .tooltip:before {
           display: none;
@@ -839,7 +840,6 @@ form {
               width: 100px;
             }
             .tooltip:after {
-              text-align: left;
               width: 300px;
               bottom: -100px;
               left: 25px;
@@ -972,6 +972,7 @@ form {
   -webkit-border-radius: 5px;
   -moz-border-radius   : 5px;
   border-radius        : 5px;
+  text-align: center;
   font-size: 13px;
 }
 .wide.tooltip:after {
