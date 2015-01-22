@@ -3,7 +3,7 @@ li.tag(ng-click="q.toggleTag(tag.id, $event)", ng-class="{queried: (q.tags.index
   span.icons
     a.prog.toggle(title="algorithmic", ng-click="$event.stopPropagation(); t.tagProgSettings(tag)", ng-class="tag.prog ? 'on' : ''")
       i.fa.fa-bolt.fa-fw
-    a.share.toggle.wide.tooltip(ng-attr-data-tooltip="{{ tag.sharedBy ? tag.sharedBy + ' is sharing this with you' : (tag.share ? 'sharing with ' + _.keys(tag.share).join(',') : 'share this tag') }}", ng-click="$event.stopPropagation(); t.sharingSettings(tag)", ng-class="_.isEmpty(tag.share) ? '' : 'on'")
+    a.share.toggle.wide.tooltip(ng-attr-data-tooltip="{{ tag.sharedBy ? users[tag.sharedBy] + ' is sharing this with you' : (tag.share ? 'sharing with ' + _.keys(tag.share).join(',') : 'share this tag') }}", ng-click="$event.stopPropagation(); t.sharingSettings(tag)", ng-class="_.isEmpty(tag.share) ? '' : 'on'")
       i.fa.fa-fw(ng-class="::tag.sharedBy ? 'fa-user' : 'fa-users'")
     a.edit(title="rename", ng-click="$event.stopPropagation(); t.editTag(tag)", ng-hide="::tag.readOnly")
       i.fa.fa-pencil.fa-fw

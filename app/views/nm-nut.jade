@@ -2,7 +2,7 @@ div(ng-show="nut")
   div.tags
     span.tag(ng-repeat="tagId in nut.tags",  ng-click="q.toggleTag(tagId, $event)", ng-class="{queried: (q.tags.indexOf(tagId) != -1)}")
       | {{t.tags[tagId].name}}
-      span.share.icon.wide.tooltip(ng-click="$event.stopPropagation();", ng-show="t.tags[tagId].share", ng-attr-data-tooltip="{{ ::t.tags[tagId].sharedBy ? t.tags[tagId].sharedBy + ' is sharing this with you' : 'sharing with ' + _.keys(t.tags[tagId].share).join(',') }}")
+      span.share.icon.wide.tooltip(ng-click="$event.stopPropagation();", ng-show="t.tags[tagId].share", ng-attr-data-tooltip="{{ t.tags[tagId].sharedBy ? users[t.tags[tagId].sharedBy] + ' is sharing this with you' : 'sharing with ' + _.keys(t.tags[tagId].share).join(',') }}")
         //- TODO this will give simplelogin:xx, need to get names instead
         i.fa.fa-fw(ng-class="nut.sharedBy ? 'fa-user' : 'fa-users'")
       span.delete.icon(ng-click="n.removeTagIdFromNut(tagId, nut.id)", ng-show="! t.tags[tagId].prog && !(t.tags[tagId].sharedBy && t.tags[tagId].readOnly)")

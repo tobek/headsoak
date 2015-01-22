@@ -475,6 +475,34 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
     })
   }; // end $s.u - user account stuff
 
+  // will be populated with map from user UIDs to their display name
+  $s.users = {
+    fetchUserDisplayNames: function(uids) {
+      _.each(uids, $s.users.fetchUserDisplayName);
+    },
+
+    fetchUserDisplayName: function(uid) {
+      var fallbackName = uid.replace('simplelogin:', 'user #');
+      if ($s.users[uid] && $s.users[uid] !== fallbackName) {
+        // we already fetched it
+        return;
+      }
+      $s.users[uid] = fallbackName; // something to display if user sees this before data comes in or if request fails
+
+      if (uid === $s.u.user.uid) {
+        // ourselves
+        $s.users[uid] = $s.u.user.displayName;
+        return;
+      }
+
+      $s.ref.root().child('users/' + uid + '/user/displayName').once('value', function(data) {
+        $s.users[uid] = data.val();
+      }, function(err) {
+        console.error('failed to get display name for user ', uid, err);
+      });
+    }
+  };
+
   $s.lunr = lunr(function () {
     // this.field('title', {boost: 10});
     this.field('tags', {boost: 100});
@@ -2075,16 +2103,20 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     console.log('sharedWithMeInit: starting initializing shared stuff');
     console.time('sharedWithMeInit: intializing shared stuff');
 
-    // level 0. tags has sharerUid -> tagId - > perm, so we can build a list of tag paths
+    // level 0. shareInfo.tags has sharerUid -> tagId - > perm, so we can build a list of tag paths
     var tagPaths = []; // will fill with objects like {uid: 'simplelogin:....', path: 'users/...'}
+    var userUids = []; // so we can map to display names
 
     _.each(shareInfo.tags, function(tagsFromThisUser, sharerUid) {
+      userUids.push(sharerUid);
       _.each(tagsFromThisUser, function(permission, tagId) {
         if (permission === 'r') { // TODO handle other permissions of course
           tagPaths.push({uid: sharerUid, path: 'users/' + sharerUid + '/tags/' + tagId});
         }
       });
     });
+
+    $s.users.fetchUserDisplayNames(userUids); // asynchronous and we don't really care when it comes back
 
     // now we need to fetch each tag (level 1). each tag has a list of docs. so then we need to fetch *each* of those nuts (level 2).
     async.each(tagPaths, function(tagPathObj, cb) {
