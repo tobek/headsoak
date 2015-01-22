@@ -478,27 +478,32 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
   // will be populated with map from user UIDs to their display name
   $s.users = {
     fetchUserDisplayNames: function(uids) {
-      _.each(uids, $s.users.fetchUserDisplayName);
+      console.time('fetching ' + uids.length + ' users\' display names');
+      async.each(uids, $s.users.fetchUserDisplayName, function(err) {
+        console.timeEnd('fetching ' + uids.length + ' users\' display names');
+      });
     },
 
-    fetchUserDisplayName: function(uid) {
+    fetchUserDisplayName: function(uid, cb) {
       var fallbackName = uid.replace('simplelogin:', 'user #');
       if ($s.users[uid] && $s.users[uid] !== fallbackName) {
         // we already fetched it
-        return;
+        return cb(null, $s.users[uid]);
       }
       $s.users[uid] = fallbackName; // something to display if user sees this before data comes in or if request fails
 
       if (uid === $s.u.user.uid) {
         // ourselves
         $s.users[uid] = $s.u.user.displayName;
-        return;
+        return cb(null, $s.users[uid]);
       }
 
       $s.ref.root().child('users/' + uid + '/user/displayName').once('value', function(data) {
         $s.users[uid] = data.val();
+        return cb(null, $s.users[uid]);
       }, function(err) {
         console.error('failed to get display name for user ', uid, err);
+        cb(err, fallbackName);
       });
     }
   };
@@ -1414,9 +1419,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
             else if (userSearchQuery.match(/.+@.+\...+/)) { // ultra basic email regex
               $s.m.working = true;
               $s.ref.root().child('emailToId/' + btoa(userSearchQuery)).once('value', function(data) {
-                $s.m.closeModal(); // clears `working`, and we have to open new modal anyway after this
                 if (data.exists()) {
-                  var recipientName = userSearchQuery; // TODO actually grab name
                   var recipientUid = data.val();
 
                   if (! $s.u.user.displayName) {
@@ -1433,12 +1436,12 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
                         $s.u._changeDisplayName(displayName);
 
-                        $s.t.shareTagWithUser(tag, recipientUid, recipientName, perms);
+                        $s.t.shareTagWithUser(tag, recipientUid, perms);
                       }
                     });
                   }
                   else {
-                    $s.t.shareTagWithUser(tag, recipientUid, recipientName, perms);
+                    $s.t.shareTagWithUser(tag, recipientUid, perms);
                   }
                 }
                 else {
@@ -1466,25 +1469,41 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       return 'users/' + recipientUid + '/sharedWithMe/tags/' + $s.u.user.uid + '/' + tag.id;
     },
 
-    shareTagWithUser: function(tag, recipientUid, recipientName, perms) {
-      // mark in the *recipient*'s data that we've shared this tag with them
-      var recipientTagSharePath = $s.t.getRecipientTagSharePath(tag, recipientUid);
-      $s.ref.root().child(recipientTagSharePath).set(perms);
+    shareTagWithUser: function(tag, recipientUid, perms) {
+      async.parallel([
+        function(cb) {
+          // mark in the *recipient*'s data that we've shared this tag with them
+          var recipientTagSharePath = $s.t.getRecipientTagSharePath(tag, recipientUid);
+          $s.ref.root().child(recipientTagSharePath).set(perms, cb);
+        },
+        function(cb) {
+          $s.users.fetchUserDisplayName(recipientUid, cb);
+        }
+      ], function shareTagWithUserCb(err) {
 
-      // TODO should actually only continue on success callback
+        if (err) {
+          console.err('failed to share tag', tag, 'with user', recipientUid, err);
+          alert('An error occured while attempting to share this tag, please try again later.\n\n' + err);
+          $s.m.closeModal();
+          return;
+        }
 
-      $timeout(function() {
-        $s.m.alert({
-          message: 'Now sharing tag "'+ tag.name +'" with "'+ recipientName +'"'
-          // should be "ok" or "go to sharing settings"
-        });
-      }, 50);
+        if (!tag.share) tag.share = {};
+        tag.share[recipientUid] = perms;
+        $s.t.tagUpdated(tag);
 
-      if (!tag.share) tag.share = {};
-      tag.share[recipientUid] = perms;
-      $s.t.tagUpdated(tag);
+        $s.t.updateNotesShareInfo(tag);
 
-      $s.t.updateNotesShareInfo(tag);
+        $s.m.closeModal(); // HACK: otherwise text isn't vertically aligned on the upcoming alert
+        $timeout(function() {
+          $s.m.working = false;
+          $s.m.alert({
+            message: 'Now sharing tag "'+ tag.name +'" with "'+ $s.users[recipientUid] +'"'
+            // TODO: should be "ok" or "go to sharing settings"
+          });
+        }, 50);
+
+      });
     },
 
     unshareTagWithUser: function(tag, recipientUid) {
