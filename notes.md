@@ -60,11 +60,6 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
         - only necessary if recipient of 'w' *can't* share or depending on 'w' behavior of sharer deleting/unsharing
     - 'd' deleted. only found in recipient's /user/uid/share document, indicates recipient should update their sharing info accordingly, and then can delete the 'd' record
 
-##### now
-
-- consistent styles for shared tags
-- grey out read-only
-
 ##### soon
 
 - "don't as me again for [user]" response to request (which means we need notifications...)

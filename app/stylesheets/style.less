@@ -14,6 +14,7 @@
 
 @textareaBG: #DDD;
 @textareaFocusBG: desaturate(lighten(@mainbg, 85%), 8%);
+@textareaReadOnlyBG: desaturate(lighten(@mainbg, 65%), 30%);
 
 @new-hover: gold;
 
@@ -124,6 +125,13 @@ a {
   display: inline-block;
   clear: both;
   cursor: pointer;
+  &.read-only {
+    background-color: darken(@tagBG, 10%);
+    color: darken(@tagColor, 25%);
+    &:hover {
+      background-color: darken(@tagHover, 10%);
+    }
+  }
 }
 #left {
   .tag:hover{ background-color: @nutTagHover; }
@@ -134,8 +142,6 @@ a {
   .tag:hover{ background-color: @tagHover; }
   .tag.queried{ background-color: #3F3F3F; }
   .tag.queried:hover{ background-color: lighten(@tagHover, 10%); }
-  .tag.read-only{ background-color: darken(@tagBG, 10%); color: darken(@tagColor, 25%); }
-  .tag.read-only:hover{ background-color: darken(@tagHover, 10%); }
 }
 
 form {
@@ -400,6 +406,10 @@ form {
         textarea:focus {
           background-color: @textareaFocusBG;
           max-height: 95vh;
+        }
+        textarea.read-only {
+          background-color: @textareaReadOnlyBG;
+          color: #333;
         }
         .icons {
           display: none;
