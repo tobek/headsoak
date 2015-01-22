@@ -61,18 +61,11 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### now
 
-- proper tooltips on tag share icons (should entire tag trigger tooltip?)
 - alert on recipient "blah wants to share blah with you"
     - when you login: 'USER has shared their tag "TAGNAME" with you [as read-only]OR[and invited you to edit].' a [more info] link expands to: 'Shared notes and tags show up alongside your personal notes and tags, but with the [person] icon. You can modify (add your own tags, set to private, etc.) shared notes as normal.'
         - Accept
         - Accept all sharing offers from USER
         - Decline
-- fetch local representation of friend names
-- icons and tooltips
-    - someone shared this with me: person icon
-        - on hover: "Shared by USER"
-    - i'm sharing this note with others: group icon
-        - on hover: bulleted list "Shared with: - user 1, - user 2"
 - consistent styles
 
 ##### soon
@@ -341,6 +334,8 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### bits and bugs
 
+- refactor tag view so that nm-nut includes nm-tag
+- UI: should entire tag show prog/share tooltip? what if it's prog AND share...
 - migrate off of firebase simple login
 - refactor file structure (e.g. break out js.js, put in controllers/, directives/ folders etc) (and put "use strict" inside of scope in each)
     - http://vesparny.github.io/ng-kickstart
@@ -364,6 +359,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
     - maybe shift+enter or comma to add another tag after writing this one (customizeable). it basically just hits enter and opens another/creates a new tag and clears current and leaves focus there
 - browser compatibility warning (we only support IE10 and up)
 - what to do with multiple tags with the same name? we can disallow it for local tags, but might happen with shared tags. should be given the option to merge or rename - either way we need to store some map on recipient's end
+- bug/todo: when deleting tag, remove it from search query if it's in there
 
 ### todo eventually
 

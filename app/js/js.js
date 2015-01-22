@@ -173,7 +173,8 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
     },
     // properties that should not be uploaded to firebase - map of field -> array of props
     excludeProps: {
-      'nuts': ['sortVal', 'sharedBody']
+      'nuts': ['sortVal', 'sharedBody'],
+      'tags': ['shareTooltip'],
     },
     push: function() {
       if ($s.digest.pushHackCounter > 0) return;
@@ -477,6 +478,18 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
 
   // will be populated with map from user UIDs to their display name
   $s.users = {
+    /** go through all our tags and fetch display names of any users we're sharing stuff with */
+    fetchShareRecipientNames: function() {
+      var uids = [];
+      _.each($s.t.tags, function(tag) {
+        if (tag.share) {
+          uids = uids.concat(_.keys(tag.share));
+        }
+      });
+
+      $s.users.fetchUserDisplayNames(_.uniq(uids));
+    },
+
     fetchUserDisplayNames: function(uids) {
       console.time('fetching ' + uids.length + ' users\' display names');
       async.each(uids, $s.users.fetchUserDisplayName, function(err) {
@@ -1542,6 +1555,23 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       });
     },
 
+    /** currently gets called by view on mouseover of share icon */
+    setShareTooltip: function(tag) {
+      // TODO this is un-angular-ish i think, but more efficient than setting watchers on tag.share/tag.sharedBy of every tag... what's the best way here?
+
+      if (! tag.share) {
+        tag.shareTooltip = 'share this tag';
+      }
+      else if (tag.sharedBy) {
+        tag.shareTooltip = $s.users[tag.sharedBy] + ' is sharing this with you';
+      }
+      else {
+        tag.shareTooltip = 'sharing with ' + _.map(tag.share, function(perm, uid) {
+          return $s.users[uid];
+        }).join(',');
+      }
+    },
+
     /* call whenever a tag is updated. accepts tag or tag id
      * 1: updates `modified`
      * 2: updateNutInIndex() too if updateNut == true, e.g. if the name has changed
@@ -2021,13 +2051,10 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
         // firebase doesn't store empty arrays, so we get undefined for unused tags. which screws up sorting by tag usage
         _.each($s.t.tags, function(tag) {
-          if (!tag) return;
           if (!tag.docs) tag.docs = [];
         });
 
         _.each($s.n.nuts, function(nut) {
-          if (!nut) return;
-
           // ditto firebase not storying empty arrays
           if (!nut.tags) nut.tags = [];
 
@@ -2075,6 +2102,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         });
         */
 
+        $s.users.fetchShareRecipientNames();
         sharedWithMeInit(data.val().sharedWithMe);
 
         console.time("intializing lunr index");
