@@ -62,14 +62,16 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### soon
 
-- "don't as me again for [user]" response to request (which means we need notifications...)
+- "don't ask me again for [user]" response to request (which means we need notifications...)
 - specify in share request that it's read-only/one-way
     - 'Shared notes and tags show up alongside your personal notes and tags, but with the [person] icon. You can modify (add your own tags, set to private, etc.) shared notes as normal.'
 - on init share stuff, don't tagupdated and sync to firebase if nothing changed
 - @name system tag
+    - there are 3 potential uses. @name shared with me, i shared with @name, and this is about @name (but maybe i don't want to share it with them)...
 - ability to select single note to share (essentially adding that system tag)
 - sharer removes:
-    - recipient sees the x, and delete's local notes and the 'x'
+    - recipient sees the x, and delete's local tag notes and the 'x'
+    - sharer removes just one tag... we'd end up with a shared tag with no `sharedBody`, maybe just clean up after share init callback?
 - recipient removes:
     - if user tries to delete note someone shared with them: 'This note is in your Nutmeg because USER has shared their tag "TAGNAME" with you. To delete it, remove this shared tag.'
         - OK
@@ -96,6 +98,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
         - does note live with "owner" or in a separate collection?
         - modify security permissions so user A can access (some of) user B's notes
 - **LATER**:
+    - instead of the user(s) icons on tags for sharing, maybe show tiny (b&w?) avatar or initials? how to differentiate shared by and shared with?
     - keep track of "friends"? (people you've shared something with or they've shared with you). global id, populated on app startup with their name
     - sharer shares a prog tag. recipient sees sharer's notes that were programatically tagged. does it also programamtically tag recipient's notes? i guess the more general question is whether the recipient can apply a sharer's tag to their own nets. note merging etc...
     - should private notes be shared? they currently are
@@ -395,6 +398,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### bits and bugs
 
+- hide nmScope in /* DEV ONLY */ block or something
 - move feedback from zapier to watcher.js
 - load html and angular REAL fast and then async all the other shit
 - dynamic modals should have:

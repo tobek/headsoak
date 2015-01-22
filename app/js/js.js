@@ -1,6 +1,8 @@
 /* jshint ignore:start */ // TODO actually clean up
 "use strict";
 
+console.time('pre login');
+
 angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
 .controller('Nutmeg', ['$scope', '$timeout', "$interval", "$sce", "fuzzyMatchSort", function ($s, $timeout, $interval, $sce, fuzzyMatchSort) {
 
@@ -175,7 +177,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
     },
     // properties that should not be uploaded to firebase - map of field -> array of props
     excludeProps: {
-      'nuts': ['sortVal', 'sharedBody'],
+      'nuts': ['sharedBody'],
       'tags': ['shareTooltip'],
     },
     push: function() {
@@ -416,6 +418,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
       }
       else if (user) {
         // user authenticated with Firebase
+        console.timeEnd('pre login');
         console.log('Logged in, user id: ' + user.id + ', provider: ' + user.provider);
         $timeout(function() {
           $s.u.loading = true; // while notes are loading
@@ -425,7 +428,6 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
         init(user.uid, function(featuresSeen) {
           console.log("init callback")
           $timeout(function() {
-            $s.n.assignSortVals($s.n.sortBy);
             $s.m.closeModal();
             $s.u.loading = false; // used for login/createaccount loading spinner
             $s.u.loggingIn = false;
@@ -555,47 +557,42 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       // NOTE: changes to the fields might require changes to the nutSort filter
     ],
 
-    /* go through all $s.n.nuts and assign property sortVal 
+    // probably the most important property in this application. maps id -> note object, filled in by firebase
+    nuts: {},
+
+    // dynamically generated partial or complete copy of `nuts`, sorted and filtered according to the user. **each element of the array is a reference to a nut object in `nuts`.** this means that neither `nuts` nor `nutsDisplay` should directly reassign any of its elements, or else things will go out of sync
+    nutsDisplay: [],
+
+    /**
+     * order $s.n.nutsDisplay or passed-in nuts according to `sortOpt`. assign $s.n.nutsDisplay to the sorted result
      * 
-     * basically we don't want sort order updating *while* you're editing some
-     * property that we're sorting on. e.g. you're sorting on recently modified
-     * and as you start typing, that note shoots to the top.
-     *
-     * procedure:
-     *
-     * 1. make a copy of nuts
-     * 2. sort it
-     * 3. iterate through and assign $s.n.nuts[id].sortVal = (index in sorted copy)
+     * basically we don't want sort order updating *while* you're editing some property that we're sorting on. e.g. you're sorting on recently modified and as you start typing, that note shoots to the top. so we need to control this separately and only change order of array when we want
      */
-    assignSortVals: function(sortOpt) {
-      if (!$s.n.nuts) return; // sometimes we get called before anything has been set up
-      console.log("sorting...");
+    sortNuts: function(sortOpt, nutsToSort) {
+      if (! nutsToSort) nutsToSort = $s.n.nutsDisplay;
+      if (! nutsToSort) return; // sometimes we get called before anything has been set up
+      console.time('sorting nuts');
+      console.log('sorting nuts...');
 
-      // STEP 1
-      var nutsCopy = angular.copy($s.n.nuts);
+      var sortedNuts;
 
-      // STEP 2
       if (sortOpt.field.indexOf(".") !== -1 ) { // e.g. field might be `tags.length`
         var fields = sortOpt.field.split(".");
-        nutsCopy = _.sortBy(nutsCopy, function(nut) {
+        sortedNuts = _.sortBy(nutsToSort, function(nut) {
           return nut[fields[0]] ? nut[fields[0]][fields[1]] : 0;
         });
       }
       else { // e.g. `created`
-        nutsCopy = _.sortBy(nutsCopy, sortOpt.field);
+        sortedNuts = _.sortBy(nutsToSort, sortOpt.field);
       }
       // NOTE: this is a more generic way to deal with this indexing of sub-objects by dot-notation string: http://stackoverflow.com/a/6394168
 
-      if (sortOpt.rev) nutsCopy.reverse();
+      if (sortOpt.rev) sortedNuts.reverse();
 
-      // STEP 3
-      nutsCopy.forEach(function(sortedNut, sortedIndex) {
-        if (sortedNut) { // some will be undefiend
-          $s.n.nuts[sortedNut.id].sortVal = sortedIndex;
-        }
-      })
+      $s.n.nutsDisplay = sortedNuts;
 
-      setTimeout(angular.element("body").scope().n.autosizeAllNuts, 5);
+      console.timeEnd('sorting nuts');
+      $timeout($s.n.autosizeAllNuts);
     },
 
     /* 
@@ -603,17 +600,15 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
      * returns ID of created nut
      */
     createNut: function(nut) {
+      console.time('creating new nut');
       var newId;
-      var tempSortVal; // we want to ensure that this new nut is always sorted first until stuff is re-sorted
 
       if (nut.id) {
         if ($s.n.nuts[nut.id]) throw new Error('You\'re trying to create a new nut with an id ('+ nut.id +') that\'s already taken!');
         newId = nut.id
-        tempSortVal = _.keys($s.n.nuts).length * -10;
       }
       else {
         newId = getUnusedKeyFromObj($s.n.nuts);
-        tempSortVal = -1 * newId;
       }
 
       // if we've specifically passed in tags on this nut, use those. otherwise, maybe use query-filtering tags
@@ -632,7 +627,6 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         modified: (new Date).getTime(),
         history: [], // an array of nuts, last is the latest
         id: newId,
-        sortVal: tempSortVal
       }, nut);
 
       if (nut.tags && nut.tags.length > 0) {
@@ -645,14 +639,16 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       this.nutUpdated(newId); // saves state in history, updates index, etc.
       console.log("new nut "+newId+" has been created");
 
-      if ($s.q.showNuts) {
-        $s.q.showNuts.push(newId); // ensures that the new nut is visible even if we have a search query open
-      }
+      // ensure that the new nut is visible and on top regardless of sort or search query
+      $s.n.nutsDisplay.unshift($s.n.nuts[newId]);
 
+      console.time('[angularJS?] post new nut processing');
       $timeout(function() {
+        console.timeEnd('[angularJS?] post new nut processing');
         $s.n.focusOnNutId(newId);
         $s.n.autosizeAllNuts();
-      }, 0);
+        console.timeEnd('creating new nut');
+      }, 5, false);
 
       return newId;
     },
@@ -688,7 +684,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.digest.nuts[nut.id] = null;
       $s.digest.push(); // update right away
 
-      $timeout($s.n.autosizeAllNuts, 0);
+      $s.q.doQuery(); // redo query to remove this nut from displayNuts, autosize, etc.
 
       console.log("nut "+nut.id+" has been deleted");
     },
@@ -909,9 +905,11 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     },
 
     autosizeAllNuts: function() {
+      console.time('autosizing all nuts');
       angular.element(".nut textarea").each(function(i, ta){
         $s.n.autosizeNutByEl(ta);
       });
+      console.timeEnd('autosizing all nuts');
     },
 
     // hack, needed because ngChange doesn't pass element
@@ -933,9 +931,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     },
 
     focusOnNutId: function(id) {
-      $timeout(function() {
-        angular.element("#nut-"+id+"-ta")[0].focus();
-      });
+      document.getElementById("nut-"+id+"-ta").focus();
     },
     // currently unused:
     focusOnFirstResult: function() {
@@ -960,16 +956,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     },
 
     countShownNuts: function() {
-      var count;
-      if (!$s.n.nuts) {
-        count = 0;
-      }
-      else if ($s.q.showAll) {
-        count = _.keys($s.n.nuts).length;
-      }
-      else {
-        count = $s.q.showNuts.length;
-      }
+      var count = $s.n.nutsDisplay.length;
       return count + (count == 1 ? " note" : " notes");
     }
 
@@ -1036,8 +1023,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
   // ==== QUERY STUFF ==== //
 
   $s.q = {
-    showAll: true,
-    query: "", // modeled in query bar and watched for changes by nmQuery directive, which calls doQuery()
+    query: '', // modeled in query bar and watched for changes by nmQuery directive, which calls doQuery()
     tags: [], // list of tag ids we are filtering by - will be intersected with results of lunr search. also, if $s.c.config.addQueryTagsToNewNuts, then... you guessed it
 
     toggleTag: function(tagId, e) {
@@ -1069,8 +1055,13 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
       }
     },
 
-    /** query is string, tags is array of tag IDs */
+    /**
+     * creates an array of nut IDs filtered by various means, and then maps the actual nuts from `$s.n.nuts` onto that, and passes the result onto `$s.n.sortNuts`, which in turn sorts it and assigns `$s.n.nutsDisplay` to the result
+     * 
+     * `query` is string, `tags` is array of tag IDs - takes `$s.query` scope variables if args not passed in
+     * */
     doQuery: function(query, tags) {
+      console.time('doing query');
       query = defaultFor(query, $s.q.query);
       tags = defaultFor(tags, $s.q.tags);
 
@@ -1085,6 +1076,11 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
           arrays.push($s.t.tags[tagId].docs);
         });
         filteredByTags = multiArrayIntersect(arrays);
+
+        if (filteredByTags.length === 0) {
+          // no notes match this combination of tags, so we're done:
+          return $s.q.noResults();
+        }
       }
 
       // NEXT get the docs filtered by any string
@@ -1093,6 +1089,11 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
         // results is array of objects each containing `ref` and `score`
         // ignoring score for now
         filteredByString = results.map(function(doc){ return doc.ref; }); // gives us an array
+
+        if (filteredByString.length === 0) {
+          // no notes have this string, so we're done:
+          return $s.q.noResults();
+        }
       }
 
       // ALSO check private notes
@@ -1103,27 +1104,45 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
                               .map(function(nut) { return nut.id; }) );
 
         if (filteredByPrivate.length === 0) {
-          // *every* note is private (and private mode is off) so we're done:
-          this.showAll = false;
-          this.showNuts = [];
-          return;
+          // *every* note is private (and private mode is off), so we're done:
+          return $s.q.noResults();
+        }
+        else if (filteredByPrivate.length === _.keys($s.n.nuts).length) {
+          filteredByPrivate = null; // ignore
         }
       }
 
+      var filteredNuts;
       var filterArrays = [];
-      if (filteredByTags && filteredByTags.length) filterArrays.push(filteredByTags);
-      if (filteredByString && filteredByString.length) filterArrays.push(filteredByString);
-      if (filteredByPrivate && filteredByPrivate.length) filterArrays.push(filteredByPrivate);
+      if (filteredByTags) filterArrays.push(filteredByTags);
+      if (filteredByString) filterArrays.push(filteredByString);
+      if (filteredByPrivate) filterArrays.push(filteredByPrivate);
 
       if (filterArrays.length) {
-        this.showAll = false;
-        this.showNuts = multiArrayIntersect(filterArrays);
+        var showNutIds = multiArrayIntersect(filterArrays);
+
+        // now build an array pointing to just the nuts that we want to display
+        filteredNuts = _.map(showNutIds, function(nutId) {
+          return $s.n.nuts[nutId];
+        });
       }
       else {
-        this.showAll = true;
+        // show all
+        filteredNuts = $s.n.nuts;
       }
 
-      $timeout($s.n.autosizeAllNuts, 5);
+      $timeout(function() {
+        $s.n.sortNuts($s.n.sortBy, filteredNuts); // re-sort, cause who knows what we've added into `$s.n.nuts` (sortNuts also autosizes textareas)
+
+        console.timeEnd('doing query');
+      }, 5);
+    },
+    /** call if no results during `doQuery` */
+    noResults: function() {
+      $timeout(function() {
+        $s.n.nutsDisplay = [];
+        console.timeEnd('doing query');
+      }, 5);
     },
 
     clear: function() {
@@ -1146,7 +1165,7 @@ C8888D 88 V8o88 88    88    88      88~~~   88    88 88 V8o88 8b        `Y8b.
     if (e.keyCode == 8 && $("#query .search")[0].selectionStart == 0 && $s.q.tags.length > 0) {
       $s.q.removeTag($s.q.tags[$s.q.tags.length-1]);
       $s.q.setupAutocomplete(); // reset autocomplete so that newly removed tag is in suggestions again
-      $timeout($s.n.autosizeAllNuts, 5); // HACK: gets called anyway but too quickly, before present notes have been updating, so... call it again in a sec
+      $timeout($s.n.autosizeAllNuts, 10, false); // HACK: gets called anyway but too quickly, before present notes have been updating, so... call it again in a sec
     }
   });
 
@@ -2045,6 +2064,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
 
 
   function init(uid, cb) {
+    console.time('main init');
     console.log("init: fetching data for user uid "+uid);
     $s.ref = new Firebase('https://nutmeg.firebaseio.com/users/' + uid);
 
@@ -2121,9 +2141,9 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         $s.users.fetchShareRecipientNames();
         sharedWithMeInit(data.val().sharedWithMe);
 
-        console.time("intializing lunr index");
+        console.time("initializing lunr index");
         _.each($s.n.nuts, $s.n.updateNutInIndex);
-        console.timeEnd("intializing lunr index");
+        console.timeEnd("initializing lunr index");
 
         $s.s.initBindings(data.val().shortcuts);
         $s.c.loadSettings(data.val().settings);
@@ -2138,6 +2158,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.u.digestInterval = window.setInterval($s.digest.push, 4000);
       window.beforeunload = $s.digest.push; // TODO since push() isn't synchronous, probably won't work.
 
+      console.timeEnd('main init');
       cb(featuresSeen);
     });
 
@@ -2200,7 +2221,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       else console.log('sharedWithMeInit: done initializing shared stuff');
       console.timeEnd('sharedWithMeInit: intializing shared stuff');
 
-      $s.n.assignSortVals($s.n.sortBy); // resort
+      $s.q.doQuery(); // will add new notes to n.nutsDisplay and sort them
     });
   }
   // level 1a: grab shared tag info
@@ -2265,10 +2286,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     async.each(nutPaths, function(nutPath, _cb) {
       initializeSharedNutFromPath(nutPath, sharerUid, _cb);
     }, function(err) {
-      if (err) return cb(err);
-      else {
-        return cb();
-      }
+      return cb(); // not passing any error in, we can continue
     });
 
     createLocalSharedWithMeTag(tag, sharerUid);
@@ -2334,7 +2352,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     if ($s.n.nuts[localNutId]) {
       // _.extend will overwrite arrays, so before we do that, preserve and tags we've locally added to this shared note
       $s.n.nuts[localNutId].tags = $s.n.nuts[localNutId].tags.filter(function(tagId) {
-        // remove any tags on this note that belong to the sharer. they might have changed even if they haven't, we'll merge them back in in a sec:
+        // remove any tags on this note that belong to the sharer. they might have changed, and even if they haven't, we'll merge them back in in a sec:
         return tagId.indexOf(sharerUid) !== 0;
       });
       nut.tags = _.union(nut.tags, $s.n.nuts[localNutId].tags);
@@ -2344,9 +2362,6 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     }
 
     _.extend($s.n.nuts[localNutId], nut);
-
-    $s.$apply();
-    $s.n.autosizeNutById(localNutId);
 
     $s.n.nutUpdated(localNutId, false, true);
   }

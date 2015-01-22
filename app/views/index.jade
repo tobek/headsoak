@@ -229,14 +229,12 @@ block content
               span.count {{n.countShownNuts()}}
               span.sort
                 label Sort by 
-                  select#nut-sort-select(ng-change='n.assignSortVals(n.sortBy)', ng-model='n.sortBy', ng-options='o as o.name for o in n.sortOpts', tabindex=3)
+                  select#nut-sort-select(ng-change='n.sortNuts(n.sortBy)', ng-model='n.sortBy', ng-options='o as o.name for o in n.sortOpts', tabindex=3)
                   | 
-                i.fa.fa-refresh(ng-click='n.assignSortVals(n.sortBy); q.doQuery();')
+                i.fa.fa-refresh(ng-click='q.doQuery();')
 
           ul
-            //- NOTE: maybe should let n.assignSortVals() handle q.showNuts too, and ng-show="nut.sortVal" ?
-            //- NOTE: we sort EVERYTHING and then "filter" with ng-show. should filter first and then sort if sorting is slow
-            li.nut(ng-repeat="nut in n.nuts | orderObjectBy:'sortVal' track by $index", ng-show="q.showAll || q.showNuts.indexOf(nut.id) !== -1", id="nut-{{nut.id}}")
+            li.nut(ng-repeat="nut in n.nutsDisplay", id="nut-{{nut.id}}")
               nm-nut
 
       div#right
