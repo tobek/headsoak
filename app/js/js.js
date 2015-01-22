@@ -424,13 +424,13 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
         $s.u.user = user;
         init(user.uid, function(featuresSeen) {
           console.log("init callback")
-          $s.$apply(function() {
+          $timeout(function() {
             $s.n.assignSortVals($s.n.sortBy);
             $s.m.closeModal();
             $s.u.loading = false; // used for login/createaccount loading spinner
             $s.u.loggingIn = false;
             $s.u.email = $s.u.password = $s.u.pass1 = $s.u.pass2 = ""; // clear input fields so they're not still shown there when they log out: otherwise, anyone can just hit log in again
-          });
+          }, 50);
 
           var featuresSeenRef = new Firebase('https://nutmeg.firebaseio.com/users/' + $s.u.user.uid + '/featuresSeen');
 
