@@ -1150,6 +1150,9 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
       $s.autocomplete(angular.element("#query .search")); // will remove any existing autocomplete
     }
   }; // end of $s.q
+  // TODO have to do this weird method of adding self-referential properties because i'm doing single objects rather than proper modules... big ol refactor
+  $s.q.fastDebounceDoQuery = _.debounce($s.q.doQuery, 250, {maxWait: 5000});
+  $s.q.slowDebounceDoQuery = _.debounce($s.q.doQuery, 1000, {maxWait: 10000});
 
   // backspace in first position of searchbar when there are tags should delete last tag
   // TODO: not sure in what browsers selectionStart works, but it's not all. make sure that it doesn't always return 0 in some browsers, cause then we'll be deleting all the time
@@ -2130,8 +2133,6 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
         $s.c.loadSettings(data.val().settings);
 
         featuresSeen = data.val().featuresSeen;
-
-        $s.q.doQuery();
       }
 
       // sync to server every 4s
@@ -2345,6 +2346,9 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
     _.extend($s.n.nuts[localNutId], nut);
 
     $s.n.nutUpdated(localNutId, false, true);
+
+    // need to run `doQuery` because any newly added/updated shared notes won't be in `$s.n.nutsDisplay`. however, createLocalSharedWithMeNut could get called dozens of times or more, so do a slow debounced function to not overwhelm with a filter sort resize and digest each time
+    $s.q.slowDebounceDoQuery();
   }
 
   function declineSharedTag(sharerUid, tag) {
@@ -2442,12 +2446,13 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
 }])
 .directive('nmQuery', function() {
   return function(scope, element, attrs) {
-    // debounced so that it doesn't fire needlessly while typing
     var debouncedDoQuery = _.debounce(nmScope.q.doQuery, 250, {maxWait: 5000});
 
     scope.$watch(attrs.nmQuery, function(newQ) {
       // don't need to pass in newQ, $s.q.doQuery looks at scope variables (probably un-angularish)
-      debouncedDoQuery();
+      // debounced so that it doesn't fire needlessly while typing
+      // TODO don't use nmScope...
+      nmScope.q.fastDebounceDoQuery();
     });
   };
 })
