@@ -87,9 +87,11 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
           ok: opts.ok !== false, // show okay unless explicitly set to false
           okText: opts.okText,
           okCb: opts.okCb,
-          cancel: opts.cancel || !! opts.cancelText, // angular template interprets "no" as falsey so we have to do this...
+          cancel: opts.cancel || !! opts.cancelText, // angular template interprets "no" as falsey so we have to do !! to cancelText in case it's "no"
           cancelText: opts.cancelText,
           cancelCb: opts.cancelCb,
+          thirdButton: opts.thirdButton,
+          thirdButtonCb: opts.thirdButtonCb,
         };
         $s.m.modalLarge = opts.large;
       });
@@ -490,10 +492,11 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
       $s.users.fetchUserDisplayNames(_.uniq(uids));
     },
 
-    fetchUserDisplayNames: function(uids) {
+    fetchUserDisplayNames: function(uids, cb) {
       console.time('fetching ' + uids.length + ' users\' display names');
       async.each(uids, $s.users.fetchUserDisplayName, function(err) {
         console.timeEnd('fetching ' + uids.length + ' users\' display names');
+        if (cb) cb(err);
       });
     },
 
@@ -1425,7 +1428,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
           }, 50);
         }
 
-        var permission = 'r?'; // read only is all we can do for now
+        var permission = 'r'; // read only is all we can do for now
 
         $s.m.prompt({
           title: 'Sharing "' + tag.name + '"',
@@ -1496,7 +1499,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
         function(cb) {
           // mark in the *recipient*'s data that we've shared this tag with them
           var recipientTagSharePath = $s.t.getRecipientTagSharePath(tag, recipientUid);
-          $s.ref.root().child(recipientTagSharePath).set(permission, cb);
+          $s.ref.root().child(recipientTagSharePath).set(permission + '?', cb); // '?' indicating they need to accept - recipient will remove the '?' and accept or decline
         },
         function(cb) {
           $s.users.fetchUserDisplayName(recipientUid, cb);
@@ -2163,23 +2166,33 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     console.time('sharedWithMeInit: intializing shared stuff');
 
     // level 0. shareInfo.tags has sharerUid -> tagId - > perm, so we can build a list of tag paths
-    var tagPaths = []; // will fill with objects like {uid: 'simplelogin:....', path: 'users/...'}
+    var sharedTagInfo = []; // will fill with objects like {uid: 'simplelogin:....', path: 'users/...', permission: 'r'}
     var userUids = []; // so we can map to display names
+    var confirmationRequired = false; // whether at least 1 shared tag needs confirmation
 
     _.each(shareInfo.tags, function(tagsFromThisUser, sharerUid) {
       userUids.push(sharerUid);
       _.each(tagsFromThisUser, function(permission, tagId) {
-        if (permission === 'r') { // TODO handle other permissions of course
-          tagPaths.push({uid: sharerUid, path: 'users/' + sharerUid + '/tags/' + tagId});
-        }
+        if (!permission) return; // firebase treating this as an array not an obj, and it's sparse...
+
+        if (permission === 'r?') confirmationRequired = true;
+
+        sharedTagInfo.push({
+          uid: sharerUid,
+          path: 'users/' + sharerUid + '/tags/' + tagId,
+          permission: permission
+        });
       });
     });
 
     $s.users.fetchUserDisplayNames(userUids); // asynchronous and we don't really care when it comes back
 
+    // TODO if "user wants to share tag with you, okay?" confirmation is needed for at least one share, we have to do this in series - if we didn't do in series they'd all override each other. would be better to split these into ones requiring confirmation (to run in series) and ones not (to run in parallel) OR load all the data in parallel and do some kind of queue for the confirmations, but this isn't so bad for now
+    var asyncFunc = confirmationRequired ? 'eachSeries' : 'each';
+
     // now we need to fetch each tag (level 1). each tag has a list of docs. so then we need to fetch *each* of those nuts (level 2).
-    async.each(tagPaths, function(tagPathObj, cb) {
-      fetchSharedNutsFromTagPath(tagPathObj.path, tagPathObj.uid, cb);
+    async[asyncFunc](sharedTagInfo, function(tagInfo, cb) {
+      fetchSharedTag(tagInfo.path, tagInfo.uid, tagInfo.permission, cb);
 
     }, function(err) {
       if (err) console.error('sharedWithMeInit: error while initializing shared stuff:', err);
@@ -2189,34 +2202,73 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       $s.n.assignSortVals($s.n.sortBy); // resort
     });
   }
-  // level 1: get nut ids from a shared tag
-  function fetchSharedNutsFromTagPath(tagPath, sharerUid, cb) {
+  // level 1a: grab shared tag info
+  function fetchSharedTag(tagPath, sharerUid, permission, cb) {
     console.log('sharedWithMeInit: fetching shared tag info from', tagPath);
 
     $s.ref.root().child(tagPath).once('value', function(data) {
       if (! data.val()) return cb(new Error('fetched tag is empty'));
 
-      var nutPaths = [];
-
-      _.each(data.val().docs, function(nutId) {
-        nutPaths.push('users/' + sharerUid + '/nuts/' + nutId);
-      });
-
-      async.each(nutPaths, function(nutPath, _cb) {
-        initializeSharedNutFromPath(nutPath, sharerUid, _cb);
-      }, function(err) {
-        if (err) return cb(err);
-        else {
-          return cb();
-        }
-      });
-
-      handleSharedWithMeTag(data.val(), sharerUid);
-
+      initSharedTag(data.val(), sharerUid, permission, cb);
     }, function(err) {
       console.error('sharedWithMeInit: failed to fetch tag from', tagPath);
       cb(err);
     });
+  }
+  // level 1b: decide what to do with shared tag based on permission
+  function initSharedTag(tag, sharerUid, permission, cb) {
+    if (permission === 'd?') {
+      // TODO delete it
+      return cb();
+    }
+    else if (permission === 'r?') {
+      // sharer is requesting to share something with us as read-only
+
+      // first get their display name (NOTE: this may produce duplicate requests since we called fetchUserDisplayNames with all sharer UIDs in sharedWithMeInit. request may have come back already in which case there won't be a second round-trip now. if not, there will be. alternative is to not call initSharedTag until after fetchUserDisplayNames is done, which needlessly makes the process longer. proper option would be to detect if it's a new user (requiring us to display this dialog) and fetch just those display names before calling this, fetching others in the background)
+      $s.users.fetchUserDisplayName(sharerUid, function(err) {
+        $s.m.confirm({
+          bodyHTML: '<p>' + $s.users[sharerUid] + ' wants to share the tag "' + tag.name  + '" with you.</p><p>How does that sound?</p>',
+          okText: 'great',
+          okCb: function() {
+            $s.ref.child('sharedWithMe/tags/' + sharerUid + '/' + tag.id).set('r'); // remove the ?
+
+            handleSharedTag(tag, sharerUid, permission, cb);
+          },
+          cancelText: 'no thanks',
+          cancelCb: function() {
+            declineSharedTag(sharerUid, tag); // aw
+
+            cb(); // onwards
+          },
+        });
+      });
+    }
+    else if (permission === 'r') {
+      handleSharedTag(tag, sharerUid, permission, cb);
+    }
+    else {
+      // uh
+      cb();
+    }
+  }
+  // level 1c: get nut ids from a shared tag and load nuts
+  function handleSharedTag(tag, sharerUid, permission, cb) {
+    var nutPaths = [];
+
+    _.each(tag.docs, function(nutId) {
+      nutPaths.push('users/' + sharerUid + '/nuts/' + nutId);
+    });
+
+    async.each(nutPaths, function(nutPath, _cb) {
+      initializeSharedNutFromPath(nutPath, sharerUid, _cb);
+    }, function(err) {
+      if (err) return cb(err);
+      else {
+        return cb();
+      }
+    });
+
+    createLocalSharedWithMeTag(tag, sharerUid);
   }
   // level 2: get the actual nuts
   function initializeSharedNutFromPath(nutPath, sharerUid, cb) {
@@ -2226,7 +2278,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
       if (! data.val()) return cb(new Error('fetched nut is empty'));
 
       cb();
-      handleSharedWithMeNut(data.val(), sharerUid);
+      createLocalSharedWithMeNut(data.val(), sharerUid);
     }, function(err) {
       console.error('sharedWithMeInit: failed to fetch nut from', nutPath);
       cb(err);
@@ -2234,7 +2286,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
   }
 
   /** given another user's tag, handle special local version of that tag for this user */
-  function handleSharedWithMeTag(tag, sharerUid) {
+  function createLocalSharedWithMeTag(tag, sharerUid) {
     var localTagId = sharerUid + ':' + tag.id;
     tag.id = localTagId;
     tag.docs = tag.docs.map(function(docId) {
@@ -2253,7 +2305,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     $s.t.tagUpdated(localTagId);
   }
   /** given another user's nut, handle special local version of that nut for this user */
-  function handleSharedWithMeNut(nut, sharerUid) {
+  function createLocalSharedWithMeNut(nut, sharerUid) {
     var localNutId = sharerUid + ':' + nut.id;
     nut.id = localNutId;
     nut.tags = nut.tags.map(function(tagId) {
@@ -2261,7 +2313,7 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     })
     .filter(function(tagId) {
       // we only want sharer's tags that are also on our system
-      // NOTE: handleSharedWithMeTag() for the tag whose sharing introduced this note should have been called before this, because it runs synchronously from the code path that asynchronously results in handleSharedWithMeNut(), so sharer's tags should already exist locally. however TODO there is an edge case where sharer has multiple tags on this note which are also shared with this user, one of which has been handled but the other which has not, so one tag could go missing...
+      // NOTE: createLocalSharedWithMeTag() for the tag whose sharing introduced this note should have been called before this, because it runs synchronously from the code path that asynchronously results in createLocalSharedWithMeNut(), so sharer's tags should already exist locally. however TODO there is an edge case where sharer has multiple tags on this note which are also shared with this user, one of which has been handled but the other which has not, so one tag could go missing...
       return !! $s.t.tags[tagId];
     });
 
@@ -2294,6 +2346,12 @@ C8888D    88    88~~~88 88  ooo   88~~~   88    88 88 V8o88 8b        `Y8b.
     $s.n.autosizeNutById(localNutId);
 
     $s.n.nutUpdated(localNutId, false, true);
+  }
+
+  function declineSharedTag(sharerUid, tag) {
+    $s.ref.child('sharedWithMe/tags/' + sharerUid + '/' + tag.id).remove();
+
+    // TODO also write something into sharer's info so they know it was declined?
   }
 
 

@@ -30,7 +30,7 @@
         "sharedWithMe": {
           "tags": {
             "$sharerUid": {
-              // will contain tag id -> permissions ('r' or 'w')
+              // will contain tag id -> permissions (permissions match: /(r|w|x|d)\??/)
               ".write": "$sharerUid === auth.uid"
             }
           }

@@ -45,6 +45,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
         - timestamps get updated
         - `share` is removed
 - permissions:
+    - sharer creates value with '?' on the end, which recipient removes when they've accepted
     - 'r' read only
         - textarea grayed out a bit on recipient
         - if recipient adds sharing tag to read-only shared note, tag's chiclet on that note has group icon with strikethrough and tooltip text 'Normally you are sharing all notes taged with "' + tag.name + '" with ' + BLAHSHARERECIPIENTS + '. However, this note was shared by ' + BLAHUSER + ' with you as read-only, so you cannot share it onwards with others'. UNLESS it's shared only back with the sharer, in which case... just leave the icon as normal
@@ -61,15 +62,14 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### now
 
-- alert on recipient "blah wants to share blah with you"
-    - when you login: 'USER has shared their tag "TAGNAME" with you [as read-only]OR[and invited you to edit].' a [more info] link expands to: 'Shared notes and tags show up alongside your personal notes and tags, but with the [person] icon. You can modify (add your own tags, set to private, etc.) shared notes as normal.'
-        - Accept
-        - Accept all sharing offers from USER
-        - Decline
-- consistent styles
+- consistent styles for shared tags
+- grey out read-only
 
 ##### soon
 
+- "don't as me again for [user]" response to request (which means we need notifications...)
+- specify in share request that it's read-only/one-way
+    - 'Shared notes and tags show up alongside your personal notes and tags, but with the [person] icon. You can modify (add your own tags, set to private, etc.) shared notes as normal.'
 - on init share stuff, don't tagupdated and sync to firebase if nothing changed
 - @name system tag
 - ability to select single note to share (essentially adding that system tag)
@@ -81,6 +81,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
         - Change sharing settings
     - if user tries to delete shared tag, similar message as above
     - if they unshare or decline initial request: write nulls (delete) into tags and notes of sharer?
+    - same idea if they decline initial request
 - duplicate note tags removes shared tags from new note, same with query bar
 - sharing settings. window that breaks down by tag > person or person > tag (or checkbox/radio to control which view?)
     - my tags shared with others
@@ -335,6 +336,9 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 ##### bits and bugs
 
 - refactor tag view so that nm-nut includes nm-tag
+- refactor modal
+    - mainly need one function, with alert/confirm/prompt/etc just setting a couple defaults
+    - "thirdButton" really should be an array of buttons and CBs or something...?
 - UI: should entire tag show prog/share tooltip? what if it's prog AND share...
 - migrate off of firebase simple login
 - refactor file structure (e.g. break out js.js, put in controllers/, directives/ folders etc) (and put "use strict" inside of scope in each)
