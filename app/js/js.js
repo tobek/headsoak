@@ -1265,6 +1265,8 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
 
     /** make or unmake tag programmatic */
     tagProgSettings: function(tag) {
+      if (tag.readOnly) return;
+      
       // modal with code editor for user to enter function:
       $s.m.progTagEditor(tag, $s.t.getTagProgFuncString(tag), {
         cb: function(funcString) {
@@ -1397,6 +1399,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
         tag = $s.t.tags[tag];
       }
       if (!tag) return;
+      if (tag.readOnly) return;
 
       $s.m.confirm({
         bodyHTML: '<p>"' + tag.name  + '" is an algorithmic tag controlled by the function you entered - it cannot be added or removed manually.</p><p>Would you like to change this tag\'s settings?</p>',
