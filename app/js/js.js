@@ -602,14 +602,21 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
       if (! nutsToSort) nutsToSort = $s.n.nutsDisplay;
       if (! nutsToSort) return; // sometimes we get called before anything has been set up
       console.time('sorting nuts');
-      console.log('sorting nuts...');
+      console.log('sorting nuts by', sortOpt);
 
       var sortedNuts;
 
       if (sortOpt.field.indexOf(".") !== -1 ) { // e.g. field might be `tags.length`
         var fields = sortOpt.field.split(".");
         sortedNuts = _.sortBy(nutsToSort, function(nut) {
-          return nut[fields[0]] ? nut[fields[0]][fields[1]] : 0;
+          if (fields[0] === 'body' && !nut.body && nut.sharedBody) {
+            // shared notes have no `body` but do have `sharedBody`
+            return nut.sharedBody ? nut.sharedBody[fields[1]] : 0;
+          }
+          else {
+            return nut[fields[0]] ? nut[fields[0]][fields[1]] : 0;
+          }
+
         });
       }
       else { // e.g. `created`
