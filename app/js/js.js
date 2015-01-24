@@ -427,18 +427,8 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
           $s.u.loggedIn = true;
         });
         $s.u.user = user;
-        init(user.uid, function() {
-          console.log("init callback - we're on!")
-          $timeout(function() {
-            $s.m.closeModal();
-            $s.u.loading = false; // used for login/createaccount loading spinner
-            $s.u.loggingIn = false;
-            $s.u.email = $s.u.password = $s.u.pass1 = $s.u.pass2 = ""; // clear input fields so they're not still shown there when they log out: otherwise, anyone can just hit log in again
 
-            $(window).on('load resize scroll', _.throttle($s.n.moreNutsCheck, 100));
-          }, 50);
-
-        });
+        initData(user.uid);
       }
       else {
         // user is logged out
@@ -2076,8 +2066,8 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
   $s.c.configBackup = angular.copy($s.c.config); // will store backup of current settings so that users can cancel
 
 
-  function init(uid, cb) {
-    console.time('main init');
+  function initData(uid) {
+    console.time('data init');
     console.log("init: fetching data for user uid "+uid);
     $s.ref = new Firebase('https://nutmeg.firebaseio.com/users/' + uid);
 
@@ -2164,15 +2154,33 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
         $s.c.loadSettings(data.val().settings);
       }
 
+      // some remaining stuff (shared notes, features seen) will continue to initialize asynchronously, but the application is usable now
+      console.log("data init done - we're on!")
+      console.timeEnd('data init');
+      initUI();
+    });
+
+  }
+
+  function initUI() {
+    console.time('initializing UI');
+    
+    $timeout(function() {
       // sync to server every 4s
       // if there are no changes this does nothing, so that's fine
       $s.u.digestInterval = window.setInterval($s.digest.push, 4000);
       window.beforeunload = $s.digest.push; // TODO since push() isn't synchronous, probably won't work.
 
-      // some remaining stuff (shared notes, features seen) will continue to initialize asynchronously, but the application is usable now
-      console.timeEnd('main init');
-      cb();
-    });
+      $s.m.closeModal();
+      $s.u.loading = false; // used for login/createaccount loading spinner
+      $s.u.loggingIn = false;
+
+      $s.u.email = $s.u.password = $s.u.pass1 = $s.u.pass2 = ""; // clear input fields so they're not still shown there when they log out: otherwise, anyone can just hit log in again
+
+      $(window).on('load resize scroll', _.throttle($s.n.moreNutsCheck, 100));
+
+      console.timeEnd('initializing UI');
+    }, 50);
 
   }
 
