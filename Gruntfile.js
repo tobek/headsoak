@@ -8,7 +8,7 @@ module.exports = function(grunt) {
 
         assetsDir: 'app',
         distDir: 'dist',
-        s3cfg: grunt.file.readJSON('config.json')['s3'],
+        s3cfg: grunt.file.exists('config.json') ? grunt.file.readJSON('config.json')['s3'] : {},
 
         availabletasks: {
             tasks: {
