@@ -427,8 +427,8 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
           $s.u.loggedIn = true;
         });
         $s.u.user = user;
-        init(user.uid, function(featuresSeen) {
-          console.log("init callback")
+        init(user.uid, function() {
+          console.log("init callback - we're on!")
           $timeout(function() {
             $s.m.closeModal();
             $s.u.loading = false; // used for login/createaccount loading spinner
@@ -438,38 +438,6 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
             $(window).on('load resize scroll', _.throttle($s.n.moreNutsCheck, 100));
           }, 50);
 
-          var featuresSeenRef = new Firebase('https://nutmeg.firebaseio.com/users/' + $s.u.user.uid + '/featuresSeen');
-
-          new Firebase('https://nutmeg.firebaseio.com/newFeatureCount').once('value', function(data) {
-            var newFeatureCount = data.val();
-            if (featuresSeen !== undefined) {
-              if (featuresSeen < newFeatureCount) {
-                console.log("latestFeatures: there are some new features user hasn't seen");
-                new Firebase('https://nutmeg.firebaseio.com/newFeatures').once('value', function(data) {
-                  var feats = data.val();
-                  feats.splice(0, featuresSeen); // cuts off the ones they've already seen;
-                  var list = feats.map(function(val) { return "<li>"+val+"</li>"; }).join("");
-
-                  $s.m.alert({
-                    title: "Since you've been gone...",
-                    bodyHTML: "<p>In addition to tweaks and fixes, here's what's new:</p><ul>" + list + "</ul><p>As always, you can send along feedback and bug reports from the menu, which is at the bottom right of the page.</p>",
-                    okText: 'Cool',
-                    large: true
-                  });
-
-                  featuresSeenRef.set(newFeatureCount);
-                });
-              }
-              else {
-                console.log("latestFeatures: already seen em");
-              }
-            }
-            else {
-              // new user
-              console.log("latestFeatures: new user");
-              featuresSeenRef.set(newFeatureCount)
-            }
-          });
         });
       }
       else {
@@ -2114,8 +2082,6 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
     $s.ref = new Firebase('https://nutmeg.firebaseio.com/users/' + uid);
 
     $s.ref.once('value', function(data) {
-      var featuresSeen;
-
       if (data.val() === null) {
         console.log("init: new user - initializing with dummy data");
         // must be a new user - even if existing user deleted everything there would still be object with config and empty nuts/tags
@@ -2184,7 +2150,11 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
         */
 
         $s.users.fetchShareRecipientNames();
-        sharedWithMeInit(data.val().sharedWithMe);
+
+        handleNewFeatures(data.val().featuresSeen, function newFeaturesHandled() {
+          // gotta wait til new features done before initializing sharing, cause both use modals, which currently overwrite each other rather than queuing up
+          sharedWithMeInit(data.val().sharedWithMe);
+        });
 
         console.time("initializing lunr index");
         _.each($s.n.nuts, $s.n.updateNutInIndex);
@@ -2192,8 +2162,6 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
 
         $s.s.initBindings(data.val().shortcuts);
         $s.c.loadSettings(data.val().settings);
-
-        featuresSeen = data.val().featuresSeen;
       }
 
       // sync to server every 4s
@@ -2201,10 +2169,50 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
       $s.u.digestInterval = window.setInterval($s.digest.push, 4000);
       window.beforeunload = $s.digest.push; // TODO since push() isn't synchronous, probably won't work.
 
+      // some remaining stuff (shared notes, features seen) will continue to initialize asynchronously, but the application is usable now
       console.timeEnd('main init');
-      cb(featuresSeen);
+      cb();
     });
 
+  }
+
+  /** in user data we keep track of count of features seen, and then compare that to value hard-coded here in JS. if there are new features seen, display them to the user and update their count */
+  function handleNewFeatures(featuresSeen, cb) {
+    var featuresSeenRef = new Firebase('https://nutmeg.firebaseio.com/users/' + $s.u.user.uid + '/featuresSeen');
+
+    var newFeatureCount = 13; // hard-coded so that it only updates when user actually receives updated code with the features
+
+    if (featuresSeen !== undefined) {
+      if (featuresSeen < newFeatureCount) {
+        console.log("latestFeatures: there are some new features user hasn't seen");
+        new Firebase('https://nutmeg.firebaseio.com/newFeatures').once('value', function(data) {
+          var feats = data.val();
+          feats.splice(0, featuresSeen); // cuts off the ones they've already seen;
+          var list = feats.map(function(val) { return "<li>"+val+"</li>"; }).join("");
+
+          $s.m.alert({
+            title: "Since you've been gone...",
+            bodyHTML: "<p>In addition to tweaks and fixes, here's what's new:</p><ul>" + list + "</ul><p>As always, you can send along feedback and bug reports from the menu, which is at the bottom right of the page.</p>",
+            okText: 'Cool',
+            okCb: cb,
+            cancelCb: cb,
+            large: true
+          });
+
+          featuresSeenRef.set(newFeatureCount);
+        });
+      }
+      else {
+        console.log("latestFeatures: already seen em");
+        cb();
+      }
+    }
+    else {
+      // new user
+      console.log("latestFeatures: new user");
+      featuresSeenRef.set(newFeatureCount)
+      cb();
+    }
   }
 
   /** the shift from nuts and tags being arrays to being objects means that all keys are now strings, so tag.docs and nut.tags have to be updated */
