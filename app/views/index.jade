@@ -234,7 +234,7 @@ block content
                 i.fa.fa-refresh(ng-click='q.doQuery();')
 
           ul
-            li.nut(ng-repeat="nut in n.nutsDisplay", id="nut-{{nut.id}}")
+            li.nut(ng-repeat="nut in n.nutsDisplay | limitTo: n.nutsLimit", id="nut-{{nut.id}}")
               nm-nut
 
       div#right

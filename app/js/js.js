@@ -6,6 +6,8 @@ console.time('pre login');
 angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
 .controller('Nutmeg', ['$scope', '$timeout', "$interval", "$sce", "fuzzyMatchSort", function ($s, $timeout, $interval, $sce, fuzzyMatchSort) {
 
+  var INITIAL_NUTS_LIMIT = 15; // how many to show at a time (but we infinite scroll more)
+
   // when adding tags to a note, option to create a new tag with the currently-entered text will appear above any suggestions with a score worse (great) than this threshold
   var NEW_TAG_AUTOCOMPLETE_SCORE_THRESHOLD = 5;
 
@@ -432,6 +434,8 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
             $s.u.loading = false; // used for login/createaccount loading spinner
             $s.u.loggingIn = false;
             $s.u.email = $s.u.password = $s.u.pass1 = $s.u.pass2 = ""; // clear input fields so they're not still shown there when they log out: otherwise, anyone can just hit log in again
+
+            $(window).on('load resize scroll', _.throttle($s.n.moreNutsCheck, 100));
           }, 50);
 
           var featuresSeenRef = new Firebase('https://nutmeg.firebaseio.com/users/' + $s.u.user.uid + '/featuresSeen');
@@ -554,6 +558,40 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
 
     // dynamically generated partial or complete copy of `nuts`, sorted and filtered according to the user. **each element of the array is a reference to a nut object in `nuts`.** this means that neither `nuts` nor `nutsDisplay` should directly reassign any of its elements, or else things will go out of sync
     nutsDisplay: [],
+
+    nutsLimit: INITIAL_NUTS_LIMIT, // only show this many nuts at a time
+    /** infinite scroll: check to see if user is near seeing the end of their nuts, if so, add more */
+    moreNutsCheck: function() {
+      var $lastNut = $('#left .nut:last-child');
+      if (_.isEmpty($lastNut)) return;
+
+      var viewportBottomPos = $('body').scrollTop() + $(window).height() // distance from top of document to bottom of viewport
+      var distanceTilLastNut = $lastNut.offset().top - viewportBottomPos;
+
+      if (distanceTilLastNut < 500 && $s.n.nutsLimit < $s.n.nutsDisplay.length) {
+        console.log('showing more nuts: now showing', $s.n.nutsLimit + 10);
+
+        $timeout(function() {
+          $s.n.nutsLimit += 10;
+          // after new nuts are displayed:
+          $timeout(function() {
+            $s.n.autosizeSomeNuts($s.n.nutsLimit - 10); // only the new ones
+          }, 0, false);
+        });
+      }
+      else if (distanceTilLastNut > 2000 && $s.n.nutsLimit > 15) {
+        // let's see if we can hide some (200 from already-calculated value so we don't waste time on this scroll event calculating more stuff)
+        var $tenthFromlastNut = $('#left .nut:nth-last-child(11)'); // 11 instead of 10 because CSS has off-by-one shit
+        if (_.isEmpty($tenthFromlastNut)) return;
+        if ($tenthFromlastNut.offset().top - viewportBottomPos > 500) {
+          console.log('showing fewer nuts: now showing', $s.n.nutsLimit - 10);
+
+          $timeout(function() {
+            $s.n.nutsLimit -= 10;
+          });
+        }
+      }
+    },
 
     /**
      * order $s.n.nutsDisplay or passed-in nuts according to `sortOpt`. assign $s.n.nutsDisplay to the sorted result
@@ -898,10 +936,21 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
 
     autosizeAllNuts: function() {
       console.time('autosizing all nuts');
-      angular.element(".nut textarea").each(function(i, ta){
+      angular.element('.nut textarea').each(function(i, ta){
         $s.n.autosizeNutByEl(ta);
       });
       console.timeEnd('autosizing all nuts');
+    },
+
+    /** autosize all except the first `skip` nuts */
+    autosizeSomeNuts: function(skip) {
+      if (! parseInt(skip)) throw new Error('invalid argument: ' + skip);
+
+      console.time('autosizing some nuts');
+      $('.nut:nth-child(n+' + skip + ') textarea').each(function(i, ta){
+        $s.n.autosizeNutByEl(ta);
+      });
+      console.timeEnd('autosizing some nuts');
     },
 
     // hack, needed because ngChange doesn't pass element
@@ -1125,6 +1174,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
 
       $timeout(function() {
         $s.n.sortNuts($s.n.sortBy, filteredNuts); // re-sort, cause who knows what we've added into `$s.n.nuts` (sortNuts also autosizes textareas)
+        $s.n.moreNutsCheck(); // new query may mean we have to increase/decrease limit
 
         console.timeEnd('doing query');
       }, 5);
@@ -1133,6 +1183,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
     noResults: function() {
       $timeout(function() {
         $s.n.nutsDisplay = [];
+        $s.n.nutsLimit = INITIAL_NUTS_LIMIT;
         console.timeEnd('doing query');
       }, 5);
     },
@@ -1266,7 +1317,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
     /** make or unmake tag programmatic */
     tagProgSettings: function(tag) {
       if (tag.readOnly) return;
-      
+
       // modal with code editor for user to enter function:
       $s.m.progTagEditor(tag, $s.t.getTagProgFuncString(tag), {
         cb: function(funcString) {

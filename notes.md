@@ -368,7 +368,6 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### notable features
 
-- re-investigate orderObjectBy, benchmark to see if it makes sense or is an issue
 - encryption
     - ALL notes <-- important, required option. like spideroak
     - only private notes <-- necessary?
@@ -396,9 +395,12 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 - check $s.u.user.isTemporaryPassword and if so direct them to change password page - it means they used works-for-24h-only token
 - remove all instances of `alert()` and replace with dynamic modal. on chrome and FF at least, alert windows begin with "The page at https://megnut.s3.amazonaws.com says:"
 - implement sort by query match strength
+- deploy should have rollback functionality: download the current assets (just html right?) and save them somewhere to put back. maybe grunt plugin already exists
 
 ##### bits and bugs
 
+- re-investigate orderObjectBy, benchmark to see if it makes sense or is an issue
+    - now building $s.n.nutsDisplay (which is an array) so only used for tags, so less of an issue
 - hide nmScope in /* DEV ONLY */ block or something
 - move feedback from zapier to watcher.js
 - load html and angular REAL fast and then async all the other shit
