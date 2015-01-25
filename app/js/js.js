@@ -937,7 +937,8 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
     },
 
     focusOnNutId: function(id) {
-      document.getElementById("nut-"+id+"-ta").focus();
+      var nutTa = document.getElementById("nut-"+id+"-ta");
+      if (nutTa) nutTa.focus();
     },
     // currently unused:
     focusOnFirstResult: function() {
@@ -2078,6 +2079,9 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
         firstInit();
         $s.s.initBindings();
         $s.digest.push();
+
+        console.timeEnd('data init');
+        initUI();
       }
       else {
         console.log("init: fetched user data");
@@ -2139,32 +2143,35 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
         });
         */
 
+        $s.s.initBindings(data.val().shortcuts);
+        $s.c.loadSettings(data.val().settings);
+
         $s.users.fetchShareRecipientNames();
 
         handleNewFeatures(data.val().featuresSeen, function newFeaturesHandled() {
           // gotta wait til new features done before initializing sharing, cause both use modals, which currently overwrite each other rather than queuing up
+
+          // TODO: if sharedWithMeInit resolves to some sharing confirmation modals BEFORE we finish initializing, the modals will be cancelled by `initUI`... really need to queue up modals. but don't want to wait until shared init stuff done before doing initUI, cause otherwise would take forever
           sharedWithMeInit(data.val().sharedWithMe);
+
+          console.timeEnd('data init');
+          initUI();
         });
 
         console.time("initializing lunr index");
         _.each($s.n.nuts, $s.n.updateNutInIndex);
         console.timeEnd("initializing lunr index");
 
-        $s.s.initBindings(data.val().shortcuts);
-        $s.c.loadSettings(data.val().settings);
-      }
+      } // end if not new user
 
-      // some remaining stuff (shared notes, features seen) will continue to initialize asynchronously, but the application is usable now
-      console.log("data init done - we're on!")
-      console.timeEnd('data init');
-      initUI();
-    });
+    }); // end fetching all user data
 
   }
 
+  /** some remaining stuff (like initializing shared notes) may continue to initialize asynchronously, but call this function when the application is usable */
   function initUI() {
     console.time('initializing UI');
-    
+
     $timeout(function() {
       // sync to server every 4s
       // if there are no changes this does nothing, so that's fine
@@ -2177,8 +2184,11 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
 
       $s.u.email = $s.u.password = $s.u.pass1 = $s.u.pass2 = ""; // clear input fields so they're not still shown there when they log out: otherwise, anyone can just hit log in again
 
+      $s.q.doQuery(); // load nutsDisplay and sort
+
       $(window).on('load resize scroll', _.throttle($s.n.moreNutsCheck, 100));
 
+      console.log("initializing done - we're on!")
       console.timeEnd('initializing UI');
     }, 50);
 
@@ -2194,10 +2204,12 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
       if (featuresSeen < newFeatureCount) {
         console.log("latestFeatures: there are some new features user hasn't seen");
         new Firebase('https://nutmeg.firebaseio.com/newFeatures').once('value', function(data) {
+          console.log('latestFeatures: fetched new feautures list');
           var feats = data.val();
           feats.splice(0, featuresSeen); // cuts off the ones they've already seen;
           var list = feats.map(function(val) { return "<li>"+val+"</li>"; }).join("");
 
+          $s.u.loading = false; // hide full-page login loading spinner so we can show modal
           $s.m.alert({
             title: "Since you've been gone...",
             bodyHTML: "<p>In addition to tweaks and fixes, here's what's new:</p><ul>" + list + "</ul><p>As always, you can send along feedback and bug reports from the menu, which is at the bottom right of the page.</p>",
@@ -2208,6 +2220,9 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
           });
 
           featuresSeenRef.set(newFeatureCount);
+        }, function(err) {
+          console.error('latestFeatures: failed to get new features', err);
+          cb();
         });
       }
       else {
