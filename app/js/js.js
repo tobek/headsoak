@@ -2087,8 +2087,8 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
         console.log("init: fetched user data");
 
         // firebase stores as objects but if data is "array-like" then we get back arrays. we need objects because we may have non-numeric keys, and because we migrated to string keys. TODO may not be necessary in the futre, see also idsMigrated which was done at the same time
-        $s.n.nuts = objFromArray(data.val().nuts);
-        $s.t.tags = objFromArray(data.val().tags);
+        $s.n.nuts = objFromArray(data.val().nuts) || {};
+        $s.t.tags = objFromArray(data.val().tags) || [];
 
         // firebase doesn't store empty arrays, so we get undefined for unused tags. which screws up sorting by tag usage
         _.each($s.t.tags, function(tag) {
@@ -2466,7 +2466,8 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
 
     $s.ref.root().child('emailToId/' + formatForFirebase($s.u.user.email)).set($s.u.user.uid);
 
-    $s.n.nuts = [];
+    $s.n.nuts = {};
+    $s.n.nutsDisplay = [];
     $s.t.tags = [];
 
     // load dummy data

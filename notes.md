@@ -62,6 +62,9 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### soon
 
+- collaborative editing:
+    - http://www.firepad.io/docs/
+    - https://github.com/firebase/firepad/tree/master/examples/security
 - "don't ask me again for [user]" response to request (which means we need notifications...)
 - specify in share request that it's read-only/one-way
     - 'Shared notes and tags show up alongside your personal notes and tags, but with the [person] icon. You can modify (add your own tags, set to private, etc.) shared notes as normal.'
@@ -272,6 +275,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### bits and bugs
 
+- remember tag/note sorting prefs
 - bug: prompt isn't focusing on field again
 - show tag icons (prog, shared) in query bar?
 - bug: esc when in nut textarea immediately returns focus back to nut textarea
@@ -331,6 +335,8 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
         - ugh example maybe with two tags "has more than 3" and "has less than 4" or something where they keep changing each other
         - "untagged" is a great example - it'll add, then remove, then add...
 - wrap all firebase calls with something that has a default CB with message for failure, logs the error upstream, etc.
+- exclude (with either - or NOT) search keywords or tags
+    - when preceded with -/NOT, tag autocomplete prepends each autosuggestion with grayed out "exclude"
 
 ##### bits and bugs
 
