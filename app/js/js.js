@@ -23,6 +23,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
 
   $s._ = _; // make lodash available to view template
 
+
   $s.m = {
     modal: false,
     modalLarge: false,
@@ -498,18 +499,20 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
   // ==== NUT STUFF ==== //
 
   $s.n = {
-    sortOpts: [
-      {field: "modified", rev: true, name: "Recently modified"},
-      {field: "modified", rev: false, name: "Oldest modified"},
-      {field: "created", rev: true, name: "Recently created"},
-      {field: "created", rev: false, name: "Oldest created"},
-      {field: "body.length", rev: true, name: "Longest"},
-      {field: "body.length", rev: false, name: "Shortest"},
-      {field: "tags.length", rev: true, name: "Most Tags"},
-      {field: "tags.length", rev: false, name: "Fewest tags"}
+    // key format: `[desiredOrder] + '-' + field + '-' + rev`
+    // NOTE: changing these keys will break things for users who have ever manually changed the sort and thus have that key saved in their config
+    sortOpts: {
+      '0-modified-true': {field: "modified", rev: true, name: "Recently modified"},
+      '1-modified-false': {field: "modified", rev: false, name: "Oldest modified"},
+      '2-created-true': {field: "created", rev: true, name: "Recently created"},
+      '3-created-false': {field: "created", rev: false, name: "Oldest created"},
+      '4-body.length-true': {field: "body.length", rev: true, name: "Longest"},
+      '5-body.length-false': {field: "body.length", rev: false, name: "Shortest"},
+      '6-tags.length-true': {field: "tags.length", rev: true, name: "Most Tags"},
+      '7-tags.length-false': {field: "tags.length", rev: false, name: "Fewest tags"}
       // TODO: query match strength
       // NOTE: changes to the fields might require changes to the nutSort filter
-    ],
+    },
 
     // probably the most important property in this application. maps id -> note object, filled in by firebase
     nuts: {},
@@ -559,6 +562,12 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
     sortNuts: function(sortOpt, nutsToSort) {
       if (! nutsToSort) nutsToSort = $s.n.nutsDisplay;
       if (! nutsToSort) return; // sometimes we get called before anything has been set up
+
+      if (! sortOpt) {
+        // just get the "first"
+        sortOpt = $s.n.sortOpts[_.keys($s.n.sortOpts)[0]];
+      }
+
       console.time('sorting nuts');
       console.log('sorting nuts by', sortOpt);
 
@@ -969,7 +978,6 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
 
   };
 
-  $s.n.sortBy = $s.n.sortOpts[0]; // set initial value for nut sort select dropdown TODO: this should be remembered and drawn from config
 
   // ==== PRIVACY STUFF ==== //
 
@@ -1139,7 +1147,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
       }
 
       $timeout(function() {
-        $s.n.sortNuts($s.n.sortBy, filteredNuts); // re-sort, cause who knows what we've added into `$s.n.nuts` (sortNuts also autosizes textareas)
+        $s.n.sortNuts($s.n.sortOpts[$s.c.config.nutSortBy], filteredNuts); // re-sort, cause who knows what we've added into `$s.n.nuts` (sortNuts also autosizes textareas)
         $s.n.moreNutsCheck(); // new query may mean we have to increase/decrease limit
 
         console.timeEnd('doing query');
@@ -1187,16 +1195,18 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
   $s.t = {
     tags: [],
 
-    sortOpts: [
-      {field: "docs.length", rev: true, name: "Most used"},
-      {field: "docs.length", rev: false, name: "Least used"},
-      {field: "modified", rev: true, name: "Recently modified"},
-      {field: "modified", rev: false, name: "Oldest modified"},
-      {field: "created", rev: true, name: "Recently created"},
-      {field: "created", rev: false, name: "Oldest created"},
-      {field: "name", rev: false, name: "Alphabetically"},
-      {field: "name", rev: true, name: "Alpha (reversed)"}
-    ],
+    // key format: `[desiredOrder] + '-' + field + '-' + rev`
+    // NOTE: changing these keys will break things for users who have ever manually changed the sort and thus have that key saved in their config
+    sortOpts: {
+      '0-docs.length-true': {field: "docs.length", rev: true, name: "Most used"},
+      '1-docs.length-false': {field: "docs.length", rev: false, name: "Least used"},
+      '2-modified-true': {field: "modified", rev: true, name: "Recently used"},
+      '3-modified-false': {field: "modified", rev: false, name: "Oldest used"},
+      '4-created-true': {field: "created", rev: true, name: "Recently created"},
+      '5-created-false': {field: "created", rev: false, name: "Oldest created"},
+      '6-name-false': {field: "name", rev: false, name: "Alphabetically"},
+      '7-name-true': {field: "name", rev: true, name: "Alpha (reversed)"}
+    },
 
     /* 
      * merge passed tag with defaults and store it (right now actually just takes tag name)
@@ -1635,7 +1645,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
     }
 
   }; // end of tags
-  $s.t.sortBy = $s.t.sortOpts[0]; // set initial value for tag sort select dropdown  
+
 
   // a nut is passed if this is being called from add tag to note input field
   // if no nut is passed, this is being called on the query bar
@@ -1952,6 +1962,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
   $s.s.shortcutsDefaults = angular.copy($s.s.shortcuts); // backup a copy of defaults in case user wants to revert to default
   $s.s.modDefault = $s.s.mod;
 
+
   // configuration
   $s.c = {
     // these will serve as defaults
@@ -1964,6 +1975,10 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
       // layout
       showTagBrowser: true,
       twoColumns: false,
+
+      // internal use
+      nutSortBy: '0-modified-true', // see IDs in n.sortOpts
+      tagSortBy: '0-docs.length-true', // see IDs in t.sortOpts
     },
 
     info: {
@@ -1987,12 +2002,12 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
       maxHistory: {
         humanName: "Note history length",
         description: "How many revisions of each note to save. 0 disables history. TOTALLY DISABLED FOR NOW.",
-        type: "integer", // integer not supported yet
+        type: "integer", // integer not supported yet in UI
         section: "settings",
         overkill: true
       },
 
-      //layout
+      // layout
       showTagBrowser: {
         humanName: "Show tag browser",
         type: "boolean",
@@ -2010,12 +2025,31 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
         type: "integer", // integer not supported yet
         section: "layout",
         overkill: true // not implemented yet
+      },
+
+      // internal use
+      nutSortBy: {
+        humanName: "Default note sorting",
+        type: "string", // string not supported yet in UI
+        section: null // not visible in UI
+      },
+      tagSortBy: {
+        humanName: "Default tag sorting",
+        type: "string", // string not supported yet in UI
+        section: null // not visible in UI
       }
     },
 
     pushSettings: function() {
       $s.ref.child("settings").set($s.c.config);
     },
+    pushNutSortBy: function() {
+      $s.ref.child("settings/nutSortBy").set($s.c.config.nutSortBy);
+    },
+    pushTagSortBy: function() {
+      $s.ref.child("settings/tagSortBy").set($s.c.config.tagSortBy);
+    },
+
     loadSettings: function (settings) {
       $.extend($s.c.config, settings);
     },

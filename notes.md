@@ -275,7 +275,6 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### bits and bugs
 
-- remember tag/note sorting prefs
 - bug: prompt isn't focusing on field again
 - show tag icons (prog, shared) in query bar?
 - bug: esc when in nut textarea immediately returns focus back to nut textarea

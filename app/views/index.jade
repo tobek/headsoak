@@ -229,7 +229,7 @@ block content
               span.count {{n.countShownNuts()}}
               span.sort
                 label Sort by 
-                  select#nut-sort-select(ng-change='n.sortNuts(n.sortBy)', ng-model='n.sortBy', ng-options='o as o.name for o in n.sortOpts', tabindex=3)
+                  select#nut-sort-select(ng-change='n.sortNuts(n.sortOpts[c.config.nutSortBy]); c.pushNutSortBy()', ng-model='c.config.nutSortBy', ng-options='key as val.name for (key, val) in n.sortOpts', tabindex=3)
                   | 
                 i.fa.fa-refresh(ng-click='q.doQuery();')
 
@@ -245,11 +245,11 @@ block content
           br
           span.sort
             label Sort by 
-              select(ng-model='t.sortBy', ng-options='o as o.name for o in t.sortOpts')
+              select(ng-change="c.pushTagSortBy()", ng-model="c.config.tagSortBy", ng-options="key as val.name for (key, val) in t.sortOpts")
           input.moustrap(type="text", placeholder="search tags", ng-model="tagQuery")
 
           ul#taglist
             li.tag.new-tag(ng-show="t.creatingTag")
               form(ng-submit="t.createTag({name: t.createTagName})")
                 input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';" nm-focus="t.creatingTag", placeholder="tag name")
-            nm-tag(ng-repeat="tag in t.tags | orderObjectBy:t.sortBy.field:t.sortBy.rev track by $index", ng-hide="!tag", ng-show="!tagQuery || tag.name.toLowerCase().indexOf(tagQuery.toLowerCase()) !== -1")
+            nm-tag(ng-init="", ng-repeat="tag in t.tags | orderObjectBy:t.sortOpts[c.config.tagSortBy].field:t.sortOpts[c.config.tagSortBy].rev track by $index", ng-hide="!tag", ng-show="!tagQuery || tag.name.toLowerCase().indexOf(tagQuery.toLowerCase()) !== -1")
