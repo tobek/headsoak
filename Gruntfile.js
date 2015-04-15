@@ -373,6 +373,8 @@ module.exports = function(grunt) {
         // 'karma:dev_unit:start',
         'watch',
     ]);
+    grunt.registerTask('serve', ['dev']);
+    grunt.registerTask('default', ['dev']);
 
     grunt.registerTask('build', [
         'jshint',
