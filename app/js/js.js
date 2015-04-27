@@ -1168,11 +1168,11 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
       $s.q.doQuery();
     },
     focus: function() {
-      angular.element('#query .search')[0].focus();
+      angular.element('#query .search-input')[0].focus();
     },
 
     setupAutocomplete: function() {
-      $s.autocomplete(angular.element("#query .search")); // will remove any existing autocomplete
+      $s.autocomplete(angular.element("#query .search-input")); // will remove any existing autocomplete
     }
   }; // end of $s.q
   // TODO have to do this weird method of adding self-referential properties because i'm doing single objects rather than proper modules... big ol refactor
@@ -1181,8 +1181,8 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
 
   // backspace in first position of searchbar when there are tags should delete last tag
   // TODO: not sure in what browsers selectionStart works, but it's not all. make sure that it doesn't always return 0 in some browsers, cause then we'll be deleting all the time
-  $("#query .search").on("keydown", function(e) {
-    if (e.keyCode == 8 && $("#query .search")[0].selectionStart == 0 && $s.q.tags.length > 0) {
+  $("#query .search-input").on("keydown", function(e) {
+    if (e.keyCode == 8 && $("#query .search-input")[0].selectionStart == 0 && $s.q.tags.length > 0) {
       $s.q.removeTag($s.q.tags[$s.q.tags.length-1]);
       $s.q.setupAutocomplete(); // reset autocomplete so that newly removed tag is in suggestions again
       $timeout($s.n.autosizeAllNuts, 10, false); // HACK: gets called anyway but too quickly, before present notes have been updating, so... call it again in a sec

@@ -5,6 +5,8 @@ block content
   //- we can call focus on this in order to blur all
   input#blur-hack(style="position: absolute; opacity: 0;")
 
+  div#bg-image
+
   div#modalclickoff(ng-click="m.cancelModal()", ng-show="m.modal")
   div.modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal, 'large-circle': m.modalLarge }", ng-click="m.cancelModal()")
     h1#title(ng-show="!u.loggedIn") nutmeg
@@ -203,50 +205,60 @@ block content
           i.fa.fa-fw.fa-sign-in
       img#menuimage(src="/img/nutmeg40h.png", alt="nutmeg")
 
-    div#query.flex-container
-      i.fa.fa-search(ng-click="q.focus()")
-      span.private-mode.chiclet(ng-show="p.privateMode", ng-click="p.togglePrivateMode()")
-        | private mode
-        span.hover-cover
-          i.fa.fa-times
-      span.tags
-        span.tag.chiclet(ng-repeat="tagId in q.tags", ng-click="q.removeTag(tagId)")
-          | {{t.tags[tagId].name}}
-          span.hover-cover
-            i.fa.fa-times
-      input.search.flex.mousetrap(type="text", placeholder="search", ng-model="q.query", nm-query="q.query", tabindex=1, ng-focus="q.setupAutocomplete()")
-      span.clear-query(ng-click="q.clear()")
-        i.fa.fa-times
+    div#query
+      div.inner
+        div.search-bar
+          div.flex-container
+            i.fa.fa-search(ng-click="q.focus()")
+            span.private-mode.chiclet(ng-show="p.privateMode", ng-click="p.togglePrivateMode()")
+              | private mode
+              span.hover-cover
+                i.fa.fa-times
+            span.tags
+              span.tag.chiclet(ng-repeat="tagId in q.tags", ng-click="q.removeTag(tagId)")
+                | {{t.tags[tagId].name}}
+                span.hover-cover
+                  i.fa.fa-times
+            input.search-input.flex.mousetrap(type="text", placeholder="search notes", ng-model="q.query", nm-query="q.query", tabindex=1, ng-focus="q.setupAutocomplete()")
+            span.clear-query(ng-click="q.clear()")
+              i.fa.fa-times
+
+        div.nut-control
+          div
+            span.count {{n.countShownNuts()}}
+            span#new-nut(title="New note", ng-click="n.createNut({})")
+              i.fa.fa-plus
+          div.sort
+            label(for="nut-sort-select") Sort
+            select#nut-sort-select(ng-change='n.sortNuts(n.sortOpts[c.config.nutSortBy]); c.pushNutSortBy()', ng-model='c.config.nutSortBy', ng-options='key as val.name for (key, val) in n.sortOpts', tabindex=3)
+            //- @TODO there isn't really space for refresh button so commenting out. but that leaves no way to re-sort by current criteria (since change event doesn't fire unless selected option changes). either a) some hack with click and focusout events, b) put refresh button back in, or c) don't care (if user really wants to, they can select a different option then go back), and/or d) keyboard shortcut
+            //- i.fa.fa-refresh(ng-click='q.doQuery();')
 
     div#main(ng-class="{'hide-tag-browser': !c.config.showTagBrowser}")
 
       div#left
         div#nuts
-          div.header
-            span#new-nut(ng-click="n.createNut({})")
-              i.fa.fa-plus
-            span.right
-              span.count {{n.countShownNuts()}}
-              span.sort
-                label Sort by 
-                  select#nut-sort-select(ng-change='n.sortNuts(n.sortOpts[c.config.nutSortBy]); c.pushNutSortBy()', ng-model='c.config.nutSortBy', ng-options='key as val.name for (key, val) in n.sortOpts', tabindex=3)
-                  | 
-                i.fa.fa-refresh(ng-click='q.doQuery();')
-
           ul
             li.nut(ng-repeat="nut in n.nutsDisplay | limitTo: n.nutsLimit", id="nut-{{nut.id}}")
               nm-nut
 
       div#right
         div#tagContainer
-          i.fa.fa-tags
-          span#new-tag(ng-click="t.creatingTag=true;")
-            i.fa.fa-plus
-          br
-          span.sort
-            label Sort by 
-              select(ng-change="c.pushTagSortBy()", ng-model="c.config.tagSortBy", ng-options="key as val.name for (key, val) in t.sortOpts")
-          input.moustrap(type="text", placeholder="search tags", ng-model="tagQuery")
+          div.header
+            div
+              span.tag-count {{ _.keys(t.tags).length }} tag{{ _.keys(t.tags).length === 1 ? '' : 's' }}
+              span#new-tag(title="New tag", ng-click="t.creatingTag=true;")
+                i.fa.fa-plus
+
+            div.tag-search
+              i.fa.fa-search(ng-click="t.focusOnSearch = true")
+              input#tag-search-input.mousetrap(type="text", placeholder="search tags", ng-model="tagQuery", nm-focus="t.focusOnSearch")
+              span.clear-field(ng-click="tagQuery = ''")
+                i.fa.fa-times
+
+            span.sort
+              label Sort
+                select(ng-change="c.pushTagSortBy()", ng-model="c.config.tagSortBy", ng-options="key as val.name for (key, val) in t.sortOpts")
 
           ul#taglist
             li.tag.new-tag(ng-show="t.creatingTag")

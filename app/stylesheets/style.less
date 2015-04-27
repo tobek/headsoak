@@ -1,27 +1,63 @@
 /* =Variables
 ----------------------------------------------- */
 
-@mainbg: #0F161F;
-// @tagbg: saturate(#b5534a,20%); // tomato
-@tagbg: #fc8c03; // goldish
+// colors
 
-@nutTagHover: fade(@tagbg, 20%);
-@tagBG: black;
-@tagColor: white;
-@tagHover: lighten(@mainbg, 15%);
+// main colors:
+@panel: #333;
+@tag: black;
+@text: white;
+@accent: gold;
+@input-bg-color: white;
+@input-text: black;
 
-@icon-gray: #999;
+@ui-bg: fade(@panel, 95%);
+@ui-text: @text;
+@ui-icon: @ui-text;
+@ui-icon-hover: @accent;
+@ui-icon-active: darken(@ui-icon-hover, 10%);
 
-@textareaBG: #DDD;
-@textareaFocusBG: desaturate(lighten(@mainbg, 85%), 8%);
-@textareaReadOnlyBG: desaturate(lighten(@mainbg, 65%), 30%);
+@input-bg: fade(@input-bg-color, 75%);
+@input-bg-focus: fade(@input-bg-color, 90%);
+@input-bg-readonly: fade(desaturate(lighten(@ui-bg, 55%), 30%), 75%);
+@input-text-readonly: @input-text;
+@input-icon: fade(@input-text, 60%);
+@input-icon-hover: fade(@input-text, 80%);
+@input-icon-active: @input-text;
 
-@new-hover: gold;
+@tag-bg: @tag;
+@tag-bg-hover: lighten(@tag-bg, 15%);
+@tag-text: @text;
+@tag-icon: fade(@tag-text, 50%);
+@tag-icon-hover: fade(@tag-text, 75%);
+@tag-icon-active: @tag-text;
+@tag-bg-selected: lighten(mix(@tag-bg, @accent, 75%), 5%);
+@tag-bg-selected-hover: lighten(@tag-bg-selected, 5%);
+@tag-text-readonly: darken(@tag-text, 25%);
+@tag-bg-readonly: @tag-bg;
+@tag-bg-readonly-hover: lighten(@tag-bg, 10%);
 
-@modalbg: #170E01;
+@menu-bg: fade(@tag-bg, 70%);
+@menu-text: @text;
+@menu-text-hover: @accent;
+@menu-text-active: darken(@accent, 15%);
+@menu-text-disabled: darken(@menu-text, 35%);
 
-@menuHover: #333;
-@menuActive: @new-hover;
+@modal-bg: #170E01;
+@modal-text: white;
+@modal-link: #00B7FF;
+@modal-icon: lighten(desaturate(@modal-bg, 50%), 20%);
+@modal-icon-hover: @accent;
+
+@autocomplete-selection-bg: fade(@ui-bg, 50%);
+
+// font sizes
+
+@tag-font-size: 18px;
+@tag-icon-font-size: 13px;
+@icon-font-size: 18px;
+@heading-small-font-size: 18px;
+
 
 
 /* =CSS Reset
@@ -73,6 +109,48 @@ table {
   border-spacing: 0;
 }
 
+/* =Component Mixins
+----------------------------------------------- */
+
+.ui-icon {
+  cursor: pointer;
+  color: @ui-icon;
+
+  &:hover {
+    color: @ui-icon-hover;
+  }
+
+  &:active {
+    color: @ui-icon-active;
+  }
+}
+
+.input-icon {
+  cursor: pointer;
+  color: @input-icon;
+
+  &:hover {
+    color: @input-icon-hover;
+  }
+
+  &:active {
+    color: @input-icon-active;
+  }
+}
+
+// @NOTE: used by tags within nuts, but not in tag browser, where toggle states make things real complicated - could do with a cleanup
+.tag-icon {
+  cursor: pointer;
+  color: @tag-icon;
+
+  &:hover {
+    color: @tag-icon-hover;
+  }
+
+  &:active {
+    color: @tag-icon-active;
+  }
+}
 
 /* =Onwards
 ----------------------------------------------- */
@@ -84,24 +162,38 @@ html, body {
 }
 
 body {
-  background-color: #333;
+  background-color: @ui-bg;
   font: 150% "Lucida Grande", Helvetica, Arial, sans-serif;
-  color: white;
+  color: @ui-text;
+}
+
+#bg-image {
+  position: fixed;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: url("/img/room.jpg") fixed;
   background-size: cover;
   background-position: bottom center;
+
+  -webkit-filter: blur(10px);
+          filter: blur(10px);
 }
 
 i { font-style: italic; }
 
-/* HACK not sure why these work/are necessary */
 textarea, input {
+  border: none;
+
+  /* HACK not sure why these work/are necessary */
   font-size: 60%; 
   color: black;
   background-color: white;
 }
 select, option, #right label, #left label {
-  font-size: 75%;
+  font-size: @heading-small-font-size;
 }
 
 pre {
@@ -115,33 +207,29 @@ pre {
 
 
 a {
-  color: #00B7FF;
+  color: @modal-link;
   cursor: pointer;
 }
 
 .tag {
-  background-color: @tagBG;
-  color: @tagColor;
+  position: relative;
+  background-color: @tag-bg;
+  color: @tag-text;
   display: inline-block;
   clear: both;
   cursor: pointer;
+
   &.read-only {
-    background-color: darken(@tagBG, 10%);
-    color: darken(@tagColor, 25%);
+    background-color: @tag-bg-readonly;
+    color: @tag-text-readonly;
     &:hover {
-      background-color: darken(@tagHover, 10%);
+      background-color: @tag-bg-readonly-hover;
     }
   }
-}
-#left {
-  .tag:hover{ background-color: @nutTagHover; }
-  .tag.queried{ background-color: #333; }
-  .tag.queried:hover{ background-color: saturate(lighten(@nutTagHover, 20%), 50%); }
-}
-#right {
-  .tag:hover{ background-color: @tagHover; }
-  .tag.queried{ background-color: #3F3F3F; }
-  .tag.queried:hover{ background-color: lighten(@tagHover, 10%); }
+
+  &:hover{ background-color: @tag-bg-hover; }
+  &.queried{ background-color: @tag-bg-selected; }
+  &.queried:hover{ background-color: @tag-bg-selected-hover; }
 }
 
 form {
@@ -149,9 +237,9 @@ form {
 }
 
 #main {
-  margin: 0 2% 2% 2%;
-  height: 96%;
-  width: 96%;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 2.5%;
 }
 
 @keyframes rocking {
@@ -212,25 +300,28 @@ form {
     display: none;
     margin-right: 5px;
     font-size: 80%;
-    background-color: rgba(0,0,0,0.7);
+    background-color: @menu-bg;
     padding: 5px;
   }
   li {
+    color: @menu-text;
     cursor: pointer;
   }
   li:hover {
-    background-color: @menuHover;
+    color: @menu-text-hover;
   }
   li:active {
-    color: @menuActive;
+    color: @menu-text-active;
+
+    &.incomplete { color: @menu-text-disabled; }
   }
   .incomplete {
     cursor: default;
-    color: #AAA;
+    color: @menu-text-disabled;
     opacity: 0.75;
   }
   .incomplete:hover {
-    background-color: fade(lighten(@menuHover, 25%), 75%);
+    background-color: transparent;
   }
 
   li.private-mode {
@@ -271,68 +362,107 @@ form {
 }
 
 #query {
-  margin-bottom: 0.5%;
   position: relative;
-  background-color: rgba(255,255,255,0.7);
+  background-color: @ui-bg;
   width: 100%;
-  border-bottom: 5px solid @mainbg;
-  .fa-search {
-    color: black;
-    &:hover { color: #444; }
-    &:active { color: #888; }
-    margin: 5px 5px 0 5px;
-    vertical-align: middle;
-    cursor: pointer;
-  }
-  .chiclet {
-    &:extend(.tag);
-    font-size: 80%;
-    padding: 4px;
-    margin: 3px;
+  margin-bottom: 25px;
+  padding: 7px 0 5px;
+
+  .inner {
     position: relative;
-    &:hover .hover-cover { display: block; }
-    .hover-cover {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      background-color: rgba(255,255,255,0.65);
-      text-align: center;
-      display: none;
-      &:active .fa-times { color: white; }
-      .fa-times {
-        color: black;
-        vertical-align: sub;
+    padding: 0 2.5%;
+  }
+
+  .search-bar {
+    vertical-align: top;
+    display: inline-block;
+    width: 85%;
+    background: @input-bg;
+
+    .fa-search {
+      .input-icon;
+
+      margin: 7px 5px 0 7px;
+    }
+    .chiclet {
+      &:extend(.tag);
+      font-size: 80%;
+      padding: 4px;
+      margin: 3px;
+      position: relative;
+      &:hover .hover-cover { display: block; }
+      .hover-cover {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background-color: rgba(255,255,255,0.65);
+        text-align: center;
+        display: none;
+        &:active .fa-times { color: white; }
+        .fa-times {
+          color: black;
+          vertical-align: sub;
+        }
+      }
+
+      &.private-mode {
+        background-color: darken(red, 20%);
       }
     }
+    .search-input {
+      -moz-box-shadow: none;
+      border: none;
+      font-size: 100%;
+      width: 100%;
+      background: none;
+      padding: 5px;
+      margin: 0;
+      vertical-align: middle;
+    }
+    .search-input:focus {
+      -moz-box-shadow: none;
+    }
+    .clear-query {
+      .input-icon;
 
-    &.private-mode {
-      background-color: darken(red, 20%);
+      margin: 3px 7px;
     }
   }
-  .search {
-    -moz-box-shadow: none;
-    border: none;
-    font-size: 100%;
-    width: 100%;
-    background: none;
-    padding: 3px 0;
-    margin: 0 0 0 5px;
-    vertical-align: middle;
+
+}
+
+.nut-control {
+  display: inline-block;
+  vertical-align: top;
+  width: 14%;
+  margin-top: -2px; // @HACK magic number to sorta align with query search bar
+  font-size: @heading-small-font-size;
+
+  .count {
+    margin-right: 20px;
+    font-size: @heading-small-font-size;
   }
-  .search:focus {
-    -moz-box-shadow: none;
-  }
-  .clear-query {
-    padding: 3px 0;
-    width: 2%;
+
+  #new-nut {
+    .ui-icon;
+
     float: right;
-    cursor: pointer;
-    color: #666;
   }
-  .clear-query:hover {
-    color: black;
+
+  .sort {
+    .flex-container;
+
+    // commented-out in html
+    // .fa-refresh {
+    //   .ui-icon;
+    //   vertical-align: text-bottom;
+    // }
+
+    #nut-sort-select {
+      margin-left: 7px;
+    }
   }
 }
 
@@ -348,133 +478,113 @@ form {
 #left {
   float: left;
   width: 85%;
-  background-color: fade(@mainbg, 85%);
+
+  .header {
+    padding-bottom: 25px;
+    background-color: @ui-bg;
+
+    > span {
+      float: left;
+      margin: 5px 5px 1% 5px;
+    }
+  }
 
   #nuts {
     text-align: center;
-    .header {
-      > span {
-        float: left;
-        margin: 5px 5px 1% 5px;
-      }
-      .right {
-        float: right;
-        .count {
-          margin-right: 20px;
-          font-size: 75%;
-        }
-        .sort {
-          .fa-refresh {
-            cursor: pointer;
-            vertical-align: text-bottom;
-            font-size: 80%;
-            color: #BBB;
-            &:hover { color: #EEE; }
-            &:active { color: #FFF; }
-          }
-        }
-      }
-    }
-    #new-nut {
-      font-size: 105%;
-      margin-top: 8px;
-      margin-left: 8px;
-      cursor: pointer;
-    }
-    #new-nut:hover {
-      color: @new-hover;
-    }
+
     .nut {
       float: left;
       clear: both;
       width: 100%;
-      margin: 0 0 2px 0;
+      margin: 0 0 25px 0;
+
+      .nut-header {
+        padding: 2px 0 1px;
+        background-color: @ui-bg;
+      }
+
       .tawrapper {
-        display: inline-block;
         position: relative;
-        width: 97%;
-        max-width: 97%;
-        margin: auto;
+        line-height: 0; // otherwise extra space after textarea
+
         textarea {
-          background-color: @textareaBG;
+          box-sizing: border-box;
+          border: none;
+          padding: 7px;
+          background-color: @input-bg;
           width: 100%;
           max-height: 200px;
           outline: none;
           overflow: auto;
           font-family: 'Lucida Grande', sans-serif;
         }
+
         textarea:focus {
-          background-color: @textareaFocusBG;
+          background-color: @input-bg-focus;
           max-height: 95vh;
         }
+
         textarea.read-only {
-          background-color: @textareaReadOnlyBG;
-          color: #333;
+          background-color: @input-bg-readonly;
+          color: @input-text-readonly;
         }
-        .icons {
-          display: none;
-          position: absolute;
-          top: 3px;
-          right: 0;
-          z-index: 5;
-          font-size: 75%;
-          a {
-            margin-left: 3px;
-            color: #777;
-            &:hover { color: #333; }
 
+      }
 
-            &.privacy{
-              .fa-lock { display: none; color: darken(red, 20%); }
+      .icons {
+        opacity: 0;
+        float: left;
+        margin: 5px;
+        font-size: @icon-font-size;
+
+        a {
+          .ui-icon;
+
+          margin-left: 5px;
+
+          &.privacy{
+            .fa-lock { display: none; color: darken(red, 20%); }
+            &:hover {
+              .fa-lock { display: inline-block; }
+              .fa-unlock-alt { display: none; }
+            }
+            &.is-private {
+              .fa-lock { display: inline-block; }
+              .fa-unlock-alt { display: none; }
               &:hover {
-                .fa-lock { display: inline-block; }
-                .fa-unlock-alt { display: none; }
-              }
-              &.is-private {
-                .fa-lock { display: inline-block; }
-                .fa-unlock-alt { display: none; }
-                &:hover {
-                  color: red !important;
-                  .fa-lock { display: none; }
-                  .fa-unlock-alt { display: inline-block; }
-                }
+                color: red !important;
+                .fa-lock { display: none; }
+                .fa-unlock-alt { display: inline-block; }
               }
             }
           }
         }
-        &:hover .icons{ display: inline-block; }
       }
+      &:hover .icons { opacity: 1; }
+
       .tags {
         float: right;
-        margin-right: 1.5%;
-        font-size: 70%;
+        font-size: @tag-font-size;
         .fa {
-          font-size: 70%;
+          font-size: @tag-icon-font-size;
         }
         .tag {
           padding: 2px 4px;
           margin: 2px;
           &.note-id {
-            color: cyan;
+            color: @modal-link;
           }
           .icon {
-            color: @icon-gray;
-            cursor: pointer;
+            .tag-icon;
 
-            // really does make them look more balanced:;
+            // really does make them look more balanced:
             margin-left: 1px;
             &.delete { margin-left: 2px; }
             &.share { margin-left: 5px; }
           }
-          .icon:hover {
-            color: black; 
-          }
         }
         .add-tag-to-nut {
-          cursor: pointer;
-        }
-        .add-tag-to-nut:hover {
-          color: @new-hover;
+          .ui-icon;
         }
       }
     }
@@ -495,36 +605,51 @@ form {
   float: right;
   width: 15%;
   /*max-width: 220px;*/
-  background-color: fade(@tagbg, 20%);
-  input {
-    max-width: 75%;
+  min-height: 750px; // @TODO: should be minimum of same height as #left probably?
+  background-color: @ui-bg;
+
+  .header {
+      font-size: @heading-small-font-size;
   }
-  .fa-tags {
-    margin-left: 3px;
+
+  .tag-search {
+    .flex-container;
+
+    box-sizing: border-box;
+    background: @input-bg;
+    margin: 5px 0;
+    padding: 5px;
+    font-size: 16px;
+
+    .fa-search, .clear-field {
+      .input-icon;
+    }
+    .fa-search {
+      margin: 2px 5px 0 0;
+    }
+    #tag-search-input {
+      padding: 0 0 0 ;
+      margin: 0;
+      background: transparent;
+      font-size: 16px;
+    }
   }
+
   #new-tag {
+    .ui-icon;
+
     float: right;
-    cursor: pointer;
-  }
-  #new-tag:hover {
-    color: @new-hover;
+
+    input {
+      width: 100%;
+    }
   }
   > * {
-    margin: 3px;
-  }
-  .show-tag-options {
-    margin-left: 3px;
-    vertical-align: middle;
-    cursor: pointer;
-    color: #BBB;
-    &:hover { color: #DDD; }
-    &:active { color: #FFF; }
-    &.on { color: @new-hover; }
-    &.on:hover { color: lighten(@new-hover, 20%); }
+    padding: 8px;
   }
   #taglist {
     .tag {
-      font-size: 70%;
+      font-size: @tag-font-size;
       padding: 4px;
       margin: 2px 3px;
       float: left;
@@ -532,17 +657,17 @@ form {
 
       &:hover .icons a { display: inline; }
       .icons {
-        font-size: 75%;
+        font-size: @tag-icon-font-size;
 
         a {
           display: none;
-          color: @icon-gray;
+          color: @tag-icon;
         }
         a + a { margin-left: 3px; } // all a's except the first one
-        a:hover {color: #DDD !important;}
-        a:active { color: white !important; }
+        a:hover {color: @tag-icon-hover !important;}
+        a:active { color: @tag-icon-active !important; }
 
-        a.toggle { color: @icon-gray; }
+        a.toggle { color: @tag-icon; }
         a.toggle.on { display: inline; }
         a.toggle.on:hover { color: lighten(red, 20%) !important; }
 
@@ -550,27 +675,27 @@ form {
         a.toggle.on .fa-lock { display: inline-block; }
         a.toggle.on .fa-unlock-alt { display: none; }
       }
-      .icons a.toggle.on { color: @icon-gray; }
+      .icons a.toggle.on { color: @tag-icon; }
       &:hover .icons a.toggle.on { color: red; }
 
       // getting ugly... anyway essentially disable all buttons except delete (TODO and private) for read-only
       &.read-only {
         .icons {
           a { display: none !important; } // don't show any icons
-          a:hover { color: @icon-gray !important; } // for ones that are shown, don't change the color
+          a:hover { color: @tag-icon !important; } // for ones that are shown, don't change the color
           a.toggle.on {
             // and toggled-on switches
             display: inline !important;
-            &:hover { color: @icon-gray !important; }
+            &:hover { color: @tag-icon !important; }
           }
         }
         &:hover .icons {
           a.delete, a.toggle.on {
             // do show delete
             display: inline !important;
-            &:hover { color: #DDD !important; }
+            &:hover { color: @tag-icon-hover !important; }
           } 
-          a.toggle.on { color: @icon-gray !important; }
+          a.toggle.on { color: @tag-icon !important; }
         }
       } // end of read-only
 
@@ -597,7 +722,7 @@ form {
   font-weight: bold;
 }
 .autocomplete-selected{
-  background: fade(desaturate(lighten(@mainbg, 60%), 25%), 85%);
+  background: @autocomplete-selection-bg;
 }
 
 /* =Modal
@@ -607,7 +732,7 @@ form {
   margin-top: -65px;
   padding-bottom: 30px;
   font-size: 150%;
-  color: @modalbg;
+  color: @modal-bg;
 }
 
 #modalclickoff {
@@ -670,9 +795,9 @@ form {
       width: 50px;
       margin-left: -25px;
       margin-top: 5px;
-      color: lighten(desaturate(@modalbg, 50%), 20%);
+      color: @modal-icon;
       font-size: 80%;
-      &:hover { color: @new-hover; }
+      &:hover { color: @modal-icon-hover; }
     }
 
     .circle {
@@ -683,8 +808,8 @@ form {
       padding:50% 0;
       line-height:0;
       position:relative;
-      background: @modalbg;
-      color: white;
+      background: @modal-bg;
+      color: @modal-text;
 
       .working-overlay {
         -webkit-transition: visibility ease 0.5s, opacity ease 0.5s;
@@ -696,7 +821,7 @@ form {
 
         z-index: 20;
         position: absolute;
-        background: fade(@modalbg, 90%);
+        background: fade(@modal-bg, 90%);
         width: 100%;
         height: 100%;
         margin-left: 0;
@@ -719,7 +844,7 @@ form {
 
         &.ribbon {
           // currently unused, but could be useful, possibly dynamically applied if viewport too small
-          background: @modalbg;
+          background: @modal-bg;
           padding: 2%;
           margin-left: 13%;
         }
@@ -747,7 +872,7 @@ form {
           text-decoration: underline;
         }
         a:hover {
-          color: @new-hover;
+          color: @accent;
         }
         input, textarea {
           margin: 5px 0;
@@ -976,7 +1101,7 @@ form {
   content: attr(data-tooltip);
   bottom: 100%;
   left: 20%;
-  background: @mainbg;
+  background: @tag-bg;
   padding: 5px 10px;
   color: white;
   -webkit-border-radius: 5px;
@@ -997,7 +1122,7 @@ form {
   content: "";
   width: 0;
   height: 0;
-  border-top: 20px solid @mainbg;
+  border-top: 20px solid @tag-bg;
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
   left: -85%;
@@ -1031,6 +1156,12 @@ form {
 ----------------------------------------------- */
 
 .clear {
+  clear: both;
+}
+
+.clearfix:after {
+  content: "";
+  display: table;
   clear: both;
 }
 

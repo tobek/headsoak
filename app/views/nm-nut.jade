@@ -1,25 +1,8 @@
 div(ng-show="nut && (!nut.sharedBy || nut.sharedBody)")
-  div.tags
-    span.tag(ng-repeat="tagId in nut.tags",  ng-click="q.toggleTag(tagId, $event)", ng-class="{queried: (q.tags.indexOf(tagId) != -1), 'read-only': t.tags[tagId].readOnly}")
-      | {{t.tags[tagId].name}}
-      span.share.icon.wide.tooltip(ng-click="$event.stopPropagation();", ng-show="t.tags[tagId].share", ng-mouseover="t.setShareTooltip(t.tags[tagId])", ng-attr-data-tooltip="{{ t.tags[tagId].shareTooltip }}")
-        //- TODO this will give simplelogin:xx, need to get names instead
-        i.fa.fa-fw(ng-class="t.tags[tagId].sharedBy ? 'fa-user' : 'fa-users'")
-      span.delete.icon(ng-click="n.removeTagIdFromNut(tagId, nut.id)", ng-show="! t.tags[tagId].prog && !(t.tags[tagId].sharedBy && t.tags[tagId].readOnly)")
-        i.fa.fa-fw.fa-times
-      span.prog.icon.wide.tooltip(ng-click="$event.stopPropagation(); t.progTagCantChangeAlert(tagId)", ng-show="t.tags[tagId].prog", data-tooltip="algorithmic tag")
-        i.fa.fa-fw.fa-bolt
-    span.tag.note-id(ng-show="c.config.showNoteIds")
-      | {{ nut.id }} 
-    | 
-    span.tag(ng-show="addingTag")
-      form(ng-submit="addTag(true)")
-        input(type="text", ng-model="addTagName", ng-click="$event.stopPropagation()", nm-focus="addingTag", placeholder="tag name")
-    span.add-tag-to-nut(ng-click="$event.stopPropagation(); _throwaway = addingTag ? addTag(true) : openAddTagField();")
-      i.fa.fa-plus &nbsp;
-  div.clear
-  div.tawrapper
+  div.nut-header.clearfix
     div.icons
+      a.time.widest.tooltip(ng-attr-data-tooltip='{{"created: " + (nut.created | date:"medium") + "\nmodified: " + (nut.modified | date:"medium")}}')
+        i.fa.fa-clock-o
       a.duplicate.widest.tooltip(ng-click="n.duplicateNoteTags(nut)", data-tooltip="Create new note with same tags")
         i.fa.fa-copy
       a.privacy.widest.tooltip(ng-click="togglePrivate()", ng-attr-data-tooltip="Make this note {{ nut.private ? 'not' : '' }} private", ng-class="nut.private ? 'is-private' : ''")
@@ -27,7 +10,26 @@ div(ng-show="nut && (!nut.sharedBy || nut.sharedBody)")
         i.fa.fa-unlock-alt
       a.delete.wide.tooltip(ng-click="n.deleteNut(nut, $event.shiftKey)", data-tooltip="Delete note")
         i.fa.fa-trash-o
-      a.time.widest.tooltip(ng-attr-data-tooltip='{{"created: " + (nut.created | date:"medium") + "\nmodified: " + (nut.modified | date:"medium")}}')
-        i.fa.fa-clock-o
+
+    div.tags
+      span.tag(ng-repeat="tagId in nut.tags",  ng-click="q.toggleTag(tagId, $event)", ng-class="{queried: (q.tags.indexOf(tagId) != -1), 'read-only': t.tags[tagId].readOnly}")
+        | {{t.tags[tagId].name}}
+        span.share.icon.wide.tooltip(ng-click="$event.stopPropagation();", ng-show="t.tags[tagId].share", ng-mouseover="t.setShareTooltip(t.tags[tagId])", ng-attr-data-tooltip="{{ t.tags[tagId].shareTooltip }}")
+          //- TODO this will give simplelogin:xx, need to get names instead
+          i.fa.fa-fw(ng-class="t.tags[tagId].sharedBy ? 'fa-user' : 'fa-users'")
+        span.delete.icon(ng-click="n.removeTagIdFromNut(tagId, nut.id)", ng-show="! t.tags[tagId].prog && !(t.tags[tagId].sharedBy && t.tags[tagId].readOnly)")
+          i.fa.fa-fw.fa-times
+        span.prog.icon.wide.tooltip(ng-click="$event.stopPropagation(); t.progTagCantChangeAlert(tagId)", ng-show="t.tags[tagId].prog", data-tooltip="algorithmic tag")
+          i.fa.fa-fw.fa-bolt
+      span.tag.note-id(ng-show="c.config.showNoteIds")
+        | {{ nut.id }} 
+      | 
+      span.tag(ng-show="addingTag")
+        form(ng-submit="addTag(true)")
+          input(type="text", ng-model="addTagName", ng-click="$event.stopPropagation()", nm-focus="addingTag", placeholder="tag name")
+      span.add-tag-to-nut(ng-click="$event.stopPropagation(); _throwaway = addingTag ? addTag(true) : openAddTagField();")
+        i.fa.fa-plus &nbsp;
+
+  div.tawrapper
     textarea.mousetrap(ng-if="!nut.sharedBody", id="nut-{{nut.id}}-ta", ng-model="nut.body", ng-focus="n.nutFocus(nut)", ng-blur="n.nutBlur(nut)", ng-change="digest.status='unsynced'; n.autosizeNutById(nut.id)", tabindex=2)
     textarea.read-only(ng-if="nut.sharedBody", id="nut-{{nut.id}}-ta", ng-model="nut.sharedBody", disabled="disabled", tabindex=2)
