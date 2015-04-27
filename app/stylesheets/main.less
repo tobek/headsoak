@@ -1,63 +1,12 @@
 /* =Variables
 ----------------------------------------------- */
 
-// colors
-
-// main colors:
-@panel: #333;
-@tag: black;
-@text: white;
-@accent: gold;
-@input-bg-color: white;
-@input-text: black;
-
-@ui-bg: fade(@panel, 95%);
-@ui-text: @text;
-@ui-icon: @ui-text;
-@ui-icon-hover: @accent;
-@ui-icon-active: darken(@ui-icon-hover, 10%);
-
-@input-bg: fade(@input-bg-color, 75%);
-@input-bg-focus: fade(@input-bg-color, 90%);
-@input-bg-readonly: fade(desaturate(lighten(@ui-bg, 55%), 30%), 75%);
-@input-text-readonly: @input-text;
-@input-icon: fade(@input-text, 60%);
-@input-icon-hover: fade(@input-text, 80%);
-@input-icon-active: @input-text;
-
-@tag-bg: @tag;
-@tag-bg-hover: lighten(@tag-bg, 15%);
-@tag-text: @text;
-@tag-icon: fade(@tag-text, 50%);
-@tag-icon-hover: fade(@tag-text, 75%);
-@tag-icon-active: @tag-text;
-@tag-bg-selected: lighten(mix(@tag-bg, @accent, 75%), 5%);
-@tag-bg-selected-hover: lighten(@tag-bg-selected, 5%);
-@tag-text-readonly: darken(@tag-text, 25%);
-@tag-bg-readonly: @tag-bg;
-@tag-bg-readonly-hover: lighten(@tag-bg, 10%);
-
-@menu-bg: fade(@tag-bg, 70%);
-@menu-text: @text;
-@menu-text-hover: @accent;
-@menu-text-active: darken(@accent, 15%);
-@menu-text-disabled: darken(@menu-text, 35%);
-
-@modal-bg: #170E01;
-@modal-text: white;
-@modal-link: #00B7FF;
-@modal-icon: lighten(desaturate(@modal-bg, 50%), 20%);
-@modal-icon-hover: @accent;
-
-@autocomplete-selection-bg: fade(@ui-bg, 50%);
-
 // font sizes
 
 @tag-font-size: 18px;
 @tag-icon-font-size: 13px;
 @icon-font-size: 18px;
 @heading-small-font-size: 18px;
-
 
 
 /* =CSS Reset
@@ -109,48 +58,6 @@ table {
   border-spacing: 0;
 }
 
-/* =Component Mixins
------------------------------------------------ */
-
-.ui-icon {
-  cursor: pointer;
-  color: @ui-icon;
-
-  &:hover {
-    color: @ui-icon-hover;
-  }
-
-  &:active {
-    color: @ui-icon-active;
-  }
-}
-
-.input-icon {
-  cursor: pointer;
-  color: @input-icon;
-
-  &:hover {
-    color: @input-icon-hover;
-  }
-
-  &:active {
-    color: @input-icon-active;
-  }
-}
-
-// @NOTE: used by tags within nuts, but not in tag browser, where toggle states make things real complicated - could do with a cleanup
-.tag-icon {
-  cursor: pointer;
-  color: @tag-icon;
-
-  &:hover {
-    color: @tag-icon-hover;
-  }
-
-  &:active {
-    color: @tag-icon-active;
-  }
-}
 
 /* =Onwards
 ----------------------------------------------- */
@@ -331,7 +238,7 @@ form {
       .fa-lock { display: none; }
     }
     &.on {
-      color: red;
+      color: @red;
       .fa-unlock-alt { display: inline-block; }
       .fa-lock { display: none; }
       &:hover {
@@ -408,7 +315,7 @@ form {
       }
 
       &.private-mode {
-        background-color: darken(red, 20%);
+        background-color: darken(@red, 20%);
       }
     }
     .search-input {
@@ -543,7 +450,7 @@ form {
           margin-left: 5px;
 
           &.privacy{
-            .fa-lock { display: none; color: darken(red, 20%); }
+            .fa-lock { display: none; color: darken(@red, 20%); }
             &:hover {
               .fa-lock { display: inline-block; }
               .fa-unlock-alt { display: none; }
@@ -552,7 +459,7 @@ form {
               .fa-lock { display: inline-block; }
               .fa-unlock-alt { display: none; }
               &:hover {
-                color: red !important;
+                color: @red !important;
                 .fa-lock { display: none; }
                 .fa-unlock-alt { display: inline-block; }
               }
@@ -606,6 +513,7 @@ form {
   width: 15%;
   /*max-width: 220px;*/
   min-height: 750px; // @TODO: should be minimum of same height as #left probably?
+  padding-bottom: 5px;
   background-color: @ui-bg;
 
   .header {
@@ -669,14 +577,14 @@ form {
 
         a.toggle { color: @tag-icon; }
         a.toggle.on { display: inline; }
-        a.toggle.on:hover { color: lighten(red, 20%) !important; }
+        a.toggle.on:hover { color: lighten(@red, 20%) !important; }
 
         a.toggle .fa-lock { display: none; }
         a.toggle.on .fa-lock { display: inline-block; }
         a.toggle.on .fa-unlock-alt { display: none; }
       }
       .icons a.toggle.on { color: @tag-icon; }
-      &:hover .icons a.toggle.on { color: red; }
+      &:hover .icons a.toggle.on { color: @red; }
 
       // getting ugly... anyway essentially disable all buttons except delete (TODO and private) for read-only
       &.read-only {
@@ -1065,10 +973,10 @@ form {
     -moz-transition: all ease 0.25s;
     transition: all ease 0.25s;
   }
-  &.synced .cloud { color: green; }
-  &.disconnected .cloud { color: red; }
+  &.synced .cloud { color: @green; }
+  &.disconnected .cloud { color: @red; }
   &.syncing .cloud, &.unsynced .cloud {
-    color: yellow;
+    color: @yellow;
     animation: cloud-sync-pulse 1s infinite alternate;
     -webkit-animation: cloud-sync-pulse 1s infinite alternate;
   }

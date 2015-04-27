@@ -151,7 +151,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
         - http://jsfiddle.net/webtiki/c7h0vrwh/
     - @ui-bg is behind note/tag search fields... could maybe use this clever border method http://jsfiddle.net/VRLNJ/2/
 - new user welcome email
-    - have to set up reverse DNS and other bulkmail stuff, or free account somewhere
+    - reverse DNS etc. mostly done with SES i think? go into AWS and add email addresses under verified senders. it says DKIM verification status if failure
 - better nutmeg logo
 - favicon
 - make it not run slowly (like when autosizing)
@@ -236,6 +236,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### bits and bugs
 
+- copy nginx config and stub wrapper html file from server into repo, with deploy/setup instructions
 - refactor tag view so that nm-nut includes nm-tag
 - refactor modal
     - mainly need one function, with alert/confirm/prompt/etc just setting a couple defaults

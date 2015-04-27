@@ -1,0 +1,56 @@
+// main colors
+
+@panel: #333;
+@tag: black;
+@text: white;
+@accent: gold;
+@input-bg-color: white;
+@input-text: black;
+
+// for sync stasuses (red also used for private mode)
+
+@red: red;
+@yellow: yellow;
+@green: green;
+
+// derived colors
+
+@ui-bg: fade(@panel, 95%);
+@ui-text: @text;
+@ui-icon: @ui-text;
+@ui-icon-hover: @accent;
+@ui-icon-active: darken(@ui-icon-hover, 10%);
+
+@input-bg: fade(@input-bg-color, 75%);
+@input-bg-focus: fade(@input-bg-color, 90%);
+@input-bg-readonly: fade(desaturate(lighten(@ui-bg, 55%), 30%), 75%);
+@input-text-readonly: @input-text;
+@input-icon: fade(@input-text, 60%);
+@input-icon-hover: fade(@input-text, 80%);
+@input-icon-active: @input-text;
+
+@tag-bg: @tag;
+@tag-bg-hover: lighten(@tag-bg, 15%);
+@tag-text: @text;
+@tag-icon: fade(@tag-text, 50%);
+@tag-icon-hover: fade(@tag-text, 75%);
+@tag-icon-active: @tag-text;
+@tag-bg-selected: lighten(mix(@tag-bg, @accent, 75%), 5%);
+@tag-bg-selected-hover: lighten(@tag-bg-selected, 5%);
+@tag-text-readonly: darken(@tag-text, 25%);
+@tag-bg-readonly: @tag-bg;
+@tag-bg-readonly-hover: lighten(@tag-bg, 10%);
+
+@menu-bg: fade(@tag-bg, 70%);
+@menu-text: @text;
+@menu-text-hover: @accent;
+@menu-text-active: darken(@accent, 15%);
+@menu-text-disabled: darken(@menu-text, 35%);
+
+@modal-bg: #170E01;
+@modal-text: white;
+@modal-link: #00B7FF;
+@modal-icon: lighten(desaturate(@modal-bg, 50%), 20%);
+@modal-icon-hover: @accent;
+
+@autocomplete-selection-bg: fade(@ui-bg, 50%);
