@@ -238,14 +238,14 @@ module.exports = function(grunt) {
         uglify: {
             options: {
                 compress: {
-                    pure_funcs: [
+                    pure_funcs: grunt.option('prod') ? [
                         "console.log",
                         "console.group",
                         "console.groupCollapsed",
                         "console.groupEnd",
                         "console.time",
                         "console.timeEnd",
-                    ]
+                    ] : ''
                 }
             }
         },
@@ -314,9 +314,9 @@ module.exports = function(grunt) {
                 // no region defaults to US Standard
                 uploadConcurrency: 5
             },
-            production: {
+            prod: {
                 options: {
-                    bucket: '<%= s3cfg.appBucket %>',
+                    bucket: '<%= s3cfg.prodBucket %>',
                     // debug: true, // do a dry run
                 },
                 files: [
@@ -350,6 +350,43 @@ module.exports = function(grunt) {
                         params: {
                             CacheControl: 'public, max-age=31536000',
                             Expires: new Date(Date.now() + 1000*60*60*24*365)
+                        }
+                    },
+                ]
+            },
+            staging: {
+                options: {
+                    bucket: '<%= s3cfg.stagingBucket %>',
+                    // debug: true, // do a dry run
+                },
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= distDir %>',
+                        src: ['**/*.html'],
+                        dest: '/',
+                        params: {
+                            ContentEncoding: 'gzip',
+                            CacheControl: 'no-cache'
+                        }
+                    },
+                    {
+                        expand: true,
+                        cwd: '<%= distDir %>',
+                        src: ['**/*.{js,css}'],
+                        dest: '/',
+                        params: {
+                            ContentEncoding: 'gzip',
+                            CacheControl: 'no-cache'
+                        }
+                    },
+                    {
+                        expand: true,
+                        cwd: '<%= distDir %>',
+                        src: ['**/*.{png,gif,jpg}'],
+                        dest: '/',
+                        params: {
+                            CacheControl: 'no-cache'
                         }
                     },
                 ]
@@ -394,7 +431,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('deploy', [
         'shell:gzip',
-        'aws_s3:production',
+        'aws_s3:' + (grunt.option('prod') ? 'prod' : 'staging'),
     ]);
 
     grunt.registerTask('ci', [
