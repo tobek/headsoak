@@ -1,17 +1,30 @@
 // main colors
 
-@panel: #333;
-@tag: black;
-@text: white;
-@accent: gold;
-@input-bg-color: white;
-@input-text: black;
+// bone sea
+// @panel: #CCC;
+// @tag: #002A3A;
+// @tag-border: none;
+// @text: white;
+// @accent: rgb(255, 97, 0);
+// @input-bg-color: white;
+// @input-text: #111;
 
-// for sync stasuses (red also used for private mode)
+// tomato lace
+@panel: #222;
+@tag: rgba(0,0,0,0);
+@tag-border: 1px solid;
+@text: white;
+@accent: rgb(255, 97, 0);
+@input-bg-color: white;
+@input-text: #111;
+
+// for sync statuses (red also used for private mode)
 
 @red: red;
 @yellow: yellow;
 @green: green;
+
+@box-shadow: 1px rgba(0,0,0,0.5);
 
 // derived colors
 
@@ -30,16 +43,20 @@
 @input-icon-active: @input-text;
 
 @tag-bg: @tag;
-@tag-bg-hover: lighten(@tag-bg, 15%);
 @tag-text: @text;
+@tag-border-color: fade(@tag-text, 75%);
+@tag-bg-hover: lighten(@tag-bg, 15%);
+@tag-text-hover: @text;
+@tag-border-color-hover: @accent;
+@tag-bg-selected: lighten(mix(@tag-bg, @accent, 75%), 5%);
+@tag-bg-selected-hover: lighten(@tag-bg-selected, 5%);
+@tag-bg-readonly: @tag-bg;
+@tag-text-readonly: darken(@tag-text, 25%);
+@tag-bg-readonly-hover: lighten(@tag-bg, 10%);
+@tag-border-color-readonly-hover: darken(@tag-border-color-hover, 25%);
 @tag-icon: fade(@tag-text, 50%);
 @tag-icon-hover: fade(@tag-text, 75%);
 @tag-icon-active: @tag-text;
-@tag-bg-selected: lighten(mix(@tag-bg, @accent, 75%), 5%);
-@tag-bg-selected-hover: lighten(@tag-bg-selected, 5%);
-@tag-text-readonly: darken(@tag-text, 25%);
-@tag-bg-readonly: @tag-bg;
-@tag-bg-readonly-hover: lighten(@tag-bg, 10%);
 
 @menu-bg: fade(@tag-bg, 70%);
 @menu-text: @text;
@@ -52,5 +69,8 @@
 @modal-link: #00B7FF;
 @modal-icon: lighten(desaturate(@modal-bg, 50%), 20%);
 @modal-icon-hover: @accent;
+
+// @tooltip-bg: @tag-bg;
+@tooltip-bg: @menu-bg;
 
 @autocomplete-selection-bg: fade(@ui-bg, 50%);

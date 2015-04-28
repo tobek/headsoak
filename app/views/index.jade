@@ -256,7 +256,7 @@ block content
               span.clear-field(ng-click="tagQuery = ''")
                 i.fa.fa-times
 
-            span.sort
+            div.tag-sort
               label Sort
                 select(ng-change="c.pushTagSortBy()", ng-model="c.config.tagSortBy", ng-options="key as val.name for (key, val) in t.sortOpts")
 

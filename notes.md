@@ -236,6 +236,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### bits and bugs
 
+- disable user select on tags so that you can shift click
 - copy nginx config and stub wrapper html file from server into repo, with deploy/setup instructions
 - refactor tag view so that nm-nut includes nm-tag
 - refactor modal

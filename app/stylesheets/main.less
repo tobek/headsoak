@@ -59,6 +59,15 @@ table {
 }
 
 
+/* =Variables
+----------------------------------------------- */
+
+@body-font-fam: "Helvetica Neue", "Lucida Grande", Helvetica, Arial, sans-serif;
+@body-font-weight: 300;
+@input-font-fam: "Lucida Grande", sans-serif;
+@mono-font-fam: "Consolas", "Courier", monospace;
+
+
 /* =Onwards
 ----------------------------------------------- */
 
@@ -70,7 +79,8 @@ html, body {
 
 body {
   background-color: @ui-bg;
-  font: 150% "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 150% @body-font-fam;
+  font-weight: @body-font-weight;
   color: @ui-text;
 }
 
@@ -106,7 +116,7 @@ select, option, #right label, #left label {
 pre {
   font-size: 16px;
   line-height: 100%;
-  font-family: 'Consolas', 'Courier', monospace;
+  font-family: @mono-font-fam;
   -webkit-font-smoothing: antialiased;
   padding: 10px;
   white-space: normal;
@@ -119,6 +129,8 @@ a {
 }
 
 .tag {
+  // YAH
+  border: @tag-border @tag-border-color;
   position: relative;
   background-color: @tag-bg;
   color: @tag-text;
@@ -131,10 +143,15 @@ a {
     color: @tag-text-readonly;
     &:hover {
       background-color: @tag-bg-readonly-hover;
+      border-color: @tag-border-color-readonly-hover;
     }
   }
 
-  &:hover{ background-color: @tag-bg-hover; }
+  &:hover{
+    background-color: @tag-bg-hover;
+    border-color: @tag-border-color-hover;
+    color: @tag-text-hover;
+  }
   &.queried{ background-color: @tag-bg-selected; }
   &.queried:hover{ background-color: @tag-bg-selected-hover; }
 }
@@ -274,6 +291,7 @@ form {
   width: 100%;
   margin-bottom: 25px;
   padding: 7px 0 5px;
+  box-shadow: 0 1px @box-shadow;
 
   .inner {
     position: relative;
@@ -408,6 +426,7 @@ form {
       .nut-header {
         padding: 2px 0 1px;
         background-color: @ui-bg;
+        box-shadow: -1px 2px @box-shadow;
       }
 
       .tawrapper {
@@ -417,18 +436,25 @@ form {
         textarea {
           box-sizing: border-box;
           border: none;
+          box-shadow: -1px 1px @box-shadow;
           padding: 7px;
           background-color: @input-bg;
           width: 100%;
-          max-height: 200px;
+          max-height: 145px;
           outline: none;
           overflow: auto;
-          font-family: 'Lucida Grande', sans-serif;
+          font-family: @input-font-fam;
+
+
+          .transition(width 50ms ease-in-out, margin 50ms ease-in-out, padding 50ms ease-in-out, background-color 50ms ease-in-out);
         }
 
         textarea:focus {
           background-color: @input-bg-focus;
           max-height: 95vh;
+          width: 105%;
+          margin-left: -5%;
+          padding-left: ~"calc(5% + 7px)";
         }
 
         textarea.read-only {
@@ -439,10 +465,13 @@ form {
       }
 
       .icons {
+        visibility: hidden;
         opacity: 0;
         float: left;
         margin: 5px;
         font-size: @icon-font-size;
+
+        .transition(opacity 100ms, visibility 100ms);
 
         a {
           .ui-icon;
@@ -467,7 +496,10 @@ form {
           }
         }
       }
-      &:hover .icons { opacity: 1; }
+      &:hover .icons {
+        visibility: visible;
+        opacity: 1;
+      }
 
       .tags {
         float: right;
@@ -478,9 +510,11 @@ form {
         .tag {
           padding: 2px 4px;
           margin: 2px;
+
           &.note-id {
             color: @modal-link;
           }
+
           .icon {
             .tag-icon;
 
@@ -489,10 +523,28 @@ form {
             &.delete { margin-left: 2px; }
             &.share { margin-left: 5px; }
           }
+
+          // @HACK: terrible lame hack so that .add-tag-to-nut and rest of note header is properly vertically set up as if there were a tag, even if there aren't any tags on this note
+          &.new-tag {
+            z-index: -1000;
+            opacity: 0;
+            width: 1px;
+            padding: 2px 0;
+            margin: 2px 0;
+            &.adding {
+              z-index: inherit;
+              opacity: 1;
+              width: auto;
+              padding: 2px 4px;
+              margin: 2px;
+            }
+          }
         }
+
         .add-tag-to-nut {
           .ui-icon;
         }
+
       }
     }
   }
@@ -541,6 +593,10 @@ form {
       background: transparent;
       font-size: 16px;
     }
+  }
+
+  .tag-sort {
+    margin: 5px 0;
   }
 
   #new-tag {
@@ -1009,7 +1065,7 @@ form {
   content: attr(data-tooltip);
   bottom: 100%;
   left: 20%;
-  background: @tag-bg;
+  background: @tooltip-bg;
   padding: 5px 10px;
   color: white;
   -webkit-border-radius: 5px;
@@ -1030,7 +1086,7 @@ form {
   content: "";
   width: 0;
   height: 0;
-  border-top: 20px solid @tag-bg;
+  border-top: 20px solid @tooltip-bg;
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
   left: -85%;
@@ -1064,12 +1120,6 @@ form {
 ----------------------------------------------- */
 
 .clear {
-  clear: both;
-}
-
-.clearfix:after {
-  content: "";
-  display: table;
   clear: both;
 }
 

@@ -24,10 +24,10 @@ div(ng-show="nut && (!nut.sharedBy || nut.sharedBody)")
       span.tag.note-id(ng-show="c.config.showNoteIds")
         | {{ nut.id }} 
       | 
-      span.tag(ng-show="addingTag")
+      span.tag.new-tag(ng-class="addingTag ? 'adding' : ''")
         form(ng-submit="addTag(true)")
           input(type="text", ng-model="addTagName", ng-click="$event.stopPropagation()", nm-focus="addingTag", placeholder="tag name")
-      span.add-tag-to-nut(ng-click="$event.stopPropagation(); _throwaway = addingTag ? addTag(true) : openAddTagField();")
+      span.add-tag-to-nut(title="Add tag", ng-click="$event.stopPropagation(); _throwaway = addingTag ? addTag(true) : openAddTagField();")
         i.fa.fa-plus &nbsp;
 
   div.tawrapper
