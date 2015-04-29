@@ -74,3 +74,12 @@
 @tooltip-bg: @menu-bg;
 
 @autocomplete-selection-bg: fade(@ui-bg, 50%);
+
+::selection {
+  background: none;
+  color: @accent;
+}
+::-moz-selection {
+  background: none;
+  color: @accent;
+}

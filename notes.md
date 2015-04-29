@@ -62,6 +62,7 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 
 ##### soon
 
+- some bug with un-shared (or deleted by sharer) notes? tobyx4 account has 2 shared notes with no sharedBody - but they're visible and taking up space
 - collaborative editing:
     - http://www.firepad.io/docs/
     - https://github.com/firebase/firepad/tree/master/examples/security
@@ -135,11 +136,6 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
 ##### minor features
 
 - continue redesign
-    - style select boxes
-    - better colors
-    - input in new tag/add tag looks crap
-    - make sure tooltips are visible
-    - tag panel goes all the way down? or separately scrollable? (would make it hard to scroll down notes cause of textareas)
     - themer
         - colors
         - bg image
@@ -693,7 +689,6 @@ testing firebase in console:
 
 # Resources
 
-- disable text-selection: http://stackoverflow.com/questions/826782/css-rule-to-disable-text-selection-highlighting
 - guides (for wizards/tutorials)
     - http://linkedin.github.io/hopscotch/
     - https://github.com/jeff-optimizely/Guiders-JS

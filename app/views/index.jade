@@ -229,7 +229,7 @@ block content
             span#new-nut(title="New note", ng-click="n.createNut({})")
               i.fa.fa-plus
           div.sort
-            label(for="nut-sort-select") Sort
+            label.sort-label(for="nut-sort-select") Sort by
             select#nut-sort-select(ng-change='n.sortNuts(n.sortOpts[c.config.nutSortBy]); c.pushNutSortBy()', ng-model='c.config.nutSortBy', ng-options='key as val.name for (key, val) in n.sortOpts', tabindex=3)
             //- @TODO there isn't really space for refresh button so commenting out. but that leaves no way to re-sort by current criteria (since change event doesn't fire unless selected option changes). either a) some hack with click and focusout events, b) put refresh button back in, or c) don't care (if user really wants to, they can select a different option then go back), and/or d) keyboard shortcut
             //- i.fa.fa-refresh(ng-click='q.doQuery();')
@@ -257,11 +257,11 @@ block content
                 i.fa.fa-times
 
             div.tag-sort
-              label Sort
-                select(ng-change="c.pushTagSortBy()", ng-model="c.config.tagSortBy", ng-options="key as val.name for (key, val) in t.sortOpts")
+              label.sort-label(for="tag-sort-select") Sort by
+              select#tag-sort-select(ng-change="c.pushTagSortBy()", ng-model="c.config.tagSortBy", ng-options="key as val.name for (key, val) in t.sortOpts")
 
           ul#taglist
             li.tag.new-tag(ng-show="t.creatingTag")
               form(ng-submit="t.createTag({name: t.createTagName})")
-                input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';" nm-focus="t.creatingTag", placeholder="tag name")
+                input.new-tag-input(type="text", ng-model="t.createTagName", ng-blur="t.creatingTag=false; t.createTagName='';" nm-focus="t.creatingTag", placeholder="tag name")
             nm-tag(ng-init="", ng-repeat="tag in t.tags | orderObjectBy:t.sortOpts[c.config.tagSortBy].field:t.sortOpts[c.config.tagSortBy].rev track by $index", ng-hide="!tag", ng-show="!tagQuery || tag.name.toLowerCase().indexOf(tagQuery.toLowerCase()) !== -1")

@@ -106,11 +106,34 @@ textarea, input {
 
   /* HACK not sure why these work/are necessary */
   font-size: 60%; 
-  color: black;
-  background-color: white;
+  color: @input-text;
+  background-color: @input-bg;
 }
-select, option, #right label, #left label {
-  font-size: @heading-small-font-size;
+
+select, input {
+  font-family: @body-font-fam;
+  font-weight: @body-font-weight;
+
+  outline: none; // @TODO inputs really should have some focused state, but our inputs have things like magnifying glass besides them so state needs to go on parent
+
+  // 'x' button to clear input in IE looks bad here cause we have our own
+  &::-ms-clear {
+    height: 0;
+    width: 0;
+  }
+}
+
+select {
+  background: @tag-bg;
+  color: @tag-text;
+  border-color: @tag-border-color;
+  height: 20px;
+}
+.sort-label {
+  font-size: 14px;
+}
+.sort-label + select {
+  margin-top: 2px;
 }
 
 pre {
@@ -129,14 +152,14 @@ a {
 }
 
 .tag {
-  // YAH
-  border: @tag-border @tag-border-color;
+  display: inline-block;
   position: relative;
+  clear: both;
+  border: @tag-border @tag-border-color;
   background-color: @tag-bg;
   color: @tag-text;
-  display: inline-block;
-  clear: both;
   cursor: pointer;
+  font-size: @tag-font-size;
 
   &.read-only {
     background-color: @tag-bg-readonly;
@@ -154,6 +177,13 @@ a {
   }
   &.queried{ background-color: @tag-bg-selected; }
   &.queried:hover{ background-color: @tag-bg-selected-hover; }
+
+  .new-tag-input {
+    background: none;
+    color: @tag-text;
+    width: 100%;
+    font-size: @tag-font-size;
+  }
 }
 
 form {
@@ -161,6 +191,7 @@ form {
 }
 
 #main {
+  display: table;
   box-sizing: border-box;
   width: 100%;
   padding: 0 2.5%;
@@ -377,8 +408,6 @@ form {
   }
 
   .sort {
-    .flex-container;
-
     // commented-out in html
     // .fa-refresh {
     //   .ui-icon;
@@ -386,7 +415,8 @@ form {
     // }
 
     #nut-sort-select {
-      margin-left: 7px;
+      float: right;
+      margin-left: 2px;
     }
   }
 }
@@ -401,7 +431,8 @@ form {
 }
 
 #left {
-  float: left;
+  display: table-cell;
+  vertical-align: top;
   width: 85%;
 
   .header {
@@ -561,10 +592,11 @@ form {
 }
 
 #right {
-  float: right;
+  display: table-cell;
+  vertical-align: top;
   width: 15%;
-  /*max-width: 220px;*/
-  min-height: 750px; // @TODO: should be minimum of same height as #left probably?
+  max-width: 200px;
+  min-height: 500px;
   padding-bottom: 5px;
   background-color: @ui-bg;
 
@@ -597,6 +629,10 @@ form {
 
   .tag-sort {
     margin: 5px 0;
+
+      #tag-sort-select {
+        float: right;
+      }
   }
 
   #new-tag {
@@ -613,7 +649,6 @@ form {
   }
   #taglist {
     .tag {
-      font-size: @tag-font-size;
       padding: 4px;
       margin: 2px 3px;
       float: left;

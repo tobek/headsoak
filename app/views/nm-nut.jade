@@ -26,7 +26,7 @@ div(ng-show="nut && (!nut.sharedBy || nut.sharedBody)")
       | 
       span.tag.new-tag(ng-class="addingTag ? 'adding' : ''")
         form(ng-submit="addTag(true)")
-          input(type="text", ng-model="addTagName", ng-click="$event.stopPropagation()", nm-focus="addingTag", placeholder="tag name")
+          input.new-tag-input(type="text", ng-model="addTagName", ng-click="$event.stopPropagation()", nm-focus="addingTag", placeholder="tag name")
       span.add-tag-to-nut(title="Add tag", ng-click="$event.stopPropagation(); _throwaway = addingTag ? addTag(true) : openAddTagField();")
         i.fa.fa-plus &nbsp;
 
