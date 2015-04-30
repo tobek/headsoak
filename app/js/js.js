@@ -2418,9 +2418,11 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
   function createLocalSharedWithMeTag(tag, sharerUid) {
     var localTagId = sharerUid + ':' + tag.id;
     tag.id = localTagId;
-    tag.docs = tag.docs.map(function(docId) {
-      return sharerUid + ':' + docId; // because sharer's doc IDs might collide with ours
-    });
+    if (tag.docs) {
+      tag.docs = tag.docs.map(function(docId) {
+        return sharerUid + ':' + docId; // because sharer's doc IDs might collide with ours
+      });
+    }
     tag.readOnly = true; // TODO handle other permissions
     tag.sharedBy = sharerUid; // TODO get user's display name
 
