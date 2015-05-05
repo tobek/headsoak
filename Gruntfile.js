@@ -399,6 +399,8 @@ module.exports = function(grunt) {
     // grunt.registerTask('test:e2e', ['connect:test', 'karma:e2e']);
     // grunt.registerTask('test:unit', ['karma:dist_unit:start']);
 
+    grunt.registerTask('noop'); // causes a warning but does the trick anyway
+
     grunt.registerTask('report', [
         'plato',
         'connect:plato',
@@ -441,7 +443,7 @@ module.exports = function(grunt) {
         // 'karma:dist_unit:start',
         // 'karma:e2e',
         'deploy',
-        'report',
+        grunt.option('prod') ? 'report' : 'noop',
     ]);
 
     grunt.registerTask('ls', ['availabletasks']);
