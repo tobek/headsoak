@@ -463,6 +463,7 @@ form {
       .tawrapper {
         position: relative;
         line-height: 0; // otherwise extra space after textarea
+      }
 
         textarea {
           box-sizing: border-box;
@@ -476,24 +477,25 @@ form {
           overflow: auto;
           font-family: @input-font-fam;
 
-
-          .transition(width 50ms ease-in-out, margin 50ms ease-in-out, padding 50ms ease-in-out, background-color 50ms ease-in-out);
+          &.read-only {
+            background-color: @input-bg-readonly;
+            color: @input-text-readonly;
+          }
         }
 
-        textarea:focus {
-          background-color: @input-bg-focus;
-          max-height: 95vh;
-          width: 105%;
-          margin-left: -5%;
-          padding-left: ~"calc(5% + 7px)";
-        }
+        .active {
+          textarea {
+            background-color: @input-bg-focus;
+            max-height: 95vh;
+            width: 105%;
+            margin-left: -5%;
+            padding-left: ~"calc(5% + 7px)";
 
-        textarea.read-only {
-          background-color: @input-bg-readonly;
-          color: @input-text-readonly;
+            &.read-only {
+              background-color: mix(@input-bg-focus, @input-bg-readonly, 33%);
+            }
+          }
         }
-
-      }
 
       .icons {
         visibility: hidden;

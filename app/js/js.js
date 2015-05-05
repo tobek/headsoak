@@ -1857,14 +1857,20 @@ function (
         fn: function() {
           var nutScope = $s.n.getFocusedNutScope();
           if (nutScope) {
-            nutScope.closeAddTagField();
-            nutScope.focus();
+            if (nutScope.addingTag) {
+              nutScope.closeAddTagField();
+              nutScope.focus();
+            }
+            else {
+              nutScope.deactivateNut();
+            }
           }
 
           $timeout(function() {
             $s.m.cancelModal();
           });
 
+          // @TODO focusing on #blur-hack prevents user from using arrow keys to scroll
           angular.element("#blur-hack")[0].focus();
         },
         overkill: true,
@@ -2641,6 +2647,8 @@ function (
 
         $s.autocomplete(safer$("#nut-"+$s.nut.id+" .tags input"), $s.nut);
         $s.addingTag = true; // this will automatically show the field and put focus on it
+
+        $s.activateNut();
       };
       $s.closeAddTagField = function closeAddTagField() {
         $(window).off('click', $s.closeAddTagField);
@@ -2658,7 +2666,22 @@ function (
           // private mode is off, so we need to filter which notes to show:
           $s.q.doQuery();
         }
+      };
+
+      $s.activateNut = function() {
+        $el.addClass('active');
+        $(window).on('click', $s.maybeDeactivateNut);
+      };
+      $s.deactivateNut = function(e) {
+        $el.removeClass('active');
+        $(window).off('click', $s.maybeDeactivateNut);
       }
+      $s.maybeDeactivateNut = function(e) {
+        if (! $el[0].contains(e.target)) {
+          // user clicked outside this nut, so deactivate
+          $s.deactivateNut();
+        }
+      };
 
       $s.focus = function() {
         $timeout(function() {

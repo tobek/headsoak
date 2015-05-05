@@ -183,7 +183,6 @@ contents:
     - function 'update status message' after various key stages, which chooses a random one
     - loaded from firebase so it's not in JS source and harder to see?
     - see `loading-messages.md`
-- "active" state for nuts instead of focus, so that you can activate readonly notes and so that if you click on another window, area stays opened
 
 ##### bits and bugs
 
