@@ -1,7 +1,7 @@
 li.tag(ng-click="q.toggleTag(tag.id, $event)", ng-class="{queried: (q.tags.indexOf(tag.id) != -1), 'read-only': tag.readOnly}")
   | {{tag.name}} ({{ tag.docs.length }}) 
   span.icons
-    a.prog.toggle(title="algorithmic", ng-click="$event.stopPropagation(); t.tagProgSettings(tag)", ng-class="tag.prog ? 'on' : ''")
+    a.prog.toggle.wide.tooltip(title="algorithmic", ng-click="$event.stopPropagation(); t.tagProgSettings(tag)", ng-class="tag.prog ? 'on' : ''", ng-attr-data-tooltip="{{ tag.prog ? 'This tag is magic' : 'Make this tag magic' }}")
       i.fa.fa-bolt.fa-fw
     a.share.toggle.wide.tooltip(ng-mouseover="t.setShareTooltip(tag)", ng-attr-data-tooltip="{{ tag.shareTooltip }}", ng-click="$event.stopPropagation(); t.sharingSettings(tag)", ng-class="_.isEmpty(tag.share) ? '' : 'on'")
       i.fa.fa-fw(ng-class="tag.sharedBy ? 'fa-user' : 'fa-users'")

@@ -7,6 +7,23 @@ l.search("word") // returns one result
 l.search("some") // returns no results - is "some" just a stop word? if so, and l.search("some word") works, we're good
 
 
+TODO NOW
+
+- make modal progTagEditor its own modal element
+- move thirdbutton and progtagspecific stuff out into that
+- make it work
+- re-arrange with new stuff
+
+contents:
+
+- search bar
+- list of algos
+- add new
+- info
+- editor
+  - help
+
+
 ## TODO
 
 ### shared notes
@@ -59,6 +76,8 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
     - 'x' admin
         - only necessary if recipient of 'w' *can't* share or depending on 'w' behavior of sharer deleting/unsharing
     - 'd' deleted. only found in recipient's /user/uid/share document, indicates recipient should update their sharing info accordingly, and then can delete the 'd' record
+    - notes
+        - dropbox, when sharing, has checkbox "Allow editors to manage membership of this folder" and then, in the dropdown to control per user, you can choose "can view", "can edit", "make owner".
 
 ##### soon
 
@@ -288,6 +307,39 @@ l.search("some") // returns no results - is "some" just a stop word? if so, and 
         - https://developer.mozilla.org/en-US/docs/Web/API/URL.createObjectURL?redirectlocale=en-US&redirectslug=URL.createObjectURL
 - login via fb/google/github/whatevs
     - are user id numbers unique or do i need e.g. 'simplelogin:46'? if not... migrate away from provider in user id for /users and /emailToId
+- two-factor auth
+    - IP or browser/IP as unique identifier? "device"? anything else? what's best practice. i guess what google and FB do? maybe "device" instead of "location"? Should put a cookie and remember this device, as mobile phone will come in from all sorts of IPs
+    - nice messaging
+        - 2-factor disabled
+            - "this is the first time we've seen you log in to Nutmeg from this location: x.x.x.x ([name me](#)). you last logged in from y.y.y.y ([name me](#). [view access logs]() [don't show again]() [i want extra security whenever there's an attempt to log in to my account from a new/unrecognized location (two-factor authentication)]()"
+        - 2-factor enabled
+            - "this is the first time we've seen you log in to Nutmeg from this location: x.x.x.x. we are <whatever messaging about your two-factor method>"
+            - they do it
+            - "great!" and show loading icon for minimum of X seconds and also a "view access logs" link
+        - or maybe "we don't recognize your device/location..."
+    - two-factor options could be cell phone, email, or:
+        - "ask me questions about my notes. [examples]()"
+            - "which of the following are tags that you've used?"
+            - "which of the following tags have you used most recently?" (pick ones with very different dates)
+            - "which of the following notes was modified most recently?" (pick ones with very different dates)
+            - "note that we will never use private tags or notes for these questions, nor content that others have shared with you"
+            - this could be fun but depending on architecture at the time could be a pain to implement, cause info required for these questions would have to come from server - if already on client, then there's no real security. so either has to be server based or some shenanigan like client regularly updates some document in a special location in firebase that has different read permissions
+    - consider on or off by default, either way onboarding for this feature could be in first popup
+    - can you detect if someone logs in via twitter/fb/google/github and have two-factor enabled on them? cause if so, two-factor on nutmeg would be a nuisance. ask: how to handle two-factor and open/social/whatever logins
+    - access logs dialog
+        - shows X most recent
+        - shows all unique devices/locations/whatever
+        - shows you which is the current session
+        - lets you name them
+        - shows status of two-factor auth and lets you enable/disable
+        - sign out all logged-in sessions (can we show logged-in sessions?)
+- feature request site. there are prob open source ones
+    - users get X votes to allocate, freed when feature built (maybe rewards/keep track of votes you've put on implemented things?). premium users get more.
+    - can put a bounty (if this gets built then i'll pay $x) and several people can pile on.
+        - make it easy, like a button that says "i'll give you $1 if this feature gets built", another button "oh yeah? i'll give you even MORE, like $___"
+            - not the best call to action, doesn't emphasize what they get, and the meaning of "I" could be ambiguous
+    - ideally have lovely markdown outline of feature, maybe mocks, git commits, timelines, etc.
+
 
 ##### minor features
 
@@ -655,13 +707,10 @@ Really the way to make it extensible is a list of levels each with value, shortc
 ## RANDO
 
 - maximum BSON size is 16mb. large documents with history may reach this. deal with/alert about/trim history/whatever
-- have a hello message to users who open the JS console on nutmeg
-- instead of framing $ for improvements as bounties, could be like conditional donations: i'll donate X if this feature/whatever gets built
-- filtering with ng-repeat and ng-show may be slow for large number of nuts
 
 ## Ridiculous Features
 
-The ability to share a note with someone but without them being able to see the text of the note - they can only see the tags and the timestamps. So it will, for instance, show at the top when sorting by recently modified if they've edited it. Useful for love letters and kinky plans.
+- The ability to share a note with someone but without them being able to see the text of the note - they can only see the tags and the timestamps. So it will, for instance, show at the top when sorting by recently modified if they've edited it. Useful for love letters and kinky plans.
 
 # Data Model
 

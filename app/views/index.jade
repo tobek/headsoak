@@ -8,7 +8,7 @@ block content
   div#bg-image
 
   div#modalclickoff(ng-click="m.cancelModal()", ng-show="m.modal")
-  div.modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal, 'large-circle': m.modalLarge }", ng-click="m.cancelModal()")
+  div.modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal, 'large-circle': m.modalLarge, 'huge-box': m.modalHuge }", ng-click="m.cancelModal()")
     h1#title(ng-show="!u.loggedIn") nutmeg
     div.circle-holder
       a#close-modal(ng-click="m.cancelModal()", ng-show="u.loggedIn && !m.lockedOut") x

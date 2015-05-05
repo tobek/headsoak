@@ -772,6 +772,31 @@ form {
   z-index: 10;
   top: 20%;
 
+  // this is SUPER janky. prog tag library should be a totally separate view/module
+  &.huge-box {
+    top: 0;
+    height: 100%;
+
+    .circle-holder {
+      position: relative;
+      top: 7.5%;
+      width: 80%;
+      height: 85%;
+      min-width: 700px;
+
+      .circle {
+        padding: 0;
+        height: 100%;
+        border-radius: 5px;
+
+        & > div {
+          margin-top: 0 !important; // override JS attempt to vertically center in circle
+          padding: 25px;
+        }
+      }
+    }
+  }
+
   &.large-circle {
     top: 10%;
     .circle-holder {

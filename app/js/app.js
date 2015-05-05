@@ -1,1 +1,4 @@
-angular.module('nutmeg', []);
+angular.module('nutmeg', [
+  'fuzzyMatchSorter',
+  'ngOrderObjectBy'
+]);

@@ -3,8 +3,21 @@
 
 console.time('pre login');
 
-angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
-.controller('Nutmeg', ['$scope', '$timeout', "$interval", "$sce", "fuzzyMatchSort", function ($s, $timeout, $interval, $sce, fuzzyMatchSort) {
+angular.module('nutmeg').controller('Nutmeg', [
+  '$scope',
+  '$timeout',
+  '$interval',
+  '$sce',
+  'fuzzyMatchSort',
+  'progTagLibrary',
+function (
+  $s,
+  $timeout,
+  $interval,
+  $sce,
+  fuzzyMatchSort,
+  progTagLibrary
+) {
 
   var INITIAL_NUTS_LIMIT = 15; // how many to show at a time (but we infinite scroll more)
 
@@ -136,7 +149,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
           thirdButton: opts.thirdButton,
           thirdButtonCb: opts.thirdButtonCb,
         };
-        $s.m.modalLarge = true;
+        $s.m.modalHuge = true;
 
 
         $s.m.dynamic.editor = ace.edit('prog-tag-editor-field');
@@ -150,6 +163,7 @@ angular.module('nutmeg', ['fuzzyMatchSorter', 'ngOrderObjectBy'])
 
         $s.m.dynamic.editor.setValue(funcString);
         $s.m.dynamic.editor.gotoLine(0, 0); // deselect and go to beginning (setValue sometimes selects all and/or puts cursor at end)
+
         setTimeout(function () {
           $s.m.dynamic.editor.resize();
         }, 550); // modal opening animation takes 500ms

@@ -284,9 +284,10 @@ module.exports = function(grunt) {
                         ],
                         scripts: [
                             'js/lunr.min.js',
-                            'js/fuzzy-match-sorter.js',
                             'js/jquery.autocomplete.mod.js',
                             'js/app.js',
+                            'js/services/fuzzy-match-sorter.js',
+                            'js/services/prog-tag-library.js',
                             'js/js.js',
                         ]
                     }
