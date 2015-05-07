@@ -3,7 +3,7 @@ extends header
 block content
 
   //- we can call focus on this in order to blur all
-  input#blur-hack
+  input.mousetrap#blur-hack
 
   div#bg-image
 
@@ -219,7 +219,7 @@ block content
                 | {{t.tags[tagId].name}}
                 span.hover-cover
                   i.fa.fa-times
-            input.search-input.flex.mousetrap(type="text", placeholder="search notes", ng-model="q.query", nm-query="q.query", tabindex=1, ng-focus="q.setupAutocomplete()")
+            input.search-input.flex(type="text", placeholder="search notes", ng-model="q.query", nm-query="q.query", tabindex=1, ng-focus="q.setupAutocomplete()")
             span.clear-query(ng-click="q.clear()")
               i.fa.fa-times
 
@@ -252,7 +252,7 @@ block content
 
             div.tag-search
               i.fa.fa-search(ng-click="t.focusOnSearch = true")
-              input#tag-search-input.mousetrap(type="text", placeholder="search tags", ng-model="tagQuery", nm-focus="t.focusOnSearch")
+              input#tag-search-input(type="text", placeholder="search tags", ng-model="tagQuery", nm-focus="t.focusOnSearch")
               span.clear-field(ng-click="tagQuery = ''")
                 i.fa.fa-times
 

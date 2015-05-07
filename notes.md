@@ -1,13 +1,4 @@
-l = lunr(function () {
-  this.field('body', {boost: 1});
-  this.ref('id');
-})
-l.update({"body":"yo some words", "id": 0})
-l.search("word") // returns one result
-l.search("some") // returns no results - is "some" just a stop word? if so, and l.search("some word") works, we're good
-
-
-TODO NOW
+# TODO NOW
 
 - make modal progTagEditor its own modal element
 - move thirdbutton and progtagspecific stuff out into that
@@ -24,9 +15,9 @@ contents:
   - help
 
 
-## TODO
+# TODO
 
-### shared notes
+### shared notes notes
 
 ##### share settings modal mockup
 
@@ -42,7 +33,7 @@ contents:
     spoon           x
     fiasco          x
 
-##### sharing structure
+##### sharing structure doc/spec
 
 - sharer has in each tag (and duplicated in each note) a `sharer` child object with {'simplelogin:23': 'r', 's...': 'w'} for read write. recipients can read all info about these tags (to find which notes) and notes themselves.
 - recipient has /user/uid/sharedWithMe/tags/sharer-uid/tag-id/r|w|x|d. this is set by the *sharer*. recipient can look in /user/uid/sharedWithMe to get all info about stuff shared with them
@@ -81,6 +72,7 @@ contents:
 
 ##### soon
 
+- rethink architecture and see if there's any other options (see "collaboration" section below)
 - some bug with un-shared (or deleted by sharer) notes? tobyx4 account has 2 shared notes with no sharedBody - but they're visible and taking up space
 - collaborative editing:
     - http://www.firepad.io/docs/
@@ -154,17 +146,9 @@ contents:
 
 ##### minor features
 
-- continue redesign
-    - themer
-        - colors
-        - bg image
-    - sloping/cut-off/diagonal tags?
-        - one of these rotates and hides overflow, that's the only one that works with interesting foreground and background i think:
-        - http://tympanus.net/codrops/2011/12/21/slopy-elements-with-css3/
-        - http://stackoverflow.com/questions/11074601/diagonal-wedge-shaped-css-edge-to-edge-centered-in-browser
-        - http://stackoverflow.com/questions/7324722/cut-corners-using-css
-        - http://jsfiddle.net/webtiki/c7h0vrwh/
-    - @ui-bg is behind note/tag search fields... could maybe use this clever border method http://jsfiddle.net/VRLNJ/2/
+- some more design bits:
+    - tags in search bar should be better
+    - timestamps tooltip is clipped (any others?)
 - new user welcome email
     - reverse DNS etc. mostly done with SES i think? go into AWS and add email addresses under verified senders. it says DKIM verification status if failure
 - better nutmeg logo
@@ -183,6 +167,9 @@ contents:
     - function 'update status message' after various key stages, which chooses a random one
     - loaded from firebase so it's not in JS source and harder to see?
     - see `loading-messages.md`
+- color themer
+    - colors
+    - bg image
 
 ##### bits and bugs
 
@@ -195,6 +182,23 @@ contents:
 - @nutmeg.io email address. I have support@ (and toby@ and ece@), what about for general stuff? contact@ is boring
 - space at bottom of page?
 - why doesn't it remember my username and password?
+- sloping/cut-off/diagonal tags?
+    - one of these rotates and hides overflow, that's the only one that works with interesting foreground and background i think:
+    - http://tympanus.net/codrops/2011/12/21/slopy-elements-with-css3/
+    - http://stackoverflow.com/questions/11074601/diagonal-wedge-shaped-css-edge-to-edge-centered-in-browser
+    - http://stackoverflow.com/questions/7324722/cut-corners-using-css
+    - http://jsfiddle.net/webtiki/c7h0vrwh/
+- @ui-bg is behind note/tag search fields so they look gray instead of white... could maybe use this clever border method http://jsfiddle.net/VRLNJ/2/
+
+something's up with lunr:
+
+    l = lunr(function () {
+      this.field('body', {boost: 1});
+      this.ref('id');
+    })
+    l.update({"body":"yo some words", "id": 0})
+    l.search("word") // returns one result
+    l.search("some") // returns no results - is "some" just a stop word? if so, and l.search("some word") works, we're good
 
 ### todo next
 
@@ -360,6 +364,7 @@ contents:
 
 ### todo not thought through
 
+- have a blank note always present at the top? you make a "new" note just by clicking in it and starting typing. placeholder text "start a new note...". most awkward bit would be that after unfocusing on that note (or even starting typing, otherwise you couldn't click directly from that note into another new one), another new blank note would have to slide in on top.
 - tutorial/wizard/helper/cheat mode. maybe some bar along the bottom that displays some info for everything you hover on and every state you're in. would adapt to your shortcuts. so while you are in a nut it would have ctrl+t for tag writing. while you're tag adding it would have enter to add tag, comma to add tag and add another, etc.
     - some mild animation, a pulse or something, when helper text changes
     - would we ever need more? like arrows pointing at the add tag button? options:
@@ -400,7 +405,7 @@ contents:
     - http://www.dustindiaz.com/autocomplete-fuzzy-matching
     - http://www.dustindiaz.com/javascript-cache-provider/
 
-## QUESTIONS
+# QUESTIONS
 
 - feedback placeholder text "Bug reports and suggestions are eagerly awaited. You'll hear from me personally." Maybe just "Bug reports and suggestions are eagerly awaited!"
 - nutmeg should remember your current location. details:

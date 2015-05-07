@@ -1746,12 +1746,13 @@ function (
    * binding: a string, will be combined with global `mod` (unless `nomod`) and passed directly to mousetrap. see mousetrap docs for more info
    * apply (optional): whether this needs to be wrapped in nmScope.$apply()
    * overkill (optional): for power-users - don't display by default
+   * global (optional): work even in text input areas without "mousetrap" class. defaults to true
    * nomod (optional): do not add the global `mod` to binding
    * id: used to create a mapping of id->binding to save in Firebase without unnecessarily copying all of this data. must not change, or else it may fuck up people's existing bindings
    * allowOnModal (optional): by default, shortcuts are disabled when a modal is open, unless this is true
    */
 
-  // latest id: 9
+  // latest id: 10
   $s.s = {
     "mod": "ctrl+alt",
     "shortcuts": [
@@ -1851,6 +1852,18 @@ function (
       }
 
       , {
+        name: "Go to search bar (alt)",
+        binding: "/",
+        fn: function() {
+          $s.q.focus();
+        },
+        global: false,
+        overkill: true, // @TODO: not really overkill but just don't show in shortcuts modal. really this calls for ability to do nomod inside shortcut controls so that they can set this instead of mod+f or whatever, and then this should be default
+        nomod: true,
+        id: 10
+      }
+
+      , {
         name: "Unfocus",
         description: "Unfocuses from any input/textarea, closes any open modal.",
         binding: "esc",
@@ -1879,7 +1892,8 @@ function (
         id: 6
       }
 
-      // TODO: scroll up/down?
+      // @TODO: scroll up/down?
+      // @TODO: use string id's not numbers - and create some map to map from old id's to new?
     ],
 
     initBindings: function(shortcutConfig) {
@@ -1887,11 +1901,12 @@ function (
         console.log("no saved bindings, leaving them as default");
       }
       else {
-        console.log("setting up fetched bindings")
+        console.log("setting up fetched bindings", shortcutConfig);
         if (shortcutConfig.modKey !== null) {
           $s.s.mod = shortcutConfig.modKey;
         }
         if (shortcutConfig.bindings !== null) {
+          // go through all our hardcoded shortcuts and, if binding exists in user's shortcutConfig settings, set local binding to that
           $s.s.shortcuts.forEach(function(shortcut) {
             if (shortcutConfig.bindings[shortcut.id]) {
               shortcut.binding = shortcutConfig.bindings[shortcut.id];
@@ -1919,8 +1934,12 @@ function (
       Mousetrap.reset();
 
       $s.s.shortcuts.forEach(function(shortcut) {
-        var binding = shortcut.nomod ? shortcut.binding : $s.s.mod + "+" + shortcut.binding;
-        Mousetrap.bindGlobal(binding, function(e) {
+        var binding = shortcut.nomod ? shortcut.binding : ($s.s.mod + "+" + shortcut.binding);
+
+        // defaults to true:
+        var bindFunction = shortcut.global === false ? 'bind' : 'bindGlobal';
+
+        Mousetrap[bindFunction](binding, function(e) {
           if (!$s.u.loggedIn) return;
           if ($s.m.modal && !shortcut.allowOnModal) return;
 
