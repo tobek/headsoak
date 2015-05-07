@@ -98,6 +98,8 @@ module.exports = function(grunt) {
                     server: {
                         baseDir: "<%= assetsDir %>"
                     },
+                    online: false, // speeds up startup since we're not using the features of BrowserSync that require internet
+                    open: grunt.option('launch') ? "local" : false, // only launch browser if --launch flag passed in
                     host: 'localhost'
                 }
             }
