@@ -375,6 +375,7 @@ something's up with lunr:
 
 ### todo not thought through
 
+- ability to "like" a note? useful for shared notes, like "i've seen this". if so should there be ability to "relike", like they've made updates and you hit it again
 - have a blank note always present at the top? you make a "new" note just by clicking in it and starting typing. placeholder text "start a new note...". most awkward bit would be that after unfocusing on that note (or even starting typing, otherwise you couldn't click directly from that note into another new one), another new blank note would have to slide in on top.
 - tutorial/wizard/helper/cheat mode. maybe some bar along the bottom that displays some info for everything you hover on and every state you're in. would adapt to your shortcuts. so while you are in a nut it would have ctrl+t for tag writing. while you're tag adding it would have enter to add tag, comma to add tag and add another, etc.
     - some mild animation, a pulse or something, when helper text changes

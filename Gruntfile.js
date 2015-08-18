@@ -2,6 +2,8 @@ module.exports = function(grunt) {
 
     "use strict";
 
+    var ENV = grunt.option('prod') ? 'prod' : 'staging';
+
     require('load-grunt-tasks')(grunt);
 
     grunt.initConfig({
@@ -15,20 +17,20 @@ module.exports = function(grunt) {
                 options: {
                     filter: 'include',
                     groups: {
-                        'Development': ['dev', 'test:unit', 'test:e2e', 'report'],
+                        'Development': ['dev', 'test:unit', /*'test:e2e',*/ 'report'],
                         'Production': ['build'],
                         'Continuous Integration': ['ci']
                     },
-                    sort: ['dev', 'test:unit', 'test:e2e', 'report', 'build', 'ci'],
+                    sort: ['dev', /*'test:unit', 'test:e2e',*/ 'report', 'build', 'ci'],
                     descriptions: {
-                        'dev' : 'Launch the static server and watch tasks',
-                        'test:unit' : 'Run unit tests and show coverage report',
-                        'test:e2e' : 'Run end-to-end tests',
-                        'report' : 'Open Plato reports in your browser',
-                        'build' : 'Package your web app for distribution',
-                        'ci' : 'Run unit & e2e tests, package your webapp and generate reports. Use this task for Continuous Integration'
+                        'dev': 'Launch static server and watch tasks (--launch option opens in browser)',
+                        // 'test:unit': 'Run unit tests and show coverage report',
+                        // 'test:e2e': 'Run end-to-end tests',
+                        'report': 'Open Plato reports in browser',
+                        'build': 'Package for distribution',
+                        'ci': 'Build, tag, and deploy app. Deploys to staging unless --prod option specified. Add --tag option to tag latest local commit with dated deploy tag.\n\n(Note bug with grunt.option that doesn\'t allow multiple boolean command line args like `--prod --tag`, so you have to do `--prod=true --tag`)'
                     },
-                    tasks: ['dev', 'test:unit', 'test:e2e',  'build', 'report', 'ci']
+                    tasks: ['dev', /*'test:unit', 'test:e2e',*/  'build', 'report', 'ci']
                 }
             }
         },
@@ -304,11 +306,19 @@ module.exports = function(grunt) {
             }
         },
         shell: {
+            noop: {
+                command: ':'
+            },
+
             // grunt-compress was producing empty gzipped files for me so let's use shell
             gzip: {
                 // recursively in-place gzip everything (except images) in here, then remove .gz extension:
                 command: 'find <%= distDir %> -type f ! -iname "*.png" ! -iname "*.gif" ! -iname "*.jpg" -exec gzip -v9 "{}" \\; -exec mv "{}.gz" "{}" \\;'
-            }
+            },
+
+            gitTagDeploy: {
+                command: 'git tag deployed-' + ENV + '-`date +%s` && git push --tags'
+            },
         },
         aws_s3: {
             options: {
@@ -401,7 +411,7 @@ module.exports = function(grunt) {
     // grunt.registerTask('test:e2e', ['connect:test', 'karma:e2e']);
     // grunt.registerTask('test:unit', ['karma:dist_unit:start']);
 
-    grunt.registerTask('noop'); // causes a warning but does the trick anyway
+    grunt.registerTask('noop', ['shell:noop']);
 
     grunt.registerTask('report', [
         'plato',
@@ -416,7 +426,7 @@ module.exports = function(grunt) {
         'watch',
     ]);
     grunt.registerTask('serve', ['dev']);
-    grunt.registerTask('default', ['dev']);
+    grunt.registerTask('default', ['availabletasks']);
 
     grunt.registerTask('build', [
         'jshint',
@@ -436,7 +446,8 @@ module.exports = function(grunt) {
 
     grunt.registerTask('deploy', [
         'shell:gzip',
-        'aws_s3:' + (grunt.option('prod') ? 'prod' : 'staging'),
+        'aws_s3:' + ENV,
+        grunt.option('tag') ? 'shell:gitTagDeploy' : 'noop',
     ]);
 
     grunt.registerTask('ci', [
