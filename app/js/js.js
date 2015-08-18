@@ -40,6 +40,7 @@ function (
   $s.m = {
     modal: false,
     modalLarge: false,
+    modalHuge: false,
 
     /** user has accepted or completed modal */
     finishModal: function() {
@@ -84,9 +85,11 @@ function (
       }
 
       $timeout(function() {
+        // @TODO this manually resetting of properties is hacky
         $s.m.working = false;
         $s.m.modal = false;
         $s.m.modalLarge = false;
+        $s.m.modalHuge = false;
       });
     },
 
