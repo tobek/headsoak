@@ -1,18 +1,29 @@
 # TODO NOW
 
+- check if "Hey, it looks like you've logged into Nutmeg" message is fuckin square too
 - make modal progTagEditor its own modal element
+    - separate file?
 - move thirdbutton and progtagspecific stuff out into that
-- make it work
-- re-arrange with new stuff
+- make sure it works
+- decide on layout ("get me deep in the code" option?)
+- chunk out layout
+- populate list
+- list selection sets func so that you can save and it works
+- as soon as you start typing it copies into separate list which has YOUR ones
+- rename ability
+- delete ability
 
 contents:
 
 - search bar
 - list of algos
-- add new
-- info
+    - selected algo shows description right underneath it
+    - horizontal rule between global and yours
+    - <add new> one, one selected, opens up in right
 - editor
   - help
+  - bar above has name
+  - delete
 
 
 # TODO
