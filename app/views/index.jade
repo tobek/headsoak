@@ -117,9 +117,9 @@ block content
 
         div.login(ng-show="m.modal == 'login'")
           h3 log in
-          form(ng-submit="u.login(u.email, u.password);")
-            input(type="email", placeholder="email", ng-model="u.email")
-            input(type="password", placeholder="password", ng-model="u.password")
+          form(action="/blank.html", method="get", target="login-iframe", ng-submit="u.login(u.email, u.password);")
+            input(name="email", type="email", placeholder="email", ng-model="u.email")
+            input(name="password", type="password", placeholder="password", ng-model="u.password")
             input(type="submit", value="go", ng-hide="u.loading")
             p.loader(ng-show="u.loading")
               img(src="/img/loader-white.gif")
@@ -127,6 +127,9 @@ block content
             a(ng-click="u.forgotPassword()") forgot password?
           p or 
             a(ng-click="m.modal='createaccount'") create an account
+
+          //- need to submit login form so browser offers to remember password, so just submit it here
+          iframe#login-iframe(name="login-iframe", src="about:blank", style="display:none")
 
         div.create-account(ng-show="m.modal == 'createaccount'")
           form(ng-submit="u.createAccount(u.email, u.pass1, u.pass2);")
