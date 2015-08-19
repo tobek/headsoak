@@ -1,0 +1,6 @@
+//- used as the login form `action` - form needs to submit in order to trigger browser to remember password. tried setting action to about:blank or cancelling submission but no dice in chrome.
+//- also, it appears that it needs some content, maybe chrome thinks it's an error response if it's completely empty?
+| I'm drawing a blank.
+
+//- send back here so iframe can be reused for future events like a password change
+script location.href = '/pseudo-login.html';

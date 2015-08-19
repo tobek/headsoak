@@ -447,6 +447,7 @@ module.exports = function(grunt) {
     grunt.registerTask('deploy', [
         'shell:gzip',
         'aws_s3:' + ENV,
+        // @TODO this tagging is a little hacky. has to be optional cause you deploy from local so could deploy uncommitted and wrongly tag latest commit. but the fact that you can do this means latest deploy tag might not match what has been deployed. fix #1: put check in somehow to prevent deploying uncommitted changes. fix #2: use git hooks and/or an actual CI server
         grunt.option('tag') ? 'shell:gitTagDeploy' : 'noop',
     ]);
 

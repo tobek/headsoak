@@ -365,6 +365,8 @@ function (
         else {
           alert ('Password changed successfully!');
           $s.u.password = $s.u.newPass1 = $s.u.newPass2 = '';
+
+          $s.u.pseudoLogin($s.u.user.email, password);
         }
 
         $s.m.working = false;
@@ -415,6 +417,17 @@ function (
         'password': password,
         'rememberMe': true
       });
+
+      $s.u.pseudoLogin(email, password);
+    },
+
+    pseudoLogin: function(email, password) {
+      // submit SOMETHING so that chrome recognizes login and offers to save password
+      var loginIframe = document.getElementById('login-iframe');
+      var loginIframeDoc = loginIframe.contentWindow ? loginIframe.contentWindow.document : loginIframe.contentDocument;
+      loginIframeDoc.getElementById('email').value = email;
+      loginIframeDoc.getElementById('password').value = password;
+      loginIframeDoc.getElementById('login-form').submit();
     },
 
     auth: new FirebaseSimpleLogin(new Firebase('https://nutmeg.firebaseio.com/'), function(error, user) {
