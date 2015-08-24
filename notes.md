@@ -754,6 +754,8 @@ testing firebase in console:
 
 # Resources
 
+- package website/webapp as chrome app https://developer.chrome.com/apps/about_apps
+- auto-update your mac app: http://sparkle-project.org/
 - guides (for wizards/tutorials)
     - http://linkedin.github.io/hopscotch/
     - https://github.com/jeff-optimizely/Guiders-JS

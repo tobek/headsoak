@@ -1,0 +1,24 @@
+{
+  "name": "nw-nutmeg",
+  "version": "0.0.1",
+  "description": "An API for your writing",
+  "maintainers": [{
+    "name": "Toby Fox",
+    "email": "tobyfox@gmail.com",
+    "web": "http://toby.is"
+  }],
+  "bugs": "mailto:tobyfox+nutmeg-bugs@gmail.com",
+
+  "main": "index.html",
+  "user-agent": "%name/%ver (%osinfo) WebKit %webkit_ver nw.js %nwver",
+  "window": {
+    "title": "nutmeg",
+    "icon": "icon.png",
+    "toolbar": false,
+    "frame": true,
+    "width": 1220,
+    "height": 700,
+    "position": "center",
+    "resizable": true
+  }
+}
