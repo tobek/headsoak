@@ -701,7 +701,19 @@ function (
         if (!nut) return;
       }
 
-      if (!noconfirm && !confirm("Are you sure you want to delete this note? This can't be undone.\n\nIt's the note that goes like this: \"" + (nut.body ? nut.body.substr(0, 100) : "") + "...\"")) {
+      var confirmMessage = 'Are you sure you want to delete this note? This can\'t be undone.';
+      if (nut.body) {
+        confirmMessage += '\n\nIt\'s the note that goes like this: "';
+        if (nut.body.length > 100) {
+          confirmMessage += nut.body.substr(0, 100) + '...';
+        }
+        else {
+          confirmMessage += nut.body;
+        }
+        confirmMessage += '"';
+      }
+
+      if (! noconfirm && ! confirm(confirmMessage)) {
         return;
       }
 
@@ -824,7 +836,7 @@ function (
 
       this.nutSaver = setInterval(function() {
         $s.n.maybeUpdateNut(nut);
-      }, ((nut.body && nut.body.length < 5000) ? 1000 : 5000) ); // every 1s if <5000 chars long, every 5s if over. crudely saves bandwidth. digest pushes every 4s so this will halve # of pushes
+      }, ((! nut.body || nut.body.length < 5000) ? 1000 : 5000) ); // every 1s if <5000 chars long or empty, every 5s if over. crudely saves bandwidth. digest pushes every 4s so this will halve # of pushes
     },
     nutBlur: function(nut) {
       console.log("blur on nut "+nut.id);
