@@ -187,7 +187,7 @@ function (
     }
   });
 
-  // keeps track of changes. nuts and tags will map from id to reference to actual nut/tag object in $s
+  /** keeps track of changes. nuts and tags will map from id to reference to actual nut/tag object in $s */
   $s.digest = {
     reset: function() {
       this.config = {};
@@ -200,6 +200,8 @@ function (
       'nuts': ['sharedBody'],
       'tags': ['shareTooltip'],
     },
+
+    /** call this whenever there are changes that need syncing. though we set it to run on an interval anyway, so eh. */
     push: function() {
       if ($s.digest.pushHackCounter > 0) return;
 
@@ -230,8 +232,8 @@ function (
       if (updated) {
         console.log("digest: changes found, pushing");
       }
-      else if (this.status != 'synced') {
-        this.status = 'synced';
+      else if ($s.digest.status != 'synced') {
+        $s.digest.status = 'synced';
         $timeout(function(){$s.$apply();}); // HACK: otherwise cloud icon doesn't seem to change after status gets set to synced
       }
     },
@@ -250,7 +252,7 @@ function (
         $timeout(function(){$s.$apply();}); // HACK: otherwise cloud icon doesn't seem to change after status gets set to synced
       }
     }
-  }
+  };
   $s.digest.reset(); // also initializes
 
   // user authentication

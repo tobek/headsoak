@@ -186,13 +186,11 @@ contents:
 
 - bug: prompt isn't focusing on field again
 - show tag icons (prog, shared) in query bar?
-- bug: esc when in nut textarea immediately returns focus back to nut textarea
 - enter or spacebar should exit alert modals
 - logout should clear nuts and stuff from scope etc!
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
 - @nutmeg.io email address. I have support@ (and toby@ and ece@), what about for general stuff? contact@ is boring
 - space at bottom of page?
-- why doesn't it remember my username and password?
 - sloping/cut-off/diagonal tags?
     - one of these rotates and hides overflow, that's the only one that works with interesting foreground and background i think:
     - http://tympanus.net/codrops/2011/12/21/slopy-elements-with-css3/
@@ -200,6 +198,7 @@ contents:
     - http://stackoverflow.com/questions/7324722/cut-corners-using-css
     - http://jsfiddle.net/webtiki/c7h0vrwh/
 - @ui-bg is behind note/tag search fields so they look gray instead of white... could maybe use this clever border method http://jsfiddle.net/VRLNJ/2/
+- package angular html includes (e.g. <https://nutmeg-app.s3.amazonaws.com/nm-nut.html>) into JS build or something? extra calls seem wasteful, and they're not versioned. or else version them.
 
 something's up with lunr:
 
@@ -781,6 +780,7 @@ testing firebase in console:
     - https://github.com/fergiemcdowall/search-index
     - http://lucene.apache.org/
 - angular
+    - profiling etc: https://github.com/bahmutov/code-snippets
     - simple example of storing model in a service to access it from multiple controllers: http://stackoverflow.com/questions/11112608/angularjs-where-to-put-model-data-and-behaviour
     - storing logged-in user context: http://stackoverflow.com/questions/14206492/how-do-i-store-a-current-user-context-in-angular
     - wrapping tinymce in angular: http://jsfiddle.net/programmieraffe/kjsEV/
