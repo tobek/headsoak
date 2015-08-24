@@ -14,9 +14,9 @@ block content
       a#close-modal(ng-click="m.cancelModal()", ng-show="u.loggedIn && !m.lockedOut") x
       div.circle(ng-click="$event.stopPropagation()")
 
-        div(ng-show="m.modal == 'about'")
+        div.about(ng-show="m.modal == 'about'")
           h3 about
-          p The <b>nutmeg</b> tree is any of several species of trees in genus <b>Myristica</b>. The nutmeg tree is important for two spices derived from the fruit: nutmeg and mace.
+          p The <a href="https://s3.amazonaws.com/nutmeg-app/builds/osx64/nutmeg.app.zip" class="download-link"><b>nutmeg</b></a> tree is any of several species of trees in genus <b>Myristica</b>. The nutmeg tree is important for two spices derived from the fruit: nutmeg and mace.
 
         div.shortcuts(ng-show="m.modal == 'shortcuts'")
           h3 shortcuts
