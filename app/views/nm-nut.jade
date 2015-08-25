@@ -32,4 +32,4 @@ div(ng-show="nut && (!nut.sharedBy || nut.sharedBody)", ng-click="activateNut()"
 
   div.tawrapper
     textarea(ng-if="!nut.sharedBody", id="nut-{{nut.id}}-ta", ng-model="nut.body", ng-focus="n.nutFocus(nut)", ng-blur="n.nutBlur(nut)", ng-change="digest.status='unsynced'; n.autosizeNutById(nut.id)", tabindex=2)
-    textarea.read-only(ng-if="nut.sharedBody", id="nut-{{nut.id}}-ta", ng-model="nut.sharedBody", disabled="disabled", tabindex=2)
+    textarea.read-only(ng-if="nut.sharedBody", id="nut-{{nut.id}}-ta", ng-model="nut.sharedBody", ng-model-options="{ debounce: 500 }", disabled="disabled", tabindex=2)

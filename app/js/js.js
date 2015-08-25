@@ -2691,6 +2691,7 @@ function (
 
         $s.closeAddTagField();
       };
+
       $s.openAddTagField = function() {
         $(window).click($s.closeAddTagField);
 
@@ -2699,6 +2700,7 @@ function (
 
         $s.activateNut();
       };
+      
       $s.closeAddTagField = function closeAddTagField() {
         $(window).off('click', $s.closeAddTagField);
 
