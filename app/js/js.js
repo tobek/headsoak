@@ -773,10 +773,10 @@ function (
       }
 
       if (false && $s.c.config.maxHistory > 0) { // disabled for now
-        // TODO history is a bit overzealous. this function can get called every second. at the very least, history should only be separated when the note blurs. or it could even be by session. and should maybe me stored separately from the note so that not EVERY SINGLE push sends whole history
+        // @TODO history is a bit overzealous. this function can get called every second. at the very least, history should only be separated when the note blurs. or it could even be by session. and should maybe be stored separately from the note so that not EVERY SINGLE push sends whole history
         var oldState = $.extend(true, {}, nut); // deep clone ourself
         delete oldState.history; // no need for the history to have history
-        nut.history.push(oldState); // append ourselves into history
+        nut.history.push(oldState); // append clone into history
         if (nut.history.length > $s.c.config.maxHistory) {
           nut.history.shift(); // chuck the oldest one
         }
@@ -1288,9 +1288,13 @@ function (
     },
 
     // returns undefined if not found
-    // TODO doesn't handle duplicate tag names. those need to be handled generally
+    // @TODO doesn't handle duplicate tag names. those need to be handled generally
     getTagIdByName: function(name) {
       return _.findKey($s.t.tags, {name: name});
+    },
+    getTagByName: function(name) {
+      var id = $s.t.getTagIdByName(name);
+      return $s.t.tags[id] ? $s.t.tags[id] : null;
     },
 
     getTagNameById: function(id) {
@@ -1670,15 +1674,20 @@ function (
      * 2: updateNutInIndex() too if updateNut == true, e.g. if the name has changed
      * 3: add to digest
      */
-    tagUpdated: function(tag, updateNut) {
+    tagUpdated: function(tag, updateNut, updateModified) {
       if (typeof tag === "number" || typeof tag === "string") { // tag id
         tag = $s.t.tags[tag];
       }
-      if (!tag) return;
+      if (! tag) return;
+
+      updateModified = defaultFor(updateModified, true);
+
+      if (updateModified) {
+        tag.modified = (new Date).getTime();
+      }
 
       $s.digest.status = 'unsynced';
       console.log("tag "+tag.id+" has been updated")
-      tag.modified = (new Date).getTime();
       $s.digest.tags[tag.id] = tag;
 
       if (updateNut && tag.docs) {
@@ -2364,7 +2373,7 @@ function (
     console.log('sharedWithMeInit: starting initializing shared stuff');
     console.time('sharedWithMeInit: intializing shared stuff');
 
-    // level 0. shareInfo.tags has sharerUid -> tagId - > perm, so we can build a list of tag paths
+    // level 0. shareInfo.tags has sharerUid -> tagId - > permission, so we can build a list of tag paths
     var sharedTagInfo = []; // will fill with objects like {uid: 'simplelogin:....', path: 'users/...', permission: 'r'}
     var userUids = []; // so we can map to display names
     var confirmationRequired = false; // whether at least 1 shared tag needs confirmation
@@ -2386,7 +2395,7 @@ function (
 
     $s.users.fetchUserDisplayNames(userUids); // asynchronous and we don't really care when it comes back
 
-    // TODO if "user wants to share tag with you, okay?" confirmation is needed for at least one share, we have to do this in series - if we didn't do in series they'd all override each other. would be better to split these into ones requiring confirmation (to run in series) and ones not (to run in parallel) OR load all the data in parallel and do some kind of queue for the confirmations, but this isn't so bad for now
+    // if "user wants to share tag with you, okay?" confirmation is needed for at least one share, we have to do this in series - if we didn't do in series they'd all override each other. anything that doesn't require confirmation could be done in parallel but if we have mixed ones, whatever
     var asyncFunc = confirmationRequired ? 'eachSeries' : 'each';
 
     // now we need to fetch each tag (level 1). each tag has a list of docs. so then we need to fetch *each* of those nuts (level 2).
@@ -2425,7 +2434,7 @@ function (
     if (permission === 'r?') {
       // sharer is requesting to share something with us as read-only
 
-      // first get their display name (NOTE: this may produce duplicate requests since we called fetchUserDisplayNames with all sharer UIDs in sharedWithMeInit. request may have come back already in which case there won't be a second round-trip now. if not, there will be. alternative is to not call initSharedTag until after fetchUserDisplayNames is done, which needlessly makes the process longer. proper option would be to detect if it's a new user (requiring us to display this dialog) and fetch just those display names before calling this, fetching others in the background)
+      // first get their display name (NOTE: this may produce duplicate requests since we called fetchUserDisplayNames with all sharer UIDs in sharedWithMeInit. request may have come back already in which we can get it from local cache. if not, there will be. alternative is to not call initSharedTag until after fetchUserDisplayNames is done, which will sometimes needlessly makes the process longer. proper option would be to detect if it's a new user (requiring us to display this dialog) and fetch just those display names before calling this, fetching others in the background)
       $s.users.fetchUserDisplayName(sharerUid, function(err) {
         $s.m.confirm({
           bodyHTML: '<p>' + $s.users[sharerUid] + ' wants to share the tag "' + tag.name  + '" with you.</p><p>How does that sound?</p>',
@@ -2502,8 +2511,9 @@ function (
     if (! $s.t.tags[localTagId]) $s.t.tags[localTagId] = {};
     _.extend($s.t.tags[localTagId], tag);
 
-    $s.t.tagUpdated(localTagId);
+    $s.t.tagUpdated(localTagId, false, false);
   }
+
   /** given another user's nut, handle special local version of that nut for this user */
   function createLocalSharedWithMeNut(nut, sharerUid) {
     var localNutId = sharerUid + ':' + nut.id;
