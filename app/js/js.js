@@ -755,7 +755,7 @@ function (
     /* call whenever a nut is updated
      * can accept nut id OR nut
      * is called, for instance, via nutBlur when textarea blurs or when tags added/removed
-     * 1: updates history. NOTE: we store entire state of nut in each history entry. could instead store just changes if this gets to big. NOTE 2: by the time this is called, the view and model have already changed. we are actually storing the CHANGED version in history.
+     * 1: updates history. NOTE: we store entire state of nut in each history entry. could instead store just changes if this gets to big. NOTE 2: by the time this is called, the view and model have already changed. we are actually storing the CHANGED version in history. NOTE 3: this is disabled for now
      * 2: updates `modified` (default - pass false in as second param to disable)
      * 3: updates lunr index (default - pass false in as third param to disable). note, this can be slow: 0.5s for 40k char text on one machine)
      * 4: runs through all programmatic tags (default - pass false in as third param to disable). might be slow depending on user functions
@@ -787,7 +787,13 @@ function (
       }
 
       if (updateModified) {
-        nut.modified = (new Date).getTime()
+        nut.modified = (new Date).getTime();
+
+        if ($s.c.config.nutChangesChangeTagModifiedTimestamp && nut.tags) {
+          nut.tags.forEach(function (tagId) {
+            $s.t.tagUpdated(tagId, false, true);
+          });
+        }
       }
 
       if (fullUpdate) {
@@ -804,13 +810,13 @@ function (
       $s.n.updateNutInIndex(nut);
       $s.n.runProgTags(nut);
       delete nut.fullUpdateRequired;
-      $s.n.nutUpdated(nut, false, false);
+      $s.n.nutUpdated(nut, false, false); // just to sync?
     },
 
     nutSaver: null, // to hold what setInterval() returns
     nutWas: "", // this will store what the currently-focused nut body was before focusing, in order to determine, upon blurring, whether anything has changed
     maybeUpdateNut: function(nut, blurred) {
-      blurred = defaultFor(blurred, false); // have to set explicitly to false, cause undefined produces unexpected behavior in nutUpdated()
+      blurred = defaultFor(blurred, false); // explicit `false` to override default value for `updatedModified` nutUpdated()
 
       if ($s.n.nutWas == nut.body) {
         console.log("nut unchanged");
@@ -939,7 +945,7 @@ function (
 
     /**
      * takes one note loops through all its tags and updates sharing info here accordingly (for firebase security rules convenience). 
-     * TODO: right now this doesn't run nutUpdated, because it gets called from stuff (like removeTagIdFromNut) that also alls nutUpdated, so it can get ridiculous... need to build a debounce function that understands arguments so that we can safely call it from here
+     * TODO: right now this doesn't run nutUpdated, because it gets called from stuff (like removeTagIdFromNut) that also calls nutUpdated, so it can get ridiculous... need a debounce function that understands/aggregates arguments so that we can safely call it from here
      */
     rebuildNoteSharing: function(nut) {
       var newShare = {};
@@ -1244,6 +1250,7 @@ function (
     sortOpts: {
       '0-docs.length-true': {field: "docs.length", rev: true, name: "Most used"},
       '1-docs.length-false': {field: "docs.length", rev: false, name: "Least used"},
+      // @TODO should this be called used, modified, or something else? should name change depending on nutChangesChangeTagModifiedTimestamp setting? should we have both options?
       '2-modified-true': {field: "modified", rev: true, name: "Recently used"},
       '3-modified-false': {field: "modified", rev: false, name: "Oldest used"},
       '4-created-true': {field: "created", rev: true, name: "Recently created"},
@@ -2047,6 +2054,7 @@ function (
     config: {
       maxHistory: 0,
       tagChangesChangeNutModifiedTimestamp: false,
+      nutChangesChangeTagModifiedTimestamp: true,
       addQueryTagsToNewNuts: true,
       showNoteIds: false,
 
@@ -2067,8 +2075,14 @@ function (
         section: "settings"
       },
       tagChangesChangeNutModifiedTimestamp: {
-        humanName: "Tagging updates timestamps",
+        humanName: "Tagging updates note timestamps",
         description: "If this is checked then adding, removing, and renaming tags will change the \"modified\" timestamp of notes they are attached to.",
+        type: "boolean",
+        section: "settings"
+      },
+      nutChangesChangeTagModifiedTimestamp: {
+        humanName: "Editing notes updates tag timestamps",
+        description: "If this is checked then whenever you edit a note, it will change the \"modified\" timestamp (used e.g. to sort by \"recently used\") of all tags on that note.",
         type: "boolean",
         section: "settings"
       },
@@ -2364,7 +2378,7 @@ function (
       if (tag.docs && tag.docs.length) {
         tag.docs = tag.docs.map(String);
       }
-      $s.t.tagUpdated(tag, false);
+      $s.t.tagUpdated(tag, false, false);
     });
   }
 
