@@ -136,7 +136,7 @@ function (
         setTimeout(function() {
           var selector = '.modal .dynamic input[type='+ (opts.passwordInput ? 'password' : 'text') +']';
           angular.element(selector).focus(); // horribly un Angular-ish...
-        }, 50);
+        }, 150);
       });
     },
     progTagEditor: function(tag, funcString, opts) {

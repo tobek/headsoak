@@ -1,6 +1,5 @@
 # TODO NOW
 
-- check if "Hey, it looks like you've logged into Nutmeg" message is fuckin square too
 - make modal progTagEditor its own modal element
     - separate file?
 - move thirdbutton and progtagspecific stuff out into that
@@ -184,7 +183,6 @@ contents:
 
 ##### bits and bugs
 
-- bug: prompt isn't focusing on field again
 - show tag icons (prog, shared) in query bar?
 - enter or spacebar should exit alert modals
 - logout should clear nuts and stuff from scope etc!
