@@ -43,14 +43,14 @@ function (
     modalHuge: false,
 
     /** user has accepted or completed modal */
-    finishModal: function() {
+    acceptModal: function() {
       if ($s.m.dynamic) {
         if ($s.m.dynamic.editor) {
           // pass editor value back to callback:
           $s.m.dynamic.okCb($s.m.dynamic.editor.getValue());
         }
         else if ($s.m.dynamic.okCb) {
-          // call the callback with whatever arguments were passed in to finishModal()
+          // call the callback with whatever arguments were passed in to acceptModal()
           $s.m.dynamic.okCb.apply(null, arguments);
         }
       }
@@ -93,7 +93,7 @@ function (
       });
     },
 
-    /** pass in string to display to user, or object with various options */
+    /** pass in string to display to user, or object with various options. most basic version is same as window.alert, also supports up to 3 buttons and callbacks for each */
     alert: function(opts) {
       if (typeof opts === 'string') {
         opts = {message: opts};
@@ -116,6 +116,11 @@ function (
         };
         $s.m.modalLarge = opts.large;
       });
+
+      // focus on ok button so they can use enter/space
+      setTimeout(function() {
+        angular.element('.modal .dynamic input.ok-button').focus();
+      }, 150);
     },
     confirm: function(opts) {
       $s.m.alert(opts); // alias
@@ -1792,6 +1797,7 @@ function (
    * binding: a string, will be combined with global `mod` (unless `nomod`) and passed directly to mousetrap. see mousetrap docs for more info
    * apply (optional): whether this needs to be wrapped in nmScope.$apply()
    * overkill (optional): for power-users - don't display by default
+   * internal (optional): never display
    * global (optional): work even in text input areas without "mousetrap" class. defaults to true
    * nomod (optional): do not add the global `mod` to binding
    * id: used to create a mapping of id->binding to save in Firebase without unnecessarily copying all of this data. must not change, or else it may fuck up people's existing bindings
@@ -1925,14 +1931,12 @@ function (
             }
           }
 
-          $timeout(function() {
-            $s.m.cancelModal();
-          });
+          $timeout($s.m.cancelModal);
 
           // @TODO focusing on #blur-hack prevents user from using arrow keys to scroll
           angular.element("#blur-hack")[0].focus();
         },
-        overkill: true,
+        internal: true,
         nomod: true,
         allowOnModal: true,
         id: 6

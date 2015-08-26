@@ -184,7 +184,6 @@ contents:
 ##### bits and bugs
 
 - show tag icons (prog, shared) in query bar?
-- enter or spacebar should exit alert modals
 - logout should clear nuts and stuff from scope etc!
 - mention in firstInit() notes something about if you're interested then... or if you want to help out
 - @nutmeg.io email address. I have support@ (and toby@ and ece@), what about for general stuff? contact@ is boring
