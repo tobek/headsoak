@@ -64,6 +64,10 @@ ref.on('child_added', function(child) {
   newUserAdded(child.val());
 }, function(err) {
   console.error('listener canceled:', err);
+  sendMail({
+    subject: 'Nutmeg new user watcher down: listener cancelled',
+    text: err
+  });
   process.exit(1);
 });
 

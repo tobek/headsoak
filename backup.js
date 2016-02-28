@@ -2,9 +2,9 @@
  * outputs complete JSON content of Firebase to stdout
  * all other output is to stderr
  *
- * example invocation (e.g. in cron job):
+ * example cron invocation (note, %'s need to be escaped in cron jobs):
  *
- *     filename=/home/ubuntu/nutmeg/backups/firebase_dump_`date +"%Y-%m-%d"`.json && node /home/ubuntu/nutmeg/backup.js > $filename && gzip $filename
+ *     0 0 * * * filename=/home/ubuntu/nutmeg/backups/firebase_dump_`date +"\%Y-\%m-\%d"`.json && node /home/ubuntu/nutmeg/backup.js > $filename && gzip $filename
  */
 
 var Firebase = require('firebase');
