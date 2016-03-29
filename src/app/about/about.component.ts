@@ -17,7 +17,7 @@ console.log('`About` component loaded asynchronously');
   `],
   template: `
     <h1>
-      patrick@AngularClass.com
+      This component is loaded asynchronously!
     </h1>
   `
 })
@@ -27,7 +27,7 @@ export class About {
   }
 
   ngOnInit() {
-    console.log('hello `About` component');
+    console.log('`About` component initialized');
     // static data that is bundled
     // var mockData = require('assets/mock-data/mock-data.json');
     // console.log('mockData', mockData);
