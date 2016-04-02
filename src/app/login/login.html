@@ -1,8 +1,19 @@
 <h3>log in</h3>
 
-<form var-loginForm="ngForm" (ngSubmit)="login()">
+<form var-loginForm="ngForm" (ngSubmit)="login(); pseudoLogin(pseudoLoginIframe)">
   <input name="email" type="email" placeholder="email" autocomplete="email" required ngControl="email" [(ngModel)]="email">
   <input name="password" type="password" placeholder="password" autocomplete="current-password" required ngControl="password" [(ngModel)]="password">
   <input type="submit" value="go" [disabled]="! loginForm.valid">
   <!-- <p ng-show="u.loading" class="loader"><img src="/img/loader-white.gif"></p> -->
+
+  <iframe var-pseudoLoginIframe id="pseudo-login-iframe" src="/pseudo-login.html" style="width:0px; height:0px; border:0px;"></iframe>
 </form>
+
+<p>
+  <a (click)="forgotPassword()">forgot password?</a>
+</p>
+
+<p>
+  or
+  <a (click)="createaccount()">create an account</a>
+</p>
