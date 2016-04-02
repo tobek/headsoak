@@ -5,7 +5,10 @@ import {Component} from 'angular2/core';
 import {RouteConfig, Router} from 'angular2/router';
 
 import {Home} from './home';
+import {LoginComponent} from './login';
 import {AppState} from './app.service';
+import {AccountService} from './account.service';
+import {DataService} from './data.service';
 import {RouterActive} from './router-active';
 
 /*
@@ -16,7 +19,10 @@ import {RouterActive} from './router-active';
   selector: 'app',
   pipes: [ ],
   providers: [ ],
-  directives: [ RouterActive ],
+  directives: [
+    RouterActive,
+    LoginComponent,
+  ],
   styles: [`
     h1 {
       font-family: Arial, Helvetica, sans-serif
@@ -51,6 +57,8 @@ import {RouterActive} from './router-active';
     </header>
 
     <main>
+      <login></login>
+      <hr>
       <router-outlet></router-outlet>
     </main>
 
@@ -65,7 +73,11 @@ import {RouterActive} from './router-active';
 export class App {
   name = 'nutmeg';
 
-  constructor(public appState: AppState) {}
+  constructor(
+    public appState: AppState,
+    public accountService: AccountService,
+    public dataService: DataService,
+   ) {}
 
   get state() {
     return this.appState.get();

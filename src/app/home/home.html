@@ -1,13 +1,4 @@
 <div>
-  <h3>log in</h3>
-  <form var-loginForm="ngForm" (ngSubmit)="login()">
-    <input name="email" type="email" placeholder="email" autocomplete="email" required ngControl="email" [(ngModel)]="loginDetails.email">
-    <input name="password" type="password" placeholder="password" autocomplete="current-password" required ngControl="password" [(ngModel)]="loginDetails.password">
-    <input type="submit" value="go" [disabled]="! loginForm.valid">
-    <!-- <p ng-show="u.loading" class="loader"><img src="/img/loader-white.gif"></p> -->
-  </form>
-
-  <pre>{{ data | json }}</pre>
 
   <span x-large>HMR data test</span>
   <form (ngSubmit)="submitState(localState.value)">

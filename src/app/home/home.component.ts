@@ -4,8 +4,6 @@ import {AppState} from '../app.service';
 import {Title} from './title';
 import {XLarge} from './x-large';
 
-var Firebase = require('firebase');
-
 @Component({
   // The selector is what angular internally uses
   // for `document.querySelectorAll(selector)` in our index.html
@@ -31,14 +29,6 @@ export class Home {
   // Set our default values
   localState = { value: '' };
 
-  loginDetails = {
-    email: '',
-    password: '',
-    uid: '',
-  };
-
-  data = {};
-
   // TypeScript public modifiers
   constructor(public appState: AppState, public title: Title) {
 
@@ -52,33 +42,6 @@ export class Home {
   submitState(value) {
     console.log('submitState', value);
     this.appState.set('value', value);
-  }
-
-  login() {
-    var ref = new Firebase('https://nutmeg.firebaseio.com/');
-    ref.authWithPassword({
-      email: this.loginDetails.email,
-      password: this.loginDetails.password,
-    }, (error, authData) => {
-      if (error) {
-        console.warn('login failed', error);
-        return;
-      }
-
-      console.log('login succeeded');
-
-      this.loginDetails.uid = authData.uid;
-      this.initData();
-    });
-  }
-
-  initData() {
-    var ref = new Firebase('https://nutmeg.firebaseio.com/users/' + this.loginDetails.uid);
-
-    ref.once('value', (data) => {
-      this.data = data.val();
-      debugger;
-    });
   }
 
 }
