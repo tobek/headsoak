@@ -4,9 +4,9 @@ var Firebase = require('firebase');
 
 @Injectable()
 export class DataService {
-  data:any = {};
+  data: any = {};
 
-  init(uid:string) {
+  init(uid: string) {
     var ref = new Firebase('https://nutmeg.firebaseio.com/users/' + uid);
 
     ref.once('value', (data) => {

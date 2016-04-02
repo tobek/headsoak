@@ -10,10 +10,10 @@ import {AccountService} from '../account.service';
   template: require('./login.html')
 })
 export class LoginComponent {
-  email:string = '';
-  password:string = '';
+  email: string = '';
+  password: string = '';
 
-  constructor(private accountService:AccountService) {
+  constructor(private accountService: AccountService) {
   }
 
   ngOnInit() {

@@ -76,7 +76,7 @@ export class App {
   constructor(
     public appState: AppState,
     public accountService: AccountService,
-    public dataService: DataService,
+    public dataService: DataService
    ) {}
 
   get state() {

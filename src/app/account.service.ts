@@ -5,12 +5,12 @@ import {DataService} from './data.service';
 
 @Injectable()
 export class AccountService {
-  uid:string =  '';
+  uid: string =  '';
 
-  constructor(private dataService:DataService) {
+  constructor(private dataService: DataService) {
   }
 
-  login(email:string, password:string) {
+  login(email: string, password: string) {
     var ref = new Firebase('https://nutmeg.firebaseio.com/');
     ref.authWithPassword({
       email: email,
