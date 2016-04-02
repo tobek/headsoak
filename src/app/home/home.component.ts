@@ -34,7 +34,10 @@ export class Home {
   loginDetails = {
     email: '',
     password: '',
+    uid: '',
   };
+
+  data = {};
 
   // TypeScript public modifiers
   constructor(public appState: AppState, public title: Title) {
@@ -56,13 +59,25 @@ export class Home {
     ref.authWithPassword({
       email: this.loginDetails.email,
       password: this.loginDetails.password,
-    }, function(error, authData) {
+    }, (error, authData) => {
       if (error) {
         console.warn('login failed', error);
         return;
       }
 
-      console.log('login succeeded', authData);
+      console.log('login succeeded');
+
+      this.loginDetails.uid = authData.uid;
+      this.initData();
+    });
+  }
+
+  initData() {
+    var ref = new Firebase('https://nutmeg.firebaseio.com/users/' + this.loginDetails.uid);
+
+    ref.once('value', (data) => {
+      this.data = data.val();
+      debugger;
     });
   }
 

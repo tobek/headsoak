@@ -7,6 +7,8 @@
     <!-- <p ng-show="u.loading" class="loader"><img src="/img/loader-white.gif"></p> -->
   </form>
 
+  <pre>{{ data | json }}</pre>
+
   <span x-large>HMR data test</span>
   <form (ngSubmit)="submitState(localState.value)">
     <input type="text" [(ngModel)]="localState.value" autofocus>
