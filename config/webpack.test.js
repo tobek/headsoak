@@ -33,7 +33,7 @@ module.exports = {
     //
     // See: http://webpack.github.io/docs/configuration.html#resolve-extensions
     extensions: ['', '.ts', '.js'],
-    
+
     // Make sure root is src
     root: helpers.root('src'),
 
@@ -145,7 +145,16 @@ module.exports = {
     //
     // See: https://webpack.github.io/docs/list-of-plugins.html#defineplugin
     // NOTE: when adding more properties make sure you include them in custom-typings.d.ts
-    new DefinePlugin({'ENV': JSON.stringify(ENV), 'HMR': false})
+    new DefinePlugin({
+      'ENV': JSON.stringify(ENV),
+      'HMR': false,
+      'process.env': {
+        'ENV': JSON.stringify(ENV),
+        'NODE_ENV': JSON.stringify(ENV),
+        'HMR': false,
+      }
+    }),
+
 
   ],
 

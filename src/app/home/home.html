@@ -14,11 +14,6 @@
     <input type="text" [(ngModel)]="localState.value" autofocus>
     <button>Submit Value</button>
   </form>
-  <!--
-    Rather than wiring up two-way data-binding ourselves with [value] and (input)
-    we can use Angular's [(ngModel)] syntax
-    <input type="text" [(ngModel)]="localState.value" autofocus>
-  -->
 
   <pre>this.localState = {{ localState | json }}</pre>
 

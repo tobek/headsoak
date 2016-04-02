@@ -5,6 +5,7 @@ var commonConfig = require('./webpack.common.js'); //The settings that are commo
 /**
  * Webpack Plugins
  */
+var ProvidePlugin = require('webpack/lib/ProvidePlugin');
 var DefinePlugin = require('webpack/lib/DefinePlugin');
 var DedupePlugin = require('webpack/lib/optimize/DedupePlugin');
 var UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
@@ -95,8 +96,14 @@ module.exports = webpackMerge(commonConfig, {
     // NOTE: when adding more properties make sure you include them in custom-typings.d.ts
     new DefinePlugin({
       'ENV': JSON.stringify(METADATA.ENV),
-      'HMR': METADATA.HMR
+      'HMR': METADATA.HMR,
+      'process.env': {
+        'ENV': JSON.stringify(METADATA.ENV),
+        'NODE_ENV': JSON.stringify(METADATA.ENV),
+        'HMR': METADATA.HMR,
+      }
     }),
+
 
     // Plugin: UglifyJsPlugin
     // Description: Minimize all JavaScript output of chunks.
@@ -121,7 +128,11 @@ module.exports = webpackMerge(commonConfig, {
 
       beautify: false, //prod
 
-      // mangle: { screw_ie8 : true }, //prod
+      mangle: {
+        screw_ie8 : true,
+        keep_fnames: true
+      }, //prod
+      /*
       mangle: {
         screw_ie8: true,
         except: [
@@ -174,6 +185,7 @@ module.exports = webpackMerge(commonConfig, {
             'I18nSelectPipe'
           ] // Needed for uglify RouterLink problem
       }, // prod
+      */
       compress: {
         screw_ie8: true
       }, //prod
