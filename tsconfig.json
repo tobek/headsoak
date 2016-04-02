@@ -11,8 +11,6 @@
     "typings/main.d.ts",
     "typings/main"
   ],
-  "@TODO/toby": "below 'files' attribute fixes issue with e2e test caused by https://github.com/angular/angular/issues/7660 and shouldn't be necessary in the future versions of angular",
-  "files": [ "src/main.ts", "typings/browser.d.ts", "node_modules/zone.js/dist/zone.js.d.ts" ],
   "filesGlob": [
     "./src/**/*.ts",
     "./test/**/*.ts",
