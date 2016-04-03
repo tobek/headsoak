@@ -19,10 +19,6 @@
       true,
       "spaces"
     ],
-    "max-line-length": [
-      true,
-      100
-    ],
     "member-ordering": [
       true,
       "public-before-private",
