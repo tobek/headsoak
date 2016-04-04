@@ -1,7 +1,7 @@
 <div *ngIf="view === 'login'">
   <h3>log in</h3>
 
-  <form var-loginForm="ngForm" (ngSubmit)="login(); pseudoLogin(pseudoLoginIframe)">
+  <form id="login-form" var-loginForm="ngForm" (ngSubmit)="login(); pseudoLogin(pseudoLoginIframe)">
     <input name="email" type="email" placeholder="email" autocomplete="email" required ngControl="email" [(ngModel)]="email">
     <input name="password" type="password" placeholder="password" autocomplete="current-password" required ngControl="password" [(ngModel)]="password">
     <input type="submit" value="go" [disabled]="! loginForm.valid">
@@ -16,19 +16,19 @@
 
   <p>
     or
-    <a (click)="view = 'create-account'">create an account</a>
+    <a class="create-account-link" (click)="view = 'create-account'">create an account</a>
   </p>
 </div>
 
 <div *ngIf="view === 'logout'">
   <a class="logout-link" (click)="logout()">logout</a>
-  <a (click)="deleteAccount()">delete account</a>
+  <a class="delete-account-link" (click)="deleteAccount()">delete account</a>
 </div>
 
 <div *ngIf="view === 'create-account'">
   <h3>create an account</h3>
 
-  <form var-createAccountForm="ngForm" (ngSubmit)="createAccount()">
+  <form id="create-account-form" var-createAccountForm="ngForm" (ngSubmit)="createAccount()">
     <input name="email" type="email" placeholder="email" autocomplete="email" required ngControl="email" [(ngModel)]="email">
     <input name="pass1" type="password" placeholder="password" autocomplete="new-password" required ngControl="pass1" [(ngModel)]="pass1">
     <input name="pass2" type="password" placeholder="password" autocomplete="new-password" required ngControl="pass2" [(ngModel)]="pass2">
