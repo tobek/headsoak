@@ -21,7 +21,8 @@
 </div>
 
 <div *ngIf="view === 'logout'">
-  <a (click)="logout()">logout</a>
+  <a class="logout-link" (click)="logout()">logout</a>
+  <a (click)="deleteAccount()">delete account</a>
 </div>
 
 <div *ngIf="view === 'create-account'">

@@ -88,5 +88,8 @@ export class App {
   ngOnInit() {
     console.log('Initial App State', this.state);
   }
+  ngOnDestroy() {
+    console.log('app component destroyed!');
+  }
 
 }

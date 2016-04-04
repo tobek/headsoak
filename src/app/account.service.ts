@@ -1,4 +1,5 @@
 import {Injectable} from 'angular2/core';
+
 var Firebase = require('firebase');
 
 import {DataService} from './data.service';
@@ -7,7 +8,9 @@ import {PubSubService} from './pub-sub.service';
 @Injectable()
 export class AccountService {
   public loggedIn = false;
-  uid: string =  '';
+  uid: string;
+  email: string;
+  provider: string;
   ref: Firebase;
 
   constructor(private dataService: DataService, private pubSub: PubSubService) {
@@ -17,11 +20,16 @@ export class AccountService {
   init() {
     this.ref.onAuth((authData) => {
       if (authData) {
-        console.log('Log in succeeded');
+        console.log('Log in succeeded', authData);
 
         // $s.u.loading = true; // while notes are loading @TODO/rewrite
 
         this.uid = authData.uid;
+        this.provider = authData.provider;
+        if (authData[this.provider] && authData[this.provider].email) {
+          this.email = authData[this.provider].email;
+        }
+
         this.loggedIn = true;
         this.dataService.init(this.uid);
 
@@ -125,6 +133,29 @@ export class AccountService {
 
       console.log('New account made: user id ' + userData.id + ', email ' + userData.email);
       this.login(email, password);
+    });
+  }
+
+  deleteAccount(email: string, password: string) {
+    // $s.u.loading = true; // @TODO/rewrite
+
+    this.ref.removeUser({ email: email, password: password}, (err) => {
+      if (err) {
+        switch (err.code) {
+          case 'INVALID_PASSWORD':
+          case 'INVALID_USER':
+            alert('Wrong password! Reconsidering deleting your account?'); // @TODO friendlier message
+            break;
+          default:
+            alert('Sorry, something went wrong when trying to delete your account: ' + (err.message || err.code || err) + '. Please try again later!'); // @TODO include support email here
+            console.error('Error deleting account:', err);
+        }
+
+        return;
+      }
+
+      console.log('Successfully deleted account with email', email);
+      this.logout();
     });
   }
 }

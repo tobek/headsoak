@@ -89,4 +89,18 @@ export class LoginComponent {
 
     this.accountService.createAccount(this.email, this.pass1);
   }
+
+  deleteAccount() {
+    var answer = prompt('Are you really really sure you want to delete the account belonging to ' + this.accountService.email + '? This can\'t be undone.\n\nType "I\'M REALLY REALLY SURE" (yes, all caps) to proceed:');
+
+    if (answer !== 'I\'M REALLY REALLY SURE') {
+      alert('No? Okay, good choice.');
+      return;
+    }
+
+    var password = prompt('Well, it\'s been real!\n\nEnter your password to delete your account. This is it.\n\n(@TODO make this a password prompt)');
+
+    // if ($s.u.loading) return; // @TODO/rewrite
+    this.accountService.deleteAccount(this.accountService.email, password);
+  }
 }
