@@ -11,7 +11,7 @@ export class DataService {
 
     ref.once('value', (data) => {
       this.data = data.val();
-      console.log(this.data);
+      console.log('data service initialized, got', this.data);
       // debugger;
     });
   }

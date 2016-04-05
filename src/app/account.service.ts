@@ -40,6 +40,8 @@ export class AccountService {
         console.log('Logged out');
         this.uid = null;
         this.loggedIn = false;
+        this.email = null;
+        this.provider = null;
 
         // @TODO/rewrite
         // $s.u.loading = false;

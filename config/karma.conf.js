@@ -54,6 +54,8 @@ module.exports = function(config) {
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: false,
 
+    // To debug, set `browsers` to `['Chrome']` and `singleRun` to `false`. In the Chrone window that opens, hit "Debug", then in the window that opens, open dev tools console, where you can add breakpoints, refresh to (updated) run tests, etc.
+
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers: [
