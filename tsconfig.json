@@ -8,6 +8,7 @@
   },
   "exclude": [
     "node_modules",
+    "old",
     "typings/main.d.ts",
     "typings/main"
   ],
@@ -15,6 +16,7 @@
     "./src/**/*.ts",
     "./test/**/*.ts",
     "!./node_modules/**/*.ts",
+    "!./old/**/*.ts",
     "src/custom-typings.d.ts",
     "typings/browser.d.ts"
   ],
