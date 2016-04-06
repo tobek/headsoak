@@ -9,16 +9,19 @@ import {
 // Load the implementations that should be tested
 import {App} from './app.component';
 import {AppState} from './app.service';
-import {AccountService} from './account';
+import {UserService, AccountService} from './account';
+import {AnalyticsService} from './analytics.service';
 import {DataService} from './data.service';
 
 describe('App', () => {
   // provide our implementations or mocks to the dependency injector
   beforeEachProviders(() => [
-    AccountService,
-    DataService,
+    App,
     AppState,
-    App
+    AnalyticsService,
+    DataService,
+    AccountService,
+    UserService,
   ]);
 
   it('should have a name', inject([ App ], (app) => {

@@ -5,7 +5,8 @@ import {Component} from 'angular2/core';
 import {RouteConfig, Router} from 'angular2/router';
 
 import {Home} from './home';
-import {AccountService, LoginComponent} from './account';
+import {AccountService, UserService, LoginComponent} from './account';
+import {AnalyticsService} from './analytics.service';
 import {AppState} from './app.service';
 import {DataService} from './data.service';
 import {RouterActive} from './router-active';
@@ -73,7 +74,9 @@ export class App {
   name = 'nutmeg';
 
   constructor(
+    public analyticsService: AnalyticsService,
     public appState: AppState,
+    public userService: UserService,
     public accountService: AccountService,
     public dataService: DataService
    ) {}

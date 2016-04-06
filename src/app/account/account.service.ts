@@ -3,20 +3,22 @@ import {Subject} from 'rxjs/Subject';
 
 var Firebase = require('firebase');
 
+import {AnalyticsService} from '../analytics.service';
 import {DataService} from '../data.service';
+import {UserService} from './user.service';
 
 @Injectable()
 export class AccountService {
-  loggedIn = false;
-  uid: string;
-  email: string;
-  provider: string;
-
   loginState$: Subject<string>;
 
   private ref: Firebase;
 
-  constructor(private dataService: DataService) {
+  // constructor(private dataService: DataService, private analyticsService: AnalyticsService, public user: UserService) {
+  constructor(
+    private dataService: DataService,
+    private analyticsService: AnalyticsService,
+    public user: UserService
+  ) {
     this.ref = new Firebase('https://nutmeg.firebaseio.com/');
 
     this.loginState$ = new Subject<string>();
@@ -29,24 +31,17 @@ export class AccountService {
 
         // $s.u.loading = true; // while notes are loading @TODO/rewrite
 
-        this.uid = authData.uid;
-        this.provider = authData.provider;
-        if (authData[this.provider] && authData[this.provider].email) {
-          this.email = authData[this.provider].email;
-        }
+        this.user.setData(authData);
 
-        this.loggedIn = true;
-        this.dataService.init(this.uid);
+        this.user.loggedIn = true;
+        this.dataService.init(this.user.uid);
 
         this.loginState$.next('logged-in');
       }
       else {
-        // they logged out
+        // They're logged out
         console.log('Logged out');
-        this.uid = null;
-        this.loggedIn = false;
-        this.email = null;
-        this.provider = null;
+        this.user.clear();
 
         // @TODO/rewrite
         // $s.u.loading = false;

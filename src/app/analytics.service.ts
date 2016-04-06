@@ -1,24 +1,33 @@
 import {Injectable} from 'angular2/core';
 
-import {AccountService} from './account';
+import {UserService} from './account/user.service';
 
 @Injectable()
 export class AnalyticsService {
-  private ga: Function;
+  private ga: any;
 
-  constructor(private accountService: AccountService) {
+  constructor(user: UserService) {
     if (window['ga']) {
       this.ga = window['ga'];
     }
+
+    // GA implementation we're using creates stub `window.ga` as a function that just saves all calls passed to it in, until real GA script loads asynchronously and sends that data in. If the real GA script is blocked (e.g. by ad blocker) then the stub functionality will persist indefinitely, which would be a memory leak. So check if it hasn't loaded by a certain time and just detach it.
+    setTimeout(() => {
+      if (! this.ga.loaded) {
+        this.ga = null;
+      }
+    }, 10000);
   }
 
   event(category: string, action: string, label: string = null, value: number = null) {
-    this.ga('send', {
-      hitType: 'event',
-      eventCategory: category,
-      eventAction: action,
-      eventLabel: label,
-      eventValue: value,
-    });
+    if (this.ga) {
+      this.ga('send', {
+        hitType: 'event',
+        eventCategory: category,
+        eventAction: action,
+        eventLabel: label,
+        eventValue: value,
+      });
+    }
   }
 }

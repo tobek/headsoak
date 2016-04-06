@@ -1,3 +1,5 @@
+// Integration test of AccountService and UserService
+
 import {
   it,
   inject,
@@ -7,8 +9,10 @@ import {
 } from 'angular2/testing';
 
 // Load the implementations that should be tested
-import {AccountService} from './account.service';
 import {DataService} from '../data.service';
+import {AnalyticsService} from '../analytics.service';
+import {AccountService} from './account.service';
+import {UserService} from './user.service';
 
 var EMAIL = 'email@example.com';
 var PASSWORD = 'abc';
@@ -61,8 +65,10 @@ describe('AccountService', () => {
 
   // provide our implementations or mocks to the dependency injector
   beforeEachProviders(() => [
+    AnalyticsService,
     DataService,
     AccountService,
+    UserService,
   ]);
 
   var accountService;
@@ -75,7 +81,7 @@ describe('AccountService', () => {
   }));
 
   it('should initialized with logged-out user', () => {
-    expect(accountService.loggedIn).toBe(false);
+    expect(accountService.user.loggedIn).toBe(false);
   });
 
   it('should log in successfully and initialize data', () => {
@@ -83,8 +89,8 @@ describe('AccountService', () => {
 
     accountService.login(EMAIL, PASSWORD);
 
-    expect(accountService.loggedIn).toBe(true);
-    expect(accountService.email).toBe(EMAIL);
+    expect(accountService.user.loggedIn).toBe(true);
+    expect(accountService.user.email).toBe(EMAIL);
     expect(accountService.dataService.init).toHaveBeenCalled();
   });
 
@@ -93,7 +99,7 @@ describe('AccountService', () => {
 
     accountService.login(EMAIL, 'nope');
 
-    expect(accountService.loggedIn).toBe(false);
+    expect(accountService.user.loggedIn).toBe(false);
     expect(window.alert).toHaveBeenCalledWith('Incorrect account credentials.');
   });
 
@@ -101,8 +107,8 @@ describe('AccountService', () => {
     accountService.login(EMAIL, PASSWORD);
     accountService.logout();
 
-    expect(accountService.loggedIn).toBe(false);
-    expect(accountService.email).toBeNull();
+    expect(accountService.user.loggedIn).toBe(false);
+    expect(accountService.user.email).toBeNull();
   });
 
   it('should alert on successful password reset', () => {
@@ -118,8 +124,8 @@ describe('AccountService', () => {
 
     accountService.createAccount(EMAIL, PASSWORD);
 
-    expect(accountService.loggedIn).toBe(true);
-    expect(accountService.email).toBe(EMAIL);
+    expect(accountService.user.loggedIn).toBe(true);
+    expect(accountService.user.email).toBe(EMAIL);
     expect(accountService.dataService.init).toHaveBeenCalled();
   });
 
