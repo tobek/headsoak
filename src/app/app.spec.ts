@@ -11,13 +11,11 @@ import {App} from './app.component';
 import {AppState} from './app.service';
 import {AccountService} from './account.service';
 import {DataService} from './data.service';
-import {PubSubService} from './pub-sub.service';
 
 describe('App', () => {
   // provide our implementations or mocks to the dependency injector
   beforeEachProviders(() => [
     AccountService,
-    PubSubService,
     DataService,
     AppState,
     App

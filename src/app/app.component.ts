@@ -9,7 +9,6 @@ import {LoginComponent} from './login';
 import {AppState} from './app.service';
 import {AccountService} from './account.service';
 import {DataService} from './data.service';
-import {PubSubService} from './pub-sub.service';
 import {RouterActive} from './router-active';
 
 /*
@@ -77,8 +76,7 @@ export class App {
   constructor(
     public appState: AppState,
     public accountService: AccountService,
-    public dataService: DataService,
-    public pubSubService: PubSubService
+    public dataService: DataService
    ) {}
 
   get state() {

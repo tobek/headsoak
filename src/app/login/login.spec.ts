@@ -14,29 +14,28 @@ import {LoginComponent} from './login.component';
 import {AppState} from '../app.service';
 import {AccountService} from '../account.service';
 import {DataService} from '../data.service';
-import {PubSubService} from '../pub-sub.service';
 
 describe('LoginComponent', () => {
-  var pubSubCb;
-
-  class PubSubServiceMock {
-    subscribe(fn) {
-      pubSubCb = fn;
-    }
-  }
+  var loginState;
 
   class AccountServiceMock {
+    loginState$ = {
+      subscribe: function(fn) {
+        loginState = fn;
+      }
+    };
+
     init() {}
     login(email: string, password: string) {
       if (email === 'foo@example.com' && password === 'yes') {
-        pubSubCb('logged-in');
+        loginState('logged-in');
       }
       else {
-        pubSubCb('error');
+        loginState('error');
       }
     }
-    createAccount() { pubSubCb('logged-in'); }
-    logout() { pubSubCb('logged-out'); }
+    createAccount() { loginState('logged-in'); }
+    logout() { loginState('logged-out'); }
   }
 
   // provide our implementations or mocks to the dependency injector
@@ -45,7 +44,6 @@ describe('LoginComponent', () => {
     AppState,
     provide(AccountService, { useClass: AccountServiceMock }),
     DataService,
-    provide(PubSubService, { useClass: PubSubServiceMock }),
     LoginComponent
   ]);
 

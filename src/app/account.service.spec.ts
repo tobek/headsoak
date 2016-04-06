@@ -9,7 +9,6 @@ import {
 // Load the implementations that should be tested
 import {AccountService} from './account.service';
 import {DataService} from './data.service';
-import {PubSubService} from './pub-sub.service';
 
 var EMAIL = 'email@example.com';
 var PASSWORD = 'abc';
@@ -62,7 +61,6 @@ describe('AccountService', () => {
 
   // provide our implementations or mocks to the dependency injector
   beforeEachProviders(() => [
-    PubSubService,
     DataService,
     AccountService,
   ]);

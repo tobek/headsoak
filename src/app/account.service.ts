@@ -1,20 +1,25 @@
 import {Injectable} from 'angular2/core';
+import {Subject} from 'rxjs/Subject';
 
 var Firebase = require('firebase');
 
 import {DataService} from './data.service';
-import {PubSubService} from './pub-sub.service';
 
 @Injectable()
 export class AccountService {
-  public loggedIn = false;
+  loggedIn = false;
   uid: string;
   email: string;
   provider: string;
-  ref: Firebase;
 
-  constructor(private dataService: DataService, private pubSub: PubSubService) {
+  loginState$: Subject<string>;
+
+  private ref: Firebase;
+
+  constructor(private dataService: DataService) {
     this.ref = new Firebase('https://nutmeg.firebaseio.com/');
+
+    this.loginState$ = new Subject<string>();
   }
 
   init() {
@@ -33,7 +38,7 @@ export class AccountService {
         this.loggedIn = true;
         this.dataService.init(this.uid);
 
-        this.pubSub.emit('logged-in');
+        this.loginState$.next('logged-in');
       }
       else {
         // they logged out
@@ -48,7 +53,7 @@ export class AccountService {
         // window.clearInterval($s.u.digestInterval);
         // $s.m.modal = 'login';
 
-        this.pubSub.emit('logged-out');
+        this.loginState$.next('logged-out');
       }
     });
   }
@@ -76,7 +81,7 @@ export class AccountService {
 
         // $s.u.loading = false; // so that they get the button back and can try again @TODO/rewrite
 
-        this.pubSub.emit('error');
+        this.loginState$.next('error');
       }
     }, {
       remember: 'default' // @TODO - should let user choose not to remember, in which case should be 'none'
