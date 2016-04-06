@@ -1,13 +1,13 @@
 import {Component, NgZone} from 'angular2/core';
 
 import {AppState} from '../app.service';
-import {AccountService} from '../account.service';
+import {AccountService} from './account.service';
 
 @Component({
   selector: 'login',
   pipes: [],
-  styles: [ require('./login.css') ],
-  template: require('./login.html')
+  styles: [ require('./login.component.css') ],
+  template: require('./login.component.html')
 })
 export class LoginComponent {
   email: string = '';

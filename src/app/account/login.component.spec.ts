@@ -10,9 +10,8 @@ import {Component, provide} from 'angular2/core';
 import {MockBackend} from 'angular2/http/testing';
 
 // Load the implementations that should be tested
-import {LoginComponent} from './login.component';
+import {LoginComponent, AccountService} from './';
 import {AppState} from '../app.service';
-import {AccountService} from '../account.service';
 import {DataService} from '../data.service';
 
 describe('LoginComponent', () => {

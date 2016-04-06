@@ -1,12 +1,11 @@
 // App
 export * from './app.component';
 export * from './app.service';
-export * from './account.service';
+export * from './account';
 export * from './data.service';
-export * from './pub-sub.service';
 
 import {AppState} from './app.service';
-import {AccountService} from './account.service';
+import {AccountService} from './account/account.service';
 import {DataService} from './data.service';
 
 // Application wide providers

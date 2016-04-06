@@ -5,9 +5,8 @@ import {Component} from 'angular2/core';
 import {RouteConfig, Router} from 'angular2/router';
 
 import {Home} from './home';
-import {LoginComponent} from './login';
+import {AccountService, LoginComponent} from './account';
 import {AppState} from './app.service';
-import {AccountService} from './account.service';
 import {DataService} from './data.service';
 import {RouterActive} from './router-active';
 

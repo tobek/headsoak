@@ -4,6 +4,7 @@ describe('LoginComponent', () => {
   var PASSWORD = 'abc';
 
   beforeEach(() => {
+    browser.get('/');
   });
 
   it('should create an account and log out', () => {

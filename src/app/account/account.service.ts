@@ -3,7 +3,7 @@ import {Subject} from 'rxjs/Subject';
 
 var Firebase = require('firebase');
 
-import {DataService} from './data.service';
+import {DataService} from '../data.service';
 
 @Injectable()
 export class AccountService {

@@ -8,7 +8,7 @@ import {
 
 // Load the implementations that should be tested
 import {AccountService} from './account.service';
-import {DataService} from './data.service';
+import {DataService} from '../data.service';
 
 var EMAIL = 'email@example.com';
 var PASSWORD = 'abc';

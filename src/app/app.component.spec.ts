@@ -9,7 +9,7 @@ import {
 // Load the implementations that should be tested
 import {App} from './app.component';
 import {AppState} from './app.service';
-import {AccountService} from './account.service';
+import {AccountService} from './account';
 import {DataService} from './data.service';
 
 describe('App', () => {
