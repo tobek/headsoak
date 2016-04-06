@@ -16,7 +16,7 @@ export class AccountService {
   // constructor(private dataService: DataService, private analyticsService: AnalyticsService, public user: UserService) {
   constructor(
     private dataService: DataService,
-    private analyticsService: AnalyticsService,
+    private analytics: AnalyticsService,
     public user: UserService
   ) {
     this.ref = new Firebase('https://nutmeg.firebaseio.com/');
@@ -25,7 +25,16 @@ export class AccountService {
   }
 
   init() {
+    // onAuth immediately fires with current auth state, so let's capture that specifically
+    var initialAuthState = true;
+
     this.ref.onAuth((authData) => {
+      if (initialAuthState) {
+        initialAuthState = false;
+
+        this.analytics.event('Account', 'initialized', authData ? 'logged_in' : 'logged_out');
+      }
+
       if (authData) {
         console.log('Log in succeeded', authData);
 
@@ -58,11 +67,15 @@ export class AccountService {
     // $s.u.loading = true;
     // $s.u.loggingIn = true;
 
+    this.analytics.event('Account', 'login.attempt');
+
     this.ref.authWithPassword({
       email: email,
       password: password,
     }, (error) => {
       if (error) {
+        this.analytics.event('Account', 'login.error', error.code);
+
         switch (error.code) {
           case 'INVALID_EMAIL':
           case 'INVALID_PASSWORD':
@@ -77,23 +90,29 @@ export class AccountService {
         // $s.u.loading = false; // so that they get the button back and can try again @TODO/rewrite
 
         this.loginState$.next('error');
+        return;
       }
+
+      this.analytics.event('Account', 'login.success');
     }, {
       remember: 'default' // @TODO - should let user choose not to remember, in which case should be 'none'
     });
   }
 
   logout() {
+    this.analytics.event('Account', 'logout');
     this.ref.unauth();
   }
 
   passwordReset(email: string) {
+    this.analytics.event('Account', 'password_reset.attempt');
     // $s.m.working = true;
 
     this.ref.resetPassword({ email: email }, (err) => {
       // $s.m.working = false;
 
       if (err) {
+        this.analytics.event('Account', 'password_reset.error', err.code);
         switch (err.code) {
           case 'INVALID_USER':
             // For security purposes this should be indistinguishable from successful password reset
@@ -105,6 +124,10 @@ export class AccountService {
         }
       }
 
+      if (! err) {
+        this.analytics.event('Account', 'password_reset.success');
+      }
+
       alert('Password reset email successfully sent to ' + email + '!\n\n(Unless there is no account for email ' + email + ', in which case nothing\'s been sent, but we\'re not telling you which cause that would be a tiny security hole.)\n\nAnyway, please check your email.'); // @TODO this message?
 
       // @TODO: firebase lets you detect if user logged in with temporary token. should do so, and alert user to change password
@@ -112,10 +135,12 @@ export class AccountService {
   }
 
   createAccount(email: string, password: string) {
+    this.analytics.event('Account', 'create_account.attempt');
     // $s.u.loading = true; // @TODO/rewrite
 
     this.ref.createUser({ email: email, password: password}, (err, userData) => {
       if (err) {
+        this.analytics.event('Account', 'create_account.error', err.code);
         switch (err.code) {
           case 'INVALID_EMAIL':
             alert('That\'s an invalid email address!');
@@ -133,16 +158,20 @@ export class AccountService {
         return;
       }
 
+      this.analytics.event('Account', 'create_account.success');
+
       console.log('New account made: user id ' + userData.id + ', email ' + userData.email);
       this.login(email, password);
     });
   }
 
   deleteAccount(email: string, password: string) {
+    this.analytics.event('Account', 'delete_account.attempt');
     // $s.u.loading = true; // @TODO/rewrite
 
     this.ref.removeUser({ email: email, password: password}, (err) => {
       if (err) {
+        this.analytics.event('Account', 'delete_account.error', err.code);
         switch (err.code) {
           case 'INVALID_PASSWORD':
           case 'INVALID_USER':
@@ -155,6 +184,8 @@ export class AccountService {
 
         return;
       }
+
+      this.analytics.event('Account', 'delete_account.success');
 
       console.log('Successfully deleted account with email', email);
       this.logout();
