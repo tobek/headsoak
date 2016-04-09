@@ -3,6 +3,7 @@ import {Subject} from 'rxjs/Subject';
 
 var Firebase = require('firebase');
 
+import {Logger} from '../utils/logger';
 import {AnalyticsService} from '../analytics.service';
 import {DataService} from '../data.service';
 import {UserService} from './user.service';
@@ -11,6 +12,7 @@ import {UserService} from './user.service';
 export class AccountService {
   loginState$: Subject<string>;
 
+  private _logger: Logger = new Logger(this.constructor.name);
   private ref: Firebase;
 
   // constructor(private dataService: DataService, private analyticsService: AnalyticsService, public user: UserService) {
@@ -36,7 +38,7 @@ export class AccountService {
       }
 
       if (authData) {
-        console.log('Log in succeeded', authData);
+        this._logger.log('Log in succeeded', authData);
 
         // $s.u.loading = true; // while notes are loading @TODO/rewrite
 
@@ -49,7 +51,7 @@ export class AccountService {
       }
       else {
         // They're logged out
-        console.log('Logged out');
+        this._logger.log('logged out');
         this.user.clear();
 
         // @TODO/rewrite
@@ -83,7 +85,7 @@ export class AccountService {
             alert('Incorrect account credentials.'); // @TODO friendlier message
             break;
           default:
-            console.warn('Login failed: ', error);
+            this._logger.warn('Login failed: ', error);
             alert('Error logging in: ' + error.message || error.code || JSON.stringify(error));
         }
 
@@ -119,7 +121,7 @@ export class AccountService {
             break;
           default:
             alert('Sorry, something went wrong when trying to reset your password: ' + (err.message || err.code || err) + '. Please try again later!'); // @TODO include support email here
-            console.error('Error resetting password:', err);
+            this._logger.error('Error resetting password:', err);
             return;
         }
       }
@@ -150,7 +152,7 @@ export class AccountService {
             break;
           default:
             alert('Sorry, something went wrong when trying to create your account: ' + (err.message || err.code || err) + '. Please try again later!'); // @TODO include support email here
-            console.error('Error creating account:', err);
+            this._logger.error('Error creating account:', err);
         }
 
         // $s.u.loading = false; // @TODO/rewrite
@@ -160,7 +162,7 @@ export class AccountService {
 
       this.analytics.event('Account', 'create_account.success');
 
-      console.log('New account made: user id ' + userData.id + ', email ' + userData.email);
+      this._logger.log('New account created: user id ' + userData.id + ', email ' + userData.email);
       this.login(email, password);
     });
   }
@@ -179,7 +181,7 @@ export class AccountService {
             break;
           default:
             alert('Sorry, something went wrong when trying to delete your account: ' + (err.message || err.code || err) + '. Please try again later!'); // @TODO include support email here
-            console.error('Error deleting account:', err);
+            this._logger.error('Error deleting account:', err);
         }
 
         return;
@@ -187,7 +189,7 @@ export class AccountService {
 
       this.analytics.event('Account', 'delete_account.success');
 
-      console.log('Successfully deleted account with email', email);
+      this._logger.log('Successfully deleted account with email', email);
       this.logout();
     });
   }

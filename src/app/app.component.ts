@@ -9,6 +9,7 @@ import {AccountService, UserService, LoginComponent} from './account';
 import {AnalyticsService} from './analytics.service';
 import {AppState} from './app.service';
 import {DataService} from './data.service';
+import {Logger} from './utils/logger';
 import {RouterActive} from './router-active';
 
 /*
@@ -73,6 +74,8 @@ import {RouterActive} from './router-active';
 export class App {
   name = 'nutmeg';
 
+  private _logger: Logger = new Logger(this.constructor.name);
+
   constructor(
     public analyticsService: AnalyticsService,
     public appState: AppState,
@@ -86,10 +89,10 @@ export class App {
   }
 
   ngOnInit() {
-    console.log('Initial App State', this.state);
+    this._logger.log('Initial State', this.state);
   }
   ngOnDestroy() {
-    console.log('app component destroyed!');
+    this._logger.log('component destroyed!');
   }
 
 }

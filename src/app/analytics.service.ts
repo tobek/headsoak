@@ -21,7 +21,7 @@ export class AnalyticsService {
 
   event(category: string, action: string, label: string = null, value: number = null) {
     // console.log('Analytics event fired:', arguments);
-    
+
     if (this.ga) {
       this.ga('send', {
         hitType: 'event',

@@ -16,7 +16,7 @@ import {UserService} from './user.service';
 
 var EMAIL = 'email@example.com';
 var PASSWORD = 'abc';
-var creds = { email: EMAIL, password: PASSWORD };
+var creds = { email: EMAIL, password: PASSWORD, id: 'simplelogin:1' };
 
 describe('AccountService', () => {
   class FirebaseMock {
@@ -49,8 +49,8 @@ describe('AccountService', () => {
       cb();
     }
 
-    createUser(creds, cb) {
-      cb(null, creds);
+    createUser(creationCreds, cb) {
+      cb(null, creationCreds);
     }
 
     removeUser(creds, cb) {
