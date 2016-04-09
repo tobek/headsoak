@@ -13,6 +13,8 @@ import {DataService} from '../data.service';
 import {AnalyticsService} from '../analytics.service';
 import {AccountService} from './account.service';
 import {UserService} from './user.service';
+import {NotesService} from '../notes/';
+import {TagsService} from '../tags/';
 
 var EMAIL = 'email@example.com';
 var PASSWORD = 'abc';
@@ -69,6 +71,8 @@ describe('AccountService', () => {
     DataService,
     AccountService,
     UserService,
+    NotesService,
+    TagsService,
   ]);
 
   var accountService;

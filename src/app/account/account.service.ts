@@ -7,6 +7,7 @@ import {Logger} from '../utils/logger';
 import {AnalyticsService} from '../analytics.service';
 import {DataService} from '../data.service';
 import {UserService} from './user.service';
+import {NotesService} from '../notes/';
 
 @Injectable()
 export class AccountService {
@@ -15,8 +16,8 @@ export class AccountService {
   private _logger: Logger = new Logger(this.constructor.name);
   private ref: Firebase;
 
-  // constructor(private dataService: DataService, private analyticsService: AnalyticsService, public user: UserService) {
   constructor(
+    private notes: NotesService,
     private dataService: DataService,
     private analytics: AnalyticsService,
     public user: UserService
@@ -27,6 +28,7 @@ export class AccountService {
   }
 
   init() {
+    this.notes;
     // onAuth immediately fires with current auth state, so let's capture that specifically
     var initialAuthState = true;
 

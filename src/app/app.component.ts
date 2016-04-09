@@ -4,13 +4,13 @@
 import {Component} from 'angular2/core';
 import {RouteConfig, Router} from 'angular2/router';
 
-import {Home} from './home';
-import {AccountService, UserService, LoginComponent} from './account';
-import {AnalyticsService} from './analytics.service';
-import {AppState} from './app.service';
-import {DataService} from './data.service';
-import {Logger} from './utils/logger';
 import {RouterActive} from './router-active';
+import {AppState} from './app.service';
+import {AnalyticsService} from './analytics.service';
+import {Logger} from './utils/logger';
+
+import {Home} from './home';
+import {LoginComponent} from './account';
 
 /*
  * App Component
@@ -78,10 +78,7 @@ export class App {
 
   constructor(
     public analyticsService: AnalyticsService,
-    public appState: AppState,
-    public userService: UserService,
-    public accountService: AccountService,
-    public dataService: DataService
+    public appState: AppState
    ) {}
 
   get state() {
