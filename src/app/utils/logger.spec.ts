@@ -30,4 +30,15 @@ describe('Logger', () => {
     expect(console.log).toHaveBeenCalledWith('[TestThing]', 'stuff', 123, 'more stuff');
   });
 
+  it('should support time and timeEnd', () => {
+    spyOn(console, 'time');
+    spyOn(console, 'timeEnd');
+
+    this.logger.time('something');
+    this.logger.timeEnd('something');
+
+    expect(console.time).toHaveBeenCalledWith('[TestThing] something');
+    expect(console.timeEnd).toHaveBeenCalledWith('[TestThing] something');
+  });
+
 });

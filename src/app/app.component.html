@@ -1,0 +1,26 @@
+<header>
+  <nav>
+    <h1>{{ name }}</h1>
+    <ul>
+      <li router-active>
+        <a [routerLink]=" ['Home'] ">Home</a>
+      </li>
+      <li router-active>
+        <a [routerLink]=" ['About'] ">About</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <login></login>
+
+  <div class="notes-browser">
+    <note *ngFor="#note of notesService.notesDisplay | arrayLimit:notesService.notesDisplayLimit" [note]="note"></note>
+  </div>
+
+  <hr>
+  <router-outlet></router-outlet>
+</main>
+
+<pre>this.state = {{ state | json }}</pre>

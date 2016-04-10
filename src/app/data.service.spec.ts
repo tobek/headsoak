@@ -5,6 +5,7 @@ import {
   beforeEach,
   beforeEachProviders,
 } from 'angular2/testing';
+import {provide} from 'angular2/core';
 
 import {DataService} from './data.service';
 import {UserService} from './account/user.service';
@@ -20,12 +21,19 @@ var SAMPLE_DATA = {
   featuresSeen: Infinity,
 };
 
+class NotesServiceMock {
+  init(notes) {}
+}
+class TagsServiceMock {
+  init(tags) {}
+}
+
 describe('DataService', () => {
   beforeEachProviders(() => [
     DataService,
     UserService,
-    NotesService,
-    TagsService,
+    provide(NotesService, { useClass: NotesServiceMock }),
+    provide(TagsService, { useClass: TagsServiceMock }),
   ]);
 
   var dataService;

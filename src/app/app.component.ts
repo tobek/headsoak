@@ -11,6 +11,7 @@ import {Logger} from './utils/logger';
 
 import {Home} from './home';
 import {LoginComponent} from './account';
+import {Note, NoteComponent, NotesService} from './notes/';
 
 /*
  * App Component
@@ -23,6 +24,7 @@ import {LoginComponent} from './account';
   directives: [
     RouterActive,
     LoginComponent,
+    NoteComponent,
   ],
   styles: [`
     h1 {
@@ -41,30 +43,13 @@ import {LoginComponent} from './account';
     nav li.active {
       background-color: lightgray;
     }
+
+    note {
+      display: block;
+      margin: 20px 0;
+    }
   `],
-  template: `
-    <header>
-      <nav>
-        <h1>{{ name }}</h1>
-        <ul>
-          <li router-active>
-            <a [routerLink]=" ['Home'] ">Home</a>
-          </li>
-          <li router-active>
-            <a [routerLink]=" ['About'] ">About</a>
-          </li>
-        </ul>
-      </nav>
-    </header>
-
-    <main>
-      <login></login>
-      <hr>
-      <router-outlet></router-outlet>
-    </main>
-
-    <pre>this.state = {{ state | json }}</pre>
-  `
+  template: require('./app.component.html')
 })
 @RouteConfig([
   { path: '/',      name: 'Home', component: Home, useAsDefault: true },
@@ -78,6 +63,7 @@ export class App {
 
   constructor(
     public analyticsService: AnalyticsService,
+    public notesService: NotesService,
     public appState: AppState
    ) {}
 

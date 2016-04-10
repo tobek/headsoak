@@ -18,6 +18,13 @@ export class Logger {
     this._log('error', ...args);
   }
 
+  time(name) {
+    console.time(this._prefix + ' ' + name);
+  }
+  timeEnd(name) {
+    console.timeEnd(this._prefix + ' ' + name);
+  }
+
   private _log(level, ...args) {
     console[level](this._prefix, ...args);
   }

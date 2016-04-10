@@ -12,6 +12,7 @@ import {AppState} from './app.service';
 import {UserService, AccountService} from './account';
 import {AnalyticsService} from './analytics.service';
 import {DataService} from './data.service';
+import {NotesService} from './notes/';
 
 describe('App', () => {
   // provide our implementations or mocks to the dependency injector
@@ -22,6 +23,7 @@ describe('App', () => {
     DataService,
     AccountService,
     UserService,
+    NotesService,
   ]);
 
   it('should have a name', inject([ App ], (app) => {
