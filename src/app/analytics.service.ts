@@ -13,7 +13,7 @@ export class AnalyticsService {
 
     // GA implementation we're using creates stub `window.ga` as a function that just saves all calls passed to it in, until real GA script loads asynchronously and sends that data in. If the real GA script is blocked (e.g. by ad blocker) then the stub functionality will persist indefinitely, which would be a memory leak. So check if it hasn't loaded by a certain time and just detach it.
     setTimeout(() => {
-      if (! this.ga.loaded) {
+      if (! this.ga || ! this.ga.loaded) {
         this.ga = null;
       }
     }, 10000);
