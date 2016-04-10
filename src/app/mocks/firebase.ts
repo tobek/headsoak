@@ -45,6 +45,9 @@ export class FirebaseMock {
     }
   }
 
+  root() {
+    return this;
+  }
   child(key) {
     return this;
   }

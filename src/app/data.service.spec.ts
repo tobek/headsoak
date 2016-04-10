@@ -31,7 +31,7 @@ describe('DataService', () => {
   var dataService;
   beforeEach(inject([ DataService ], (injectedService) => {
     dataService = injectedService;
-    dataService.rootRef = new FirebaseMock;
+    dataService.ref = new FirebaseMock;
   }));
 
   it('should initialize notes, tags, and data on init', () => {
