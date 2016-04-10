@@ -5,16 +5,19 @@ describe('Logger', () => {
     this.logger = new Logger('TestThing');
   });
 
-  it('should log, warn, and error things', () => {
+  it('should log, info, warn, and error things', () => {
     spyOn(console, 'log');
+    spyOn(console, 'info');
     spyOn(console, 'warn');
     spyOn(console, 'error');
 
     this.logger.log('stuff');
+    this.logger.info('stuff');
     this.logger.warn('stuff');
     this.logger.error('stuff');
 
     expect(console.log).toHaveBeenCalledWith('[TestThing]', 'stuff');
+    expect(console.info).toHaveBeenCalledWith('[TestThing]', 'stuff');
     expect(console.warn).toHaveBeenCalledWith('[TestThing]', 'stuff');
     expect(console.error).toHaveBeenCalledWith('[TestThing]', 'stuff');
   });

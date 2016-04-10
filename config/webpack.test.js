@@ -137,6 +137,10 @@ module.exports = {
   // See: http://webpack.github.io/docs/configuration.html#plugins
   plugins: [
 
+    new ProvidePlugin({
+      _: 'lodash'
+    }),
+
     // Plugin: DefinePlugin
     // Description: Define free variables.
     // Useful for having development builds with debug logging or adding global constants.

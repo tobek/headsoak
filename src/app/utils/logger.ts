@@ -5,17 +5,20 @@ export class Logger {
     this._prefix = '[' + name + ']';
   }
 
-  _log(level, ...args) {
-    console[level](this._prefix, ...args);
-  }
-
   log(...args) {
     this._log('log', ...args);
+  }
+  info(...args) {
+    this._log('info', ...args);
   }
   warn(...args) {
     this._log('warn', ...args);
   }
   error(...args) {
     this._log('error', ...args);
+  }
+
+  private _log(level, ...args) {
+    console[level](this._prefix, ...args);
   }
 }

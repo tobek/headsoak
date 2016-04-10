@@ -16,55 +16,13 @@ import {UserService} from './user.service';
 import {NotesService} from '../notes/';
 import {TagsService} from '../tags/';
 
+import {FirebaseMock} from '../mocks/';
+
 var EMAIL = 'email@example.com';
 var PASSWORD = 'abc';
-var creds = { email: EMAIL, password: PASSWORD, id: 'simplelogin:1' };
+var creds = { email: EMAIL, password: PASSWORD };
 
 describe('AccountService', () => {
-  class FirebaseMock {
-    authCb: Function;
-
-    onAuth(cb) {
-      this.authCb = cb;
-      this.authCb(null); // mock always has initial auth state as logged out
-    }
-
-    authWithPassword(creds, cb) {
-      if (creds.email === EMAIL && creds.password === PASSWORD) {
-        this.authCb({
-          uid: 'simplelogin:1',
-          provider: 'password',
-          password: { email: EMAIL }
-        });
-        cb();
-      }
-      else {
-        cb({ code: 'INVALID_USER' });
-      }
-    }
-
-    unauth() {
-      this.authCb(null);
-    }
-
-    resetPassword(accountInfo, cb) {
-      cb();
-    }
-
-    createUser(creationCreds, cb) {
-      cb(null, creationCreds);
-    }
-
-    removeUser(creds, cb) {
-      if (creds.password === PASSWORD) {
-        cb(null);
-      }
-      else {
-        cb({ code: 'INVALID_PASSWORD' });
-      }
-    }
-  }
-
   // provide our implementations or mocks to the dependency injector
   beforeEachProviders(() => [
     AnalyticsService,
@@ -147,6 +105,30 @@ describe('AccountService', () => {
     accountService.deleteAccount(EMAIL, 'nope');
 
     expect(window.alert).toHaveBeenCalledWith('Wrong password! Reconsidering deleting your account?');
+  });
+
+  it('should update lastLogin upon login', () => {
+    spyOn(accountService.ref, 'update');
+
+    accountService.login(EMAIL, PASSWORD);
+
+    expect(accountService.ref.update).toHaveBeenCalled();
+    expect(accountService.ref.update.calls.mostRecent().args[0].lastLogin).toBeTruthy();
+  });
+
+  it('should alert user if lastLogin is updated elsewhere', () => {
+    spyOn(accountService, 'userDataUpdated').and.callThrough();
+    spyOn(window, 'alert');
+
+    accountService.login(EMAIL, PASSWORD);
+
+    accountService.ref.mockOnCb({
+      key: () => 'lastLogin',
+      val: () => Date.now()
+    });
+
+    expect(accountService.userDataUpdated).toHaveBeenCalled();
+    expect(window.alert).toHaveBeenCalled();
   });
 
 });

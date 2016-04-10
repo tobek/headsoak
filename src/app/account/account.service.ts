@@ -28,7 +28,6 @@ export class AccountService {
   }
 
   init() {
-    this.notes;
     // onAuth immediately fires with current auth state, so let's capture that specifically
     var initialAuthState = true;
 
@@ -40,20 +39,17 @@ export class AccountService {
       }
 
       if (authData) {
-        this._logger.log('Log in succeeded', authData);
+        this._logger.info('Log in succeeded', authData);
 
         // $s.u.loading = true; // while notes are loading @TODO/rewrite
 
-        this.user.setData(authData);
-
-        this.user.loggedIn = true;
-        this.dataService.init(this.user.uid);
+        this.handleLogIn(authData);
 
         this.loginState$.next('logged-in');
       }
       else {
         // They're logged out
-        this._logger.log('logged out');
+        this._logger.info('logged out');
         this.user.clear();
 
         // @TODO/rewrite
@@ -98,8 +94,32 @@ export class AccountService {
       }
 
       this.analytics.event('Account', 'login.success');
+
+      // Actual login logic handled in `onAuth` callback from this.init
     }, {
       remember: 'default' // @TODO - should let user choose not to remember, in which case should be 'none'
+    });
+  }
+
+  handleLogIn(authData) {
+    this.user.setData({
+      uid: authData.uid,
+      email: authData.provider && authData[authData.provider] && authData[authData.provider].email
+    });
+    this.user.loggedIn = true;
+
+    this.dataService.init(this.user.uid);
+
+    var userRef = this.ref.child('users/' + authData['uid'] + '/user');
+
+    userRef.update({
+      lastLogin: Date.now()
+    }, (err) => {
+      if (err) {
+        this._logger.error('Failed to set user lastLogin:', err);
+      }
+
+      userRef.on('child_changed', this.userDataUpdated.bind(this));
     });
   }
 
@@ -164,7 +184,7 @@ export class AccountService {
 
       this.analytics.event('Account', 'create_account.success');
 
-      this._logger.log('New account created: user id ' + userData.id + ', email ' + userData.email);
+      this._logger.info('New account created: user id ' + userData.id + ', email ' + userData.email);
       this.login(email, password);
     });
   }
@@ -191,8 +211,24 @@ export class AccountService {
 
       this.analytics.event('Account', 'delete_account.success');
 
-      this._logger.log('Successfully deleted account with email', email);
+      this._logger.info('Successfully deleted account with email', email);
       this.logout();
     });
+  }
+
+  userDataUpdated(newUserChild: FirebaseDataSnapshot) {
+    if (newUserChild.key() !== 'lastLogin') return;
+
+    // lastLogin changed!
+    this._logger.warn('Nutmeg session started from elsewhere at ' + newUserChild.val() + '!');
+
+    // @TODO/rewrite
+    alert('Hey, it looks like you\'ve logged into Nutmeg from another device or browser window.\n\nNutmeg doesn\'t yet support editing from multiple sessions at the same time. Please refresh this window to load any changes made in other sessions and continue.');
+    // $s.m.lockedOut = true; // prevent user from closing the following modal
+    // $s.m.alert({
+    //   bodyHTML: "<p>Hey, it looks like you've logged into Nutmeg from another device or browser window.</p><p>Nutmeg doesn't yet support editing from multiple sessions at the same time. Please <a href='#' onclick='document.location.reload()'>refresh</a> this window to load any changes made in other sessions and continue.</p>",
+    //   ok: false,
+    //   large: true
+    // });
   }
 }
