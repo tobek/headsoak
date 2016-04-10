@@ -11,7 +11,7 @@ import {Logger} from './utils/logger';
 
 import {Home} from './home';
 import {LoginComponent} from './account';
-import {Note, NoteComponent, NotesService} from './notes/';
+import {Note, NoteListComponent, NotesService} from './notes/';
 
 /*
  * App Component
@@ -24,7 +24,7 @@ import {Note, NoteComponent, NotesService} from './notes/';
   directives: [
     RouterActive,
     LoginComponent,
-    NoteComponent,
+    NoteListComponent,
   ],
   styles: [`
     h1 {
@@ -42,11 +42,6 @@ import {Note, NoteComponent, NotesService} from './notes/';
     }
     nav li.active {
       background-color: lightgray;
-    }
-
-    note {
-      display: block;
-      margin: 20px 0;
     }
   `],
   template: require('./app.component.html')

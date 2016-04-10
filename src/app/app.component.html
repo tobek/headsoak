@@ -15,9 +15,8 @@
 <main>
   <login></login>
 
-  <div class="notes-browser">
-    <note *ngFor="#note of notesService.notesDisplay | arrayLimit:notesService.notesDisplayLimit" [note]="note"></note>
-  </div>
+  <note-list [notes]="notesService.notesDisplay | arrayLimit:notesService.notesDisplayLimit">
+  </note-list>
 
   <hr>
   <router-outlet></router-outlet>
