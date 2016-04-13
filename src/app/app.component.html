@@ -15,7 +15,7 @@
 <main>
   <login></login>
 
-  <note-list [notes]="notesService.notesDisplay | arrayLimit:notesService.notesDisplayLimit">
+  <note-list [notes]="notesService.notesDisplay" [limit]="notesService.notesDisplayLimit">
   </note-list>
 
   <hr>

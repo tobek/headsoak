@@ -1,4 +1,5 @@
 export * from './logger';
+export * from './scroll-monitor.service';
 
 export var utils = {
   objFromArray: function(arr: Array<any>) {

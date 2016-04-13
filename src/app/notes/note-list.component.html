@@ -1,1 +1,1 @@
-<note *ngFor="#note of notes" [note]="note"></note>
+<note *ngFor="#note of notes | arrayLimit:limit" [note]="note"></note>

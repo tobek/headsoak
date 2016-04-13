@@ -13,6 +13,7 @@ import {DataService} from './data.service';
 import {AccountService, UserService} from './account/';
 import {NotesService} from './notes/';
 import {TagsService} from './tags/';
+import {ScrollMonitorService} from './utils/';
 
 // Application wide providers
 export const APP_PROVIDERS = [
@@ -23,4 +24,5 @@ export const APP_PROVIDERS = [
   UserService,
   NotesService,
   TagsService,
+  ScrollMonitorService,
 ];

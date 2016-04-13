@@ -4,7 +4,7 @@ import {Logger, utils} from '../utils/';
 
 import {Note} from './';
 
-var INITIAL_NOTES_LIMIT = 15;
+var DEFAULT_NOTES_LIMIT = 15;
 
 @Injectable()
 export class NotesService {
@@ -13,7 +13,7 @@ export class NotesService {
   /** Dynamically generated partial or complete copy of `notes`, sorted and filtered according to the user. **Each element of the array is a reference to a Note object in `notes`.** This means that neither `notes` nor `notesDisplay` should directly reassign any of its elements, or else things will go out of sync. */
   notesDisplay: Array<Note>;
   // Only show this many nuts at a time unless infinite scrolling:
-  notesDisplayLimit: number = INITIAL_NOTES_LIMIT;
+  notesDisplayLimit: number = DEFAULT_NOTES_LIMIT;
 
   /**
    * Key format: `[desiredOrder] + '-' + field + '-' + rev`
