@@ -1,19 +1,14 @@
 import {Injectable} from 'angular2/core';
+import {Subject} from 'rxjs/Subject';
 
 import {Logger, utils} from '../utils/';
 
 import {Note} from './';
 
-var DEFAULT_NOTES_LIMIT = 15;
-
 @Injectable()
 export class NotesService {
   notes: Map<string, Note>;
-
-  /** Dynamically generated partial or complete copy of `notes`, sorted and filtered according to the user. **Each element of the array is a reference to a Note object in `notes`.** This means that neither `notes` nor `notesDisplay` should directly reassign any of its elements, or else things will go out of sync. */
-  notesDisplay: Array<Note>;
-  // Only show this many nuts at a time unless infinite scrolling:
-  notesDisplayLimit: number = DEFAULT_NOTES_LIMIT;
+  updates$: Subject<void>;
 
   /**
    * Key format: `[desiredOrder] + '-' + field + '-' + rev`
@@ -33,6 +28,10 @@ export class NotesService {
   };
 
   private _logger: Logger = new Logger(this.constructor.name);
+
+  constructor() {
+    this.updates$ = new Subject<void>();
+  }
 
   init(notes) {
     // Firebase stores as objects but if data is "array-like" then we get back arrays. we need objects because we may have non-numeric keys, and because we migrated to string keys. TODO may not be necessary in the futre, see also idsMigrated which was done at the same time
@@ -59,10 +58,9 @@ export class NotesService {
     // _.each($s.n.nuts, $s.n.updateNutInIndex);
     // console.timeEnd("initializing lunr index");
 
-    this._logger.log('got notes', this.notes);
+    this.updates$.next(null);
 
-    // @TODO/rewrite this'll maybe happen elsewhere
-    this.sortNotes();
+    this._logger.log('got notes', this.notes);
   }
 
   createNote(noteObj) {
@@ -79,12 +77,12 @@ export class NotesService {
   }
 
   /**
-   * Order this.notesDisplay or passed-in notes according to `sortOpt`. Assign this.notesDisplay to the sorted result.
+   * Returns array of notes (either all notes or a passed-in subset) sorted according to given criteria.
    * 
-   * Basically we don't want sort order updating *while* you're editing some property that we're sorting on, e.g. you're sorting on recently modified and as you start typing, that note shoots to the top. So we need to control this separately and only change order of array when we want to.
+   * Note that we don't want sort order updating *while* you're editing some property that we're sorting on, e.g. you're sorting on recently modified and as you start typing, that note shoots to the top. So we need to control this separately and only change order when we want to.
    */
-  sortNotes(sortOpt?, notesToSort?) {
-    if (! notesToSort) notesToSort = this.notesDisplay || this.notes;
+  sortNotes(sortOpt?, notesToSort?): Array<Note> {
+    if (! notesToSort) notesToSort = this.notes;
     if (! notesToSort) return;
 
     if (! sortOpt) {
@@ -117,11 +115,8 @@ export class NotesService {
 
     if (sortOpt.rev) sortedNotes.reverse();
 
-    this.notesDisplay = sortedNotes;
-
     this._logger.timeEnd('Sorting notes');
 
-    // @TODO/rewrite
-    // $timeout($s.n.autosizeAllNuts);
+    return sortedNotes;
   }
 }

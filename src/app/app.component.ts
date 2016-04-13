@@ -11,7 +11,7 @@ import {Logger} from './utils/logger';
 
 import {Home} from './home';
 import {LoginComponent} from './account';
-import {Note, NoteListComponent, NotesService} from './notes/';
+import {NoteListComponent} from './notes/';
 
 /*
  * App Component
@@ -58,7 +58,6 @@ export class App {
 
   constructor(
     public analyticsService: AnalyticsService,
-    public notesService: NotesService,
     public appState: AppState
    ) {}
 

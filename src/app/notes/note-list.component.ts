@@ -1,4 +1,4 @@
-import {Component, Input, ElementRef} from 'angular2/core';
+import {Component, ElementRef} from 'angular2/core';
 
 import {AnalyticsService} from '../analytics.service';
 import {Note} from './note.model';
@@ -16,10 +16,15 @@ import {Logger, ScrollMonitorService} from '../utils/';
   template: require('./note-list.component.html')
 })
 export class NoteListComponent {
+  DEFAULT_NOTES_LIMIT: number = 15;
+
   el: HTMLElement;
 
-  @Input() notes: Array<Note>;
-  @Input() limit: number;
+  /** Dynamically generated partial or complete copy of notes, sorted and filtered according to the user. **Each element of the array is a reference to a Note object in `NotesService`.** This means that neither `NotesService.notes` nor `notes` here should directly reassign any of its elements, or else things will go out of sync. @TODO/toby this comment was from old nutmeg, only modified to update variable names - is it still accurate? */
+  notes: Array<Note>;
+
+  /** Only show this many nuts at a time unless infinite scrolling. */
+  limit: number = this.DEFAULT_NOTES_LIMIT;
 
   private _logger: Logger = new Logger(this.constructor.name);
 
@@ -33,17 +38,34 @@ export class NoteListComponent {
   }
 
   ngOnInit() {
+    if (! _.isEmpty(this.notesService.notes)) {
+      this.initNotes();
+    }
+    else {
+      var subscription = this.notesService.updates$.subscribe(() => {
+        this.initNotes();
+        subscription.unsubscribe;
+      });
+    }
+
     this.scrollMonitor.scroll$.subscribe(this.infiniteScrollCheck.bind(this));
+  }
+
+  initNotes() {
+    this.notes = this.notesService.sortNotes();
+
+    // @TODO/rewrite
+    // $timeout($s.n.autosizeAllNuts);
   }
 
   // @TODO/testing infinite scroll e2e both directions
   infiniteScrollCheck() {
-    if (!this.notes || this.limit >= this.notes.length) {
+    if (! this.notes || this.limit >= this.notes.length) {
       return;
     }
 
     var lastNote = this.el.querySelector('note:last-child');
-    if (!lastNote) {
+    if (! lastNote) {
       return;
     }
 
@@ -59,9 +81,8 @@ export class NoteListComponent {
       // @TODO/rewrite
       // $s.n.autosizeSomeNuts($s.n.nutsLimit - 10); // only the new ones
     }
-    else if (distanceTilLastNote > 2000 && this.limit > 15) { // @TODO this 15 should be dynamic
-      // Let's see if we can hide some (2000 from already-calculated value so we don't waste time on this scroll event calculating more stuff)
-      var tenthFromlastNote = this.el.querySelector('note:nth-last-child(11)'); // CSS has off-by-one shit
+    else if (distanceTilLastNote > 1000 && this.limit > this.DEFAULT_NOTES_LIMIT) {
+      var tenthFromlastNote = this.el.querySelector('note:nth-last-child(11)'); // CSS is off-by-one =(
       if (! tenthFromlastNote) {
         return;
       }
