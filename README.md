@@ -6,6 +6,17 @@ An API for your writing.
 
 Below is the readme from [angular2-webpack-starter](https://github.com/AngularClass/angular2-webpack-starter) on which the web app architecture is based.
 
+The repo can be added as an additional git remote, and then merged in to apply updates, like so:
+
+```bash
+# only need to run this once:
+git remote add starter git@github.com:AngularClass/angular2-webpack-starter.git
+
+# then, whenever you want to merge into current branch:
+git fetch starter
+git merge starter/master
+```
+
 ### Quick start
 
 **Make sure you have node version >= 4.0**
