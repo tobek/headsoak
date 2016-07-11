@@ -20,4 +20,15 @@ export class TagsService {
 
     this._logger.log('got tags', this.tags);
   }
+
+  // @TODO/rewrite/tags unused so far
+  createTag(tagData: any) {
+    var newId = utils.getUnusedKeyFromObj(this.tags);
+
+    this.tags[newId] = new Tag(tagData);
+
+    // this.createTagName = ""; // clear input
+    // this.creatingTag = false; // hide input
+    // return newId;
+  }
 }

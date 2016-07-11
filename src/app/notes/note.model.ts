@@ -11,12 +11,12 @@ export class Note {
   sharedBody: string;
   tags: Array<string>; // Array of tag IDs
 
-  constructor(noteObj: any) {
-    if (! noteObj.id) {
+  constructor(noteData: any) {
+    if (! noteData.id) {
       throw new Error('Must supply a note id');
     }
 
-    _.extend(this, noteObj);
+    _.extend(this, noteData);
 
     // @TODO/rewrite
     // // if we've specifically passed in tags on this nut, use those. otherwise, maybe use query-filtering tags

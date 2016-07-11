@@ -1,19 +1,29 @@
 export class Tag {
   id: string;
+  name: string;
+  created: number;
+  modified: number;
 
   // Optional:
   docs: Array<string>; // array of note IDs
 
-  constructor(tagObj: any) {
-    if (! tagObj.id) {
-      throw new Error('Must supply a tag id');
+  // @TODO how do we handle duplicate names?
+  constructor(tagData: any) {
+    if (! tagData.id || ! tagData.name) {
+      throw new Error('Must supply tag with id and name');
     }
 
-    _.extend(this, tagObj);
+    _.extend(this, tagData);
 
     _.defaults(this, {
       docs: [],
+      created: Date.now(),
+      modified: Date.now(),
     });
 
+    // @TODO/old if `docs` exists, go through and add to each nut?
+
+    // @TODO/rewrite/tags
+    // this.tagUpdated(newId);
   }
 }
