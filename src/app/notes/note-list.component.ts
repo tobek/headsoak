@@ -20,7 +20,7 @@ export class NoteListComponent {
 
   el: HTMLElement;
 
-  /** Dynamically generated partial or complete copy of notes, sorted and filtered according to the user. **Each element of the array is a reference to a Note object in `NotesService`.** This means that neither `NotesService.notes` nor `notes` here should directly reassign any of its elements, or else things will go out of sync. @TODO/toby this comment was from old nutmeg, only modified to update variable names - is it still accurate? */
+  /** Dynamically generated partial or complete copy of notes, sorted and filtered according to the user. **Each element of the array is a reference to a Note object in `NotesService`.** This means that neither `NotesService.notes` nor `notes` here should directly reassign any of its elements, or else things will go out of sync. @TODO/rewrite this comment was from old nutmeg, only modified to update variable names - is it still accurate? If not then for every notelist component we're going to have a crapload of note objects floating around in memory, and it's not certain that they'll remain updated across the board. NEED TO CONFIRM (look at notes service `sortNotes`) */
   notes: Array<Note>;
 
   /** Only show this many nuts at a time unless infinite scrolling. */
@@ -44,7 +44,7 @@ export class NoteListComponent {
     else {
       var subscription = this.notesService.updates$.subscribe(() => {
         this.initNotes();
-        subscription.unsubscribe;
+        subscription.unsubscribe();
       });
     }
 

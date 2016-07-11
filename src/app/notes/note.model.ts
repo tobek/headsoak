@@ -9,7 +9,7 @@ export class Note {
   share: { [uid: string]: boolean };
   sharedBy: string;
   sharedBody: string;
-  tags: Array<string>;
+  tags: Array<string>; // Array of tag IDs
 
   constructor(noteObj: any) {
     if (! noteObj.id) {
@@ -41,6 +41,13 @@ export class Note {
     //   this.tags.forEach(function(tagId){
     //     $s.n.addTagIdToNut(tagId, this.id);
     //   });
+    // }
+
+    // @TODO/rewrite
+    // // If user was disconnected while editing a note, we won't have done a full update (which we only do on blur), so do that now
+    // if (this.fullUpdateRequired) {
+    //   console.log('note ' + this.id + ' was saved but requires a full update');
+    //   $s.n.noteDoFullUpdate(note);
     // }
 
     // @TODO/rewrite

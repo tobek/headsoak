@@ -7,7 +7,7 @@ import {Note} from './';
 
 @Injectable()
 export class NotesService {
-  notes: Map<string, Note>;
+  notes: Map<string, Note>; // id -> Note instance
   updates$: Subject<void>;
 
   /**
@@ -34,20 +34,8 @@ export class NotesService {
   }
 
   init(notes) {
-    // Firebase stores as objects but if data is "array-like" then we get back arrays. we need objects because we may have non-numeric keys, and because we migrated to string keys. TODO may not be necessary in the futre, see also idsMigrated which was done at the same time
+    // Firebase stores as objects but if data is "array-like" then we get back arrays. we need objects because we may have non-numeric keys, and because we migrated to string keys. TODO may not be necessary in the future, see also idsMigrated which was done at the same time
     var notesObj: Object = utils.objFromArray(notes) || {};
-
-    _.each(notesObj, function(note) {
-      // Firebase doesn't store empty arrays, so we get undefined for notes with no tags, which can screw things up
-      if (! note.tags) note.tags = [];
-
-      // @TODO/rewrite
-      // // If user was disconnected while editing a note, we won't have done a full update (which we only do on blur), so do that now
-      // if (note.fullUpdateRequired) {
-      //   console.log('note ' + note.id + ' was saved but requires a full update');
-      //   $s.n.noteDoFullUpdate(note);
-      // }
-    });
 
     this.notes = <Map<string, Note>>(_.mapValues(
       notesObj, (note) => new Note(note)

@@ -3,7 +3,12 @@ export * from './scroll-monitor.service';
 
 export var utils = {
   objFromArray: function(arr: Array<any>) {
-    if (!_.isArray(arr)) return arr;
+    if (typeof arr === 'object') {
+      return arr;
+    }
+    else if (! _.isArray(arr)) {
+      throw new Error('objFromArray requires an array!');
+    }
 
     return _.extend({}, arr);
   },
