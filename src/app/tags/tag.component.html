@@ -1,1 +1,10 @@
-[{{ tag.name }}] 
+{{ tag.name }}
+
+<span class="icons">
+  <span class="share" *ngIf="tag.share">
+    [shared]
+  </span>
+  <span class="prog" *ngIf="tag.prog">
+    [prog]
+  </span>
+</span>
