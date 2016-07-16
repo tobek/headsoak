@@ -4,8 +4,8 @@ import {
   injectAsync,
   beforeEach,
   beforeEachProviders,
-} from 'angular2/testing';
-import {provide} from 'angular2/core';
+} from '@angular/core/testing';
+import {provide} from '@angular/core';
 
 import {AnalyticsService} from './analytics.service';
 import {UserService, AccountService} from './account';

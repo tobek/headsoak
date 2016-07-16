@@ -3,7 +3,7 @@
     <a class="time">{{ 'created: ' + (note.created | date:'medium') + '\nmodified: ' + (note.modified | date:'medium') }}</a><!-- @TODO/rewrite should be tooltip? --><!--@TODO/rewrite angular2 date pipe is "pure" and won't check for updates, so note.created and note.modified will have to be reassigned, confirm it works, etc. -->
 
     <div class="tags">
-      <tag *ngFor="#tagId of note.tags" [tagId]="tagId"></tag>
+      <tag *ngFor="let tagId of note.tags" [tagId]="tagId"></tag>
 
       <span class="tag note-id" *ngIf="true"><!-- @TODO/rewrite only show if config.showNoteIds -->{{ note.id }}</span>
     </div>

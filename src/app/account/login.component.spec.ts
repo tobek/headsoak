@@ -4,10 +4,10 @@ import {
   injectAsync,
   describe,
   beforeEachProviders,
-} from 'angular2/testing';
+} from '@angular/core/testing';
 
-import {Component, provide} from 'angular2/core';
-import {MockBackend} from 'angular2/http/testing';
+import {Component, provide} from '@angular/core';
+import {MockBackend} from '@angular/http/testing';
 
 // Load the implementations that should be tested
 import {LoginComponent, AccountService} from './';

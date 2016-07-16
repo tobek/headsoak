@@ -1,4 +1,4 @@
-import {Component, Input} from 'angular2/core';
+import {Component, Input} from '@angular/core';
 
 import {AnalyticsService} from '../analytics.service';
 import {Note} from '../notes/note.model';

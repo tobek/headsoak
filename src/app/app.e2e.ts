@@ -11,14 +11,14 @@ describe('App', () => {
     expect(subject).toEqual(result);
   });
 
-  it('should have <header>', () => {
-    let subject = element(by.css('app header')).isPresent();
+  it('should have header', () => {
+    let subject = element(by.css('h1')).isPresent();
     let result  = true;
     expect(subject).toEqual(result);
   });
 
-  it('should have <main>', () => {
-    let subject = element(by.css('app main')).isPresent();
+  it('should have <home>', () => {
+    let subject = element(by.css('app home')).isPresent();
     let result  = true;
     expect(subject).toEqual(result);
   });

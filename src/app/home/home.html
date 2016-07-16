@@ -1,11 +1,23 @@
 <div>
 
   <span x-large>HMR data test</span>
-  <form (ngSubmit)="submitState(localState.value)">
-    <input type="text" [(ngModel)]="localState.value">
-    <button>Submit Value</button>
-  </form>
+    <form (ngSubmit)="submitState(localState.value)" autocomplete="off">
 
-  <pre>this.localState = {{ localState | json }}</pre>
+      <input
+        [value]="localState.value"
+        (input)="localState.value = $event.target.value"
+        placeholder="Submit Local State to App State"
+        autofocus>
+
+      <button md-raised-button color="primary">Submit Value</button>
+    </form>
+    <!--
+        <input type="text" [value]="localState.value" (input)="localState.value = $event.target.value" autofocus>
+        Rather than wiring up two-way data-binding ourselves with [value] and (input)
+        we can use Angular's [(ngModel)] syntax
+        <input type="text" name="textInput" [(ngModel)]="localState.value" autofocus>
+      -->
+
+    <pre>this.localState = {{ localState | json }}</pre>
 
 </div>

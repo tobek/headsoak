@@ -1,10 +1,8 @@
 /*
  * Angular 2 decorators and services
  */
-import {Component} from 'angular2/core';
-import {RouteConfig, Router} from 'angular2/router';
+import { Component, ViewEncapsulation } from '@angular/core';
 
-import {RouterActive} from './router-active';
 import {AppState} from './app.service';
 import {AnalyticsService} from './analytics.service';
 import {Logger} from './utils/logger';
@@ -22,10 +20,10 @@ import {NoteListComponent} from './notes/';
   pipes: [ ],
   providers: [ ],
   directives: [
-    RouterActive,
     LoginComponent,
     NoteListComponent,
   ],
+  encapsulation: ViewEncapsulation.None,
   styles: [`
     h1 {
       font-family: Arial, Helvetica, sans-serif
@@ -46,11 +44,6 @@ import {NoteListComponent} from './notes/';
   `],
   template: require('./app.component.html')
 })
-@RouteConfig([
-  { path: '/',      name: 'Home', component: Home, useAsDefault: true },
-  // Async load a component using Webpack's require with es6-promise-loader and webpack `require`
-  { path: '/about', name: 'About', loader: () => require('es6-promise!./about')('About') },
-])
 export class App {
   name = 'nutmeg';
 

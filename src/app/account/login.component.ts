@@ -1,4 +1,4 @@
-import {Component, NgZone} from 'angular2/core';
+import {Component, NgZone} from '@angular/core';
 
 import {AccountService} from './account.service';
 

@@ -1,4 +1,4 @@
-import {Injectable} from 'angular2/core';
+import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 
 import {Logger, utils} from '../utils/';
@@ -48,7 +48,8 @@ export class NotesService {
 
     this.updates$.next(null);
 
-    this._logger.log('got notes', this.notes);
+    // this._logger.log('got notes', this.notes);
+    this._logger.log('got', notes.length, 'notes');
   }
 
   createNote(noteObj) {

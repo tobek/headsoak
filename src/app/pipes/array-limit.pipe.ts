@@ -1,8 +1,8 @@
-import {Pipe, PipeTransform} from 'angular2/core';
+import {Pipe, PipeTransform} from '@angular/core';
 
 @Pipe({ name: 'arrayLimit' })
 export class ArrayLimitPipe implements PipeTransform {
-  transform(arr: Array<any>, [limit]): Array<any> {
+  transform(arr: Array<any>, limit?: number): Array<any> {
     return limit ? _.take(arr, limit) : arr;
   }
 }

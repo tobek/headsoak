@@ -1,13 +1,13 @@
 <div *ngIf="view === 'login'">
   <h3>log in</h3>
 
-  <form id="login-form" var-loginForm="ngForm" (ngSubmit)="login(); pseudoLogin(pseudoLoginIframe)">
+  <form id="login-form" ref-loginForm="ngForm" (ngSubmit)="login(); pseudoLogin(pseudoLoginIframe)">
     <input name="email" type="email" placeholder="email" autocomplete="email" required ngControl="email" [(ngModel)]="email">
     <input name="password" type="password" placeholder="password" autocomplete="current-password" required ngControl="password" [(ngModel)]="password">
     <input type="submit" value="go" [disabled]="! loginForm.valid">
     <!-- <p ng-show="u.loading" class="loader"><img src="/img/loader-white.gif"></p> -->
 
-    <iframe var-pseudoLoginIframe id="pseudo-login-iframe" src="/pseudo-login.html" style="width:0px; height:0px; border:0px;"></iframe>
+    <iframe ref-pseudoLoginIframe id="pseudo-login-iframe" src="/pseudo-login.html" style="width:0px; height:0px; border:0px;"></iframe>
   </form>
 
   <p>
@@ -28,7 +28,7 @@
 <div *ngIf="view === 'create-account'">
   <h3>create an account</h3>
 
-  <form id="create-account-form" var-createAccountForm="ngForm" (ngSubmit)="createAccount()">
+  <form id="create-account-form" ref-createAccountForm="ngForm" (ngSubmit)="createAccount()">
     <input name="email" type="email" placeholder="email" autocomplete="email" required ngControl="email" [(ngModel)]="email">
     <input name="pass1" type="password" placeholder="password" autocomplete="new-password" required ngControl="pass1" [(ngModel)]="pass1">
     <input name="pass2" type="password" placeholder="password" autocomplete="new-password" required ngControl="pass2" [(ngModel)]="pass2">

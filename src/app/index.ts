@@ -15,6 +15,8 @@ import {NotesService} from './notes/';
 import {TagsService} from './tags/';
 import {ScrollMonitorService} from './utils/';
 
+// export * from './app.routes';
+
 // Application wide providers
 export const APP_PROVIDERS = [
   AnalyticsService,

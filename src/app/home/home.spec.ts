@@ -1,15 +1,12 @@
 import {
-  it,
-  inject,
-  injectAsync,
-  describe,
   beforeEachProviders,
-  TestComponentBuilder
-} from 'angular2/testing';
-
-import {Component, provide} from 'angular2/core';
-import {BaseRequestOptions, Http} from 'angular2/http';
-import {MockBackend} from 'angular2/http/testing';
+  describe,
+  inject,
+  it
+} from '@angular/core/testing';
+import {Component} from '@angular/core';
+import {BaseRequestOptions, Http} from '@angular/http';
+import {MockBackend} from '@angular/http/testing';
 
 // Load the implementations that should be tested
 import {Home} from './home.component';
@@ -21,12 +18,13 @@ describe('Home', () => {
   beforeEachProviders(() => [
     BaseRequestOptions,
     MockBackend,
-    provide(Http, {
+    {
+      provide: Http,
       useFactory: function(backend, defaultOptions) {
         return new Http(backend, defaultOptions);
       },
       deps: [MockBackend, BaseRequestOptions]
-    }),
+    },
 
     AppState,
     Title,

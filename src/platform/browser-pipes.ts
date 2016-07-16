@@ -2,9 +2,9 @@
  * These are globally available pipes in any template
  */
 
-import {provide, PLATFORM_PIPES} from 'angular2/core';
+import { PLATFORM_PIPES } from '@angular/core';
 
-import {ArrayLimitPipe} from '../../app/pipes/array-limit.pipe';
+import {ArrayLimitPipe} from '../app/pipes/array-limit.pipe';
 
 // application_pipes: pipes that are global through out the application
 export const APPLICATION_PIPES = [
@@ -12,5 +12,5 @@ export const APPLICATION_PIPES = [
 ];
 
 export const PIPES = [
-  provide(PLATFORM_PIPES, {useValue: APPLICATION_PIPES, multi: true})
+  { provide: PLATFORM_PIPES, multi: true, useValue: APPLICATION_PIPES }
 ];

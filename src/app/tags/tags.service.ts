@@ -1,4 +1,4 @@
-import {Injectable} from 'angular2/core';
+import {Injectable} from '@angular/core';
 
 import {Logger, utils} from '../utils/';
 
@@ -18,7 +18,8 @@ export class TagsService {
       tagsObj, (tag) => new Tag(tag)
      ));
 
-    this._logger.log('got tags', this.tags);
+    // this._logger.log('got tags', this.tags);
+    this._logger.log('got', tags.length, ' tags');
   }
 
   // @TODO/rewrite/tags unused so far

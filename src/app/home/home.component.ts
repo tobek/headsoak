@@ -1,4 +1,4 @@
-import {Component} from 'angular2/core';
+import {Component} from '@angular/core';
 import {AppState} from '../app.service';
 
 import {Title} from './title';
@@ -19,11 +19,11 @@ import {XLarge} from './x-large';
     XLarge
   ],
   // We need to tell Angular's compiler which custom pipes are in our template.
-  pipes: [ ],
+  pipes: [],
   // Our list of styles in our component. We may add more to compose many styles together
-  styles: [ require('./home.css') ],
+  styleUrls: [],
   // Every Angular template is first compiled by the browser before Angular runs it's compiler
-  template: require('./home.html')
+  templateUrl: './home.html'
 })
 export class Home {
   // Set our default values
@@ -42,6 +42,7 @@ export class Home {
   submitState(value) {
     console.log('submitState', value);
     this.appState.set('value', value);
+    this.localState.value = '';
   }
 
 }

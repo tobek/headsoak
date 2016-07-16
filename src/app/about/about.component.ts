@@ -1,5 +1,5 @@
-import {Component} from 'angular2/core';
-
+import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 /*
  * We're loading this component asynchronously
  * We are using some magic with es6-promise-loader that will wrap the module with a Promise
@@ -11,9 +11,6 @@ console.log('`About` component loaded asynchronously');
 @Component({
   selector: 'about',
   styles: [`
-    h1 {
-      font-family: Arial, Helvetica, sans-serif
-    }
   `],
   template: `
     <h1>
@@ -22,7 +19,8 @@ console.log('`About` component loaded asynchronously');
   `
 })
 export class About {
-  constructor() {
+  localState;
+  constructor(public route: ActivatedRoute) {
 
   }
 
