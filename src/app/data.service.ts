@@ -44,7 +44,7 @@ export class DataService {
     });
 
     // @TODO/rewrite - only do this if in dev mode
-    window.dataService = this;
+    window['dataService'] = this;
   }
 
   initNewUser() {

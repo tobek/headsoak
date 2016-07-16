@@ -28,5 +28,22 @@ export var utils = {
     }
 
     return String(key);
+  },
+
+  arrayIntersect: function(a1, a2) {
+    return a1.filter(function(n) {
+      return a2.indexOf(n) != -1;
+    });
+  },
+  // takes array of arrays
+  multiArrayIntersect: function(arrays) {
+    if (arrays.length == 0) return [];
+    else {
+      var soFar = arrays[0].slice(); // start with the 0th. slice() to duplicate array, otherwise in the case of arrays.length==1 we end up returning a reference to that array
+      for (var i = 1; i < arrays.length; i++) { // then with the first
+        soFar = utils.arrayIntersect(soFar, arrays[i]);
+      };
+      return soFar;
+    }
   }
 };

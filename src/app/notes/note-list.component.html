@@ -1,1 +1,7 @@
+<div class="note-query-bar">
+  <input type="text" placeholder="Search notes" [ngModel]="query" (ngModelChange)="queryUpdated($event)">
+
+  <hr>
+</div>
+
 <note *ngFor="let note of (notes | arrayLimit:limit)" [note]="note"></note>

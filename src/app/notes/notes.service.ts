@@ -78,6 +78,7 @@ export class NotesService {
     // @TODO/rewrite Surely much more to do here
   }
 
+  // @TODO/testing note indexing and querying should be tested
   updateNoteInIndex(note: Note) {
     // Lunr update just does `remove` then `add` - seems to be fine that this gets called even when it's a new note and isn't in the index already to be removed
     this.index.update({
@@ -104,13 +105,105 @@ export class NotesService {
   }
 
   /**
+   * Returns an array of Notes filtered by various means.
+   * 
+   * `query` is string, `tags` is array of tag IDs - takes `$s.query` scope variables if args not passed in
+   * */
+  doQuery(query: string, tags?: Array<string>): Array<Note> {
+    this._logger.time('doing query');
+
+    this._logger.log('queried "' + query + '" with tags', tags);
+
+    var filteredByTags, filteredByString, filteredByPrivate;
+
+    // FIRST get the docs filtered by tags
+    // @TODO/rewrite untested/unimplemented, not doing tags yet
+    if (tags && tags.length > 0) {
+      var arrays = [];
+      tags.forEach(function(tagId) {
+        arrays.push(this.tagsService.tags[tagId].docs);
+      });
+      filteredByTags = utils.multiArrayIntersect(arrays);
+
+      if (filteredByTags.length === 0) {
+        // no notes match this combination of tags, so we're done:
+        return this.noQueryResults();
+      }
+    }
+
+    // NEXT get the docs filtered by any string
+    if (query.length > 2) { // only start live searching once 3 chars have been entered
+      var results = this.index.search(query); // by default ANDs spaces: "foo bar" will search foo AND bar
+      // results is array of objects each containing `ref` and `score`
+      // ignoring score for now
+      filteredByString = results.map((doc) => doc.ref); // gives us an array
+
+      if (filteredByString.length === 0) {
+        // no notes have this string, so we're done:
+        return this.noQueryResults();
+      }
+    }
+
+    // @TODO/rewrite
+    // ALSO check private notes
+    // @TODO would probably be faster to filter the inverse and subtract from other lists? because probably few private notes
+    // if (! $s.p.privateMode && $s.n.nuts && ! _.isEmpty($s.n.nuts)) {
+    //   // private mode off, so hide private notes. get array of note IDs that aren't private:
+    //   filteredByPrivate = (_.filter($s.n.nuts, function(nut) { return !nut.private; })
+    //                         .map(function(nut) { return nut.id; }) );
+
+    //   if (filteredByPrivate.length === 0) {
+    //     // *every* note is private (and private mode is off), so we're done:
+    //     return $s.q.noQueryResults();
+    //   }
+    //   else if (filteredByPrivate.length === _.keys($s.n.nuts).length) {
+    //     filteredByPrivate = null; // ignore
+    //   }
+    // }
+
+    var filteredNotes;
+    var filterArrays = [];
+    if (filteredByTags) filterArrays.push(filteredByTags);
+    if (filteredByString) filterArrays.push(filteredByString);
+    if (filteredByPrivate) filterArrays.push(filteredByPrivate);
+
+    if (filterArrays.length) {
+      var filteredNoteIds = utils.multiArrayIntersect(filterArrays);
+
+      // now build an array pointing to just the nuts that we want to display
+      filteredNotes = _.map(filteredNoteIds, (noteId: string) => this.notes[noteId]);
+    }
+    else {
+      // show all
+      filteredNotes = this.notes;
+    }
+
+    // @TODO/rewrite - i think these are handled by whoever called the query?
+    // $s.n.sortNuts($s.n.sortOpts[$s.c.config.nutSortBy], filteredNotes); // re-sort, cause who knows what we've added into `$s.n.nuts` (sortNuts also autosizes textareas)
+    // $s.n.moreNutsCheck(); // new query may mean we have to increase/decrease limit
+
+    this._logger.timeEnd('doing query');
+
+    return filteredNotes;
+  }
+
+  /** Call if no results during `doQuery` */
+  noQueryResults(): Array<Note> {
+    this._logger.timeEnd('doing query');
+    return [];
+    // @TODO/rewrite - this function may not be necessary
+    // $s.n.nutsDisplay = [];
+    // $s.n.nutsLimit = INITIAL_NUTS_LIMIT;
+  }
+
+  /**
    * Returns array of notes (either all notes or a passed-in subset) sorted according to given criteria.
    * 
    * Note that we don't want sort order updating *while* you're editing some property that we're sorting on, e.g. you're sorting on recently modified and as you start typing, that note shoots to the top. So we need to control this separately and only change order when we want to.
    */
   sortNotes(sortOpt?, notesToSort?): Array<Note> {
     if (! notesToSort) notesToSort = this.notes;
-    if (! notesToSort) return;
+    if (! notesToSort || notesToSort.length === 0) return [];
 
     if (! sortOpt) {
       // Just get the "first" sort option

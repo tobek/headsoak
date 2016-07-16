@@ -1,4 +1,6 @@
 import {Component, ElementRef} from '@angular/core';
+import {Subject} from 'rxjs/Subject';
+import 'rxjs/add/operator/distinctUntilChanged';
 
 import {AnalyticsService} from '../analytics.service';
 import {Note} from './note.model';
@@ -26,6 +28,8 @@ export class NoteListComponent {
   /** Only show this many nuts at a time unless infinite scrolling. */
   limit: number = this.DEFAULT_NOTES_LIMIT;
 
+  private queryEmitter$: Subject<string> = new Subject<string>();
+
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
@@ -35,6 +39,18 @@ export class NoteListComponent {
     private notesService: NotesService
   ) {
     this.el = elRef.nativeElement;
+
+    this.queryEmitter$
+      .debounceTime(250)
+      .distinctUntilChanged()
+      .subscribe(query => {
+        let queriedNotes = this.notesService.doQuery(query);
+        this.notes = this.notesService.sortNotes(undefined, queriedNotes);
+      });
+  }
+
+  queryUpdated(query) {
+    this.queryEmitter$.next(query);
   }
 
   ngOnInit() {
