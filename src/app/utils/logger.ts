@@ -1,3 +1,4 @@
+// @TODO/rewrite Only log stuff if in dev mode
 export class Logger {
   private _prefix: string;
 

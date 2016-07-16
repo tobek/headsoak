@@ -19,7 +19,7 @@ export class TagsService {
      ));
 
     // this._logger.log('got tags', this.tags);
-    this._logger.log('got', tags.length, ' tags');
+    this._logger.log('got', _.size(<Array<any>> tagsObj), ' tags');
   }
 
   // @TODO/rewrite/tags unused so far

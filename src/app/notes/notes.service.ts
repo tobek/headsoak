@@ -2,13 +2,17 @@ import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 
 import {Logger, utils} from '../utils/';
+import {TagsService} from '../tags/';
 
 import {Note} from './';
+
+const lunr = require('lunr');
 
 @Injectable()
 export class NotesService {
   notes: Map<string, Note>; // id -> Note instance
   updates$: Subject<void>;
+  index: lunr.Index;
 
   /**
    * Key format: `[desiredOrder] + '-' + field + '-' + rev`
@@ -29,27 +33,30 @@ export class NotesService {
 
   private _logger: Logger = new Logger(this.constructor.name);
 
-  constructor() {
+  constructor(
+    public tagsService: TagsService
+  ) {
     this.updates$ = new Subject<void>();
+
+    this.index = lunr(function() {
+      // this.field('title', {boost: 10});
+      this.field('tags', {boost: 100});
+      this.field('body', {boost: 1});
+      this.ref('id');
+    });
+
+    this.notes = <Map<string, Note>> {};
   }
 
-  init(notes) {
-    // Firebase stores as objects but if data is "array-like" then we get back arrays. we need objects because we may have non-numeric keys, and because we migrated to string keys. TODO may not be necessary in the future, see also idsMigrated which was done at the same time
-    var notesObj: Object = utils.objFromArray(notes) || {};
-
-    this.notes = <Map<string, Note>>(_.mapValues(
-      notesObj, (note) => new Note(note)
-     ));
-
-    // @TODO/rewrite
-    // console.time("initializing lunr index");
-    // _.each($s.n.nuts, $s.n.updateNutInIndex);
-    // console.timeEnd("initializing lunr index");
+  init(notesData) {
+    this._logger.time('initializing notes and index');
+    _.each(notesData, this.createNote.bind(this));
+    this._logger.timeEnd('initializing notes and index');
 
     this.updates$.next(null);
 
     // this._logger.log('got notes', this.notes);
-    this._logger.log('got', notes.length, 'notes');
+    this._logger.log('got', _.size(notesData), 'notes');
   }
 
   createNote(noteObj) {
@@ -62,7 +69,38 @@ export class NotesService {
       noteObj.id = utils.getUnusedKeyFromObj(this.notes);
     }
 
-    this.notes[noteObj.id] = new Note(noteObj);
+    var note = new Note(noteObj);
+
+    this.notes[noteObj.id] = note;
+
+    this.updateNoteInIndex(note);
+
+    // @TODO/rewrite Surely much more to do here
+  }
+
+  updateNoteInIndex(note: Note) {
+    // Lunr update just does `remove` then `add` - seems to be fine that this gets called even when it's a new note and isn't in the index already to be removed
+    this.index.update({
+      id: note.id,
+      body: note.body,
+      tags: note.tags ? _.map(note.tags, (tagId) => {
+        if (this.tagsService.tags[tagId]) { // if this tag id actually exists
+          return this.tagsService.tags[tagId].name;
+        }
+        else {
+          // Dunno how a tag id pointing to an undefined (most likely deleted) tag got in here but let's do some clean-up
+          // @TODO/rewrite
+          // $s.n.removeTagIdFromNut(i, nut.id);
+          return '';
+        }
+      }).join(' ') : ''
+    });
+  }
+
+  removeNoteFromIndex(note: Note) {
+    this.index.remove({
+      id: note.id;
+    });
   }
 
   /**

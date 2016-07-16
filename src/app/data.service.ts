@@ -43,6 +43,8 @@ export class DataService {
       }
     });
 
+    // @TODO/rewrite - only do this if in dev mode
+    window.dataService = this;
   }
 
   initNewUser() {
@@ -96,8 +98,10 @@ export class DataService {
   }
 
   initFromData(data) {
-    this.notes.init(data.nuts);
+    // @NOTE that we have to initalize tags service before notes service because notes service needs to look up tag names for indexing tag field in notes.
     this.tags.init(data.tags);
+    this.notes.init(data.nuts);
+
     this.user.setData(data.user);
 
     // @TODO/rewrite
