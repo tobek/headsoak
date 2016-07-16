@@ -5,6 +5,10 @@
   border-bottom: 1px solid gray;
 }
 
+:host:first-child {
+  margin-top: 0;
+}
+
 .body {
   white-space: pre-wrap;
 }
