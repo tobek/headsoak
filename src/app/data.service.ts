@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 
-var Firebase = require('firebase');
+const Firebase = require('firebase');
 
 import {Logger, utils} from './utils/';
 import {UserService} from './account/user.service';

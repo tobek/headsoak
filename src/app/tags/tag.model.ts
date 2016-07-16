@@ -9,7 +9,7 @@ export class Tag {
   prog: boolean; // whether it's a programmatic tag @TODO/rewrite can't we just use the progFuncString?
   progFuncString: string; // string representing programmatic tag function to be eval'd
   readOnly: boolean; // @TODO/old handle other permissions @TODO/rewrite this still needed here?
-  
+
   share: any; // map of recipient (shared-with) user ID to their permissions
   sharedBy: string; // ID of user that shared this tag
   shareTooltip: string; // text to identify sharing status to user (e.g. "you are sharing this with ___" or "___ is sharing this with you")

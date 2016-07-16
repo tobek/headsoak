@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 
-var Firebase = require('firebase');
+const Firebase = require('firebase');
 
 import {Logger} from '../utils/logger';
 import {AnalyticsService} from '../analytics.service';

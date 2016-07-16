@@ -44,9 +44,6 @@
     "no-console": [
       true,
       "debug",
-      "info",
-      "time",
-      "timeEnd",
       "trace"
     ],
     "no-construct": true,
@@ -63,7 +60,7 @@
     "no-unused-expression": true,
     "no-unused-variable": false,
     "no-use-before-declare": true,
-    "no-var-keyword": true,
+    "no-var-keyword": false,
     "radix": true,
     "switch-default": true,
     "triple-equals": [
@@ -116,7 +113,6 @@
     "semicolon": [true, "always"],
     "variable-name": [
       true,
-      "check-format",
       "allow-leading-underscore",
       "ban-keywords"
     ],
@@ -128,6 +124,6 @@
       "check-separator",
       "check-type"
     ],
-    "import-destructuring-spacing": true
+    "import-destructuring-spacing": false
   }
 }

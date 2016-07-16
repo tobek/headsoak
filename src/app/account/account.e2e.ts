@@ -66,6 +66,7 @@ describe('LoginComponent', () => {
       prompt.sendKeys('I\'M REALLY REALLY SURE');
       prompt.accept();
 
+      // @TODO/rewrite @TODO/testing this alert, which we are expecting, is now failing in tests, maybe some update broke it
       prompt = browser.switchTo().alert()
       prompt.sendKeys(PASSWORD);
       prompt.accept();
