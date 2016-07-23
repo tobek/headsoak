@@ -100,7 +100,7 @@ export class NotesService {
 
   removeNoteFromIndex(note: Note) {
     this.index.remove({
-      id: note.id;
+      id: note.id
     });
   }
 
