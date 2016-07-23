@@ -94,8 +94,11 @@
   },
   "devDependencies": {
     "@types/core-js": "^0.9.28",
+    "@types/firebase": "^2.4.29",
     "@types/hammerjs": "^2.0.28",
     "@types/jasmine": "^2.2.29",
+    "@types/lodash": "0.0.28",
+    "@types/lunr": "^0.5.27",
     "@types/node": "^4.0.29",
     "@types/protractor": "^1.5.16",
     "@types/selenium-webdriver": "^2.44.26",

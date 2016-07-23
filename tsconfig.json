@@ -14,8 +14,11 @@
     ],
     "types": [
       "core-js",
+      "firebase",
       "hammerjs",
       "jasmine",
+      "lodash",
+      "lunr",
       "node",
       "protractor",
       "selenium-webdriver",
