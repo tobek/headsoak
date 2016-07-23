@@ -28,6 +28,9 @@ export class NoteListComponent {
   /** Only show this many nuts at a time unless infinite scrolling. */
   limit: number = this.DEFAULT_NOTES_LIMIT;
 
+  /** How notes in this list component are sorted on init. @TODO/rewrite/config load from config. */
+  sortOpt: Object = this.notesService.sortOpts[0];
+
   private queryEmitter$: Subject<string> = new Subject<string>();
 
   private _logger: Logger = new Logger(this.constructor.name);
@@ -53,6 +56,11 @@ export class NoteListComponent {
     this.queryEmitter$.next(query);
   }
 
+  sort(sortOpt) {
+    this.sortOpt = sortOpt;
+    this.notes = this.notesService.sortNotes(this.sortOpt, this.notes);
+  }
+
   ngOnInit() {
     if (! _.isEmpty(this.notesService.notes)) {
       this.initNotes();
@@ -69,7 +77,7 @@ export class NoteListComponent {
 
   initNotes() {
     // @NOTE @todo/rewrite since we feed this through the pure ArrayLimitPipe, the pipe won't re-evaluate if this array is changed, only if this.notes is actually made to point to a different array. So either we make it an unpure pipe (which is costly) or we reassign this.notes when sorting (which we might want to do anyway)
-    this.notes = this.notesService.sortNotes();
+    this.notes = this.notesService.sortNotes(this.sortOpt);
 
     // @TODO/rewrite
     // $timeout($s.n.autosizeAllNuts);

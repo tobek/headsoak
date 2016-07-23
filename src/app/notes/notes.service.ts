@@ -15,21 +15,20 @@ export class NotesService {
   index: lunr.Index;
 
   /**
-   * Key format: `[desiredOrder] + '-' + field + '-' + rev`
-   * @NOTE: changing these keys will break things for users who have ever manually changed the sort and thus have that key saved in their config.
+   * id format: `[desiredOrder] + '-' + field + '-' + rev`
    */
-  sortOpts = {
-    '0-modified-true': { field: 'modified', rev: true, name: 'Recently modified' },
-    '1-modified-false': { field: 'modified', rev: false, name: 'Oldest modified' },
-    '2-created-true': { field: 'created', rev: true, name: 'Recently created' },
-    '3-created-false': { field: 'created', rev: false, name: 'Oldest created' },
-    '4-body.length-true': { field: 'body.length', rev: true, name: 'Longest' },
-    '5-body.length-false': { field: 'body.length', rev: false, name: 'Shortest' },
-    '6-tags.length-true': { field: 'tags.length', rev: true, name: 'Most Tags' },
-    '7-tags.length-false': { field: 'tags.length', rev: false, name: 'Fewest tags' }
+  sortOpts = [
+    { id: '0-modified-true', field: 'modified', rev: true, name: 'Recently modified' },
+    { id: '1-modified-false', field: 'modified', rev: false, name: 'Oldest modified' },
+    { id: '2-created-true', field: 'created', rev: true, name: 'Recently created' },
+    { id: '3-created-false', field: 'created', rev: false, name: 'Oldest created' },
+    { id: '4-body.length-true', field: 'body.length', rev: true, name: 'Longest' },
+    { id: '5-body.length-false', field: 'body.length', rev: false, name: 'Shortest' },
+    { id: '6-tags.length-true', field: 'tags.length', rev: true, name: 'Most Tags' },
+    { id: '7-tags.length-false', field: 'tags.length', rev: false, name: 'Fewest tags' }
     // @TODO: query match strength
     // @NOTE: changes to the fields might require changes to the noteSort filter
-  };
+  ];
 
   private _logger: Logger = new Logger(this.constructor.name);
 
@@ -207,7 +206,7 @@ export class NotesService {
 
     if (! sortOpt) {
       // Just get the "first" sort option
-      sortOpt = this.sortOpts[_.keys(this.sortOpts)[0]];
+      sortOpt = this.sortOpts[0];
     }
 
     this._logger.time('Sorting notes');
