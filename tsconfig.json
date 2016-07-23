@@ -17,6 +17,7 @@
       "firebase",
       "hammerjs",
       "jasmine",
+      "jquery",
       "lodash",
       "lunr",
       "node",

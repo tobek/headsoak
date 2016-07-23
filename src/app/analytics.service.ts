@@ -1,12 +1,15 @@
 import {Injectable} from '@angular/core';
 
-import {UserService} from './account/user.service';
+// @TODO/rewrite we want UserService here but seems to be creating a circular dependency ever since adding autocomplete, so commenting out for now.
+// import {UserService} from './account/user.service';
 
 @Injectable()
 export class AnalyticsService {
   private ga: any;
 
-  constructor(user: UserService) {
+  constructor(
+    // user: UserService
+  ) {
     if (window['ga']) {
       this.ga = window['ga'];
     }

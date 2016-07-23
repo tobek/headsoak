@@ -1,3 +1,6 @@
+export * from './autocomplete.service';
+export * from './fuzzy-match-sorter';
+export * from './jquery.autocomplete.mod';
 export * from './logger';
 export * from './scroll-monitor.service';
 
@@ -32,12 +35,12 @@ export var utils = {
 
   arrayIntersect: function(a1, a2) {
     return a1.filter(function(n) {
-      return a2.indexOf(n) != -1;
+      return a2.indexOf(n) !== -1;
     });
   },
   // takes array of arrays
   multiArrayIntersect: function(arrays) {
-    if (arrays.length == 0) return [];
+    if (! arrays.length) return [];
     else {
       var soFar = arrays[0].slice(); // start with the 0th. slice() to duplicate array, otherwise in the case of arrays.length==1 we end up returning a reference to that array
       for (var i = 1; i < arrays.length; i++) { // then with the first

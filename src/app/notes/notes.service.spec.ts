@@ -4,17 +4,25 @@ import {
   beforeEach,
   beforeEachProviders,
 } from '@angular/core/testing';
+import {provide} from '@angular/core';
 
 import {NotesService} from './';
+import {TagsService} from '../tags/';
 
 var SAMPLE_NOTES = [
   { body: 'This is a short note', id: '1' },
   { body: 'This is a slightly longer note', id: '2' },
 ];
 
+class TagsServiceMock {
+  tags = [];
+  init(tags) {}
+}
+
 describe('NotesService', () => {
   beforeEachProviders(() => [
     NotesService,
+    provide(TagsService, { useClass: TagsServiceMock }),
   ]);
 
   var notesService;

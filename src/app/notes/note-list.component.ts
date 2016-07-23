@@ -1,4 +1,4 @@
-import {Component, ElementRef} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/distinctUntilChanged';
 
@@ -6,7 +6,7 @@ import {AnalyticsService} from '../analytics.service';
 import {Note} from './note.model';
 import {NoteComponent} from './note.component';
 import {NotesService} from './notes.service';
-import {Logger, ScrollMonitorService} from '../utils/';
+import {Logger, ScrollMonitorService, AutocompleteService} from '../utils/';
 
 @Component({
   selector: 'note-list',
@@ -31,6 +31,8 @@ export class NoteListComponent {
   /** How notes in this list component are sorted on init. @TODO/rewrite/config load from config. */
   sortOpt: Object = this.notesService.sortOpts[0];
 
+  @ViewChild('queryInput') queryInput: ElementRef;
+
   private queryEmitter$: Subject<string> = new Subject<string>();
 
   private _logger: Logger = new Logger(this.constructor.name);
@@ -38,6 +40,7 @@ export class NoteListComponent {
   constructor(
     private elRef: ElementRef,
     private analyticsService: AnalyticsService,
+    private autocompleteService: AutocompleteService,
     private scrollMonitor: ScrollMonitorService,
     private notesService: NotesService
   ) {
@@ -54,6 +57,13 @@ export class NoteListComponent {
 
   queryUpdated(query) {
     this.queryEmitter$.next(query);
+  }
+
+  querySetUpAutocomplete() {
+    this.autocompleteService.autocompleteTags(this.queryInput.nativeElement, {
+      context: 'query',
+      excludeTags: [],
+    });
   }
 
   sort(sortOpt) {

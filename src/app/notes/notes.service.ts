@@ -10,7 +10,7 @@ const lunr = require('lunr');
 
 @Injectable()
 export class NotesService {
-  notes: Map<string, Note>; // id -> Note instance
+  notes: { [key: string]: Note}; // id -> Note instance
   updates$: Subject<void>;
   index: lunr.Index;
 
@@ -44,7 +44,7 @@ export class NotesService {
       this.ref('id');
     });
 
-    this.notes = <Map<string, Note>> {};
+    this.notes = <{ [key: string]: Note}> {};
   }
 
   init(notesData) {
@@ -55,7 +55,7 @@ export class NotesService {
     this.updates$.next(null);
 
     // this._logger.log('got notes', this.notes);
-    this._logger.log('got', _.size(notesData), 'notes');
+    this._logger.log('got', _.size(this.notes), 'notes');
   }
 
   createNote(noteObj) {
@@ -107,7 +107,7 @@ export class NotesService {
    * Returns an array of Notes filtered by various means.
    * 
    * `query` is string, `tags` is array of tag IDs - takes `$s.query` scope variables if args not passed in
-   * */
+   */
   doQuery(query: string, tags?: Array<string>): Array<Note> {
     this._logger.time('doing query');
 

@@ -6,7 +6,7 @@ import {Tag} from './tag.model'; // For some reason this breaks with `TypeError:
 
 @Injectable()
 export class TagsService {
-  tags: Map<string, Tag>; // id -> Tag instance
+  tags: { [key: string]: Tag }; // id -> Tag instance
 
   private _logger: Logger = new Logger(this.constructor.name);
 
@@ -14,12 +14,12 @@ export class TagsService {
     // firebase stores as objects but if data is "array-like" then we get back arrays. we need objects because we may have non-numeric keys, and because we migrated to string keys. TODO may not be necessary in the future, see also idsMigrated which was done at the same time
     var tagsObj: Object = utils.objFromArray(tags) || {};
 
-    this.tags = <Map<string, Tag>>(_.mapValues(
+    this.tags = <{ [key: string]: Tag }>(_.mapValues(
       tagsObj, (tag) => new Tag(tag)
      ));
 
     // this._logger.log('got tags', this.tags);
-    this._logger.log('got', _.size(<Array<any>> tagsObj), ' tags');
+    this._logger.log('got', _.size(this.tags), ' tags');
   }
 
   // @TODO/rewrite/tags unused so far
