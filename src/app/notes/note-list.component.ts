@@ -70,14 +70,23 @@ export class NoteListComponent {
       el: this.queryInput.nativeElement,
       excludeTags: this.queryTags,
       autocompleteOpts: {
-        onSelect: (suggestion, event) => {
-          this.queryAddTag(this.tagsService.getTagByName(suggestion.value));
-          this.query = '';
-          this.queryUpdated();
-          this.querySetUpAutocomplete(); // reset autocomplete so that newly added tag will not be in suggestions
-        }
+        onSelect: this.queryTagAutocompleteSelect.bind(this)
       }
     });
+  }
+
+  queryTagAutocompleteSelect(suggestion, e) {
+    this.queryAddTag(this.tagsService.getTagByName(suggestion.value));
+    this.query = '';
+    this.queryUpdated();
+
+    if (document.activeElement !== this.queryInput.nativeElement) {
+      // Lost focus on the input, user may have clicked on autocomplete suggestion
+      this.queryInput.nativeElement.focus() // this will trigger querySetUpAutocomplete
+    }
+    else {
+      this.querySetUpAutocomplete(); // reset autocomplete so that newly added tag will not be in suggestions
+    }
   }
 
   queryAddTag(tag: Tag) {
