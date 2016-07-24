@@ -1,5 +1,9 @@
 <div class="note-query-bar">
-  <input tabindex=1 type="text" placeholder="Search notes" ref-queryInput [ngModel]="query" (ngModelChange)="queryUpdated($event)" (focus)="querySetUpAutocomplete()">
+  <span class="tags">
+    <tag *ngFor="let tag of queryTags" [tagId]="tag.id"></tag>
+  </span>
+
+  <input tabindex=1 type="text" placeholder="Search notes" ref-queryInput [(ngModel)]="query" (ngModelChange)="queryUpdated()" (focus)="querySetUpAutocomplete()">
 
   <label>
     Sort by

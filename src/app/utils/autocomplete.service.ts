@@ -18,8 +18,18 @@ export class AutocompleteService {
     private tagsService: TagsService
   ) {}
 
-  // TypeScript's new checking for destructuring function parameter object literal: `el` required, `excludeTags` not and defaults to null
-  autocompleteTags(el: HTMLInputElement, {excludeTags = [], context = null} = {excludeTags: [Tag], context: ''}) {
+  // TypeScript's new checking for destructuring function parameter object literal: `el` required, `excludeTags` not and defaults to null, etc.
+  autocompleteTags({
+    el,
+    excludeTags = [],
+    context = null,
+    autocompleteOpts = {},
+  } = {
+    el: HTMLInputElement,
+    excludeTags: [], // should be `Tag[]` but typescript is throwing an error
+    context: '',
+    autocompleteOpts: any,
+  }) {
     var lookupArray: string[] = _.filter(this.tagsService.tags, (tag: Tag) => {
       if (context === 'note') {
         if (tag.readOnly) {
@@ -35,7 +45,7 @@ export class AutocompleteService {
         // }
       }
       else if (context === 'query') {
-        if (excludeTags && tag.id in excludeTags) {
+        if (_.includes(excludeTags, tag)) {
           return false;
         }
       }
@@ -77,8 +87,11 @@ export class AutocompleteService {
       formatResult: (suggestion) => suggestion.highlighted,
 
       onSelect: (suggestion, e) => {
+        if (autocompleteOpts.onSelect) {
+          autocompleteOpts.onSelect(suggestion, e);
+        }
         if (context === 'note') { // we're in the add tag field of a nut
-          // @TODO/rewrite/notes
+          // @TODO/rewrite/notes - move into caller
           // var scope = $s.n.getFocusedNutScope() || safer$('#nut-' + nut.id).scope();
           // if (scope) {
           //   scope.addTag(true, suggestion.value);
@@ -87,12 +100,6 @@ export class AutocompleteService {
           //     $timeout(scope.openAddTagField, 10);
           //   }
           // }
-        }
-        else if (context === 'query') {
-          // @TODO/rewrite/query
-          // $s.q.addTag($s.t.getTagIdByName(suggestion.value));
-          // $s.q.query = "";
-          // $s.q.setupAutocomplete(); // reset autocomplete so that newly added tag will not be in suggestions
         }
       },
     });

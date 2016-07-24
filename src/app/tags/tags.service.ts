@@ -32,4 +32,8 @@ export class TagsService {
     // this.creatingTag = false; // hide input
     // return newId;
   }
+
+  getTagByName(name: string): Tag {
+    return _.find(this.tags, { name: name });
+  }
 }

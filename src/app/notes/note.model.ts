@@ -9,7 +9,7 @@ export class Note {
   share: { [uid: string]: boolean };
   sharedBy: string;
   sharedBody: string;
-  tags: Array<string>; // Array of tag IDs
+  tags: string[]; // Array of tag IDs
 
   constructor(noteData: any) {
     if (! noteData.id) {

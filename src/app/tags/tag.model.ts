@@ -5,7 +5,7 @@ export class Tag {
   modified: number;
 
   // Optional:
-  docs: Array<string>; // array of note IDs
+  docs: string[]; // array of note IDs
   prog: boolean; // whether it's a programmatic tag @TODO/rewrite can't we just use the progFuncString?
   progFuncString: string; // string representing programmatic tag function to be eval'd
   readOnly: boolean; // @TODO/old handle other permissions @TODO/rewrite this still needed here?

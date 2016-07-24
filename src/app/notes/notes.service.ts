@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 
 import {Logger, utils} from '../utils/';
-import {TagsService} from '../tags/';
+import {Tag, TagsService} from '../tags/';
 
 import {Note} from './';
 
@@ -104,25 +104,19 @@ export class NotesService {
   }
 
   /**
-   * Returns an array of Notes filtered by various means.
-   * 
-   * `query` is string, `tags` is array of tag IDs - takes `$s.query` scope variables if args not passed in
+   * Returns an array of Notes filtered by various means - everything is `and`ed
    */
-  doQuery(query: string, tags?: Array<string>): Array<Note> {
+  doQuery(query: string, tags?: Tag[]): Note[] {
     this._logger.time('doing query');
 
     this._logger.log('queried "' + query + '" with tags', tags);
 
-    var filteredByTags, filteredByString, filteredByPrivate;
+    // Arrays of note id's:
+    var filteredByTags: string[], filteredByString: string[], filteredByPrivate: string[];
 
     // FIRST get the docs filtered by tags
-    // @TODO/rewrite untested/unimplemented, not doing tags yet
-    if (tags && tags.length > 0) {
-      var arrays = [];
-      tags.forEach(function(tagId) {
-        arrays.push(this.tagsService.tags[tagId].docs);
-      });
-      filteredByTags = utils.multiArrayIntersect(arrays);
+    if (tags) {
+      filteredByTags = _.intersection(... tags.map(tag => tag.docs));
 
       if (filteredByTags.length === 0) {
         // no notes match this combination of tags, so we're done:
@@ -133,7 +127,7 @@ export class NotesService {
     // NEXT get the docs filtered by any string
     if (query.length > 2) { // only start live searching once 3 chars have been entered
       var results = this.index.search(query); // by default ANDs spaces: "foo bar" will search foo AND bar
-      // results is array of objects each containing `ref` and `score`
+      // results is array of objects each containing `ref` (note id) and `score`
       // ignoring score for now
       filteredByString = results.map((doc) => doc.ref); // gives us an array
 
@@ -167,7 +161,7 @@ export class NotesService {
     if (filteredByPrivate) filterArrays.push(filteredByPrivate);
 
     if (filterArrays.length) {
-      var filteredNoteIds = utils.multiArrayIntersect(filterArrays);
+      var filteredNoteIds = _.intersection(...filterArrays);
 
       // now build an array pointing to just the nuts that we want to display
       filteredNotes = _.map(filteredNoteIds, (noteId: string) => this.notes[noteId]);
@@ -230,7 +224,7 @@ export class NotesService {
     else { // e.g. `created`
       sortedNotes = _.sortBy(notesToSort, sortOpt.field);
     }
-    // @NOTE: Here is a more generic way to deal with this indexing of sub-objects by dot-notation string: http://stackoverflow.com/a/6394168
+    // @NOTE: Here is a more generic way to deal with this indexing of sub-objects by dot-notation string: http://stackoverflow.com/a/6394168. _.get might do it too.
 
     if (sortOpt.rev) sortedNotes.reverse();
 

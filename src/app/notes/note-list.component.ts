@@ -6,6 +6,7 @@ import {AnalyticsService} from '../analytics.service';
 import {Note} from './note.model';
 import {NoteComponent} from './note.component';
 import {NotesService} from './notes.service';
+import {Tag, TagComponent, TagsService} from '../tags';
 import {Logger, ScrollMonitorService, AutocompleteService} from '../utils/';
 
 @Component({
@@ -13,6 +14,7 @@ import {Logger, ScrollMonitorService, AutocompleteService} from '../utils/';
   pipes: [],
   directives: [
     NoteComponent,
+    TagComponent,
   ],
   styles: [require('./note-list.component.css')],
   template: require('./note-list.component.html')
@@ -33,7 +35,9 @@ export class NoteListComponent {
 
   @ViewChild('queryInput') queryInput: ElementRef;
 
+  query: string;
   private queryEmitter$: Subject<string> = new Subject<string>();
+  queryTags: Tag[] = [];
 
   private _logger: Logger = new Logger(this.constructor.name);
 
@@ -42,7 +46,8 @@ export class NoteListComponent {
     private analyticsService: AnalyticsService,
     private autocompleteService: AutocompleteService,
     private scrollMonitor: ScrollMonitorService,
-    private notesService: NotesService
+    private notesService: NotesService,
+    private tagsService: TagsService,
   ) {
     this.el = elRef.nativeElement;
 
@@ -50,20 +55,33 @@ export class NoteListComponent {
       .debounceTime(250)
       .distinctUntilChanged()
       .subscribe(query => {
-        let queriedNotes = this.notesService.doQuery(query);
+        let queriedNotes = this.notesService.doQuery(this.query, this.queryTags);
         this.notes = this.notesService.sortNotes(undefined, queriedNotes);
       });
   }
 
-  queryUpdated(query) {
-    this.queryEmitter$.next(query);
+  queryUpdated() {
+    this.queryEmitter$.next(this.query);
   }
 
   querySetUpAutocomplete() {
-    this.autocompleteService.autocompleteTags(this.queryInput.nativeElement, {
+    this.autocompleteService.autocompleteTags({
       context: 'query',
-      excludeTags: [],
+      el: this.queryInput.nativeElement,
+      excludeTags: this.queryTags,
+      autocompleteOpts: {
+        onSelect: (suggestion, event) => {
+          this.queryAddTag(this.tagsService.getTagByName(suggestion.value));
+          this.query = '';
+          this.queryUpdated();
+          this.querySetUpAutocomplete(); // reset autocomplete so that newly added tag will not be in suggestions
+        }
+      }
     });
+  }
+
+  queryAddTag(tag: Tag) {
+    this.queryTags.push(tag);
   }
 
   sort(sortOpt) {
