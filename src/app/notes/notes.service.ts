@@ -115,7 +115,7 @@ export class NotesService {
     var filteredByTags: string[], filteredByString: string[], filteredByPrivate: string[];
 
     // FIRST get the docs filtered by tags
-    if (tags) {
+    if (tags && tags.length) {
       filteredByTags = _.intersection(... tags.map(tag => tag.docs));
 
       if (filteredByTags.length === 0) {

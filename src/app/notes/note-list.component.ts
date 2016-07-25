@@ -1,6 +1,6 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
-import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/debounceTime';
 
 import {AnalyticsService} from '../analytics.service';
 import {Note} from './note.model';
@@ -36,7 +36,7 @@ export class NoteListComponent {
   @ViewChild('queryInput') queryInput: ElementRef;
 
   query: string;
-  private queryEmitter$: Subject<string> = new Subject<string>();
+  private queryUpdated$: Subject<void> = new Subject<void>();
   queryTags: Tag[] = [];
 
   private _logger: Logger = new Logger(this.constructor.name);
@@ -51,51 +51,12 @@ export class NoteListComponent {
   ) {
     this.el = elRef.nativeElement;
 
-    this.queryEmitter$
+    this.queryUpdated$
       .debounceTime(250)
-      .distinctUntilChanged()
-      .subscribe(query => {
+      .subscribe(() => {
         let queriedNotes = this.notesService.doQuery(this.query, this.queryTags);
         this.notes = this.notesService.sortNotes(undefined, queriedNotes);
       });
-  }
-
-  queryUpdated() {
-    this.queryEmitter$.next(this.query);
-  }
-
-  querySetUpAutocomplete() {
-    this.autocompleteService.autocompleteTags({
-      context: 'query',
-      el: this.queryInput.nativeElement,
-      excludeTags: this.queryTags,
-      autocompleteOpts: {
-        onSelect: this.queryTagAutocompleteSelect.bind(this)
-      }
-    });
-  }
-
-  queryTagAutocompleteSelect(suggestion, e) {
-    this.queryAddTag(this.tagsService.getTagByName(suggestion.value));
-    this.query = '';
-    this.queryUpdated();
-
-    if (document.activeElement !== this.queryInput.nativeElement) {
-      // Lost focus on the input, user may have clicked on autocomplete suggestion
-      this.queryInput.nativeElement.focus() // this will trigger querySetUpAutocomplete
-    }
-    else {
-      this.querySetUpAutocomplete(); // reset autocomplete so that newly added tag will not be in suggestions
-    }
-  }
-
-  queryAddTag(tag: Tag) {
-    this.queryTags.push(tag);
-  }
-
-  sort(sortOpt) {
-    this.sortOpt = sortOpt;
-    this.notes = this.notesService.sortNotes(this.sortOpt, this.notes);
   }
 
   ngOnInit() {
@@ -118,6 +79,64 @@ export class NoteListComponent {
 
     // @TODO/rewrite
     // $timeout($s.n.autosizeAllNuts);
+  }
+
+  queryUpdated() {
+    this.queryUpdated$.next();
+  }
+
+  querySetUpAutocomplete() {
+    this.autocompleteService.autocompleteTags({
+      context: 'query',
+      el: this.queryInput.nativeElement,
+      excludeTags: this.queryTags,
+      autocompleteOpts: {
+        onSelect: this.queryTagAutocompleteSelect.bind(this)
+      }
+    });
+  }
+
+  queryTagAutocompleteSelect(suggestion, e) {
+    this.query = '';
+    this.queryAddTag(this.tagsService.getTagByName(suggestion.value));
+    this.queryEnsureFocusAndAutocomplete();
+  }
+
+  queryEnsureFocusAndAutocomplete() {
+    if (document.activeElement !== this.queryInput.nativeElement) {
+      // Lost focus on the input (user may have clicked on autocomplete suggestion or clicked on a tag to remove it, etc.)
+      this.queryInput.nativeElement.focus() // this will trigger querySetUpAutocomplete
+    }
+    else {
+      this.querySetUpAutocomplete(); // reset autocomplete so that newly added tag will not be in suggestions
+    }
+  }
+
+  queryKeypress(event: KeyboardEvent) {
+      if (event.keyCode === 8 && this.queryInput.nativeElement.selectionStart == 0 && this.queryTags.length > 0) {
+        this.queryRemoveTag(this.queryTags[this.queryTags.length - 1]);
+
+      this.queryEnsureFocusAndAutocomplete(); // reset autocomplete so that newly removed tag is in suggestions again
+      }
+  }
+
+  queryAddTag(tag: Tag) {
+    this.queryTags.push(tag);
+    this.queryUpdated();
+  }
+
+  queryRemoveTag(tag: Tag) {
+    // @TODO/now use lodash
+    var i = this.queryTags.indexOf(tag);
+    if (i !== -1) {
+      this.queryTags.splice(i, 1);
+      this.queryUpdated();
+    }
+  }
+
+  sort(sortOpt) {
+    this.sortOpt = sortOpt;
+    this.notes = this.notesService.sortNotes(this.sortOpt, this.notes);
   }
 
   // @TODO/testing infinite scroll e2e both directions

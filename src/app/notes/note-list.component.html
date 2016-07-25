@@ -3,7 +3,7 @@
     <tag *ngFor="let tag of queryTags" [tagId]="tag.id"></tag>
   </span>
 
-  <input tabindex=1 type="text" placeholder="Search notes" ref-queryInput [(ngModel)]="query" (ngModelChange)="queryUpdated()" (focus)="querySetUpAutocomplete()">
+  <input tabindex=1 type="text" placeholder="Search notes" ref-queryInput [(ngModel)]="query" (ngModelChange)="queryUpdated()" (focus)="querySetUpAutocomplete()" (keypress)="queryKeypress($event)">
 
   <label>
     Sort by
