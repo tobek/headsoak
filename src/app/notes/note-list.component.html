@@ -1,9 +1,9 @@
 <div class="note-query-bar">
   <span class="tags">
-    <tag *ngFor="let tag of queryTags" [tagId]="tag.id"></tag>
+    <tag *ngFor="let tag of queryTags" [tagId]="tag.id" [removable]="true" (removed)="queryRemoveTag(tag)"></tag>
   </span>
 
-  <input tabindex=1 type="text" placeholder="Search notes" ref-queryInput [(ngModel)]="query" (ngModelChange)="queryUpdated()" (focus)="querySetUpAutocomplete()" (keypress)="queryKeypress($event)">
+  <input tabindex=1 type="text" placeholder="Search notes" ref-queryInput [(ngModel)]="query" (ngModelChange)="queryUpdated()" (focus)="querySetUpAutocomplete()" (keydown)="queryKeydown($event)">
 
   <label>
     Sort by
