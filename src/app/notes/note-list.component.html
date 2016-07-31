@@ -6,7 +6,7 @@
   <input tabindex=1 type="text" placeholder="Search notes" ref-queryInput [(ngModel)]="query" (ngModelChange)="queryUpdated()" (focus)="querySetUpAutocomplete()" (keydown)="queryKeydown($event)">
 
   <label>
-    Sort by
+    Sort {{ notes.length }} note{{ notes.length !== 1 ? 's' : '' }} by
     <select tabindex=3 [ngModel]="sortOpt" (ngModelChange)="sort($event)">
       <option *ngFor="let opt of notesService.sortOpts" [ngValue]="opt">{{opt.name}}</option>
     </select>
