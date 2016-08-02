@@ -1,3 +1,7 @@
+import {EventEmitter} from '@angular/core';
+
+declare const digest$: EventEmitter<Note>; // yuck
+
 export class Note {
   id: string;
   body: string;
@@ -62,5 +66,14 @@ export class Note {
     // $s.n.autosizeAllNuts();
 
     // console.log('New note created:', this);
+  }
+
+  updated(): void {
+    digest$.emit(this);
+  }
+
+  removeTag(tagId: string): void {
+    this.tags = _.without(this.tags, tagId);
+    this.updated();
   }
 }
