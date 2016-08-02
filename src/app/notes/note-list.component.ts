@@ -64,7 +64,7 @@ export class NoteListComponent {
       this.initNotes();
     }
     else {
-      var subscription = this.notesService.updates$.subscribe(() => {
+      let subscription = this.notesService.updates$.subscribe(() => {
         this.initNotes();
         subscription.unsubscribe();
       });
@@ -119,6 +119,7 @@ export class NoteListComponent {
   queryKeydown(event: KeyboardEvent) {
     if (event.keyCode === 8 && this.queryInput.nativeElement.selectionStart == 0 && this.queryTags.length > 0) {
       this.queryRemoveTag(this.queryTags[this.queryTags.length - 1]);
+      this.queryEnsureFocusAndAutocomplete(); // reset autocomplete so that newly removed tag is in suggestions again
     }
   }
 
@@ -128,12 +129,37 @@ export class NoteListComponent {
   }
 
   queryRemoveTag(tag: Tag) {
-    var i = this.queryTags.indexOf(tag);
+    let i = this.queryTags.indexOf(tag);
     if (i !== -1) {
       this.queryTags.splice(i, 1);
       this.queryUpdated();
-      this.queryEnsureFocusAndAutocomplete(); // reset autocomplete so that newly removed tag is in suggestions again
     }
+  }
+
+  /**
+   * Behavior:
+   *
+   * - If tag is already in query, remove
+   * - If tag is not already in query:
+   *   - If user elected to replace query (e.g. held shift while clicking on tag), replace entire current query (tags and text input) with tag 
+   *   - Otherwise, add the tag to the current query
+   *
+   *  @TODO/rewrite @TODO/ece - thoughts? Maybe shift vs. not shift should be reversed. Maybe text input should never be affected.
+   */
+  queryTagToggled(tagId: string, replaceQuery: boolean) {
+    const tag = this.tagsService.tags[tagId];
+
+    if (this.queryTags.indexOf(tag) !== -1) {
+      this.queryRemoveTag(tag);
+      return;
+    }
+
+    if (replaceQuery) {
+      this.queryTags = [];
+      this.query = '';
+    }
+
+    this.queryAddTag(tag);
   }
 
   sort(sortOpt) {
@@ -147,14 +173,14 @@ export class NoteListComponent {
       return;
     }
 
-    var lastNote = this.el.querySelector('note:last-child');
+    let lastNote = this.el.querySelector('note:last-child');
     if (! lastNote) {
       return;
     }
 
-    var scrollPos = document.documentElement.scrollTop || document.body.scrollTop;
-    var viewportBottomPos = scrollPos + window.innerHeight; // Distance from top of document to bottom of viewport
-    var distanceTilLastNote = lastNote.getBoundingClientRect().top - viewportBottomPos;
+    let scrollPos = document.documentElement.scrollTop || document.body.scrollTop;
+    let viewportBottomPos = scrollPos + window.innerHeight; // Distance from top of document to bottom of viewport
+    let distanceTilLastNote = lastNote.getBoundingClientRect().top - viewportBottomPos;
 
     if (distanceTilLastNote < 500) {
       this.limit += 10;
@@ -165,7 +191,7 @@ export class NoteListComponent {
       // $s.n.autosizeSomeNuts($s.n.nutsLimit - 10); // only the new ones
     }
     else if (distanceTilLastNote > 1000 && this.limit > this.DEFAULT_NOTES_LIMIT) {
-      var tenthFromlastNote = this.el.querySelector('note:nth-last-child(11)'); // CSS is off-by-one =(
+      let tenthFromlastNote = this.el.querySelector('note:nth-last-child(11)'); // CSS is off-by-one =(
       if (! tenthFromlastNote) {
         return;
       }

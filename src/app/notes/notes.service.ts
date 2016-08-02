@@ -125,7 +125,7 @@ export class NotesService {
     }
 
     // NEXT get the docs filtered by any string
-    if (query.length > 2) { // only start live searching once 3 chars have been entered
+    if (query && query.length > 2) { // only start live searching once 3 chars have been entered
       var results = this.index.search(query); // by default ANDs spaces: "foo bar" will search foo AND bar
       // results is array of objects each containing `ref` (note id) and `score`
       // ignoring score for now

@@ -15,4 +15,4 @@
   <hr>
 </div>
 
-<note *ngFor="let note of (notes | arrayLimit:limit)" [note]="note"></note>
+<note *ngFor="let note of (notes | arrayLimit:limit)" [note]="note" (tagToggled)="queryTagToggled($event.tagId, ! $event.shiftHeld)"></note>
