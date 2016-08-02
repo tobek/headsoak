@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 
 import {Logger, utils} from '../utils/';
+import {DataService} from '../';
 import {Tag, TagsService} from '../tags/';
 
 import {Note} from './';
@@ -31,6 +32,7 @@ export class NotesService {
   ];
 
   private _logger: Logger = new Logger(this.constructor.name);
+  private dataService: DataService;
 
   constructor(
     public tagsService: TagsService
@@ -47,7 +49,9 @@ export class NotesService {
     this.notes = <{ [key: string]: Note}> {};
   }
 
-  init(notesData) {
+  init(notesData: Object, dataService: DataService) {
+    this.dataService = dataService;
+
     this._logger.time('initializing notes and index');
     _.each(notesData, this.createNote.bind(this));
     this._logger.timeEnd('initializing notes and index');
@@ -68,7 +72,7 @@ export class NotesService {
       noteObj.id = utils.getUnusedKeyFromObj(this.notes);
     }
 
-    var note = new Note(noteObj);
+    var note = new Note(noteObj, this.dataService);
 
     this.notes[noteObj.id] = note;
 

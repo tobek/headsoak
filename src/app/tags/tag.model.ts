@@ -1,3 +1,5 @@
+import {DataService} from '../';
+
 export class Tag {
   id: string;
   name: string;
@@ -14,9 +16,23 @@ export class Tag {
   sharedBy: string; // ID of user that shared this tag
   shareTooltip: string; // text to identify sharing status to user (e.g. "you are sharing this with ___" or "___ is sharing this with you")
 
+  /** Properties that we save to data store */
+  private DATA_PROPS = [
+    'id',
+    'name',
+    'created',
+    'modified',
+    'docs',
+    'prog',
+    'progFuncString',
+    'readOnly',
+    'share',
+    'sharedBy',
+  ];
+
 
   // @TODO how do we handle duplicate names?
-  constructor(tagData: any) {
+  constructor(tagData: any, private dataService: DataService) {
     if (! tagData.id || ! tagData.name) {
       throw new Error('Must supply tag with id and name');
     }
@@ -33,5 +49,10 @@ export class Tag {
 
     // @TODO/rewrite/tags
     // this.tagUpdated(newId);
+  }
+
+  removeNote(noteId: string) {
+    this.docs = _.without(this.docs, noteId);
+    // @TODO/rewrite/tags this needs to call this.update(), add to digest, etc.
   }
 }

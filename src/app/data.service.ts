@@ -31,12 +31,6 @@ export class DataService {
   /** @HACK instead of figuring out how to get Firebase update() to return promises, or instead of using jQuery deferreds, this counter is incremented when we invoke update on Firebase ref (e.g. once for notes, once for tags, etc.) and decremented when callback happens - if we reach 0, we're done. i think the worst-case scenario is that cb is called really quickly, so we go from 0-1-0-1-0 instead of 0-1-2-1-0, but that's kind of okay */
   private syncHackCounter = 0;
 
-  /** Properties that should not be synced to online store - map of field -> array of props */
-  private SYNC_EXCLUDE_PROPS = {
-    'notes': ['sharedBody'],
-    'tags': ['shareTooltip'],
-  };
-
   private _logger = new Logger(this.constructor.name); // @TODO/rewrite why is typescript raising a fuss here? check that x-browser compatible and see if there's a better way
   private ref: Firebase;
   private onlineStateRef: Firebase;
@@ -55,8 +49,6 @@ export class DataService {
 
     // @TODO/rewrite - only do this if in dev mode (also, angular itself running in dev mode? there's a message in console about it. ensure that it runs in prod for prod build)
     window['dataService'] = this;
-
-    window['digest$'] = this.digest$; // @TODO This is a lame, horrid paradigm, a holdover from original version of Nutmeg, and honestly just not sure what the best way is to listen to data updates without just hooking into an app-wide broadcast and not worth the time to do it right now. It works.
   }
 
   dataUpdated(update: Note | Tag): void {
@@ -90,25 +82,13 @@ export class DataService {
 
       this.syncHackCounter++;
 
-      // Make a copy of contents from digest (so that we can remove SYNC_EXCLUDE_PROPS from it)
-      let updates = _.extend({}, contents);
+      let updates = _.mapValues(contents, (note: Note) => note.forDataStore());
 
-      // Now we have to go through every prop of every obj and strip out anything from SYNC_EXCLUDE_PROPS
-      if (this.SYNC_EXCLUDE_PROPS[field]) {
-        _.forEach(updates, (obj: Note | Tag | Object) => {
-          if (! obj) return; // could be null: deleting the value from data store
-          this.SYNC_EXCLUDE_PROPS[field].forEach((prop: string) => {
-            if (obj[prop] !== undefined) {
-              delete obj[prop];
-            }
-          });
-        });
-      }
-
-      this.status = 'syncing';
       this._logger.log('Updating', field, 'with', updates);
-      this.ref.child(field).update(updates, this.syncCb.bind(this));
+      this.status = 'syncing';
       updated = true;
+
+      this.ref.child(field).update(updates, this.syncCb.bind(this));
     });
 
     if (updated) {
@@ -241,8 +221,9 @@ export class DataService {
 
   initFromData(data) {
     // @NOTE that we have to initalize tags service before notes service because notes service needs to look up tag names for indexing tag field in notes.
-    this.tags.init(data.tags);
-    this.notes.init(data.nuts);
+    // @TODO Passing ourselves to notes/tags services who in turn pass us to note/tag models is kind of a cruddy paradigm, but it's partially a holdover from first version of nutmeg and really it makes MVP rewrite a lot easier right now, instead of figuring out how to properly listen to updates and propagate changes accordingly.
+    this.tags.init(data.tags, this);
+    this.notes.init(data.nuts, this);
 
     this.user.setData(data.user);
 

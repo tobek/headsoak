@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 
 import {Logger, utils} from '../utils/';
+import {DataService} from '../';
 
 import {Tag} from './tag.model'; // For some reason this breaks with `TypeError: Cannot read property 'getOptional' of undefined` if I do `from './'`, which I think should work
 
@@ -9,8 +10,11 @@ export class TagsService {
   tags: { [key: string]: Tag }; // id -> Tag instance
 
   private _logger: Logger = new Logger(this.constructor.name);
+  private dataService: DataService;
 
-  init(tags) {
+  init(tags: Object, dataService: DataService) {
+    this.dataService = dataService;
+
     // firebase stores as objects but if data is "array-like" then we get back arrays. we need objects because we may have non-numeric keys, and because we migrated to string keys. TODO may not be necessary in the future, see also idsMigrated which was done at the same time
     var tagsObj: Object = utils.objFromArray(tags) || {};
 
@@ -26,7 +30,7 @@ export class TagsService {
   createTag(tagData: any) {
     var newId = utils.getUnusedKeyFromObj(this.tags);
 
-    this.tags[newId] = new Tag(tagData);
+    this.tags[newId] = new Tag(tagData, this.dataService);
 
     // this.createTagName = ""; // clear input
     // this.creatingTag = false; // hide input
