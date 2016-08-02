@@ -145,12 +145,12 @@ export class NoteListComponent {
    *
    * - If tag is already in query, remove
    * - If tag is not already in query:
-   *   - If user elected to replace query (e.g. held shift while clicking on tag), replace entire current query (tags and text input) with tag 
+   *   - If user elected to replace (e.g. DIDN'T hold shift while clicking on tag), replace all tags in current query with tag 
    *   - Otherwise, add the tag to the current query
    *
-   *  @TODO/rewrite @TODO/ece - thoughts? Maybe shift vs. not shift should be reversed. Maybe text input should never be affected.
+   *  @TODO/rewrite @TODO/ece - thoughts? Maybe shift vs. not shift should be reversed. Should text input be replaced too?
    */
-  queryTagToggled(tagId: string, replaceQuery: boolean) {
+  queryTagToggled(tagId: string, replace: boolean) {
     const tag = this.tagsService.tags[tagId];
 
     if (this.queryTags.indexOf(tag) !== -1) {
@@ -158,9 +158,8 @@ export class NoteListComponent {
       return;
     }
 
-    if (replaceQuery) {
+    if (replace) {
       this.queryTags = [];
-      this.query = '';
     }
 
     this.queryAddTag(tag);
