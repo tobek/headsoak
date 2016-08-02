@@ -36,8 +36,8 @@ export class NoteListComponent {
   @ViewChild('queryInput') queryInput: ElementRef;
 
   query: string;
-  private queryUpdated$: Subject<void> = new Subject<void>();
   queryTags: Tag[] = [];
+  private queryUpdated$: Subject<void> = new Subject<void>();
 
   private _logger: Logger = new Logger(this.constructor.name);
 
@@ -105,7 +105,7 @@ export class NoteListComponent {
   queryEnsureFocusAndAutocomplete(): void {
     if (document.activeElement !== this.queryInput.nativeElement) {
       // Lost focus on the input (user may have clicked on autocomplete suggestion or clicked on a tag to remove it, etc.)
-      this.queryInput.nativeElement.focus() // this will trigger querySetUpAutocomplete
+      this.queryInput.nativeElement.focus(); // this will trigger querySetUpAutocomplete
     }
     else {
       this.querySetUpAutocomplete(); // reset autocomplete so that newly added tag will not be in suggestions
@@ -118,8 +118,8 @@ export class NoteListComponent {
    */
   queryKeydown(event: KeyboardEvent): void {
     if (event.keyCode === 8
-      && this.queryInput.nativeElement.selectionStart == 0
-      && this.queryInput.nativeElement.selectionEnd == 0 // otherwise select all + backspace will trigger
+      && this.queryInput.nativeElement.selectionStart === 0
+      && this.queryInput.nativeElement.selectionEnd === 0 // otherwise select all + backspace will trigger
       && this.queryTags.length > 0
     ) {
       this.queryRemoveTag(this.queryTags[this.queryTags.length - 1]);

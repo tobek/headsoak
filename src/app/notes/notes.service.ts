@@ -10,7 +10,7 @@ const lunr = require('lunr');
 
 @Injectable()
 export class NotesService {
-  notes: { [key: string]: Note}; // id -> Note instance
+  notes: { [key: string]: Note }; // id -> Note instance
   updates$: Subject<void>;
   index: lunr.Index;
 
@@ -61,7 +61,7 @@ export class NotesService {
   createNote(noteObj) {
     if (noteObj.id) {
       if (this.notes[noteObj.id]) {
-        throw new Error('Cannot create a new note with id (' + noteObj.id + ') - already taken!');
+        throw new Error('Cannot create a new note with id "' + noteObj.id + '" - already taken!');
       }
     }
     else {

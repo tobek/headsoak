@@ -64,4 +64,5 @@ export class FirebaseMock {
   once(event, cb) {
     this.mockOnCb = cb;
   }
+  off(event?) {}
 }

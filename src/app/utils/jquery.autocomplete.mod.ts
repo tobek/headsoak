@@ -7,7 +7,7 @@
  */
 
 // Ridiculous but seems to be necessary =(
-declare var require: any;
+declare const require: any;
 
 // Also silly but needed so that this file is a module so that util/index.ts can include and run this file, but there's actually nothing to export because this gets added as a jQuery function.
 export var _autocomplete = null;

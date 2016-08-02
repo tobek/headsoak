@@ -41,12 +41,12 @@ describe('DataService', () => {
     dataService.ref = new FirebaseMock;
   }));
 
-  it('should initialize notes, tags, and data on init', () => {
+  it('should initialize notes, tags, and data on fetchData', () => {
     spyOn(dataService.notes, 'init');
     spyOn(dataService.tags, 'init');
     spyOn(dataService.user, 'setData');
 
-    dataService.init('some-uid');
+    dataService.fetchData('some-uid');
     dataService.ref.mockOnCb({ val: () => SAMPLE_DATA });
 
     expect(dataService.notes.init).toHaveBeenCalled();
@@ -54,10 +54,10 @@ describe('DataService', () => {
     expect(dataService.user.setData).toHaveBeenCalled();
   });
 
-  it('should initialize new user', () => {
+  it('should initialize new user on fetchData', () => {
     spyOn(dataService, 'initNewUser');
 
-    dataService.init('some-uid');
+    dataService.fetchData('some-uid');
     dataService.ref.mockOnCb({ val: () => null });
 
     expect(dataService.initNewUser).toHaveBeenCalled();
@@ -67,7 +67,7 @@ describe('DataService', () => {
     spyOn(window, 'alert');
     spyOn(dataService, 'handleNewFeatures').and.callThrough();
 
-    dataService.init('some-uid');
+    dataService.fetchData('some-uid');
 
     SAMPLE_DATA.featuresSeen = 1;
     dataService.NEW_FEATURE_COUNT = 2;
@@ -89,7 +89,7 @@ describe('DataService', () => {
   it('should not show new features if there aren\'t any', () => {
     spyOn(dataService._logger, 'log');
 
-    dataService.init('some-uid');
+    dataService.fetchData('some-uid');
 
     SAMPLE_DATA.featuresSeen = Infinity;
     dataService.ref.mockOnCb({ val: () => SAMPLE_DATA });
