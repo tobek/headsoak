@@ -1,19 +1,43 @@
-import {Injectable} from '@angular/core';
+import {Injectable, EventEmitter} from '@angular/core';
+import 'rxjs/add/operator/debounceTime';
 
 const Firebase = require('firebase');
 
 import {Logger, utils, sampleData} from './utils/';
 import {UserService} from './account/user.service';
-import {NotesService} from './notes/';
-import {TagsService} from './tags/';
+import {Note, NotesService} from './notes/';
+import {Tag, TagsService} from './tags/';
+
+// @TODO/rewrite only do in dev mode
+import {FirebaseMock} from './mocks/';
 
 @Injectable()
 export class DataService {
-  NEW_FEATURE_COUNT: number = 12; // Hard-coded so that it only updates when user actually receives updated code with the features
+  NEW_FEATURE_COUNT= 12; // Hard-coded so that it only updates when user actually receives updated code with the features
 
   online: boolean; // @TODO/rewrite connection widget should show if offline
 
-  private _logger: Logger = new Logger(this.constructor.name);
+  digest$ = new EventEmitter<Note | Tag>();
+
+  status: string; // 'synced' | 'syncing' | 'unsynced' | 'disconnected'
+
+  /** This stores data that needs to be synced to server. Periodically checked by this.sync() */
+  private digest: {
+    'notes': { [key: string]: Note },
+    'tags': { [key: string]: Tag },
+    'config': { [key: string]: Object }, // @TODO/rewrite - and also change in `sync` below
+  };
+
+  /** @HACK instead of figuring out how to get Firebase update() to return promises, or instead of using jQuery deferreds, this counter is incremented when we invoke update on Firebase ref (e.g. once for notes, once for tags, etc.) and decremented when callback happens - if we reach 0, we're done. i think the worst-case scenario is that cb is called really quickly, so we go from 0-1-0-1-0 instead of 0-1-2-1-0, but that's kind of okay */
+  private syncHackCounter = 0;
+
+  /** Properties that should not be synced to online store - map of field -> array of props */
+  private SYNC_EXCLUDE_PROPS = {
+    'notes': ['sharedBody'],
+    'tags': ['shareTooltip'],
+  };
+
+  private _logger = new Logger(this.constructor.name); // @TODO/rewrite why is typescript raising a fuss here? check that x-browser compatible and see if there's a better way
   private ref: Firebase;
   private onlineStateRef: Firebase;
 
@@ -23,11 +47,97 @@ export class DataService {
     public tags: TagsService
   ) {
     this.ref = new Firebase('https://nutmeg.firebaseio.com/');
+
+    this.digestReset();
+    this.digest$
+      .debounceTime(250) // @TODO/rewrite there should be a max timeout like lodash uses, otherwise continuous edits every 1/4 second won't get saved until you stop
+      .subscribe(this.dataUpdated.bind(this));
+
+    // @TODO/rewrite - only do this if in dev mode (also, angular itself running in dev mode? there's a message in console about it. ensure that it runs in prod for prod build)
+    window['dataService'] = this;
+
+    window['digest$'] = this.digest$; // @TODO This is a lame, horrid paradigm, a holdover from original version of Nutmeg, and honestly just not sure what the best way is to listen to data updates without just hooking into an app-wide broadcast and not worth the time to do it right now. It works.
+  }
+
+  dataUpdated(update: Note | Tag): void {
+    if (update instanceof Note) {
+      this.digest.notes[update.id] = update;
+    }
+    else if (update instanceof Tag) {
+      this.digest.tags[update.id] = update;
+    }
+    
+    this.status = 'unsynced';
+  }
+
+  digestReset(): void {
+    this.digest = { 'notes': {}, 'tags': {}, 'config': {} };
+    this.status = 'synced'; // @TODO/rewrite Make sure sync status widget updates
+  }
+
+  /** We run this on an interval. Checks the digest and syncs updates as necessary. */
+  sync(): void {
+    if (this.syncHackCounter > 0) return; // currently syncing
+
+    this._logger.log('Checking for changes to push');
+
+    // Here we loop through notes, tags, etc. in digest, and for each one process them and update to data store
+    let updated = false;
+    _.forEach(this.digest, (contents: { [key: string]: Note | Tag | Object }, field: string) => {
+      if (_.isEmpty(contents)) {
+        return;
+      }
+
+      this.syncHackCounter++;
+
+      // Make a copy of contents from digest (so that we can remove SYNC_EXCLUDE_PROPS from it)
+      let updates = _.extend({}, contents);
+
+      // Now we have to go through every prop of every obj and strip out anything from SYNC_EXCLUDE_PROPS
+      if (this.SYNC_EXCLUDE_PROPS[field]) {
+        _.forEach(updates, (obj: Note | Tag | Object) => {
+          if (! obj) return; // could be null: deleting the value from data store
+          this.SYNC_EXCLUDE_PROPS[field].forEach((prop: string) => {
+            if (obj[prop] !== undefined) {
+              delete obj[prop];
+            }
+          });
+        });
+      }
+
+      this.status = 'syncing';
+      this._logger.log('Updating', field, 'with', updates);
+      this.ref.child(field).update(updates, this.syncCb.bind(this));
+      updated = true;
+    });
+
+    if (updated) {
+      this._logger.log('Changes found, syncing');
+    }
+    else if (this.status !== 'synced') {
+      this.status = 'synced'; // @TODO/rewrite Make sure sync status widget updates
+    }
+  }
+
+  syncCb(err): void {
+    this.syncHackCounter--;
+
+    if (err) {
+      alert('Error syncing your notes to the cloud! Some stuff may not have been saved. We\'ll keep trying though. You can email me at toby@nutmeg.io if this keeps happening. Tell me what this error says:\n\n' + JSON.stringify(err));
+      this.status = 'disconnected'; // @TODO/rewrite Make sure sync status widget updates
+      return;
+    }
+
+    if (this.syncHackCounter === 0) {
+      this._logger.log('Changes pushed successfully');
+      this.digestReset();
+    }
   }
 
   init(uid: string) {
-    // @TODO/rewrite - only do this if in dev mode (also, angular itself running in dev mode? there's a message in console about it. ensure that it runs in prod for prod build)
-    window['dataService'] = this;
+    // Sync to server (if there are any changes) every 2.5s
+    window.setInterval(this.sync.bind(this), 2500);
+    // @TODO/rewrite also sync before unload
 
     // @TODO in theory this is where, later, we can listen for connection state always and handle online/offline
     let onlineStateTimeout = window.setTimeout(this.offlineHandler.bind(this), 2500);
@@ -51,6 +161,8 @@ export class DataService {
     // @TODO/rewrite this should be dev only, otherwise should init from localStorage or something
     this._logger.log('OFFLINE, USING SAMPLE DATA:', sampleData);
     this.initFromData(sampleData);
+
+    this.ref = new FirebaseMock;
   }
 
   fetchData(uid: string) {
