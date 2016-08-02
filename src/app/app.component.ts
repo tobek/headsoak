@@ -5,6 +5,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
 
 import {AppState} from './app.service';
 import {AnalyticsService} from './analytics.service';
+import {DataService} from './data.service';
 import {Logger} from './utils/logger';
 
 import {Home} from './home';
@@ -51,6 +52,7 @@ export class App {
 
   constructor(
     public analyticsService: AnalyticsService,
+    public dataService: DataService,
     public appState: AppState
    ) {}
 

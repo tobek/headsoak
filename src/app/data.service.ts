@@ -66,7 +66,7 @@ export class DataService {
     else if (update instanceof Tag) {
       this.digest.tags[update.id] = update;
     }
-    
+
     this.status = 'unsynced';
   }
 
@@ -158,7 +158,8 @@ export class DataService {
     this._logger.log('Still offline after 2.5 seconds');
     this.onlineStateRef.off();
 
-    // @TODO/rewrite this should be dev only, otherwise should init from localStorage or something
+    // @TODO/rewrite This should be dev only, otherwise should init from localStorage or something
+    // @TODO/rewrite When it's no longer dev only, this.status needs to indicate offline.
     this._logger.log('OFFLINE, USING SAMPLE DATA:', sampleData);
     this.initFromData(sampleData);
 
