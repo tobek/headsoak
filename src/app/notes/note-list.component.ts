@@ -73,7 +73,7 @@ export class NoteListComponent {
     this.scrollMonitor.scroll$.subscribe(this.infiniteScrollCheck.bind(this));
   }
 
-  initNotes() {
+  initNotes(): void {
     // @NOTE @todo/rewrite since we feed this through the pure ArrayLimitPipe, the pipe won't re-evaluate if this array is changed, only if this.notes is actually made to point to a different array. So either we make it an unpure pipe (which is costly) or we reassign this.notes when sorting (which we might want to do anyway)
     this.notes = this.notesService.sortNotes(this.sortOpt);
 
@@ -81,11 +81,11 @@ export class NoteListComponent {
     // $timeout($s.n.autosizeAllNuts);
   }
 
-  queryUpdated() {
+  queryUpdated(): void {
     this.queryUpdated$.next(null);
   }
 
-  querySetUpAutocomplete() {
+  querySetUpAutocomplete(): void {
     this.autocompleteService.autocompleteTags({
       context: 'query',
       el: this.queryInput.nativeElement,
@@ -96,13 +96,13 @@ export class NoteListComponent {
     });
   }
 
-  queryTagAutocompleteSelect(suggestion, e) {
+  queryTagAutocompleteSelect(suggestion, e): void {
     this.query = '';
     this.queryAddTag(this.tagsService.getTagByName(suggestion.value));
     this.queryEnsureFocusAndAutocomplete();
   }
 
-  queryEnsureFocusAndAutocomplete() {
+  queryEnsureFocusAndAutocomplete(): void {
     if (document.activeElement !== this.queryInput.nativeElement) {
       // Lost focus on the input (user may have clicked on autocomplete suggestion or clicked on a tag to remove it, etc.)
       this.queryInput.nativeElement.focus() // this will trigger querySetUpAutocomplete
@@ -116,7 +116,7 @@ export class NoteListComponent {
    * Backspace in first position of searchbar when there are tags should delete last tag
    * @TODO: not sure in what browsers selectionStart works, but it's not all. Make sure that it doesn't always return 0 in some browsers, cause then we'll be deleting with every backspace.
    */
-  queryKeydown(event: KeyboardEvent) {
+  queryKeydown(event: KeyboardEvent): void {
     if (event.keyCode === 8
       && this.queryInput.nativeElement.selectionStart == 0
       && this.queryInput.nativeElement.selectionEnd == 0 // otherwise select all + backspace will trigger
@@ -127,12 +127,12 @@ export class NoteListComponent {
     }
   }
 
-  queryAddTag(tag: Tag) {
+  queryAddTag(tag: Tag): void {
     this.queryTags.push(tag);
     this.queryUpdated();
   }
 
-  queryRemoveTag(tag: Tag) {
+  queryRemoveTag(tag: Tag): void {
     let i = this.queryTags.indexOf(tag);
     if (i !== -1) {
       this.queryTags.splice(i, 1);
@@ -150,7 +150,7 @@ export class NoteListComponent {
    *
    *  @TODO/rewrite @TODO/ece - thoughts? Maybe shift vs. not shift should be reversed. Should text input be replaced too?
    */
-  queryTagToggled(tagId: string, replace: boolean) {
+  queryTagToggled(tagId: string, replace: boolean): void {
     const tag = this.tagsService.tags[tagId];
 
     if (this.queryTags.indexOf(tag) !== -1) {
@@ -165,13 +165,20 @@ export class NoteListComponent {
     this.queryAddTag(tag);
   }
 
-  sort(sortOpt) {
+  queryClear(): void {
+    this.queryTags = [];
+    this.query = '';
+    this.queryUpdated();
+    this.queryEnsureFocusAndAutocomplete();
+  }
+
+  sort(sortOpt): void {
     this.sortOpt = sortOpt;
     this.notes = this.notesService.sortNotes(this.sortOpt, this.notes);
   }
 
   // @TODO/testing infinite scroll e2e both directions
-  infiniteScrollCheck() {
+  infiniteScrollCheck(): void {
     if (! this.notes || this.limit >= this.notes.length) {
       return;
     }

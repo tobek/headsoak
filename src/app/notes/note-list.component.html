@@ -4,6 +4,7 @@
   </span>
 
   <input tabindex=1 type="text" placeholder="Search notes" ref-queryInput [(ngModel)]="query" (ngModelChange)="queryUpdated()" (focus)="querySetUpAutocomplete()" (keydown)="queryKeydown($event)">
+  <button (click)="queryClear()">x</button>
 
   <label>
     Sort {{ notes.length }} note{{ notes.length !== 1 ? 's' : '' }} by
