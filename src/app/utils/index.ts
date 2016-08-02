@@ -3,6 +3,7 @@ export * from './fuzzy-match-sorter';
 export * from './jquery.autocomplete.mod';
 export * from './logger';
 export * from './scroll-monitor.service';
+export * from './sample-data';
 
 export var utils = {
   objFromArray: function(arr: Array<any>) {

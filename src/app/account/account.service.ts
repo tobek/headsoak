@@ -29,11 +29,11 @@ export class AccountService {
 
   init() {
     // onAuth immediately fires with current auth state, so let's capture that specifically
-    var initialAuthState = true;
+    var isInitialAuthState = true;
 
     this.ref.onAuth((authData) => {
-      if (initialAuthState) {
-        initialAuthState = false;
+      if (isInitialAuthState) {
+        isInitialAuthState = false;
 
         this.analytics.event('Account', 'initialized', authData ? 'logged_in' : 'logged_out');
       }

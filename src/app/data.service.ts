@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 
 const Firebase = require('firebase');
 
-import {Logger, utils} from './utils/';
+import {Logger, utils, sampleData} from './utils/';
 import {UserService} from './account/user.service';
 import {NotesService} from './notes/';
 import {TagsService} from './tags/';
@@ -11,8 +11,11 @@ import {TagsService} from './tags/';
 export class DataService {
   NEW_FEATURE_COUNT: number = 12; // Hard-coded so that it only updates when user actually receives updated code with the features
 
+  online: boolean; // @TODO/rewrite connection widget should show if offline
+
   private _logger: Logger = new Logger(this.constructor.name);
   private ref: Firebase;
+  private onlineStateRef: Firebase;
 
   constructor(
     public user: UserService,
@@ -23,6 +26,34 @@ export class DataService {
   }
 
   init(uid: string) {
+    // @TODO/rewrite - only do this if in dev mode (also, angular itself running in dev mode? there's a message in console about it. ensure that it runs in prod for prod build)
+    window['dataService'] = this;
+
+    // @TODO in theory this is where, later, we can listen for connection state always and handle online/offline
+    let onlineStateTimeout = window.setTimeout(this.offlineHandler.bind(this), 2500);
+    this.onlineStateRef = this.ref.child('.info/connected');
+    this.onlineStateRef.on('value', (snap) => {
+      this.online = snap.val();
+      this._logger.log('Online:', this.online);
+
+      if (this.online) {
+        window.clearTimeout(onlineStateTimeout);
+        this.onlineStateRef.off();
+        this.fetchData(uid);
+      }
+    });
+  }
+
+  offlineHandler() {
+    this._logger.log('Still offline after 2.5 seconds');
+    this.onlineStateRef.off();
+
+    // @TODO/rewrite this should be dev only, otherwise should init from localStorage or something
+    this._logger.log('OFFLINE, USING SAMPLE DATA:', sampleData);
+    this.initFromData(sampleData);
+  }
+
+  fetchData(uid: string) {
     this.ref = this.ref.child('users/' + uid);
 
     this.ref.once('value', (snapshot) => {
@@ -43,8 +74,6 @@ export class DataService {
       }
     });
 
-    // @TODO/rewrite - only do this if in dev mode
-    window['dataService'] = this;
   }
 
   initNewUser() {
