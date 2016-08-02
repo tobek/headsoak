@@ -117,7 +117,11 @@ export class NoteListComponent {
    * @TODO: not sure in what browsers selectionStart works, but it's not all. Make sure that it doesn't always return 0 in some browsers, cause then we'll be deleting with every backspace.
    */
   queryKeydown(event: KeyboardEvent) {
-    if (event.keyCode === 8 && this.queryInput.nativeElement.selectionStart == 0 && this.queryTags.length > 0) {
+    if (event.keyCode === 8
+      && this.queryInput.nativeElement.selectionStart == 0
+      && this.queryInput.nativeElement.selectionEnd == 0 // otherwise select all + backspace will trigger
+      && this.queryTags.length > 0
+    ) {
       this.queryRemoveTag(this.queryTags[this.queryTags.length - 1]);
       this.queryEnsureFocusAndAutocomplete(); // reset autocomplete so that newly removed tag is in suggestions again
     }
