@@ -1,14 +1,15 @@
-:host {
+.note-wrapper {
   display: block;
-  margin: 20px 0;
-  padding: 20px 0;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
   border-bottom: 1px solid gray;
 }
 
-:host:first-child {
-  margin-top: 0;
+:host:first-of-type .note-wrapper {
+  margin-top: 20px;
 }
 
 .body {
-  white-space: pre-wrap;
+  width: 100%;
+  min-height: 100px;
 }

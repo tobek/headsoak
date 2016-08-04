@@ -1,4 +1,4 @@
-<div *ngIf="note.body"><!-- @TODO/rewrite temporary while sharing not set up, and anyway should be handled in notesDisplay probably -->
+<div class="note-wrapper" *ngIf="note.body"><!-- @TODO/rewrite temporary while sharing not set up, and anyway should be handled in notesDisplay probably -->
   <div class="header">
     <a class="time">{{ 'created: ' + (note.created | date:'medium') + '\nmodified: ' + (note.modified | date:'medium') }}</a><!-- @TODO/rewrite should be tooltip? --><!--@TODO/rewrite angular2 date pipe is "pure" and won't check for updates, so note.created and note.modified will have to be reassigned, confirm it works, etc. -->
 
