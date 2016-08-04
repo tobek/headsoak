@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, ElementRef, Input, Output, ViewChild} from '@angular/core';
 
 import {AnalyticsService} from '../analytics.service';
 import {Note} from '../notes/note.model';
