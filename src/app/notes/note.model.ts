@@ -210,8 +210,8 @@ export class Note {
     // @TODO/rewrite Need to autosize note?
   }
 
-  /** Returns added tag, or null if none added. */
-  addTag(tagName: string): Tag {
+  /** Finds or creates tag, adds to note, and returns it. Returns null if no tag added. */
+  addTagFromText(tagName: string, fullUpdate = true): Tag {
     this._logger.log('Adding tag from string:', tagName);
 
     let tag = this.dataService.tags.getTagByName(tagName);
@@ -223,19 +223,31 @@ export class Note {
     }
 
     if (! tag) {
-      this._logger.log('Creating new tag with name:', tagName);
+      this._logger.log('Have to create new tag with name:', tagName);
 
       tag = this.dataService.tags.createTag({ name: tagName });
     }
 
-    this._logger.log('Adding tag', tag);
+    this.addTag(tag);
 
     return tag;
   }
 
-  removeTag(tagId: string, fullUpdate = true): void {
-    this.tags = _.without(this.tags, tagId);
+  addTag(tag: Tag, fullUpdate = true): void{
+    this._logger.log('Adding tag', tag);
 
+    this.tags.push(tag.id);
+    tag.addNote(this.id);
+
+    this.rebuildNoteSharing();
+    // @TODO/rewrite/config first param should reflect config.tagChangesChangeNutModifiedTimestamp
+    this.updated(true, fullUpdate);
+  }
+
+  removeTag(tagId: string, fullUpdate = true): void {
+    this._logger.log('Removing tag ID', tagId);
+
+    this.tags = _.without(this.tags, tagId);
     this.dataService.tags.tags[tagId].removeNote(this.id);
 
     this.rebuildNoteSharing();

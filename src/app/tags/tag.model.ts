@@ -51,6 +51,10 @@ export class Tag {
     // this.tagUpdated(newId);
   }
 
+  addNote(noteId: string) {
+    this.docs.push(noteId);
+    // @TODO/rewrite/tags this needs to call this.update(), add to digest, etc.
+  }
   removeNote(noteId: string) {
     this.docs = _.without(this.docs, noteId);
     // @TODO/rewrite/tags this needs to call this.update(), add to digest, etc.

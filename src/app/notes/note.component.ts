@@ -61,7 +61,7 @@ export class NoteComponent {
         return;
       }
 
-      const tagAdded = this.note.addTag(this.addTagName);
+      const tagAdded = this.note.addTagFromText(this.addTagName);
 
       if (tagAdded) {
         this.addingTag = false;
