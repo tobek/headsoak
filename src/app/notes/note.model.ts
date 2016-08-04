@@ -138,7 +138,9 @@ export class Note {
 
     // @TODO/rewrite Does sending `undefined` for a property to firebase remove it? Should we send null? Should we ignore undefined or falsey properties? Etc.
     this.DATA_PROPS.forEach((prop) => {
-      noteData[prop] = this[prop];
+      if (this[prop] !== undefined) {
+        noteData[prop] = this[prop];
+      }
     });
 
     return noteData;
