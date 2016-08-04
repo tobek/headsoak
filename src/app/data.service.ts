@@ -115,8 +115,8 @@ export class DataService {
   }
 
   init(uid: string) {
-    // Sync to server (if there are any changes) every 2.5s
-    window.setInterval(this.sync.bind(this), 2500);
+    // Sync to server (if there are any changes) every 5s
+    window.setInterval(this.sync.bind(this), 5000);
     // @TODO/rewrite also sync before unload
 
     // @TODO in theory this is where, later, we can listen for connection state always and handle online/offline

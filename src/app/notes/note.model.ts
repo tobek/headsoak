@@ -18,6 +18,12 @@ export class Note {
   sharedBody: string;
   tags: string[]; // Array of tag IDs
 
+  /** Hold interval for checking if we should sync note body while it's focused. */
+  private nutSaver: number;
+
+  /** Stores what the note body was before focusing, in order to determine, upon blurring, whether anything has changed. */
+  private oldBody: string;
+
   private _logger: Logger;
 
   /** Properties that we save to data store */
@@ -159,6 +165,48 @@ export class Note {
     // $s.n.runProgTags(nut);
 
     delete this.fullUpdateRequired;
+  }
+
+  focused(): void {
+    this._logger.log('Focused');
+
+    this.oldBody = this.body;
+    clearInterval(this.nutSaver);
+
+    this.nutSaver = setInterval(this.maybeUpdate.bind(this), 5000);
+  }
+
+  blurred(): void {
+    this._logger.log('Blurred');
+
+    this.maybeUpdate(true);
+    clearInterval(this.nutSaver);
+  }
+
+  maybeUpdate(blurred = false): void {
+    let bodyChanged = this.oldBody !== this.body;
+
+    if (blurred && (this.fullUpdateRequired || bodyChanged)) {
+      // We don't update index/prog tags/etc while typing/focused because it can be slow. If there was any change detected while focused, we have to do that now
+      this._logger.log('Note has changed since focus');
+      this.updated(bodyChanged, true);
+    }
+
+    if (this.oldBody !== this.body) {
+      this._logger.log('Note changed!');
+
+      this.fullUpdateRequired = true; // We haven't blurred now, so we're not doing full update. Need to make sure we full update (update lunr index and prog tags) later even if nut is unchanged by the time we blur. This persists to database too so that even if we're disconnected, the change will be done later.
+
+      this.updated(true, false);
+
+      this.oldBody = this.body;
+    }
+  }
+
+  changed(): void {
+    this.dataService.status = 'unsynced';
+
+    // @TODO/rewrite Need to autosize note?
   }
 
   removeTag(tagId: string, fullUpdate = true): void {
