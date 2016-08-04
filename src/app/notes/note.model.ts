@@ -143,7 +143,7 @@ export class Note {
   forDataStore(): Object {
     const noteData = {};
 
-    // @TODO/rewrite Does sending `undefined` for a property to firebase remove it? Should we send null? Should we ignore undefined or falsey properties? Etc.
+    // @NOTE A value must be set to `null` to remove from Firebase. undefined isn't allowed.
     this.DATA_PROPS.forEach((prop) => {
       if (this[prop] !== undefined) {
         noteData[prop] = this[prop];

@@ -1,5 +1,4 @@
 import {Injectable, EventEmitter} from '@angular/core';
-import 'rxjs/add/operator/debounceTime';
 
 const Firebase = require('firebase');
 
@@ -23,13 +22,13 @@ export class DataService {
 
   /** This stores data that needs to be synced to server. Periodically checked by this.sync() */
   private digest: {
-    'notes': { [key: string]: Note },
+    'nuts': { [key: string]: Note },
     'tags': { [key: string]: Tag },
     'config': { [key: string]: Object }, // @TODO/rewrite - and also change in `sync` below
   };
 
-  /** @HACK instead of figuring out how to get Firebase update() to return promises, or instead of using jQuery deferreds, this counter is incremented when we invoke update on Firebase ref (e.g. once for notes, once for tags, etc.) and decremented when callback happens - if we reach 0, we're done. i think the worst-case scenario is that cb is called really quickly, so we go from 0-1-0-1-0 instead of 0-1-2-1-0, but that's kind of okay */
-  private syncHackCounter = 0;
+  /** How many separate async callbacks to sync data to data store we're currently waiting on. Using `parallel` from `async` module would be more elegant, but we don't need anything else from that module right now and source code for that function simply keeps a counter of the number of tasks that have completed, so it's the same idea. */
+  private syncTasksRemaining = 0;
 
   private _logger = new Logger(this.constructor.name); // @TODO/rewrite why is typescript raising a fuss here? check that x-browser compatible and see if there's a better way
   private ref: Firebase;
@@ -43,9 +42,7 @@ export class DataService {
     this.ref = new Firebase('https://nutmeg.firebaseio.com/');
 
     this.digestReset();
-    this.digest$
-      .debounceTime(250) // @TODO/rewrite there should be a max timeout like lodash uses, otherwise continuous edits every 1/4 second won't get saved until you stop
-      .subscribe(this.dataUpdated.bind(this));
+    this.digest$.subscribe(this.dataUpdated.bind(this));
 
     // @TODO/rewrite - only do this if in dev mode (also, angular itself running in dev mode? there's a message in console about it. ensure that it runs in prod for prod build)
     window['dataService'] = this;
@@ -69,9 +66,9 @@ export class DataService {
 
   /** We run this on an interval. Checks the digest and syncs updates as necessary. */
   sync(): void {
-    if (this.syncHackCounter > 0) return; // currently syncing
+    if (this.syncTasksRemaining > 0) return; // currently syncing
 
-    this._logger.log('Checking for changes to push');
+    this._logger.log('Checking for changes to sync');
 
     // Here we loop through notes, tags, etc. in digest, and for each one process them and update to data store
     let updated = false;
@@ -80,9 +77,9 @@ export class DataService {
         return;
       }
 
-      this.syncHackCounter++;
+      this.syncTasksRemaining++;
 
-      let updates = _.mapValues(contents, (note: Note) => note.forDataStore());
+      let updates = _.mapValues(contents, (item: Note | Tag) => item.forDataStore());
 
       this._logger.log('Updating', field, 'with', updates);
       this.status = 'syncing';
@@ -100,7 +97,7 @@ export class DataService {
   }
 
   syncCb(err): void {
-    this.syncHackCounter--;
+    this.syncTasksRemaining--;
 
     if (err) {
       alert('Error syncing your notes to the cloud! Some stuff may not have been saved. We\'ll keep trying though. You can email me at toby@nutmeg.io if this keeps happening. Tell me what this error says:\n\n' + JSON.stringify(err));
@@ -108,7 +105,7 @@ export class DataService {
       return;
     }
 
-    if (this.syncHackCounter === 0) {
+    if (this.syncTasksRemaining === 0) {
       this._logger.log('Changes pushed successfully');
       this.digestReset();
     }

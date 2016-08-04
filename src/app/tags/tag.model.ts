@@ -1,5 +1,7 @@
 import {DataService} from '../';
 
+import {Logger} from '../utils/logger';
+
 export class Tag {
   id: string;
   name: string;
@@ -30,6 +32,7 @@ export class Tag {
     'sharedBy',
   ];
 
+  private _logger: Logger;
 
   // @TODO how do we handle duplicate names?
   constructor(tagData: any, private dataService: DataService) {
@@ -38,6 +41,8 @@ export class Tag {
     }
 
     _.extend(this, tagData);
+
+    this._logger = new Logger('Tag ' + this.id);
 
     _.defaults(this, {
       docs: [],
@@ -51,12 +56,38 @@ export class Tag {
     // this.tagUpdated(newId);
   }
 
+  /** Outputs object of properties that we want to save to the data store. */
+  forDataStore(): Object {
+    const tagData = {};
+
+    // @NOTE A value must be set to `null` to remove from Firebase. undefined isn't allowed.
+    this.DATA_PROPS.forEach((prop) => {
+      if (this[prop] !== undefined) {
+        tagData[prop] = this[prop];
+      }
+    });
+
+    return tagData;
+  }
+
+  updated(updateModified = true): void {
+    if (updateModified) {
+      this.modified = Date.now();
+    }
+
+    this._logger.log('Updated');
+
+    this.dataService.digest$.emit(this);
+  }
+
   addNote(noteId: string) {
+    this._logger.log('Adding note id', noteId);
     this.docs.push(noteId);
-    // @TODO/rewrite/tags this needs to call this.update(), add to digest, etc.
+    this.updated();
   }
   removeNote(noteId: string) {
+    this._logger.log('Removing note id', noteId);
     this.docs = _.without(this.docs, noteId);
-    // @TODO/rewrite/tags this needs to call this.update(), add to digest, etc.
+    this.updated();
   }
 }

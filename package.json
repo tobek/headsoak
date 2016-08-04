@@ -99,7 +99,7 @@
     "@types/hammerjs": "^2.0.28",
     "@types/jasmine": "^2.2.29",
     "@types/jquery": "^1.10.27",
-    "@types/lodash": "0.0.28",
+    "@types/lodash": "^0.0.28",
     "@types/lunr": "^0.5.27",
     "@types/node": "^4.0.29",
     "@types/protractor": "^1.5.16",

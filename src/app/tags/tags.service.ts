@@ -15,12 +15,12 @@ export class TagsService {
   init(tagsData: Object, dataService: DataService) {
     this.dataService = dataService;
 
-    _.each(tagsData, this.createTag.bind(this));
+    _.each(tagsData, _.partialRight(this.createTag, true).bind(this));
 
     this._logger.log('got', _.size(this.tags), ' tags');
   }
 
-  createTag(tagData: any): Tag {
+  createTag(tagData: any, isInit = false): Tag {
     if (tagData.id) {
       if (this.tags[tagData.id]) {
         throw new Error('Cannot create a new tag with id "' + tagData.id + '" - already taken!');
@@ -33,12 +33,17 @@ export class TagsService {
     const newTag = new Tag(tagData, this.dataService);
     this.tags[newTag.id] = newTag;
 
+    if (! isInit) {
+      newTag.updated();
+    }
+
     // @TODO/rewrite what else?
 
     return newTag;
   }
 
   getTagByName(name: string): Tag {
+    // @TODO Doesn't handle duplicate tag names. Dupe tag names aren't handled at all actually.
     return _.find(this.tags, { name: name });
   }
 }
