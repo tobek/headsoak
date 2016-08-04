@@ -4,12 +4,24 @@
   padding-bottom: 20px;
   border-bottom: 1px solid gray;
 }
-
-:host:first-of-type .note-wrapper {
-  margin-top: 20px;
-}
+    :host:first-of-type .note-wrapper {
+      margin-top: 20px;
+    }
 
 .body {
   width: 100%;
   min-height: 100px;
 }
+
+.new-tag-input {
+    width: 0;
+    transition: width 0.2s, padding 0.2s;
+
+    padding: 2px 0;
+    border: none;
+    outline: none;
+}
+    .new-tag-input.adding-tag {
+        width: 100px;
+        padding: 2px;
+    }

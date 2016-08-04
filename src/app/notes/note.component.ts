@@ -29,4 +29,8 @@ export class NoteComponent {
   toggleTag(tagId: string, event: MouseEvent) {
     this.tagToggled.emit({ tagId: tagId, shiftHeld: (event && event.shiftKey) });
   }
+
+  addTagFocus() {
+
+  }
 }
