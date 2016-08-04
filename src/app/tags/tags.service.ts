@@ -7,34 +7,35 @@ import {Tag} from './tag.model'; // For some reason this breaks with `TypeError:
 
 @Injectable()
 export class TagsService {
-  tags: { [key: string]: Tag }; // id -> Tag instance
+  tags: { [key: string]: Tag } = {}; // id -> Tag instance
 
   private _logger: Logger = new Logger(this.constructor.name);
   private dataService: DataService;
 
-  init(tags: Object, dataService: DataService) {
+  init(tagsData: Object, dataService: DataService) {
     this.dataService = dataService;
 
-    // firebase stores as objects but if data is "array-like" then we get back arrays. we need objects because we may have non-numeric keys, and because we migrated to string keys. TODO may not be necessary in the future, see also idsMigrated which was done at the same time
-    var tagsObj: Object = utils.objFromArray(tags) || {};
+    _.each(tagsData, this.createTag.bind(this));
 
-    this.tags = <{ [key: string]: Tag }>(_.mapValues(
-      tagsObj, (tag) => new Tag(tag)
-     ));
-
-    // this._logger.log('got tags', this.tags);
     this._logger.log('got', _.size(this.tags), ' tags');
   }
 
-  // @TODO/rewrite/tags unused so far
-  createTag(tagData: any) {
-    var newId = utils.getUnusedKeyFromObj(this.tags);
+  createTag(tagData: any): Tag {
+    if (tagData.id) {
+      if (this.tags[tagData.id]) {
+        throw new Error('Cannot create a new tag with id "' + tagData.id + '" - already taken!');
+      }
+    }
+    else {
+      tagData.id = utils.getUnusedKeyFromObj(this.tags);
+    }
 
-    this.tags[newId] = new Tag(tagData, this.dataService);
+    const newTag = new Tag(tagData, this.dataService);
+    this.tags[newTag.id] = newTag;
 
-    // this.createTagName = ""; // clear input
-    // this.creatingTag = false; // hide input
-    // return newId;
+    // @TODO/rewrite what else?
+
+    return newTag;
   }
 
   getTagByName(name: string): Tag {

@@ -11,7 +11,7 @@ const lunr = require('lunr');
 
 @Injectable()
 export class NotesService {
-  notes: { [key: string]: Note }; // id -> Note instance
+  notes: { [key: string]: Note } = {}; // id -> Note instance
   updates$: Subject<void>;
   index: lunr.Index;
 
@@ -45,8 +45,6 @@ export class NotesService {
       this.field('body', {boost: 1});
       this.ref('id');
     });
-
-    this.notes = <{ [key: string]: Note}> {};
   }
 
   init(notesData: Object, dataService: DataService) {
@@ -58,11 +56,10 @@ export class NotesService {
 
     this.updates$.next(null);
 
-    // this._logger.log('got notes', this.notes);
     this._logger.log('got', _.size(this.notes), 'notes');
   }
 
-  createNote(noteObj) {
+  createNote(noteObj: any): Note {
     if (noteObj.id) {
       if (this.notes[noteObj.id]) {
         throw new Error('Cannot create a new note with id "' + noteObj.id + '" - already taken!');
@@ -72,13 +69,14 @@ export class NotesService {
       noteObj.id = utils.getUnusedKeyFromObj(this.notes);
     }
 
-    var note = new Note(noteObj, this.dataService);
+    const newNote = new Note(noteObj, this.dataService);
+    this.notes[newNote.id] = newNote;
 
-    this.notes[noteObj.id] = note;
-
-    this.updateNoteInIndex(note);
+    this.updateNoteInIndex(newNote);
 
     // @TODO/rewrite Surely much more to do here
+
+    return newNote;
   }
 
   // @TODO/testing note indexing and querying should be tested
