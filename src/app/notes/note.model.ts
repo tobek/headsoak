@@ -216,25 +216,28 @@ export class Note {
 
     let tag = this.dataService.tags.getTagByName(tagName);
 
-    if (tag && tag.readOnly) {
-      if (! confirm('The tag "' + tag.name + '" is a tag that has been shared with you and is read-only. Do you want to create a new tag in your account with this name and add it to this note?')) {
-        return null;
-      }
-    }
-
     if (! tag) {
       this._logger.log('Have to create new tag with name:', tagName);
 
       tag = this.dataService.tags.createTag({ name: tagName });
     }
 
-    this.addTag(tag);
-
-    return tag;
+    return this.addTag(tag);
   }
 
-  addTag(tag: Tag, fullUpdate = true): void{
+  /** Adds tag to note and returns tag, or returns null if no tag added. */
+  addTag(tag: Tag, fullUpdate = true, viaProg = false): Tag {
     this._logger.log('Adding tag', tag);
+
+    if (tag.readOnly) {
+      if (! confirm('The tag "' + tag.name + '" is a tag that has been shared with you and is read-only. Do you want to create a new tag in your account with this name and add it to this note?')) {
+        return null;
+      }
+    }
+    if (tag.prog && ! viaProg) {
+      this.progTagCantChangeAlert(tag);
+      return null;
+    }
 
     this.tags.push(tag.id);
     tag.addNote(this.id);
@@ -242,17 +245,33 @@ export class Note {
     this.rebuildNoteSharing();
     // @TODO/rewrite/config first param should reflect config.tagChangesChangeNutModifiedTimestamp
     this.updated(true, fullUpdate);
+
+    return tag;
   }
 
-  removeTag(tagId: string, fullUpdate = true): void {
-    this._logger.log('Removing tag ID', tagId);
+  removeTagId(tagId: string, fullUpdate = true): void {
+    this.removeTag(this.dataService.tags.tags[tagId], fullUpdate);
+  }
 
-    this.tags = _.without(this.tags, tagId);
-    this.dataService.tags.tags[tagId].removeNote(this.id);
+  removeTag(tag: Tag, fullUpdate = true, viaProg = false): void {
+    this._logger.log('Removing tag', tag);
+
+    if (tag.prog && ! viaProg) {
+      this.progTagCantChangeAlert(tag);
+      return;
+    }
+
+    this.tags = _.without(this.tags, tag.id);
+    tag.removeNote(this.id);
 
     this.rebuildNoteSharing();
     // @TODO/rewrite/config first param should reflect config.tagChangesChangeNutModifiedTimestamp
     this.updated(true, fullUpdate);
+  }
+
+  progTagCantChangeAlert(tag: Tag): void {
+    // @TODO/rewrite See `progTagCantChangeAlert` in old code - prompt should allow user to change this tag's settings
+    alert('The tag "' + tag.name + '" is an algorithmic tag, so it can\'t be added or removed manually.');
   }
 
   rebuildNoteSharing() {

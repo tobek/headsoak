@@ -8,7 +8,7 @@
         <button class="new-tag-button" (click)="addTag()">{{ addingTag ? '✓' : '+' }}</button>
       </span>
 
-      <tag *ngFor="let tagId of note.tags" [tagId]="tagId" (click)="toggleTag(tagId, $event)" [removable]="true" (removed)="note.removeTag(tagId)"></tag>
+      <tag *ngFor="let tagId of note.tags" [tagId]="tagId" (click)="toggleTag(tagId, $event)" [removable]="true" (removed)="note.removeTagId(tagId)"></tag>
 
       <span class="tag note-id" *ngIf="true"><!-- @TODO/rewrite only show if config.showNoteIds -->{{ note.id }}</span>
     </div>
