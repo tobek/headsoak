@@ -3,6 +3,7 @@ import {EventEmitter} from '@angular/core';
 import {Logger} from '../utils/logger';
 
 import {DataService} from '../';
+import {Tag} from '../tags';
 
 export class Note {
   id: string;
@@ -207,6 +208,29 @@ export class Note {
     this.dataService.status = 'unsynced';
 
     // @TODO/rewrite Need to autosize note?
+  }
+
+  /** Returns added tag, or null if none added. */
+  addTag(tagName: string): Tag {
+    this._logger.log('Adding tag from string:', tagName);
+
+    let tag = this.dataService.tags.getTagByName(tagName);
+
+    if (tag && tag.readOnly) {
+      if (! confirm('The tag "' + tag.name + '" is a tag that has been shared with you and is read-only. Do you want to create a new tag in your account with this name and add it to this note?')) {
+        return null;
+      }
+    }
+
+    if (! tag) {
+      this._logger.log('Creating new tag with name:', tagName);
+
+      tag = this.dataService.tags.createTag({ name: tagName });
+    }
+
+    this._logger.log('Adding tag', tag);
+
+    return tag;
   }
 
   removeTag(tagId: string, fullUpdate = true): void {
