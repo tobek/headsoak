@@ -53,7 +53,7 @@ export class DataService {
 
   dataUpdated(update: Note | Tag): void {
     if (update instanceof Note) {
-      this.digest.notes[update.id] = update;
+      this.digest.nuts[update.id] = update;
     }
     else if (update instanceof Tag) {
       this.digest.tags[update.id] = update;
@@ -63,7 +63,7 @@ export class DataService {
   }
 
   digestReset(): void {
-    this.digest = { 'notes': {}, 'tags': {}, 'config': {} };
+    this.digest = { 'nuts': {}, 'tags': {}, 'config': {} };
     this.status = 'synced'; // @TODO/rewrite Make sure sync status widget updates
   }
 
