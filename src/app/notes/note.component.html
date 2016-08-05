@@ -4,7 +4,7 @@
 
     <div class="tags">
       <span class="tag new-tag">
-        <input type="text" placeholder="add tag" ref-addTagInput class="new-tag-input" [class.adding-tag]="addingTag" [(ngModel)]="addTagName" (focus)="addTagFocus()" (keyup.enter)="addTag()"/>
+        <input type="text" placeholder="add tag" ref-addTagInput class="new-tag-input" [class.adding-tag]="addingTag" [(ngModel)]="addTagName" (focus)="addTagFocus()" (keyup.esc)="closeAddTagField()"/>
         <button class="new-tag-button" (click)="addTag()">{{ addingTag ? '✓' : '+' }}</button>
       </span>
 
