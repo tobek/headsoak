@@ -25,24 +25,7 @@ import {NoteListComponent} from './notes/';
     NoteListComponent,
   ],
   encapsulation: ViewEncapsulation.None,
-  styles: [`
-    h1 {
-      font-family: Arial, Helvetica, sans-serif
-    }
-    nav ul {
-      display: inline;
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-      width: 60px;
-    }
-    nav li {
-      display: inline;
-    }
-    nav li.active {
-      background-color: lightgray;
-    }
-  `],
+  styles: [ require('./app.component.css') ],
   template: require('./app.component.html')
 })
 export class App {
