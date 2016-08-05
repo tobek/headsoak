@@ -240,7 +240,7 @@ export class Note {
     }
 
     this.tags = _.union(this.tags, [tag.id]);
-    tag.addNote(this.id);
+    tag.addNoteId(this.id);
 
     this.rebuildNoteSharing();
     // @TODO/rewrite/config first param should reflect config.tagChangesChangeNutModifiedTimestamp
@@ -262,7 +262,7 @@ export class Note {
     }
 
     this.tags = _.without(this.tags, tag.id);
-    tag.removeNote(this.id);
+    tag.removeNoteId(this.id);
 
     this.rebuildNoteSharing();
     // @TODO/rewrite/config first param should reflect config.tagChangesChangeNutModifiedTimestamp
@@ -274,7 +274,50 @@ export class Note {
     alert('The tag "' + tag.name + '" is an algorithmic tag, so it can\'t be added or removed manually.');
   }
 
+  showShareSettings() {
+    alert('not yet!');
+  }
+
   rebuildNoteSharing() {
     // @TODO/rewrite
+  }
+
+  togglePrivate() {
+    alert('not yet!');
+  }
+
+  delete(noConfirm = false) {
+    let confirmMessage = 'Are you sure you want to delete this note? This can\'t be undone.';
+    if (this.body) {
+      confirmMessage += '\n\nIt\'s the note that goes like this: "';
+      if (this.body.length > 100) {
+        confirmMessage += this.body.substr(0, 100) + '...';
+      }
+      else {
+        confirmMessage += this.body;
+      }
+      confirmMessage += '"';
+    }
+
+    if (! noConfirm && ! confirm(confirmMessage)) {
+      return;
+    }
+
+    if (this.tags) {
+      this.tags.forEach((tagId) => {
+        this.dataService.tags.tags[tagId].removeNoteId(this.id);
+      });
+    }
+
+    this.dataService.notes.removeNote(this);
+
+    this.dataService.removeData('note', this.id);
+
+    // @TODO/rewrite/sharing Do we need to do anything with sharing?
+
+    // @TODO/rewrite need to do something like this otherwise it's still visible
+    // $s.q.doQuery();
+
+    this._logger.log('Deleted');
   }
 }

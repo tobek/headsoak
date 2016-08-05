@@ -59,6 +59,15 @@ export class DataService {
     this.status = 'unsynced';
   }
 
+  removeData(dataType: string, id: string) {
+    if (dataType === 'nut' || dataType === 'note') {
+      this.digest.nuts[id] = null;
+    }
+    else if (dataType === 'tag') {
+      this.digest.tags[id] = null;
+    }
+  }
+
   digestReset(): void {
     this.digest = { 'nuts': {}, 'tags': {}, 'config': {} };
     this.status = 'synced'; // @TODO/rewrite Make sure sync status widget updates
@@ -79,7 +88,10 @@ export class DataService {
 
       this.syncTasksRemaining++;
 
-      let updates = _.mapValues(contents, (item: Note | Tag) => item.forDataStore());
+      let updates = _.mapValues(contents, (item: Note | Tag | null) => {
+        // null indicates item has been deleted
+        return item === null ? null : item.forDataStore();
+      });
 
       this._logger.log('Updating', field, 'with', updates);
       this.status = 'syncing';

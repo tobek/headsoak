@@ -2,6 +2,12 @@
   <div class="header">
     <a class="time">{{ 'created: ' + (note.created | date:'medium') + '\nmodified: ' + (note.modified | date:'medium') }}</a><!-- @TODO/rewrite should be tooltip? --><!--@TODO/rewrite angular2 date pipe is "pure" and won't check for updates, so note.created and note.modified will have to be reassigned, confirm it works, etc. -->
 
+    <div class="note-actions">
+      <button (click)="note.showShareSettings()">share</button>
+      <button (click)="note.togglePrivate()">private</button>
+      <button (click)="note.delete()">delete</button>
+    </div>
+
     <div class="tags">
       <span class="tag new-tag">
         <input type="text" placeholder="add tag" ref-addTagInput class="new-tag-input" [class.adding-tag]="addingTag" [(ngModel)]="addTagName" (focus)="addTagFocus()" (keyup.esc)="closeAddTagField()"/>

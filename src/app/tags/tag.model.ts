@@ -80,12 +80,12 @@ export class Tag {
     this.dataService.digest$.emit(this);
   }
 
-  addNote(noteId: string) {
+  addNoteId(noteId: string) {
     this._logger.log('Adding note id', noteId);
     this.docs = _.union(this.docs, [noteId]);
     this.updated();
   }
-  removeNote(noteId: string) {
+  removeNoteId(noteId: string) {
     this._logger.log('Removing note id', noteId);
     this.docs = _.without(this.docs, noteId);
     this.updated();

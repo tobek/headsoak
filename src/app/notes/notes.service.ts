@@ -79,6 +79,11 @@ export class NotesService {
     return newNote;
   }
 
+  removeNote(note: Note) {
+    this.removeNoteFromIndex(note);
+    delete this.notes[note.id];
+  }
+
   // @TODO/testing note indexing and querying should be tested
   updateNoteInIndex(note: Note) {
     // Lunr update just does `remove` then `add` - seems to be fine that this gets called even when it's a new note and isn't in the index already to be removed
