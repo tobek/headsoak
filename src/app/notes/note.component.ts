@@ -5,6 +5,8 @@ import {Note} from '../notes/note.model';
 import {NotesService} from '../notes/notes.service';
 import {TagComponent} from '../tags/';
 
+import {AutocompleteService} from '../utils/';
+
 @Component({
   selector: 'note',
   pipes: [],
@@ -26,6 +28,7 @@ export class NoteComponent {
 
   constructor(
     private analyticsService: AnalyticsService,
+    private autocompleteService: AutocompleteService,
     private notesService: NotesService
   ) {}
 
@@ -38,12 +41,41 @@ export class NoteComponent {
 
   addTagFocus() {
     // We can't rely on blur to close the tag field because then clicking on add tag button also closes tag field.
+    window.removeEventListener('click', this.closeAddTagFieldHandler);
     window.addEventListener('click', this.closeAddTagFieldHandler.bind(this));
+
+    this.addTagSetUpAutocomplete();
+  }
+  
+  addTagSetUpAutocomplete(): void {
+    this.autocompleteService.autocompleteTags({
+      context: 'note',
+      el: this.addTagInputRef.nativeElement,
+      excludeTagIds: this.note.tags,
+      autocompleteOpts: {
+        onSelect: this.addTagAutocompleteSelect.bind(this)
+      }
+    });
+  }
+
+  addTagAutocompleteSelect(suggestion, event): void {
+    this.addTag(suggestion.value);
+
+    if (event.shiftKey) {
+      // Hold shift to open add tag field again
+      setTimeout(() => {
+        this.addTagSetUpAutocomplete();
+        this.addTag();
+      }, 100);
+    }
   }
 
   closeAddTagFieldHandler(event: MouseEvent) {
     const clickedEl = <HTMLElement> event.target;
     if (clickedEl && clickedEl.classList.contains('new-tag-button')) {
+      return;
+    }
+    else if (document.querySelector('.autocomplete-suggestions').contains(clickedEl)) {
       return;
     }
 
@@ -54,14 +86,14 @@ export class NoteComponent {
     this.addingTag = false;
   }
 
-  addTag() {
+  addTag(tagText = this.addTagName) {
     if (this.addingTag) {
-      if (this.addTagName === '') {
+      if (tagText === '') {
         this.closeAddTagField();
         return;
       }
 
-      const tagAdded = this.note.addTagFromText(this.addTagName);
+      const tagAdded = this.note.addTagFromText(tagText);
 
       if (tagAdded) {
         this.addingTag = false;

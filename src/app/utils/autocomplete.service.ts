@@ -22,11 +22,13 @@ export class AutocompleteService {
   autocompleteTags({
     el,
     excludeTags = [],
+    excludeTagIds = [],
     context = null,
     autocompleteOpts = {},
   } = {
     el: HTMLInputElement,
     excludeTags: [], // should be `Tag[]` but typescript is throwing an error
+    excludeTagIds: [''],
     context: '',
     autocompleteOpts: any,
   }) {
@@ -36,7 +38,7 @@ export class AutocompleteService {
           return false; // can't add readOnly tags
         }
 
-        // TODO also hide prog tags here? on the one hand, trying to add a prog tag shows progTagCantChangeAlert, so you might ask "why did you put it in autocomplete in the first place?". on the other hand, if we hide it, users might be like "why isn't this tag showing up?"
+        // @TODO also hide prog tags here? on the one hand, trying to add a prog tag shows progTagCantChangeAlert, so you might ask "why did you put it in autocomplete in the first place?". on the other hand, if we hide it, users might be like "why isn't this tag showing up?"
 
         // @TODO/rewrite        
         // if (nut.tags) {
@@ -44,16 +46,15 @@ export class AutocompleteService {
         //   if (nut.tags.indexOf(tag.id) !== -1) return false; 
         // }
       }
-      else if (context === 'query') {
-        if (_.includes(excludeTags, tag)) {
-          return false;
-        }
+
+      if (_.includes(excludeTags, tag) || _.includes(excludeTagIds, tag.id)) {
+        return false;
       }
 
       return true;
     }).map((tag: Tag) => tag.name);
 
-    this._logger.log('initializing autocomplete with:', lookupArray);
+    this._logger.log('Initializing autocomplete with:', lookupArray);
 
     jQuery(el).autocomplete({
       lookup: lookupArray,
@@ -89,17 +90,6 @@ export class AutocompleteService {
       onSelect: (suggestion, e) => {
         if (autocompleteOpts.onSelect) {
           autocompleteOpts.onSelect(suggestion, e);
-        }
-        if (context === 'note') { // we're in the add tag field of a nut
-          // @TODO/rewrite/notes - move into caller
-          // var scope = $s.n.getFocusedNutScope() || safer$('#nut-' + nut.id).scope();
-          // if (scope) {
-          //   scope.addTag(true, suggestion.value);
-          //   scope.closeAddTagField();
-          //   if (e.shiftKey) { // hold shift to add another tag
-          //     $timeout(scope.openAddTagField, 10);
-          //   }
-          // }
         }
       },
     });
