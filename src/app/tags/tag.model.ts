@@ -82,7 +82,7 @@ export class Tag {
 
   addNote(noteId: string) {
     this._logger.log('Adding note id', noteId);
-    this.docs.push(noteId);
+    this.docs = _.union(this.docs, [noteId]);
     this.updated();
   }
   removeNote(noteId: string) {

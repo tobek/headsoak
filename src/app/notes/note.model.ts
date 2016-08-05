@@ -239,7 +239,7 @@ export class Note {
       return null;
     }
 
-    this.tags.push(tag.id);
+    this.tags = _.union(this.tags, [tag.id]);
     tag.addNote(this.id);
 
     this.rebuildNoteSharing();
