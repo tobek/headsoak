@@ -1,0 +1,17 @@
+<div class="tag-query-bar">
+  <input tabindex=1 type="text" placeholder="Search tags" ref-queryInput [(ngModel)]="query" (ngModelChange)="queryUpdated()">
+  <button (click)="queryClear()">x</button>
+
+  <label>
+    Sort {{ tags.length }} tag{{ tags.length !== 1 ? 's' : '' }} by
+    <select tabindex=3 [ngModel]="sortOpt" (ngModelChange)="sort($event)">
+      <option *ngFor="let opt of tagsService.sortOpts" [ngValue]="opt">{{opt.name}}</option>
+    </select>
+  </label>
+
+  <button (click)="newTag()">new tag</button>
+
+  <hr>
+</div>
+
+<tag class="tag-{{ tag.id }}" *ngFor="let tag of (tags | arrayLimit:limit)" [tagId]="tag.id" (deleted)="tagDeleted($event)"></tag>

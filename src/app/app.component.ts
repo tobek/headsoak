@@ -10,7 +10,8 @@ import {Logger} from './utils/logger';
 
 import {Home} from './home';
 import {LoginComponent} from './account';
-import {NoteListComponent} from './notes/';
+import {NoteBrowserComponent} from './notes/';
+import {TagBrowserComponent} from './tags/tag-browser.component'; // @NOTE No idea why, but adding this to `tags/index.ts` and importing from './tags/' makes angular unable to resolve TagBrowerComponent
 
 /*
  * App Component
@@ -22,7 +23,8 @@ import {NoteListComponent} from './notes/';
   providers: [ ],
   directives: [
     LoginComponent,
-    NoteListComponent,
+    NoteBrowserComponent,
+    TagBrowserComponent,
   ],
   encapsulation: ViewEncapsulation.None,
   styles: [ require('./app.component.css') ],

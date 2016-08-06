@@ -12,7 +12,7 @@ const lunr = require('lunr');
 @Injectable()
 export class NotesService {
   notes: { [key: string]: Note } = {}; // id -> Note instance
-  updates$: Subject<void>;
+  initialized$ = new Subject<void>();
   index: lunr.Index;
 
   /**
@@ -37,8 +37,6 @@ export class NotesService {
   constructor(
     public tagsService: TagsService
   ) {
-    this.updates$ = new Subject<void>();
-
     this.index = lunr(function() {
       // this.field('title', {boost: 10});
       this.field('tags', {boost: 100});
@@ -54,7 +52,7 @@ export class NotesService {
     _.each(notesData, _.partialRight(this.createNote, true).bind(this));
     this._logger.timeEnd('initializing notes and index');
 
-    this.updates$.next(null);
+    this.initialized$.next(null);
 
     this._logger.log('got', _.size(this.notes), 'notes');
   }

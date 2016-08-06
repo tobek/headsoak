@@ -10,16 +10,16 @@ import {Tag, TagComponent, TagsService} from '../tags';
 import {Logger, ScrollMonitorService, AutocompleteService} from '../utils/';
 
 @Component({
-  selector: 'note-list',
+  selector: 'note-browser',
   pipes: [],
   directives: [
     NoteComponent,
     TagComponent,
   ],
-  styles: [require('./note-list.component.css')],
-  template: require('./note-list.component.html')
+  styles: [require('./note-browser.component.css')],
+  template: require('./note-browser.component.html')
 })
-export class NoteListComponent {
+export class NoteBrowserComponent {
   DEFAULT_NOTES_LIMIT: number = 15;
 
   el: HTMLElement;
@@ -65,7 +65,7 @@ export class NoteListComponent {
       this.initNotes();
     }
     else {
-      let subscription = this.notesService.updates$.subscribe(() => {
+      let subscription = this.notesService.initialized$.subscribe(() => {
         this.initNotes();
         subscription.unsubscribe();
       });
