@@ -78,12 +78,16 @@ export class NotesService {
     const newNote = new Note(noteObj, this.dataService);
     this.notes[newNote.id] = newNote;
 
-    if (! isInit) {
-      newNote.updated();
+    if (isInit) {
+      // This note exists in data store already, we're just initializing local data on app load. We can assume that stuff that happens on update (upload, run prog tags, etc.) has been done and persisted to data store, and that tag data is synced with tags on notes etc. We just have to add it to the index since build index anew on each app load.
+      this.updateNoteInIndex(newNote);
     }
     else {
-      // Just have to add it to the index - other stuff that happens on update (upload to data store, run prog tags) will persist between sessions, but we build index anew each time so on init we gotta do it.
-      this.updateNoteInIndex(newNote);
+      newNote.updated();
+
+      newNote.tags.forEach((tagId: string) => {
+        this.tagsService.tags[tagId].addNoteId(newNote.id);
+      });
     }
 
     // @TODO/rewrite Surely much more to do here

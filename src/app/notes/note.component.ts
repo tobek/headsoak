@@ -25,6 +25,7 @@ export class NoteComponent {
   @Input() note: Note;
   @Output() tagToggled = new EventEmitter<Object>();
   @Output() deleted= new EventEmitter<Note>();
+  @Output() newWithSameTags = new EventEmitter<Note>();
   @ViewChild('bodyInput') bodyInputRef: ElementRef;
   @ViewChild('addTagInput') addTagInputRef: ElementRef;
 
@@ -117,5 +118,9 @@ export class NoteComponent {
     if (this.note.delete(noConfirm)) {
       this.deleted.emit(this.note);
     }
+  }
+
+  newNoteWithSameTags() {
+    this.newWithSameTags.emit(this.note);
   }
 }
