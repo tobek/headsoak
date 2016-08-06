@@ -94,6 +94,12 @@ export class NoteListComponent {
     }, 0);
   }
 
+  /** Called when one of the notes in this component is deleted. */
+  noteDeleted(deletedNote: Note): void {
+    // Have to re-assign this.notes (rather than mutate it) otherwise the view won't update
+    this.notes = _.filter(this.notes, (note: Note) => note.id !== deletedNote.id);
+  }
+
   queryUpdated(): void {
     this.queryUpdated$.next(null);
   }

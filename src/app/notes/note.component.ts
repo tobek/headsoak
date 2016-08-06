@@ -24,6 +24,7 @@ export class NoteComponent {
 
   @Input() note: Note;
   @Output() tagToggled = new EventEmitter<Object>();
+  @Output() deleted= new EventEmitter<Note>();
   @ViewChild('bodyInput') bodyInputRef: ElementRef;
   @ViewChild('addTagInput') addTagInputRef: ElementRef;
 
@@ -108,6 +109,12 @@ export class NoteComponent {
     else {
       this.addingTag = true;
       this.addTagInputRef.nativeElement.focus();
+    }
+  }
+
+  delete() {
+    if (this.note.delete()) {
+      this.deleted.emit(this.note);
     }
   }
 }

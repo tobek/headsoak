@@ -286,7 +286,8 @@ export class Note {
     alert('not yet!');
   }
 
-  delete(noConfirm = false) {
+  /** Returns true if note was deleted. */
+  delete(noConfirm = false): boolean {
     let confirmMessage = 'Are you sure you want to delete this note? This can\'t be undone.';
     if (this.body) {
       confirmMessage += '\n\nIt\'s the note that goes like this: "';
@@ -300,7 +301,7 @@ export class Note {
     }
 
     if (! noConfirm && ! confirm(confirmMessage)) {
-      return;
+      return false;
     }
 
     if (this.tags) {
@@ -319,5 +320,7 @@ export class Note {
     // $s.q.doQuery();
 
     this._logger.log('Deleted');
+
+    return true;
   }
 }

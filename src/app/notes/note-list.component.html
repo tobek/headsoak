@@ -18,4 +18,4 @@
   <hr>
 </div>
 
-<note class="note-{{ note.id }}" *ngFor="let note of (notes | arrayLimit:limit)" [note]="note" (tagToggled)="queryTagToggled($event.tagId, ! $event.shiftHeld)"></note>
+<note class="note-{{ note.id }}" *ngFor="let note of (notes | arrayLimit:limit)" [note]="note" (tagToggled)="queryTagToggled($event.tagId, ! $event.shiftHeld)" (deleted)="noteDeleted(note)"></note>
