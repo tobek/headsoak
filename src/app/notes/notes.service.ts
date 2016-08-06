@@ -67,6 +67,9 @@ export class NotesService {
     }
     else {
       noteObj.id = utils.getUnusedKeyFromObj(this.notes);
+    // @TODO/rewrite/sharing Temporarily hide shared notes until they're set up again
+    if (noteObj.sharedBy) {
+      return null;
     }
 
     const newNote = new Note(noteObj, this.dataService);
