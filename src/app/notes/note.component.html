@@ -20,6 +20,6 @@
     </div>
   </div>
 
-  <textarea class="body" tabindex=2 *ngIf="! note.sharedBody" [ngModel]="note.body" (ngModelChange)="note.body = $event; note.changed()" (focus)="note.focused()" (blur)="note.blurred()"></textarea>
-  <textarea class="body read-only" disabled="disabled" tabindex=2 *ngIf="note.sharedBody">{{ note.sharedBody }}</textarea>
+  <textarea ref-bodyInput class="body" tabindex=2 *ngIf="! note.sharedBody" [ngModel]="note.body" (ngModelChange)="note.body = $event; note.changed()" (focus)="note.focused()" (blur)="note.blurred()"></textarea>
+  <!-- @TODO/rewrite/sharing Better to put read-only class and disabled attribute on above textarea so reference is preserved <textarea class="body read-only" disabled="disabled" tabindex=2 *ngIf="note.sharedBody">{{ note.sharedBody }}</textarea> -->
 </div>

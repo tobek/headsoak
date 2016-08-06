@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild, ViewChildren, QueryList} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/debounceTime';
 
@@ -34,6 +34,7 @@ export class NoteListComponent {
   sortOpt: Object = this.notesService.sortOpts[0];
 
   @ViewChild('queryInput') queryInput: ElementRef;
+  @ViewChildren(NoteComponent) noteComponents: QueryList<NoteComponent>;
 
   query: string;
   queryTags: Tag[] = [];
@@ -87,7 +88,10 @@ export class NoteListComponent {
     // Have to re-assign this.notes (rather than mutate it) otherwise the view won't update
     this.notes = _.concat([newNote], this.notes);
 
-    // @TODO/rewrite/notes focus on new note
+    // Have to wait cause angular hasn't updated the QueryList yet, but once it has, we can focus on the new note component
+    setTimeout(() => {
+      this.noteComponents.first.focus();
+    }, 0);
   }
 
   queryUpdated(): void {

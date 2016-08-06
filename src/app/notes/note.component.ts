@@ -24,6 +24,7 @@ export class NoteComponent {
 
   @Input() note: Note;
   @Output() tagToggled = new EventEmitter<Object>();
+  @ViewChild('bodyInput') bodyInputRef: ElementRef;
   @ViewChild('addTagInput') addTagInputRef: ElementRef;
 
   constructor(
@@ -37,6 +38,10 @@ export class NoteComponent {
 
   toggleTag(tagId: string, event: MouseEvent) {
     this.tagToggled.emit({ tagId: tagId, shiftHeld: (event && event.shiftKey) });
+  }
+
+  focus() {
+    this.bodyInputRef.nativeElement.focus();
   }
 
   addTagFocus() {
