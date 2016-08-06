@@ -51,7 +51,7 @@ export class NotesService {
     this.dataService = dataService;
 
     this._logger.time('initializing notes and index');
-    _.each(notesData, this.createNote.bind(this));
+    _.each(notesData, _.partialRight(this.createNote, true).bind(this));
     this._logger.timeEnd('initializing notes and index');
 
     this.updates$.next(null);
@@ -59,7 +59,7 @@ export class NotesService {
     this._logger.log('got', _.size(this.notes), 'notes');
   }
 
-  createNote(noteObj: any): Note {
+  createNote(noteObj: any = {}, isInit = false): Note {
     if (noteObj.id) {
       if (this.notes[noteObj.id]) {
         throw new Error('Cannot create a new note with id "' + noteObj.id + '" - already taken!');
@@ -67,6 +67,9 @@ export class NotesService {
     }
     else {
       noteObj.id = utils.getUnusedKeyFromObj(this.notes);
+      this._logger.log('Creating new note and giving it ID', noteObj.id);
+    }
+
     // @TODO/rewrite/sharing Temporarily hide shared notes until they're set up again
     if (noteObj.sharedBy) {
       return null;
@@ -75,7 +78,13 @@ export class NotesService {
     const newNote = new Note(noteObj, this.dataService);
     this.notes[newNote.id] = newNote;
 
-    this.updateNoteInIndex(newNote);
+    if (! isInit) {
+      newNote.updated();
+    }
+    else {
+      // Just have to add it to the index - other stuff that happens on update (upload to data store, run prog tags) will persist between sessions, but we build index anew each time so on init we gotta do it.
+      this.updateNoteInIndex(newNote);
+    }
 
     // @TODO/rewrite Surely much more to do here
 

@@ -81,6 +81,15 @@ export class NoteListComponent {
     // $timeout($s.n.autosizeAllNuts);
   }
 
+  newNote(): void {
+    const newNote = this.notesService.createNote();
+
+    // Have to re-assign this.notes (rather than mutate it) otherwise the view won't update
+    this.notes = _.concat([newNote], this.notes);
+
+    // @TODO/rewrite/notes focus on new note
+  }
+
   queryUpdated(): void {
     this.queryUpdated$.next(null);
   }
