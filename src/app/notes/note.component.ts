@@ -112,8 +112,9 @@ export class NoteComponent {
     }
   }
 
-  delete() {
-    if (this.note.delete()) {
+  delete(event: MouseEvent) {
+    let noConfirm = event.shiftKey;
+    if (this.note.delete(noConfirm)) {
       this.deleted.emit(this.note);
     }
   }
