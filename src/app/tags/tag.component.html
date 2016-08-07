@@ -1,4 +1,5 @@
 {{ tag.name }}
+<span *ngIf="showCount">({{ tag.docs.length }})</span>
 
 <span class="icons">
   <span class="share" *ngIf="tag.share">

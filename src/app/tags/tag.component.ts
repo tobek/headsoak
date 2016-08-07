@@ -15,6 +15,7 @@ export class TagComponent {
   tag: Tag;
 
   @Input() removable: boolean;
+  @Input() showCount: boolean;
   @Output() removed = new EventEmitter<Tag>();
 
   constructor(
