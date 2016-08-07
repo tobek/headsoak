@@ -65,4 +65,37 @@ export class TagsService {
     // @TODO Doesn't handle duplicate tag names. Dupe tag names aren't handled at all actually.
     return _.find(this.tags, { name: name });
   }
+
+  sortTags(sortOpt?, tagsToSort?): Tag[] {
+    if (! tagsToSort) tagsToSort = this.tags;
+    if (! tagsToSort || tagsToSort.length === 0) return [];
+
+    if (! sortOpt) {
+      // Just get the "first" sort option
+      sortOpt = this.sortOpts[0];
+    }
+
+    this._logger.time('Sorting tags');
+    this._logger.log('Sorting tags by', sortOpt);
+
+    let sortedTags;
+
+    if (sortOpt.field.indexOf('.') !== -1 ) { // e.g. field might be `docs.length`
+      var fields = sortOpt.field.split('.');
+
+      sortedTags = _.sortBy(this.tags, function(tag: Tag) {
+        return tag[fields[0]] ? tag[fields[0]][fields[1]] : 0;
+      });
+    }
+    else { // e.g. `created`
+      sortedTags = _.sortBy(this.tags, sortOpt.field);
+    }
+    // @NOTE: Here is a more generic way to deal with this indexing of sub-objects by dot-notation string: http://stackoverflow.com/a/6394168. _.get might do it too.
+
+    if (sortOpt.rev) sortedTags.reverse();
+
+    this._logger.timeEnd('Sorting tags');
+
+    return sortedTags;
+  }
 }

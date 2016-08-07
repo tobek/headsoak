@@ -3,11 +3,11 @@ import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/debounceTime';
 
 import {AnalyticsService} from '../analytics.service';
-import {Note} from '../notes/note.model';
-import {NoteComponent} from '../notes/note.component';
-import {NotesService} from '../notes/notes.service';
+// import {Note} from '../notes/note.model';
+// import {NoteComponent} from '../notes/note.component';
+// import {NotesService} from '../notes/notes.service';
 import {Tag, TagComponent, TagsService} from './';
-import {Logger, ScrollMonitorService, AutocompleteService} from '../utils/';
+import {Logger/*, ScrollMonitorService, AutocompleteService*/} from '../utils/';
 
 @Component({
   selector: 'tag-browser',
@@ -23,7 +23,7 @@ export class TagBrowserComponent {
 
   el: HTMLElement;
 
-  tags: Array<Tag> = [];
+  tags: Tag[] = [];
 
   /** Only show this many nuts at a time unless infinite scrolling. */
   limit: number = this.DEFAULT_TAGS_LIMIT;
@@ -73,8 +73,7 @@ export class TagBrowserComponent {
   }
 
   initTags(): void {
-    // this.tags = this.tagsService.sortNotes(this.sortOpt);
-    this.tags = _.filter(this.tagsService.tags, () => true); // just to convert to array
+    this.tags = this.tagsService.sortTags(this.sortOpt);
   }
 
   // newNote(noteData = {}): void {
@@ -107,10 +106,10 @@ export class TagBrowserComponent {
   //   this.queryEnsureFocusAndAutocomplete();
   // }
 
-  // sort(sortOpt): void {
-  //   this.sortOpt = sortOpt;
-  //   this.notes = this.notesService.sortNotes(this.sortOpt, this.notes);
-  // }
+  sort(sortOpt): void {
+    this.sortOpt = sortOpt;
+    this.tags = this.tagsService.sortTags(this.sortOpt);
+  }
 
   // // @TODO/testing infinite scroll e2e both directions
   // infiniteScrollCheck(): void {
