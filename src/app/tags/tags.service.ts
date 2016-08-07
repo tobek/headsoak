@@ -49,6 +49,11 @@ export class TagsService {
       tagData.id = utils.getUnusedKeyFromObj(this.tags);
     }
 
+    // @TODO/rewrite/sharing Temporarily hide shared tags until they're set up again
+    if (tagData.sharedBy) {
+      return null;
+    }
+
     const newTag = new Tag(tagData, this.dataService);
     this.tags[newTag.id] = newTag;
 
