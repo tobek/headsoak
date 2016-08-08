@@ -1,1 +1,18 @@
-<h1>uh set</h1>
+<h1>Settings</h1>
+
+<table>
+  <tbody>
+    <tr *ngFor="let setting of settings.data">
+      <td title="{{ setting.description }}"><!-- @TODO/rewrite/settings Tooltip -->
+        <label [attr.for]="'setting-' + setting.id">
+          {{ setting.name }}
+        </label>
+      </td>
+      <td>
+        <input type="checkbox" id="setting-{{ setting.id }}" [ngModel]="settings[setting.id]" (ngModelChange)="settingUpdated(setting, $event)" />
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<button (click)="revert()">Revert to defaults</button>

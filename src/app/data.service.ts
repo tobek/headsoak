@@ -6,7 +6,8 @@ import {Logger, utils, sampleData} from './utils/';
 import {UserService} from './account/user.service';
 import {Note, NotesService} from './notes/';
 import {Tag, TagsService} from './tags/';
-import {SettingsService} from './settings/';
+import {SettingsService} from './settings/settings.service';
+import {Setting} from './settings/setting.model';
 
 // @TODO/rewrite only do in dev mode
 import {FirebaseMock} from './mocks/';
@@ -17,7 +18,7 @@ export class DataService {
 
   online: boolean; // @TODO/rewrite connection widget should show if offline
 
-  digest$ = new EventEmitter<Note | Tag>();
+  digest$ = new EventEmitter<Note | Tag | Setting>();
 
   status: string; // 'synced' | 'syncing' | 'unsynced' | 'disconnected'
 
@@ -25,7 +26,7 @@ export class DataService {
   private digest: {
     'nuts': { [key: string]: Note },
     'tags': { [key: string]: Tag },
-    'config': { [key: string]: Object }, // @TODO/rewrite - and also change in `sync` below
+    'settings': { [key: string]: Setting },
   };
 
   /** How many separate async callbacks to sync data to data store we're currently waiting on. Using `parallel` from `async` module would be more elegant, but we don't need anything else from that module right now and source code for that function simply keeps a counter of the number of tasks that have completed, so it's the same idea. */
@@ -50,12 +51,15 @@ export class DataService {
     window['dataService'] = this;
   }
 
-  dataUpdated(update: Note | Tag): void {
+  dataUpdated(update: Note | Tag | Setting): void {
     if (update instanceof Note) {
       this.digest.nuts[update.id] = update;
     }
     else if (update instanceof Tag) {
       this.digest.tags[update.id] = update;
+    }
+    else if (update instanceof Setting) {
+      this.digest.settings[update.id] = update;
     }
 
     this.status = 'unsynced';
@@ -71,7 +75,7 @@ export class DataService {
   }
 
   digestReset(): void {
-    this.digest = { 'nuts': {}, 'tags': {}, 'config': {} };
+    this.digest = { 'nuts': {}, 'tags': {}, 'settings': {} };
     this.status = 'synced'; // @TODO/rewrite Make sure sync status widget updates
   }
 
@@ -83,14 +87,14 @@ export class DataService {
 
     // Here we loop through notes, tags, etc. in digest, and for each one process them and update to data store
     let updated = false;
-    _.forEach(this.digest, (contents: { [key: string]: Note | Tag | Object }, field: string) => {
+    _.forEach(this.digest, (contents: { [key: string]: Note | Tag | Setting }, field: string) => {
       if (_.isEmpty(contents)) {
         return;
       }
 
       this.syncTasksRemaining++;
 
-      let updates = _.mapValues(contents, (item: Note | Tag | null) => {
+      let updates = _.mapValues(contents, (item: Note | Tag | Setting ) => {
         // null indicates item has been deleted
         return item === null ? null : item.forDataStore();
       });
@@ -106,7 +110,7 @@ export class DataService {
       this._logger.log('Changes found, syncing');
     }
     else if (this.status !== 'synced') {
-      this.status = 'synced'; // @TODO/rewrite Make sure sync status widget updates
+      this.status = 'synced';
     }
   }
 
@@ -165,7 +169,7 @@ export class DataService {
       this._logger.log('Got data:', data);
 
       if (! data) {
-        // Must be a new user - even if existing user deleted everything there would still be object with config and empty nuts/tags
+        // Must be a new user - even if existing user deleted everything there would still be object with settings and empty nuts/tags
         this.initNewUser();
       }
       else {

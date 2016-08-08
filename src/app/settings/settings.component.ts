@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+
+import { SettingsService } from './settings.service';
+import { Setting } from './setting.model';
 
 @Component({
   selector: 'settings',
@@ -9,12 +11,22 @@ import { ActivatedRoute } from '@angular/router';
   template: require('./settings.component.html')
 })
 export class SettingsComponent {
-  constructor(public route: ActivatedRoute) {
+  constructor(private settings: SettingsService) {
 
   }
 
   ngOnInit() {
     console.log('`Settings` component initialized');
+  }
+
+  settingUpdated(setting: Setting, newVal: any): void {
+    setting.value = this.settings[setting.id] = newVal;
+
+    setting.updated();
+  }
+
+  revert() {
+
   }
 
 }
