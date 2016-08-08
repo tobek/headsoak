@@ -14,4 +14,4 @@
   <hr>
 </div>
 
-<tag class="tag-{{ tag.id }}" *ngFor="let tag of (tags | arrayLimit:limit)" [tagId]="tag.id" [showCount]="true" (deleted)="tagDeleted($event)"></tag>
+<tag class="tag-{{ tag.id }}" *ngFor="let tag of (tags | arrayLimit:limit)" [tagId]="tag.id" [showCount]="true" [editable]="true" (deleted)="tagDeleted($event)"></tag>

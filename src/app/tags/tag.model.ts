@@ -75,17 +75,29 @@ export class Tag {
       this.modified = Date.now();
     }
 
+    // @TODO/rewrite/tags
+    // if (updateNut && tag.docs) {
+    //   tag.docs.forEach(function(docId) {
+    //     $s.n.nutUpdated(docId, $s.c.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
+    //   });
+    // }
+
     this._logger.log('Updated');
 
     this.dataService.digest$.emit(this);
   }
 
-  addNoteId(noteId: string) {
+  rename(newName: string): void {
+    this.name = newName;
+    this.updated();
+  }
+
+  addNoteId(noteId: string): void {
     this._logger.log('Adding note id', noteId);
     this.docs = _.union(this.docs, [noteId]);
     this.updated();
   }
-  removeNoteId(noteId: string) {
+  removeNoteId(noteId: string): void {
     this._logger.log('Removing note id', noteId);
     this.docs = _.without(this.docs, noteId);
     this.updated();
