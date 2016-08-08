@@ -39,7 +39,7 @@ export class DataService {
   /** How many separate async callbacks to sync data to data store we're currently waiting on. Using `parallel` from `async` module would be more elegant, but we don't need anything else from that module right now and source code for that function simply keeps a counter of the number of tasks that have completed, so it's the same idea. */
   private syncTasksRemaining = 0;
 
-  private _logger = new Logger(this.constructor.name); // @TODO/rewrite why is typescript raising a fuss here? check that x-browser compatible and see if there's a better way
+  private _logger = new Logger(this.constructor.name);
   private ref: Firebase | any;
   private onlineStateRef: Firebase;
 

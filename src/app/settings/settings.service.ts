@@ -8,7 +8,7 @@ import {Logger, utils} from '../utils/';
 
 @Injectable()
 export class SettingsService {
-  // initialized$ = new Subject<void>();
+  initialized$ = new Subject<void>();
 
   // Here we decalre default values
 
@@ -104,7 +104,7 @@ export class SettingsService {
       this.data.push(new Setting(setting, this.dataService));
     });
 
-    // this.initialized$.next(null);
+    this.initialized$.next(null);
 
     this._logger.log('Initialized -', _.size(settingsData), 'restored from user settings');
   }

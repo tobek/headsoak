@@ -10,6 +10,7 @@ export class Setting {
   description: string;
   type: string; // only 'boolean' supported so far in UI, but 'string' supported for internal ones
   section: string; // 'settings' | null
+  overkill = false;
 
   default: any;
   value: any;

@@ -2,7 +2,7 @@
 
 <table>
   <tbody>
-    <tr *ngFor="let setting of settings.data">
+    <tr *ngFor="let setting of displayedSettings">
       <td title="{{ setting.description }}"><!-- @TODO/rewrite/settings Tooltip -->
         <label [attr.for]="'setting-' + setting.id">
           {{ setting.name }}

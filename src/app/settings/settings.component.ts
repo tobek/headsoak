@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 
-import { DataService } from '../data.service';
-import { SettingsService } from './settings.service';
-import { Setting } from './setting.model';
+import {Logger} from '../utils/';
+
+import {DataService} from '../data.service';
+import {SettingsService} from './settings.service';
+import {Setting} from './setting.model';
 
 @Component({
   selector: 'settings',
@@ -12,6 +14,10 @@ import { Setting } from './setting.model';
   template: require('./settings.component.html')
 })
 export class SettingsComponent {
+  private displayedSettings: Setting[] = [];
+
+  private _logger = new Logger(this.constructor.name);
+
   constructor(
     private settings: SettingsService,
     private dataService: DataService
@@ -20,7 +26,23 @@ export class SettingsComponent {
   }
 
   ngOnInit() {
-    console.log('`Settings` component initialized');
+    if (! _.isEmpty(this.settings.settings)) {
+      this.init();
+    }
+    else {
+      let subscription = this.settings.initialized$.subscribe(() => {
+        this.init();
+        subscription.unsubscribe();
+      });
+    }
+  }
+
+  init(): void {
+    this._logger.log('`Settings` component initialized');
+
+    this.displayedSettings = _.filter(this.settings.data, (setting) => {
+      return setting.section === 'settings' && ! setting.overkill;
+    });
   }
 
   settingUpdated(setting: Setting, newVal: any): void {
