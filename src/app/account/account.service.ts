@@ -124,6 +124,7 @@ export class AccountService {
   }
 
   logout() {
+    // @TODO/rewrite/account Empty out data!
     this.analytics.event('Account', 'logout');
     this.ref.unauth();
   }

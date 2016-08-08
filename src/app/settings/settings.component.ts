@@ -3,13 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'settings',
-  styles: [`
-  `],
-  template: `
-    <h1>
-      Settings
-    </h1>
-  `
+  styles: [
+    // require('./settings.component.css')
+  ],
+  template: require('./settings.component.html')
 })
 export class SettingsComponent {
   constructor(public route: ActivatedRoute) {

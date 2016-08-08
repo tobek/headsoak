@@ -6,6 +6,7 @@ import {Logger, utils, sampleData} from './utils/';
 import {UserService} from './account/user.service';
 import {Note, NotesService} from './notes/';
 import {Tag, TagsService} from './tags/';
+import {SettingsService} from './settings/';
 
 // @TODO/rewrite only do in dev mode
 import {FirebaseMock} from './mocks/';
@@ -37,7 +38,8 @@ export class DataService {
   constructor(
     public user: UserService,
     public notes: NotesService,
-    public tags: TagsService
+    public tags: TagsService,
+    public settings: SettingsService
   ) {
     this.ref = new Firebase('https://nutmeg.firebaseio.com/');
 
@@ -224,7 +226,8 @@ export class DataService {
     this.initFromData({
       notes: {},
       tags: {},
-      user: {}
+      user: {},
+      settings: {},
     });
   }
 
@@ -233,6 +236,7 @@ export class DataService {
     // @TODO Passing ourselves to notes/tags services who in turn pass us to note/tag models is kind of a cruddy paradigm, but it's partially a holdover from first version of nutmeg and really it makes MVP rewrite a lot easier right now, instead of figuring out how to properly listen to updates and propagate changes accordingly.
     this.tags.init(data.tags, this);
     this.notes.init(data.nuts, this);
+    this.settings.init(data.settings, this);
 
     this.user.setData(data.user);
 
