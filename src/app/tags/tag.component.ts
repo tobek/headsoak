@@ -4,6 +4,8 @@ import {AnalyticsService} from '../analytics.service';
 import {Tag} from './tag.model';
 import {TagsService} from './tags.service';
 
+import {utils} from '../utils/';
+
 @Component({
   selector: 'tag',
   pipes: [],
@@ -17,7 +19,7 @@ export class TagComponent {
   renaming = false;
 
   @ViewChild('tagName') tagNameRef: ElementRef;
-  tagNameEl: HTMLElement;
+  tagNameEl: HTMLInputElement; // Not actually, but contenteditable so it behaves as such
 
   @Input() editable: boolean;
   @Input() removable: boolean;
@@ -42,7 +44,7 @@ export class TagComponent {
   renameStart() {
     this.renaming = true; // makes name element contenteditable
     setTimeout(() => {
-      this.tagNameEl.focus();
+      utils.placeCaretAtEnd(this.tagNameEl);
     }, 0);
   }
   renameFinish(event: KeyboardEvent) {
