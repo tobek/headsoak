@@ -53,7 +53,14 @@ export class SettingsComponent {
   }
 
   revert() {
+    _.each(this.displayedSettings, (setting: Setting) => {
+      if (setting.value !== setting.default) {
+        setting.value = this.settings[setting.id] = setting.default;
+        setting.updated();
+      }
+    });
 
+    this.dataService.sync();
   }
 
 }

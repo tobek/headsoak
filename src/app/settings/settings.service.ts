@@ -10,21 +10,19 @@ import {Logger, utils} from '../utils/';
 export class SettingsService {
   initialized$ = new Subject<void>();
 
-  // Here we decalre default values
-
-  addQueryTagsToNewNuts = true;;
-  tagChangesChangeNutModifiedTimestamp = false;
-  nutChangesChangeTagModifiedTimestamp = true;
-  showNoteIds = false;
-  maxHistory = 0;
+  addQueryTagsToNewNuts: boolean;
+  tagChangesChangeNutModifiedTimestamp: boolean;
+  nutChangesChangeTagModifiedTimestamp: boolean;
+  showNoteIds: boolean;
+  maxHistory: number;
 
   // internal use
-  nutSortBy = '0-modified-true'; // see IDs in notesService.sortOpts
-  tagSortBy = '0-docs.length-true'; // see IDs in tagsService.sortOpts
+  nutSortBy: string; // see IDs in notesService.sortOpts
+  tagSortBy: string; // see IDs in tagsService.sortOpts
 
   data: Setting[] = [];
 
-  info = [
+  private sourceData = [
     {
       id: 'addQueryTagsToNewNuts',
       default: true,
@@ -96,10 +94,10 @@ export class SettingsService {
   init(settingsData: {}, dataService: DataService) {
     this.dataService = dataService;
 
-    _.each(this.info, (setting) => {
-      if (settingsData[setting.id] !== undefined) {
-        setting['value'] = this[setting.id] = settingsData[setting.id];
-      }
+    _.each(this.sourceData, (setting) => {
+      const value = settingsData[setting.id] !== undefined ? settingsData[setting.id] : setting.default;
+
+      setting['value'] = this[setting.id] = value;
 
       this.data.push(new Setting(setting, this.dataService));
     });
