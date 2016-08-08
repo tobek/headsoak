@@ -11,6 +11,9 @@
       <td>
         <input type="checkbox" id="setting-{{ setting.id }}" [ngModel]="settings[setting.id]" (ngModelChange)="settingUpdated(setting, $event)" />
       </td>
+      <td>
+        <span *ngIf="dataService.isUnsaved(setting)">saving...</span>
+      </td>
     </tr>
   </tbody>
 </table>

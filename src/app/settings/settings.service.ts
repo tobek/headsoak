@@ -20,7 +20,7 @@ export class SettingsService {
 
   // internal use
   nutSortBy = '0-modified-true'; // see IDs in notesService.sortOpts
-  tagSortBy = '0-docs.length-true', // see IDs in tagsService.sortOpts
+  tagSortBy = '0-docs.length-true'; // see IDs in tagsService.sortOpts
 
   data: Setting[] = [];
 
@@ -81,24 +81,24 @@ export class SettingsService {
       section: null // not visible in UI
     },
 
-    new Setting({
+    {
       id: 'tagSortBy',
       default: '0-docs.length-true', // see IDs in n.sortOpts
       name: 'Default tag sorting',
       type: 'string', // string not supported yet in UI
       section: null // not visible in UI
-    }),
+    },
   ]
 
   private _logger: Logger = new Logger(this.constructor.name);
   private dataService: DataService;
 
-  init(settingsData: Object, dataService: DataService) {
+  init(settingsData: {}, dataService: DataService) {
     this.dataService = dataService;
 
     _.each(this.info, (setting) => {
       if (settingsData[setting.id] !== undefined) {
-        setting.value = this[setting.id] = settingsData[setting.id];
+        setting['value'] = this[setting.id] = settingsData[setting.id];
       }
 
       this.data.push(new Setting(setting, this.dataService));

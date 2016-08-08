@@ -14,7 +14,14 @@ import {FirebaseMock} from './mocks/';
 
 @Injectable()
 export class DataService {
-  NEW_FEATURE_COUNT= 12; // Hard-coded so that it only updates when user actually receives updated code with the features
+  NEW_FEATURE_COUNT = 12; // Hard-coded so that it only updates when user actually receives updated code with the features
+
+  /** Maps from item type name to name in data store. */
+  TYPE_STORE_MAP = {
+    'Note': 'nuts',
+    'Tag': 'tags',
+    'Setting': 'settings',
+  };
 
   online: boolean; // @TODO/rewrite connection widget should show if offline
 
@@ -52,15 +59,8 @@ export class DataService {
   }
 
   dataUpdated(update: Note | Tag | Setting): void {
-    if (update instanceof Note) {
-      this.digest.nuts[update.id] = update;
-    }
-    else if (update instanceof Tag) {
-      this.digest.tags[update.id] = update;
-    }
-    else if (update instanceof Setting) {
-      this.digest.settings[update.id] = update;
-    }
+    const store = this.TYPE_STORE_MAP[update.constructor.name];
+    this.digest[store][update.id] = update;
 
     this.status = 'unsynced';
   }
@@ -77,6 +77,12 @@ export class DataService {
   digestReset(): void {
     this.digest = { 'nuts': {}, 'tags': {}, 'settings': {} };
     this.status = 'synced'; // @TODO/rewrite Make sure sync status widget updates
+  }
+
+  isUnsaved(item: Note | Tag | Setting): boolean {
+    const store = this.TYPE_STORE_MAP[item.constructor.name];
+
+    return this.digest[store][item.id] !== undefined;
   }
 
   /** We run this on an interval. Checks the digest and syncs updates as necessary. */
