@@ -26,7 +26,6 @@
 
      "watch": "npm run watch:dev",
        "watch:dev": "npm run build:dev -- --watch",
-       "watch:dev:hmr": "npm run watch:dev -- --hot",
        "watch:test": "npm run test -- --auto-watch --no-single-run",
        "watch:prod": "npm run build:prod -- --watch",
 
@@ -42,7 +41,6 @@
 
     "server": "npm run server:dev",
        "server:dev": "webpack-dev-server --config config/webpack.dev.js --progress --profile --colors --watch --display-error-details --display-cached --content-base src/",
-       "server:dev:hmr": "npm run server:dev -- --inline --hot",
        "server:prod": "http-server dist --cors",
 
      "webdriver:update": "npm run webdriver-manager update",
@@ -61,7 +59,6 @@
      "docs": "npm run typedoc -- --options typedoc.json --exclude '**/*.spec.ts' ./src/",
 
      "start": "npm run server:dev",
-       "start:hmr": "npm run server:dev:hmr",
 
        "preversion": "npm test",
      "version": "npm run build",
@@ -108,7 +105,6 @@
     "@types/uglify-js": "^2.0.27",
     "@types/webpack": "^1.12.29",
 
-    "angular2-hmr": "~0.8.0",
     "gh-pages": "^0.11.0",
     "parse5": "^1.5.1",
     "rimraf": "^2.5.2",

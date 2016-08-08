@@ -3,7 +3,6 @@
  */
 import { Component, ViewEncapsulation } from '@angular/core';
 
-import {AppState} from './app.service';
 import {AnalyticsService} from './analytics.service';
 import {DataService} from './data.service';
 import {Logger} from './utils/logger';
@@ -37,19 +36,14 @@ export class App {
 
   constructor(
     public analyticsService: AnalyticsService,
-    public dataService: DataService,
-    public appState: AppState
+    public dataService: DataService
    ) {}
 
-  get state() {
-    return this.appState.get();
-  }
-
   ngOnInit() {
-    this._logger.log('Initial State', this.state);
+    this._logger.log('App component initializing');
   }
   ngOnDestroy() {
-    this._logger.log('component destroyed!');
+    this._logger.log('App component destroyed!');
   }
 
 }

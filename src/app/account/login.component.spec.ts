@@ -10,7 +10,6 @@ import {MockBackend} from '@angular/http/testing';
 
 // Load the implementations that should be tested
 import {LoginComponent, AccountService} from './';
-import {AppState} from '../app.service';
 import {DataService} from '../data.service';
 
 describe('LoginComponent', () => {
@@ -39,7 +38,6 @@ describe('LoginComponent', () => {
   // provide our implementations or mocks to the dependency injector
   beforeEachProviders(() => [
     MockBackend,
-    AppState,
     provide(AccountService, { useClass: AccountServiceMock }),
     DataService,
     LoginComponent

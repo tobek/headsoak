@@ -6,7 +6,6 @@ import {
 
 // Load the implementations that should be tested
 import {App} from './app.component';
-import {AppState} from './app.service';
 import {UserService, AccountService} from './account';
 import {AnalyticsService} from './analytics.service';
 import {DataService} from './data.service';
@@ -16,7 +15,6 @@ describe('App', () => {
   // provide our implementations or mocks to the dependency injector
   beforeEachProviders(() => [
     App,
-    AppState,
     AnalyticsService,
     DataService,
     AccountService,

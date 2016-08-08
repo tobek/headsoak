@@ -165,10 +165,11 @@ module.exports = webpackMerge(commonConfig, {
      * See: http://webpack.github.io/docs/list-of-plugins.html#normalmodulereplacementplugin
      */
 
-    new NormalModuleReplacementPlugin(
-      /angular2-hmr/,
-      helpers.root('config/modules/angular2-hmr-prod.js')
-    ),
+    // @NOTE Unused since removing HMR - @toby
+    // new NormalModuleReplacementPlugin(
+    //   /angular2-hmr/,
+    //   helpers.root('config/modules/angular2-hmr-prod.js')
+    // ),
 
     /**
      * Plugin: IgnorePlugin
