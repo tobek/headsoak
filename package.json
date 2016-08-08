@@ -35,6 +35,7 @@
          "prebuild:prod": "npm run clean:dist",
        "build:prod": "webpack --config config/webpack.prod.js  --progress --profile --colors --display-error-details --display-cached --bail",
        "build:prod:no-bail": "webpack --config config/webpack.prod.js  --progress --profile --colors --display-error-details --display-cached",
+         "prebuild:prod:no-bail": "npm run clean:dist",
 
     "github-deploy": "npm run github-deploy:dev",
       "github-deploy:dev": "webpack --config config/webpack.github-deploy.js --progress --profile --colors --display-error-details --display-cached --github-dev",
