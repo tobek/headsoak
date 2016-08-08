@@ -30,7 +30,7 @@ export class AutocompleteService {
     excludeTags: [], // should be `Tag[]` but typescript is throwing an error
     excludeTagIds: [''],
     context: '',
-    autocompleteOpts: any,
+    autocompleteOpts: {}, // should be `any` but can't be found...?
   }) {
     var lookupArray: string[] = _.filter(this.tagsService.tags, (tag: Tag) => {
       if (context === 'note') {
@@ -88,8 +88,8 @@ export class AutocompleteService {
       formatResult: (suggestion) => suggestion.highlighted,
 
       onSelect: (suggestion, e) => {
-        if (autocompleteOpts.onSelect) {
-          autocompleteOpts.onSelect(suggestion, e);
+        if (autocompleteOpts['onSelect']) {
+          autocompleteOpts['onSelect'](suggestion, e);
         }
       },
     });

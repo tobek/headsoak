@@ -31,7 +31,7 @@ export class DataService {
   private syncTasksRemaining = 0;
 
   private _logger = new Logger(this.constructor.name); // @TODO/rewrite why is typescript raising a fuss here? check that x-browser compatible and see if there's a better way
-  private ref: Firebase;
+  private ref: Firebase | any;
   private onlineStateRef: Firebase;
 
   constructor(
