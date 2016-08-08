@@ -9,11 +9,11 @@ console.log('`About` component loaded');
   `],
   template: `
     <h1>
-      This component is loaded!
+      About component loaded!
     </h1>
   `
 })
-export class About {
+export class AboutComponent {
   constructor(public route: ActivatedRoute) {
 
   }

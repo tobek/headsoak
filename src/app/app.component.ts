@@ -1,15 +1,14 @@
-/*
- * Angular 2 decorators and services
- */
 import { Component, ViewEncapsulation } from '@angular/core';
+import { Router } from '@angular/router';
 
 import {AnalyticsService} from './analytics.service';
 import {DataService} from './data.service';
 import {Logger} from './utils/logger';
 
-import {Home} from './home';
+import {routes} from './';
+
+import {HomeComponent} from './home';
 import {LoginComponent} from './account';
-import {NoteBrowserComponent} from './notes/';
 import {TagBrowserComponent} from './tags/tag-browser.component'; // @NOTE No idea why, but adding this to `tags/index.ts` and importing from './tags/' makes angular unable to resolve TagBrowerComponent
 
 /*
@@ -22,7 +21,7 @@ import {TagBrowserComponent} from './tags/tag-browser.component'; // @NOTE No id
   providers: [ ],
   directives: [
     LoginComponent,
-    NoteBrowserComponent,
+    HomeComponent,
     TagBrowserComponent,
   ],
   encapsulation: ViewEncapsulation.None,
@@ -32,9 +31,12 @@ import {TagBrowserComponent} from './tags/tag-browser.component'; // @NOTE No id
 export class App {
   name = 'nutmeg';
 
+  routes = routes;
+
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
+    private router: Router,
     public analyticsService: AnalyticsService,
     public dataService: DataService
    ) {}

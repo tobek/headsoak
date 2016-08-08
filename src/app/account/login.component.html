@@ -11,18 +11,18 @@
   </form>
 
   <p>
-    <a (click)="forgotPassword()">forgot password?</a>
+    <button (click)="forgotPassword()">forgot password?</button>
   </p>
 
   <p>
     or
-    <a class="create-account-link" (click)="view = 'create-account'">create an account</a>
+    <button class="create-account-link" (click)="view = 'create-account'">create an account</button>
   </p>
 </div>
 
 <div *ngIf="view === 'logout'">
-  <a class="logout-link" (click)="logout()">logout</a>
-  <a class="delete-account-link" (click)="deleteAccount()">delete account</a>
+  <button class="logout-link" (click)="logout()">logout</button>
+  <button class="delete-account-link" (click)="deleteAccount()">delete account</button>
 </div>
 
 <div *ngIf="view === 'create-account'">
@@ -37,6 +37,6 @@
   </form>
 
   <p>
-    <a (click)="view = 'login'">back</a>
+    <button (click)="view = 'login'">back</button>
   </p>
 </div>

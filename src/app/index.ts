@@ -10,7 +10,7 @@ import {NotesService} from './notes/';
 import {TagsService} from './tags/';
 import {AutocompleteService, ScrollMonitorService} from './utils/';
 
-// export * from './app.routes';
+export * from './app.routes';
 
 // Application wide providers
 export const APP_PROVIDERS = [

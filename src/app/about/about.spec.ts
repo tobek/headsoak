@@ -9,9 +9,9 @@ import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 
 // Load the implementations that should be tested
-import {About} from './about.component';
+import {AboutComponent} from './about.component';
 
-describe('About', () => {
+describe('AboutComponent', () => {
   // provide our implementations or mocks to the dependency injector
   beforeEachProviders(() => [
     {
