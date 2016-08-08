@@ -49,13 +49,15 @@ export class TagBrowserComponent {
   ) {
     this.el = elRef.nativeElement;
 
-    // @TODO/rewrite/tags Ability to sort tags
-    // this.queryUpdated$
-    //   .debounceTime(250)
-    //   .subscribe(() => {
-    //     let queriedTags = this.tagsService.doQuery(this.query);
-    //     this.tags = this.tagsService.sortTags(undefined, queriedTags);
-    //   });
+    this.queryUpdated$
+      .debounceTime(200)
+      .subscribe(() => {
+        // @TODO/tags Ideally this should use fuzzy match sorter (and bold matching parts of tag names)
+        let queriedTags = _.filter(this.tagsService.tags, (tag: Tag) => {
+          return tag.name.toLowerCase().indexOf(this.query.toLowerCase()) !== -1;
+        });
+        this.tags = this.tagsService.sortTags(this.sortOpt, queriedTags);
+      });
   }
 
   ngOnInit() {
@@ -76,35 +78,14 @@ export class TagBrowserComponent {
     this.tags = this.tagsService.sortTags(this.sortOpt);
   }
 
-  // newNote(noteData = {}): void {
-  //   // @TODO/rewrite/notes Do we want to support config option that newly created notes have any tags that are currently in the query? Does this even make sense with separate note browser vs. note editor?
-  //   const newNote = this.notesService.createNote(noteData);
+  queryUpdated(): void {
+    this.queryUpdated$.next(null);
+  }
 
-  //   // Have to re-assign this.notes (rather than mutate it) otherwise the view won't update
-  //   this.notes = _.concat([newNote], this.notes);
-
-  //   // Have to wait cause angular hasn't updated the QueryList yet, but once it has, we can focus on the new note component
-  //   setTimeout(() => {
-  //     this.noteComponents.first.focus();
-  //   }, 0);
-  // }
-
-  // /** Called when one of the notes in this component is deleted. */
-  // noteDeleted(deletedNote: Note): void {
-  //   // Have to re-assign this.notes (rather than mutate it) otherwise the view won't update
-  //   this.notes = _.filter(this.notes, (note: Note) => note.id !== deletedNote.id);
-  // }
-
-  // queryUpdated(): void {
-  //   this.queryUpdated$.next(null);
-  // }
-
-  // queryClear(): void {
-  //   this.queryTags = [];
-  //   this.query = '';
-  //   this.queryUpdated();
-  //   this.queryEnsureFocusAndAutocomplete();
-  // }
+  queryClear(): void {
+    this.query = '';
+    this.queryUpdated();
+  }
 
   sort(sortOpt?): void {
     if (sortOpt) {

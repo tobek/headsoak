@@ -94,12 +94,12 @@ export class TagsService {
     if (sortOpt.field.indexOf('.') !== -1 ) { // e.g. field might be `docs.length`
       var fields = sortOpt.field.split('.');
 
-      sortedTags = _.sortBy(this.tags, function(tag: Tag) {
+      sortedTags = _.sortBy(tagsToSort, function(tag: Tag) {
         return tag[fields[0]] ? tag[fields[0]][fields[1]] : 0;
       });
     }
     else { // e.g. `created`
-      sortedTags = _.sortBy(this.tags, sortOpt.field);
+      sortedTags = _.sortBy(tagsToSort, sortOpt.field);
     }
     // @NOTE: Here is a more generic way to deal with this indexing of sub-objects by dot-notation string: http://stackoverflow.com/a/6394168. _.get might do it too.
 
