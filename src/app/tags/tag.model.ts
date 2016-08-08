@@ -88,8 +88,35 @@ export class Tag {
   }
 
   rename(newName: string): void {
+    this._logger.log('Renaming to:', newName);
     this.name = newName;
     this.updated();
+  }
+
+  /** Returns true if tag was deleted. */
+  delete(noConfirm = false): boolean {
+    if (! noConfirm && ! confirm('Are you sure you want to delete the tag "' + this.name + '"? It will be removed from all notes which have this tag, but the notes will remain.\n\nThis can\'t be undone.')) {
+      return false;
+    }
+
+    this.prog = false; // so that we don't get added back by any programmatic logic when updating note while removing ourselves
+
+    // this.docs.slice() returns a duplicate of the array which is necessary because note.removeTag will call tag.removeNoteId which will modify the array we're iterating over.
+    this.docs.slice().forEach((noteId) => {
+      this.dataService.notes.notes[noteId].removeTag(this);
+    });
+
+    // @TODO/rewrite/sharing
+    // if (this.share && ! this.sharedBy) {
+    //   // Shared tag that is shared by the current user
+    //   $s.t.unshareTagWithAll(tag);
+    // }
+
+    this.dataService.tags.removeTag(this);
+
+    this._logger.log('Deleted');
+
+    return true;
   }
 
   addNoteId(noteId: string): void {

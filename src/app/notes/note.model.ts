@@ -312,8 +312,6 @@ export class Note {
 
     this.dataService.notes.removeNote(this);
 
-    this.dataService.removeData('note', this.id);
-
     // @TODO/rewrite/sharing Do we need to do anything with sharing?
 
     // @TODO/rewrite need to do something like this otherwise it's still visible

@@ -25,7 +25,8 @@ export class TagComponent {
   @Input() removable: boolean;
   @Input() showCount: boolean;
 
-  @Output() removed = new EventEmitter<Tag>();
+  @Output() removed = new EventEmitter<Tag>(); // removed from given context (e.g. note, search query)
+  @Output() deleted= new EventEmitter<Tag>(); // deleted entirely
 
   constructor(
     private analyticsService: AnalyticsService,
@@ -55,6 +56,13 @@ export class TagComponent {
   renameCancel() {
     this.renaming = false;
     this.tagNameEl.innerHTML = this.tag.name;
+  }
+
+  delete(event: MouseEvent) {
+    let noConfirm = event.shiftKey;
+    if (this.tag.delete(noConfirm)) {
+      this.deleted.emit(this.tag);
+    }
   }
 
 }

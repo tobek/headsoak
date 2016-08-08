@@ -66,6 +66,11 @@ export class TagsService {
     return newTag;
   }
 
+  removeTag(tag: Tag): void {
+    this.dataService.removeData('tag', tag.id);
+    delete this.tags[tag.id];
+  }
+
   getTagByName(name: string): Tag {
     // @TODO Doesn't handle duplicate tag names. Dupe tag names aren't handled at all actually.
     return _.find(this.tags, { name: name });

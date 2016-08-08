@@ -106,9 +106,17 @@ export class TagBrowserComponent {
   //   this.queryEnsureFocusAndAutocomplete();
   // }
 
-  sort(sortOpt): void {
-    this.sortOpt = sortOpt;
+  sort(sortOpt?): void {
+    if (sortOpt) {
+      this.sortOpt = sortOpt;
+    }
+
     this.tags = this.tagsService.sortTags(this.sortOpt);
+  }
+
+  /** Called when one of the tags in this component is deleted. */
+  tagDeleted(deletedTag: Tag): void {
+    this.tags = _.filter(this.tags, (tag: Tag) => tag.id !== deletedTag.id);
   }
 
   // // @TODO/testing infinite scroll e2e both directions

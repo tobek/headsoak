@@ -95,6 +95,7 @@ export class NotesService {
 
   removeNote(note: Note) {
     this.removeNoteFromIndex(note);
+    this.dataService.removeData('note', note.id);
     delete this.notes[note.id];
   }
 

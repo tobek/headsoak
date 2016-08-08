@@ -1,5 +1,8 @@
 <div class="tag-query-bar">
-  <input tabindex=1 type="text" placeholder="Search tags" ref-queryInput [(ngModel)]="query" (ngModelChange)="queryUpdated()">
+  <input tabindex=1 type="text" placeholder="Search tags"
+    ref-queryInput [(ngModel)]="query"
+    (ngModelChange)="queryUpdated()"
+  >
   <button (click)="queryClear()">x</button>
 
   <label>
@@ -14,4 +17,10 @@
   <hr>
 </div>
 
-<tag class="tag-{{ tag.id }}" *ngFor="let tag of (tags | arrayLimit:limit)" [tagId]="tag.id" [showCount]="true" [editable]="true" (deleted)="tagDeleted($event)"></tag>
+<tag class="tag-{{ tag.id }}"
+  *ngFor="let tag of (tags | arrayLimit:limit)"
+  [tagId]="tag.id"
+  [showCount]="true"
+  [editable]="true"
+  (deleted)="tagDeleted($event)"
+></tag>
