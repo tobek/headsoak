@@ -1,4 +1,10 @@
-<span ref-tagName [attr.contenteditable]="renaming" (keydown.enter)="renameFinish($event)" (keydown.esc)="renameCancel()" (blur)="renameCancel()">{{ tag.name }}</span>
+<span placeholder="tag name"
+  ref-tagName
+  [attr.contenteditable]="renaming"
+  (keydown.enter)="renameFinish($event)"
+  (keydown.esc)="renameCancel()"
+  (blur)="renameCancel()"
+>{{ tag.name }}</span>
 
 <span *ngIf="showCount">({{ tag.docs.length }})</span>
 
@@ -14,6 +20,6 @@
 
   <span *ngIf="editable">
     <button (click)="renameStart()">rename</button>
-    <button (click)="delete($event)">delete</button>
+    <button (click)="delete($event.shiftKey)">delete</button>
   </span>
 </span>

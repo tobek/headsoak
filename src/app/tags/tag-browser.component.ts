@@ -32,7 +32,7 @@ export class TagBrowserComponent {
   sortOpt: Object = this.tagsService.sortOpts[0];
 
   @ViewChild('queryInput') queryInput: ElementRef;
-  // @ViewChildren(TagComponent) tagComponents: QueryList<TagComponent>;
+  @ViewChildren(TagComponent) tagComponents: QueryList<TagComponent>;
 
   query: string;
   private queryUpdated$: Subject<void> = new Subject<void>();
@@ -112,6 +112,17 @@ export class TagBrowserComponent {
     }
 
     this.tags = this.tagsService.sortTags(this.sortOpt);
+  }
+
+  newTag(): void {
+    const newTag = this.tagsService.createTag();
+
+    this.tags = _.concat([newTag], this.tags);
+
+    // Have to wait cause angular hasn't updated the QueryList yet, but once it has, we can focus on the new tag component
+    setTimeout(() => {
+      this.tagComponents.first.renameStart();
+    }, 0);
   }
 
   /** Called when one of the tags in this component is deleted. */

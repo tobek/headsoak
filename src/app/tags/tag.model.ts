@@ -36,8 +36,8 @@ export class Tag {
 
   // @TODO how do we handle duplicate names?
   constructor(tagData: any, private dataService: DataService) {
-    if (! tagData.id || ! tagData.name) {
-      throw new Error('Must supply tag with id and name');
+    if (! tagData.id) {
+      throw new Error('Must supply tag with id');
     }
 
     _.extend(this, tagData);

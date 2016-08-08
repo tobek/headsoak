@@ -16,6 +16,9 @@ export class TagComponent {
   @Input() tagId: string;
   tag: Tag;
 
+  /** If this is a new tag not yet saved to data store but just created for the user to type new tag name into. */
+  isNewTag = false;
+
   renaming = false;
 
   @ViewChild('tagName') tagNameRef: ElementRef;
@@ -36,6 +39,11 @@ export class TagComponent {
   ngOnInit() {
     this.tag = this.tagsService.tags[this.tagId];
     this.tagNameEl = this.tagNameRef.nativeElement;
+
+    if (! this.tag.name) {
+      this.isNewTag = true;
+      this.editable = false;
+    }
   }
 
   remove() {
@@ -52,14 +60,24 @@ export class TagComponent {
     event.preventDefault();
     this.renaming = false;
     this.tag.rename(this.tagNameEl.innerHTML.trim());
+
+    if (this.isNewTag) {
+      this.isNewTag = false;
+      this.editable = true;
+    }
   }
   renameCancel() {
     this.renaming = false;
-    this.tagNameEl.innerHTML = this.tag.name;
+
+    if (this.isNewTag) {
+      this.delete(true);
+    }
+    else {
+      this.tagNameEl.innerHTML = this.tag.name;
+    }
   }
 
-  delete(event: MouseEvent) {
-    let noConfirm = event.shiftKey;
+  delete(noConfirm = false) {
     if (this.tag.delete(noConfirm)) {
       this.deleted.emit(this.tag);
     }

@@ -39,7 +39,7 @@ export class TagsService {
     this._logger.log('got', _.size(this.tags), ' tags');
   }
 
-  createTag(tagData: any, isInit = false): Tag {
+  createTag(tagData: any = {}, isInit = false): Tag {
     if (tagData.id) {
       if (this.tags[tagData.id]) {
         throw new Error('Cannot create a new tag with id "' + tagData.id + '" - already taken!');
@@ -57,7 +57,8 @@ export class TagsService {
     const newTag = new Tag(tagData, this.dataService);
     this.tags[newTag.id] = newTag;
 
-    if (! isInit) {
+    // No need to sync to data store if we're initializing notes from data store. Additionally, if this is a new tag with no name, no need to save yet - we'll save when it gets named.
+    if (! isInit && tagData.name) {
       newTag.updated();
     }
 
