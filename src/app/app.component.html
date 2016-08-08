@@ -4,9 +4,9 @@
   <login></login>
 </header>
 
-<hr>
+<main [hidden]="! dataService.user.loggedIn">
+  <hr>
 
-<main>
   <nav>
     <ul>
       <li *ngFor="let route of routes" [class.active]="'/' + route.path === router.url">
