@@ -8,7 +8,7 @@
 
 <span *ngIf="showCount">({{ tag.docs.length }})</span>
 
-<span class="icons">
+<span class="icons" (click)="$event.stopPropagation()">
   <span class="share" *ngIf="tag.share">
     [shared]
   </span>
@@ -18,7 +18,7 @@
 
   <button class="hover-cover" *ngIf="removable" (click)="remove()">x</button>
 
-  <span *ngIf="editable">
+  <span *ngIf="editable && ! tag.readOnly">
     <button (click)="renameStart()">rename</button>
     <button (click)="delete($event.shiftKey)">delete</button>
   </span>

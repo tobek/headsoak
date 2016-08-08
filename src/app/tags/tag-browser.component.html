@@ -19,6 +19,7 @@
 
 <tag class="tag tag-{{ tag.id }}"
   *ngFor="let tag of (tags | arrayLimit:limit)"
+  (click)="tagToggled(tag)"
   [tagId]="tag.id"
   [showCount]="true"
   [editable]="true"
