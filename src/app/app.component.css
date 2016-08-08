@@ -21,3 +21,10 @@ nav li.active {
 .autocomplete-suggestion.autocomplete-selected {
   background-color: #DDD;
 }
+
+/* @TODO/rewrite check browser compability for this - last I remember it didn't work right in FF. */
+[placeholder][contenteditable]:empty:before {
+  content: attr(placeholder);
+  font-style: italic;
+  color: #999;
+}
