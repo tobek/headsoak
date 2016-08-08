@@ -1,21 +1,24 @@
 <header>
+  <h1>{{ name }}</h1>
+
+  <login></login>
+</header>
+
+<hr>
+
+<main>
   <nav>
-    <h1>{{ name }}</h1>
     <ul>
       <li *ngFor="let route of routes" [class.active]="'/' + route.path === router.url">
         <a *ngIf="route.name" [routerLink]="[route.path]">{{ route.name }}</a>
       </li>
     </ul>
   </nav>
-</header>
 
-<main>
-  <login></login>
   <div>sync status: {{ dataService.status }}</div>
-  <hr>
 
   <router-outlet></router-outlet>
-  <home [hidden]="router.url !== '/'"></home>
+  <home [hidden]="router.url !== '/' && router.url !== '/browse'"></home>
   <tag-browser [hidden]="router.url !== '/tags'"></tag-browser>
 
 </main>

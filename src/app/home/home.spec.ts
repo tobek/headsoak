@@ -14,11 +14,11 @@ describe('HomeComponent', () => {
     Home
   ]);
 
-  it('should have a title', inject([ Home ], (home) => {
+  it('should have a title', inject([ HomeComponent ], (home) => {
     expect(!!home.title).toEqual(true);
   }));
 
-  it('should log ngOnInit', inject([ Home ], (home) => {
+  it('should log ngOnInit', inject([ HomeComponent ], (home) => {
     spyOn(console, 'log');
     expect(console.log).not.toHaveBeenCalled();
 

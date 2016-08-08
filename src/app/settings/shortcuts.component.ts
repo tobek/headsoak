@@ -1,25 +1,23 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-console.log('`About` component loaded');
-
 @Component({
-  selector: 'about',
+  selector: 'shortcuts',
   styles: [`
   `],
   template: `
     <h1>
-      About component loaded!
+      Shortcuts!
     </h1>
   `
 })
-export class AboutComponent {
+export class ShortcutsComponent {
   constructor(public route: ActivatedRoute) {
 
   }
 
   ngOnInit() {
-    console.log('`About` component initialized');
+    console.log('`Shortcuts` component initialized');
   }
 
 }

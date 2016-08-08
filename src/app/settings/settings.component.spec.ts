@@ -9,9 +9,9 @@ import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 
 // Load the implementations that should be tested
-import {AboutComponent} from './about.component';
+import {SettingsComponent} from './settings.component';
 
-describe('AboutComponent', () => {
+describe('SettingsComponent', () => {
   // provide our implementations or mocks to the dependency injector
   beforeEachProviders(() => [
     {
@@ -25,11 +25,11 @@ describe('AboutComponent', () => {
     About
   ]);
 
-  it('should log ngOnInit', inject([ About ], (about) => {
+  it('should log ngOnInit', inject([ SettingsComponent ], (settings) => {
     spyOn(console, 'log');
     expect(console.log).not.toHaveBeenCalled();
 
-    about.ngOnInit();
+    settings.ngOnInit();
     expect(console.log).toHaveBeenCalled();
   }));
 
