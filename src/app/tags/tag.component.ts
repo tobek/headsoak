@@ -58,8 +58,16 @@ export class TagComponent {
   }
   renameFinish(event: KeyboardEvent) {
     event.preventDefault();
+
+    const newName = this.tagNameEl.innerHTML.trim();
+
+    if (! newName) {
+      this.renameCancel();
+      return;
+    }
+    
     this.renaming = false;
-    this.tag.rename(this.tagNameEl.innerHTML.trim());
+    this.tag.rename(newName);
 
     if (this.isNewTag) {
       this.isNewTag = false;
