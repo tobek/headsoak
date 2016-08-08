@@ -7,7 +7,7 @@ import { ActivatedRoute } from '@angular/router';
   `],
   template: `
     <h1>
-      Account Settings!
+      Account Settings
     </h1>
   `
 })
