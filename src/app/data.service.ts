@@ -20,14 +20,6 @@ declare type DataItem = Note | Tag | Setting | Shortcut;
 export class DataService {
   NEW_FEATURE_COUNT = 12; // Hard-coded so that it only updates when user actually receives updated code with the features
 
-  /** Maps from item type name to name in data store. */
-  TYPE_STORE_MAP = {
-    'Note': 'nuts',
-    'Tag': 'tags',
-    'Setting': 'settings',
-    'Shortcut': 'settings',
-  };
-
   online: boolean; // @TODO/rewrite connection widget should show if offline
 
   digest$ = new EventEmitter<DataItem>();
@@ -68,9 +60,20 @@ export class DataService {
     this.digestSub.unsubscribe();
   }
 
+  getDataStoreName(item: DataItem): string {
+    if (item instanceof Note) {
+      return 'nuts';
+    }
+    else if (item instanceof Tag) {
+      return 'tags';
+    }
+    else if (item instanceof Setting || item instanceof Shortcut) {
+      return 'settings';
+    }
+  }
+
   dataUpdated(update: DataItem): void {
-    const store = this.TYPE_STORE_MAP[update.constructor.name];
-    this.digest[store][update.id] = update;
+    this.digest[this.getDataStoreName(update)][update.id] = update;
 
     this.status = 'unsynced';
   }
@@ -90,9 +93,7 @@ export class DataService {
   }
 
   isUnsaved(item: DataItem): boolean {
-    const store = this.TYPE_STORE_MAP[item.constructor.name];
-
-    return this.digest[store][item.id] !== undefined;
+    return this.digest[this.getDataStoreName(item)][item.id] !== undefined;
   }
 
   /** We run this on an interval. Checks the digest and syncs updates as necessary. */
