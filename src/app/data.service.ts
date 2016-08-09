@@ -8,9 +8,12 @@ import {Note, NotesService} from './notes/';
 import {Tag, TagsService} from './tags/';
 import {SettingsService} from './settings/settings.service';
 import {Setting} from './settings/setting.model';
+import {Shortcut} from './settings/shortcut.model';
 
 // @TODO/rewrite only do in dev mode
 import {FirebaseMock} from './mocks/';
+
+declare type DataItem = Note | Tag | Setting | Shortcut;
 
 @Injectable()
 export class DataService {
@@ -21,11 +24,12 @@ export class DataService {
     'Note': 'nuts',
     'Tag': 'tags',
     'Setting': 'settings',
+    'Shortcut': 'settings',
   };
 
   online: boolean; // @TODO/rewrite connection widget should show if offline
 
-  digest$ = new EventEmitter<Note | Tag | Setting>();
+  digest$ = new EventEmitter<DataItem>();
 
   status: string; // 'synced' | 'syncing' | 'unsynced' | 'disconnected'
 
@@ -33,7 +37,7 @@ export class DataService {
   private digest: {
     'nuts': { [key: string]: Note },
     'tags': { [key: string]: Tag },
-    'settings': { [key: string]: Setting },
+    'settings': { [key: string]: Setting | Shortcut },
   };
 
   /** How many separate async callbacks to sync data to data store we're currently waiting on. Using `parallel` from `async` module would be more elegant, but we don't need anything else from that module right now and source code for that function simply keeps a counter of the number of tasks that have completed, so it's the same idea. */
@@ -58,7 +62,7 @@ export class DataService {
     window['dataService'] = this;
   }
 
-  dataUpdated(update: Note | Tag | Setting): void {
+  dataUpdated(update: DataItem): void {
     const store = this.TYPE_STORE_MAP[update.constructor.name];
     this.digest[store][update.id] = update;
 
@@ -79,7 +83,7 @@ export class DataService {
     this.status = 'synced'; // @TODO/rewrite Make sure sync status widget updates
   }
 
-  isUnsaved(item: Note | Tag | Setting): boolean {
+  isUnsaved(item: DataItem): boolean {
     const store = this.TYPE_STORE_MAP[item.constructor.name];
 
     return this.digest[store][item.id] !== undefined;
@@ -93,14 +97,14 @@ export class DataService {
 
     // Here we loop through notes, tags, etc. in digest, and for each one process them and update to data store
     let updated = false;
-    _.forEach(this.digest, (contents: { [key: string]: Note | Tag | Setting }, field: string) => {
+    _.forEach(this.digest, (contents: { [key: string]: DataItem }, field: string) => {
       if (_.isEmpty(contents)) {
         return;
       }
 
       this.syncTasksRemaining++;
 
-      let updates = _.mapValues(contents, (item: Note | Tag | Setting ) => {
+      let updates = _.mapValues(contents, (item: DataItem ) => {
         // null indicates item has been deleted
         return item === null ? null : item.forDataStore();
       });

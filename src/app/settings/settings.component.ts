@@ -26,7 +26,7 @@ export class SettingsComponent {
   }
 
   ngOnInit() {
-    if (! _.isEmpty(this.settings.settings)) {
+    if (! _.isEmpty(this.settings.data)) {
       this.init();
     }
     else {
@@ -41,7 +41,7 @@ export class SettingsComponent {
     this._logger.log('`Settings` component initialized');
 
     this.displayedSettings = _.filter(this.settings.data, (setting) => {
-      return setting.section === 'settings' && ! setting.overkill;
+      return setting.section === 'settings' && ! setting.overkill && ! setting.internal;
     });
   }
 

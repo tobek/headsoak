@@ -1,5 +1,3 @@
-import {EventEmitter} from '@angular/core';
-
 import {Logger} from '../utils/logger';
 
 import {DataService} from '../';
@@ -8,12 +6,20 @@ export class Setting {
   id: string;
   name: string;
   description: string;
-  type: string; // only 'boolean' supported so far in UI, but 'string' supported for internal ones
-  section: string; // 'settings' | null
+
+  /** Type of value the setting supports. Only 'boolean' supported so far in UI, but 'string' supported for internal ones. */
+  type: string;
+
+  /** Where thissetting belongs to. 'settings' | 'shortcuts' for now. */
+  section: string;
+
+  /** For power users - don't display by default. */
   overkill = false;
+  /** Never display. */
+  internal = false;
 
   default: any;
-  value: any;
+  value: any; // current value used in app
 
   private _logger: Logger;
 
