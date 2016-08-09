@@ -1,7 +1,8 @@
-import {Injectable} from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 
 import {Setting, Shortcut} from './';
+import {ActiveUIsService} from '../active-uis.service';
 import {DataService} from '../';
 
 import {Logger, utils} from '../utils/';
@@ -77,7 +78,7 @@ export class SettingsService {
       name: 'Default note sorting',
       type: 'string', // string not supported yet in UI
       section: 'settings',
-      internal: true // not visible in UI
+      internal: true // not visible in UI but set when they choose a sort
     },
 
     {
@@ -86,7 +87,7 @@ export class SettingsService {
       name: 'Default tag sorting',
       type: 'string', // string not supported yet in UI
       section: 'settings',
-      internal: true // not visible in UI
+      internal: true // not visible in UI but set when they choose a sort
     },
   ];
 
@@ -102,7 +103,13 @@ export class SettingsService {
       id: 'sNewNote',
       name: 'New note',
       default: 'n',
-      // fn: function() { $s.n.createNut({}); },
+      fn: () => {
+        if (this.activeUIs.noteBrowser) {
+          this.ngZone.run(() => {
+            this.activeUIs.noteBrowser.newNote();
+          });
+        }
+      },
       // apply: true,
       section: 'shortcuts',
     },
@@ -248,6 +255,11 @@ export class SettingsService {
 
   private _logger: Logger = new Logger(this.constructor.name);
   private dataService: DataService;
+
+  constructor(
+    private ngZone: NgZone,
+    private activeUIs: ActiveUIsService
+  ) {}
 
   init(settingsData: any, dataService: DataService): void {
     this.dataService = dataService;

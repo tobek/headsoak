@@ -2,6 +2,7 @@ import {Component, ElementRef, ViewChild, ViewChildren, QueryList} from '@angula
 import {Subject, Subscription} from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
 
+import {ActiveUIsService} from '../active-uis.service';
 import {AnalyticsService} from '../analytics.service';
 import {Note} from './note.model';
 import {NoteComponent} from './note.component';
@@ -47,6 +48,7 @@ export class NoteBrowserComponent {
 
   constructor(
     private elRef: ElementRef,
+    private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
     private autocompleteService: AutocompleteService,
     private scrollMonitor: ScrollMonitorService,
@@ -80,6 +82,10 @@ export class NoteBrowserComponent {
   ngOnDestroy() {
     this.querySub.unsubscribe();
     this.scrollSub.unsubscribe();
+
+    if (this.activeUIs.noteBrowser === this) {
+      this.activeUIs.noteBrowser = null;
+    }
   }
 
   initNotes(): void {
@@ -88,6 +94,8 @@ export class NoteBrowserComponent {
 
     // @TODO/rewrite
     // $timeout($s.n.autosizeAllNuts);
+
+    this.activeUIs.noteBrowser = this;
   }
 
   newNote(noteData = {}): void {
@@ -97,10 +105,11 @@ export class NoteBrowserComponent {
     // Have to re-assign this.notes (rather than mutate it) otherwise the view won't update
     this.notes = _.concat([newNote], this.notes);
 
-    // Have to wait cause angular hasn't updated the QueryList yet, but once it has, we can focus on the new note component
-    setTimeout(() => {
+    // Have to wait cause angular hasn't updated the QueryList yet so wait for it:
+    const sub = this.noteComponents.changes.subscribe(() => {
+      sub.unsubscribe();
       this.noteComponents.first.focus();
-    }, 0);
+    });
   }
 
   newNoteWithSameTags(note: Note): void {

@@ -14,7 +14,7 @@ export class Shortcut extends Setting {
   /** Work even in text input areas without "mousetrap" class. */
   global = true;
 
-  /** Do not add the global `mod` to binding. */
+  /** Do not add the global `mod` to binding. Currently not supported in the UI and only used for internal/overkill shortcuts. */
   noMod = false;
 
   constructor(shortcutData: any, dataService: DataService) {
@@ -33,6 +33,7 @@ export class Shortcut extends Setting {
     const binding = this.noMod ? this.value : this.dataService.settings['sMod'] + '+' + this.value;
     const bindFuncName = this.global ? 'bindGlobal' : 'bind';
 
+    // @TODO/rewrite/shortcuts Do we want to block shortcuts under certain conditions (not logged in, in a blocking modal, etc.)? If so we can wrap `this.fn` with some logic. Also we used to have an `apply` property for having to run angular scope apply - might need something similar.
     Mousetrap[bindFuncName](binding, this.fn);
 
     return false; // prevent keyboard event
