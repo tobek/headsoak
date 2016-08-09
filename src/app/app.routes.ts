@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterConfig } from '@angular/router';
-import { SettingsComponent, ShortcutsComponent } from './settings';
+import { SettingsComponent } from './settings';
 import { AccountSettingsComponent } from './account';
 import { NoContent } from './no-content';
 
@@ -17,8 +17,8 @@ export const routes: RouterConfig = [
   { path: '', data: { name: 'Write' }, component: EmptyComponent },
   { path: 'browse', data: { name: 'Browse' }, component: EmptyComponent },
   { path: 'tags', data: { name: 'Tags' }, component: EmptyComponent },
-  { path: 'settings', data: { name: 'Settings' }, component: SettingsComponent },
-  { path: 'shortcuts', data: { name: 'Shortcuts' }, component: ShortcutsComponent },
+  { path: 'settings', data: { name: 'Settings', section: 'settings' }, component: SettingsComponent },
+  { path: 'shortcuts', data: { name: 'Shortcuts', section: 'shortcuts' }, component: SettingsComponent },
   { path: 'account', data: { name: 'Account' }, component: AccountSettingsComponent },
   { path: '**', component: NoContent },
 ];

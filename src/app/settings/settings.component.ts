@@ -1,4 +1,5 @@
 import {Component} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 
 import {Logger} from '../utils/';
 
@@ -14,18 +15,24 @@ import {Setting} from './setting.model';
   template: require('./settings.component.html')
 })
 export class SettingsComponent {
+  sectionName: string;
+  section: string; // currently 'settings' or 'shortcuts'
+
   private displayedSettings: Setting[] = [];
 
   private _logger = new Logger(this.constructor.name);
 
   constructor(
+    private route: ActivatedRoute,
     private settings: SettingsService,
     private dataService: DataService
   ) {
-
   }
 
   ngOnInit() {
+    this.sectionName = this.route.snapshot.data['name'];
+    this.section = this.route.snapshot.data['section'];
+
     if (! _.isEmpty(this.settings.data)) {
       this.init();
     }
@@ -41,7 +48,7 @@ export class SettingsComponent {
     this._logger.log('`Settings` component initialized');
 
     this.displayedSettings = _.filter(this.settings.data, (setting) => {
-      return setting.section === 'settings' && ! setting.overkill && ! setting.internal;
+      return setting.section === this.section && ! setting.overkill && ! setting.internal;
     });
   }
 
