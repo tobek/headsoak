@@ -16,6 +16,13 @@ import '@angular/router';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 
+import 'firebase';
+import 'jquery';
+import 'lodash';
+import 'lunr';
+import 'mousetrap';
+import 'mousetrap-global-bind';
+
 if ('production' === ENV) {
   // Production
 
