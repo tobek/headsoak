@@ -24,7 +24,7 @@ export class Setting {
   private _logger: Logger;
 
   constructor(settingData: any, private dataService: DataService) {
-    if (! settingData.value) {
+    if (settingData.value === undefined) {
       settingData.value = settingData.default;
     }
 

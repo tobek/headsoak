@@ -3,10 +3,15 @@
 <div *ngIf="section === 'shortcuts'">
   <label>
     Modifier key(s):
-    <input type="text" [ngModel]="settings['sMod']" (ngModelChange)="settingUpdatedDebounced(settings.data['sMod'], $event)">
+    <input type="text"
+      [(ngModel)]="settings['sMod']"
+      (blur)="settingUpdated(settings.data['sMod'], settings['sMod'])"
+      (keyup.enter)="settingUpdated(settings.data['sMod'], settings['sMod'])"
+    />
     <span title="This will prefix all of these shortcuts. Your options are:&#10;&#10;- 'ctrl'&#10;- 'shift'&#10;- 'alt'&#10;- 'option'&#10;- 'command' (only on Mac)&#10;- 'meta' (doesn't work?)&#10;- 'mod' ('ctrl' on a PC, 'command' on a Mac).&#10;&#10;You can also combine them, e.g. 'ctrl+shift', or leave blank to control different shortcuts separately.">(?)</span>
   </label>
   <span *ngIf="dataService.isUnsaved(settings.data['sMod'])">saving...</span>
+  <span style="color: red">{{ modKeyError }}</span>
 </div>
 
 <!-- @TODO/rewrite/settings Need tooltips in here -->
@@ -30,12 +35,21 @@
         </label>
       </td>
       <td>
-        <span *ngIf="section === 'shortcuts'">{{ settings['sMod'] }}+</span>
+        <span *ngIf="section === 'shortcuts' && settings.data['sMod'].value">{{ settings.data['sMod'].value }}+</span>
         <input
-          type="{{ setting.type === 'boolean' ? 'checkbox' : 'text' }}"
+          *ngIf="setting.type === 'boolean'"
+          type="checkbox"
           id="setting-{{ setting.id }}"
           [ngModel]="settings[setting.id]"
-          (ngModelChange)="settingUpdatedDebounced(setting, $event)"
+          (ngModelChange)="settingUpdated(setting, $event)"
+        />
+        <input
+          *ngIf="setting.type === 'string'"
+          type="text"
+          id="setting-{{ setting.id }}"
+          [(ngModel)]="settings[setting.id]"
+          (blur)="settingUpdated(setting, settings[setting.id])"
+          (keyup.enter)="settingUpdated(setting, settings[setting.id])"
         />
       </td>
       <td>

@@ -5,7 +5,7 @@ import {Logger} from '../utils/';
 
 import {DataService} from '../data.service';
 import {SettingsService} from './settings.service';
-import {Setting} from './setting.model';
+import {Setting, Shortcut} from './';
 
 @Component({
   selector: 'settings',
@@ -18,8 +18,10 @@ export class SettingsComponent {
   sectionName: string;
   section: string; // currently 'settings' or 'shortcuts'
 
-  private settingUpdatedDebounced = _.debounce(this.settingUpdated.bind(this), 250);
   private syncDebounced = _.debounce(this.dataService.sync.bind(this.dataService), 1000);
+  private checkEmptyModKeyDebounced = _.debounce(this.checkEmptyModKey.bind(this), 1000);
+
+  private modKeyError = '';
 
   private displayedSettings: Setting[] = [];
 
@@ -53,10 +55,21 @@ export class SettingsComponent {
     this.displayedSettings = _.filter(this.settings.data, (setting) => {
       return setting.section === this.section && ! setting.overkill && ! setting.internal;
     });
+
+    this.checkEmptyModKey();
   }
 
   settingUpdated(setting: Setting | Shortcut, newVal: any): void {
-    if (newVal === this.settings[setting.id]) {
+    if (! this.modKeyCheck(setting, newVal)) {
+      return;
+    }
+
+    if (newVal === setting.value) {
+      return;
+    }
+
+    if (setting instanceof Shortcut && newVal === '' && setting.id !== 'sMod') {
+      setting.value = this.settings[setting.id] = setting.default;
       return;
     }
 
@@ -64,6 +77,52 @@ export class SettingsComponent {
 
     setting.updated();
     this.syncDebounced(); // Digest sync is 5s which is a bit long if user is sitting there waiting for setting to save
+
+    this.checkEmptyModKeyDebounced();
+  }
+
+  /** Returns true if `sMod` setting is ok. */
+  modKeyCheck(setting: Shortcut, newVal: string): boolean {
+    if (setting.id !== 'sMod') {
+      return true;
+    }
+
+    let allGood = true;
+    if (newVal === '') {
+      // Valid but requires caution
+      this.checkEmptyModKeyDebounced();
+    }
+    else {
+      newVal.split('+').forEach((modKey) => {
+        if (Shortcut.VALID_MOD_KEYS.indexOf(modKey) === -1) {
+          this.modKeyError = '"' + modKey + '" is not a valid modifier key. Valid modifier keys are: ' + Shortcut.VALID_MOD_KEYS.join(', ') + '.';
+          allGood = false;
+        }
+      });
+    }
+
+    if (allGood) {
+      this.modKeyError = '';
+    }
+
+    return allGood;
+  }
+
+  checkEmptyModKey() {
+    if (this.section !== 'shortcuts' || this.settings['sMod'] !== '') {
+      return;
+    }
+
+    const modlessShortcut = _.find(this.displayedSettings, (setting: Setting) => {
+      return setting.value.indexOf('+') === -1;
+    });
+
+    if (modlessShortcut) {
+      this.modKeyError = 'Warning: You have entered no global modifier key and your shortcut for "' + modlessShortcut.name + '" is "' + modlessShortcut.value + '".\n\nThis means that whenever you press "' + modlessShortcut.value + '" anywhere in Nutmeg, that shortcut will be run.';
+    }
+    else {
+      this.modKeyError = '';
+    }
   }
 
   revert() {
