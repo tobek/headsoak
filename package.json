@@ -84,6 +84,8 @@
     "jquery": "^3.1.0",
     "lodash": "~4.9.0",
     "lunr": "^0.7.1",
+    "mousetrap": "^1.6.0",
+    "mousetrap-global-bind": "^1.0.0",
     "rxjs": "5.0.0-beta.6",
     "zone.js": "~0.6.12",
 
@@ -97,6 +99,7 @@
     "@types/jquery": "^1.10.27",
     "@types/lodash": "^0.0.28",
     "@types/lunr": "^0.5.27",
+    "@types/mousetrap": "^1.5.29",
     "@types/node": "^4.0.29",
     "@types/protractor": "^1.5.16",
     "@types/selenium-webdriver": "^2.44.26",
