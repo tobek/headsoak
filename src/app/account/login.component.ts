@@ -1,4 +1,5 @@
 import {Component, NgZone} from '@angular/core';
+import {Subscription} from 'rxjs';
 
 import {AccountService} from './account.service';
 
@@ -15,11 +16,13 @@ export class LoginComponent {
   pass2: string = '';
   view: string;
 
+  private loginSub: Subscription;
+
   constructor(private accountService: AccountService, private zone: NgZone) {
   }
 
   ngOnInit() {
-    this.accountService.loginState$.subscribe((loginState) => {
+    this.loginSub = this.accountService.loginState$.subscribe((loginState) => {
       // @TODO running in zone here shouldn't be necessary, Angular2 should use Zone to automatically detect Rx event and update view, and seems to work in regular usage, but e2e test isn't working without this.
       this.zone.run(() => {
         switch (loginState) {
@@ -41,6 +44,10 @@ export class LoginComponent {
     });
 
     this.accountService.init();
+  }
+
+  ngOnDestroy() {
+    this.loginSub.unsubscribe();
   }
 
   resetInputs() {

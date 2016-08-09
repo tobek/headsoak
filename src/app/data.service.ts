@@ -1,4 +1,5 @@
 import {Injectable, EventEmitter} from '@angular/core';
+import {Subscription} from 'rxjs';
 
 const Firebase = require('firebase');
 
@@ -39,6 +40,7 @@ export class DataService {
     'tags': { [key: string]: Tag },
     'settings': { [key: string]: Setting | Shortcut },
   };
+  private digestSub: Subscription;
 
   /** How many separate async callbacks to sync data to data store we're currently waiting on. Using `parallel` from `async` module would be more elegant, but we don't need anything else from that module right now and source code for that function simply keeps a counter of the number of tasks that have completed, so it's the same idea. */
   private syncTasksRemaining = 0;
@@ -56,10 +58,14 @@ export class DataService {
     this.ref = new Firebase('https://nutmeg.firebaseio.com/');
 
     this.digestReset();
-    this.digest$.subscribe(this.dataUpdated.bind(this));
+    this.digestSub = this.digest$.subscribe(this.dataUpdated.bind(this));
 
     // @TODO/rewrite - only do this if in dev mode (also, angular itself running in dev mode? there's a message in console about it. ensure that it runs in prod for prod build)
     window['dataService'] = this;
+  }
+
+  ngOnDestroy() {
+    this.digestSub.unsubscribe();
   }
 
   dataUpdated(update: DataItem): void {

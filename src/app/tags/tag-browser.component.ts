@@ -1,5 +1,5 @@
 import {Component, ElementRef, ViewChild, ViewChildren, QueryList} from '@angular/core';
-import {Subject} from 'rxjs/Subject';
+import {Subject, Subscription} from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
 
 import {AnalyticsService} from '../analytics.service';
@@ -37,6 +37,9 @@ export class TagBrowserComponent {
   query: string;
   private queryUpdated$: Subject<void> = new Subject<void>();
 
+  private querySub: Subscription;
+  // private scrollSub: Subscription;
+
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
@@ -48,16 +51,6 @@ export class TagBrowserComponent {
     private tagsService: TagsService,
   ) {
     this.el = elRef.nativeElement;
-
-    this.queryUpdated$
-      .debounceTime(200)
-      .subscribe(() => {
-        // @TODO/tags Ideally this should use fuzzy match sorter (and bold matching parts of tag names)
-        let queriedTags = _.filter(this.tagsService.tags, (tag: Tag) => {
-          return tag.name.toLowerCase().indexOf(this.query.toLowerCase()) !== -1;
-        });
-        this.tags = this.tagsService.sortTags(this.sortOpt, queriedTags);
-      });
   }
 
   ngOnInit() {
@@ -71,7 +64,22 @@ export class TagBrowserComponent {
       });
     }
 
+    this.querySub = this.queryUpdated$
+      .debounceTime(200)
+      .subscribe(() => {
+        // @TODO/tags Ideally this should use fuzzy match sorter (and bold matching parts of tag names)
+        let queriedTags = _.filter(this.tagsService.tags, (tag: Tag) => {
+          return tag.name.toLowerCase().indexOf(this.query.toLowerCase()) !== -1;
+        });
+        this.tags = this.tagsService.sortTags(this.sortOpt, queriedTags);
+      });
+
     // this.scrollMonitor.scroll$.subscribe(this.infiniteScrollCheck.bind(this));
+  }
+
+  ngOnDestroy() {
+    this.querySub.unsubscribe();
+    // this.scrollSub.unsubscribe();
   }
 
   initTags(): void {

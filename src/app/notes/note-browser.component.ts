@@ -1,5 +1,5 @@
 import {Component, ElementRef, ViewChild, ViewChildren, QueryList} from '@angular/core';
-import {Subject} from 'rxjs/Subject';
+import {Subject, Subscription} from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
 
 import {AnalyticsService} from '../analytics.service';
@@ -40,6 +40,9 @@ export class NoteBrowserComponent {
   queryTags: Tag[] = [];
   private queryUpdated$: Subject<void> = new Subject<void>();
 
+  private querySub: Subscription;
+  private scrollSub: Subscription;
+
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
@@ -51,13 +54,6 @@ export class NoteBrowserComponent {
     private tagsService: TagsService,
   ) {
     this.el = elRef.nativeElement;
-
-    this.queryUpdated$
-      .debounceTime(250)
-      .subscribe(() => {
-        let queriedNotes = this.notesService.doQuery(this.query, this.queryTags);
-        this.notes = this.notesService.sortNotes(undefined, queriedNotes);
-      });
   }
 
   ngOnInit() {
@@ -71,7 +67,19 @@ export class NoteBrowserComponent {
       });
     }
 
-    this.scrollMonitor.scroll$.subscribe(this.infiniteScrollCheck.bind(this));
+    this.querySub = this.queryUpdated$
+      .debounceTime(250)
+      .subscribe(() => {
+        let queriedNotes = this.notesService.doQuery(this.query, this.queryTags);
+        this.notes = this.notesService.sortNotes(undefined, queriedNotes);
+      });
+
+    this.scrollSub = this.scrollMonitor.scroll$.subscribe(this.infiniteScrollCheck.bind(this));
+  }
+
+  ngOnDestroy() {
+    this.querySub.unsubscribe();
+    this.scrollSub.unsubscribe();
   }
 
   initNotes(): void {
