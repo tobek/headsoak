@@ -21,6 +21,31 @@ export class Shortcut extends Setting {
     super(shortcutData, dataService);
 
     this.type = 'string'; // force this for all shortcuts
+
+    this.bindShortcut();
+  }
+
+  bindShortcut(): boolean {
+    if (! this.fn) {
+      return true; // let original keyboard event through
+    }
+
+    const binding = this.noMod ? this.value : this.dataService.settings['sMod'] + '+' + this.value;
+    const bindFuncName = this.global ? 'bindGlobal' : 'bind';
+
+    Mousetrap[bindFuncName](binding, this.fn);
+
+    return false; // prevent keyboard event
+  }
+
+  updated(newVal: string): void {
+    const oldBinding = this.noMod ? this.value : this.dataService.settings['sMod'] + '+' + this.value;
+    const unbindFuncName = this.global ? 'unbindGlobal' : 'unbind';
+    Mousetrap[unbindFuncName](oldBinding);
+
+    super.updated(newVal);
+
+    this.bindShortcut();
   }
 
 }

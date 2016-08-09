@@ -73,16 +73,18 @@ export class SettingsComponent {
       return;
     }
 
-    setting.value = this.settings[setting.id] = newVal;
+    // @TODO/rewrite/settings We should check for duplicate shortcuts here. Ideally we can have a per-setting place for errors (and the modless issue should be shown there).
 
-    setting.updated();
+    this.settings[setting.id] = newVal;
+    setting.updated(newVal);
+
     this.syncDebounced(); // Digest sync is 5s which is a bit long if user is sitting there waiting for setting to save
 
     this.checkEmptyModKeyDebounced();
   }
 
   /** Returns true if `sMod` setting is ok. */
-  modKeyCheck(setting: Shortcut, newVal: string): boolean {
+  modKeyCheck(setting: Setting | Shortcut, newVal: string): boolean {
     if (setting.id !== 'sMod') {
       return true;
     }
@@ -126,12 +128,12 @@ export class SettingsComponent {
   }
 
   revert() {
-    const revertThese = this.section === 'shortcuts' ? _.concat(this.settings.data['sMod'], this.displayedSettings) : this.displayedSettings;
+    const revertThese = this.section === 'shortcuts' ? _.concat([this.settings.data['sMod']], this.displayedSettings) : this.displayedSettings;
 
     _.each(revertThese, (setting: Setting | Shortcut) => {
       if (setting.value !== setting.default) {
-        setting.value = this.settings[setting.id] = setting.default;
-        setting.updated();
+        this.settings[setting.id] = setting.default;
+        setting.updated(setting.default);
       }
     });
 

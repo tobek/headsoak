@@ -23,7 +23,7 @@ export class Setting {
 
   private _logger: Logger;
 
-  constructor(settingData: any, private dataService: DataService) {
+  constructor(settingData: any, public dataService: DataService) {
     if (settingData.value === undefined) {
       settingData.value = settingData.default;
     }
@@ -33,8 +33,10 @@ export class Setting {
     this._logger = new Logger('Note ' + this.id);
   }
 
-  updated(): void {
-    this._logger.log('Updated');
+  updated(newVal: any): void {
+    this._logger.log('Updating to', newVal);
+
+    this.value = newVal;
 
     this.dataService.digest$.emit(this);
   }
