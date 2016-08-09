@@ -93,6 +93,9 @@ export class DataService {
   }
 
   isUnsaved(item: DataItem): boolean {
+    if (! item) {
+      return false;
+    }
     return this.digest[this.getDataStoreName(item)][item.id] !== undefined;
   }
 

@@ -67,14 +67,16 @@ export class SettingsComponent {
   }
 
   revert() {
-    _.each(this.displayedSettings, (setting: Setting | Shortcut) => {
+    const revertThese = this.section === 'shortcuts' ? _.concat(this.settings.data['sMod'], this.displayedSettings) : this.displayedSettings;
+
+    _.each(revertThese, (setting: Setting | Shortcut) => {
       if (setting.value !== setting.default) {
         setting.value = this.settings[setting.id] = setting.default;
         setting.updated();
       }
     });
 
-    this.dataService.sync();
+    this.syncDebounced();
   }
 
 }

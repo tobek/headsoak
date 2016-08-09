@@ -2,10 +2,11 @@
 
 <div *ngIf="section === 'shortcuts'">
   <label>
-    Modifier key:
-    <input type="text" [ngModel]="settings['sMod']" (ngModelChange)="settingUpdatedDebounced('sMod', $event)">
+    Modifier key(s):
+    <input type="text" [ngModel]="settings['sMod']" (ngModelChange)="settingUpdatedDebounced(settings.data['sMod'], $event)">
     <span title="This will prefix all of these shortcuts. Your options are:&#10;&#10;- 'ctrl'&#10;- 'shift'&#10;- 'alt'&#10;- 'option'&#10;- 'command' (only on Mac)&#10;- 'meta' (doesn't work?)&#10;- 'mod' ('ctrl' on a PC, 'command' on a Mac).&#10;&#10;You can also combine them, e.g. 'ctrl+shift', or leave blank to control different shortcuts separately.">(?)</span>
   </label>
+  <span *ngIf="dataService.isUnsaved(settings.data['sMod'])">saving...</span>
 </div>
 
 <!-- @TODO/rewrite/settings Need tooltips in here -->

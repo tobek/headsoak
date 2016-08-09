@@ -20,7 +20,7 @@ export class SettingsService {
   nutSortBy: string; // see IDs in notesService.sortOpts
   tagSortBy: string; // see IDs in tagsService.sortOpts
 
-  data: Array<Setting | Shortcut> = [];
+  data: { [key: string]: Setting | Shortcut} = {};
 
   private settingsSourceData = [
     {
@@ -266,10 +266,10 @@ export class SettingsService {
     setting['value'] = this[setting.id] = value;
 
     if (setting.section === 'shortcuts') {
-      this.data.push(new Shortcut(setting, this.dataService));
+      this.data[setting.id] = new Shortcut(setting, this.dataService);
     }
     else {
-      this.data.push(new Setting(setting, this.dataService));
+      this.data[setting.id] = new Setting(setting, this.dataService);
     }
   }
 }
