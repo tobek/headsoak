@@ -65,7 +65,7 @@ export class TagComponent {
       this.renameCancel();
       return;
     }
-    
+
     this.renaming = false;
     this.tag.rename(newName);
 

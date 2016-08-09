@@ -249,26 +249,27 @@ export class SettingsService {
   private _logger: Logger = new Logger(this.constructor.name);
   private dataService: DataService;
 
-  init(settingsData: {}, dataService: DataService) {
+  init(settingsData: any, dataService: DataService): void {
     this.dataService = dataService;
 
-    const sourceData = _.concat(this.settingsSourceData, this.shortcutsSourceData);
-
-    _.each(sourceData, (setting) => {
-      const value = settingsData[setting.id] !== undefined ? settingsData[setting.id] : setting.default;
-
-      setting['value'] = this[setting.id] = value;
-
-      if (setting.section === 'shortcuts') {
-        this.data.push(new Shortcut(setting, this.dataService));
-      }
-      else {
-        this.data.push(new Setting(setting, this.dataService));
-      }
-    });
+    _.each(this.settingsSourceData, _.partial(this.initSetting, settingsData).bind(this));
+    _.each(this.shortcutsSourceData, _.partial(this.initSetting, settingsData).bind(this));
 
     this.initialized$.next(null);
 
     this._logger.log('Initialized -', _.size(settingsData), 'restored from user settings');
+  }
+
+  initSetting(settingsData: any, setting: any): void {
+    const value = settingsData[setting.id] !== undefined ? settingsData[setting.id] : setting.default;
+
+    setting['value'] = this[setting.id] = value;
+
+    if (setting.section === 'shortcuts') {
+      this.data.push(new Shortcut(setting, this.dataService));
+    }
+    else {
+      this.data.push(new Setting(setting, this.dataService));
+    }
   }
 }

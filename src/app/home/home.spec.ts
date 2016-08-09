@@ -11,7 +11,7 @@ import {HomeComponent} from './home.component';
 describe('HomeComponent', () => {
   // provide our implementations or mocks to the dependency injector
   beforeEachProviders(() => [
-    Home
+    HomeComponent
   ]);
 
   it('should have a title', inject([ HomeComponent ], (home) => {

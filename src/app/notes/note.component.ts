@@ -53,7 +53,7 @@ export class NoteComponent {
 
     this.addTagSetUpAutocomplete();
   }
-  
+
   addTagSetUpAutocomplete(): void {
     this.autocompleteService.autocompleteTags({
       context: 'note',

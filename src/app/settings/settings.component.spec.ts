@@ -22,7 +22,7 @@ describe('SettingsComponent', () => {
         }
       }
     },
-    About
+    SettingsComponent
   ]);
 
   it('should log ngOnInit', inject([ SettingsComponent ], (settings) => {
