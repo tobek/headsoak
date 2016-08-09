@@ -7,7 +7,7 @@ export class Setting {
   name: string;
   description: string;
 
-  /** Type of value the setting supports. Only 'boolean' supported so far in UI, but 'string' supported for internal ones. */
+  /** Type of value the setting supports. Only 'boolean' and 'string' supported so far in UI. */
   type: string;
 
   /** Where thissetting belongs to. 'settings' | 'shortcuts' for now. */

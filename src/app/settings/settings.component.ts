@@ -18,6 +18,9 @@ export class SettingsComponent {
   sectionName: string;
   section: string; // currently 'settings' or 'shortcuts'
 
+  private settingUpdatedDebounced = _.debounce(this.settingUpdated.bind(this), 250);
+  private syncDebounced = _.debounce(this.dataService.sync.bind(this.dataService), 1000);
+
   private displayedSettings: Setting[] = [];
 
   private _logger = new Logger(this.constructor.name);
@@ -52,15 +55,19 @@ export class SettingsComponent {
     });
   }
 
-  settingUpdated(setting: Setting, newVal: any): void {
+  settingUpdated(setting: Setting | Shortcut, newVal: any): void {
+    if (newVal === this.settings[setting.id]) {
+      return;
+    }
+
     setting.value = this.settings[setting.id] = newVal;
 
     setting.updated();
-    this.dataService.sync(); // so user doesn't sit there waiting for setting to save @TODO/rewrite/settings If this happens fast you barely see it - animation should make it last and fade
+    this.syncDebounced(); // Digest sync is 5s which is a bit long if user is sitting there waiting for setting to save
   }
 
   revert() {
-    _.each(this.displayedSettings, (setting: Setting) => {
+    _.each(this.displayedSettings, (setting: Setting | Shortcut) => {
       if (setting.value !== setting.default) {
         setting.value = this.settings[setting.id] = setting.default;
         setting.updated();

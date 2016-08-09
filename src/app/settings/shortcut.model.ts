@@ -13,6 +13,8 @@ export class Shortcut extends Setting {
 
   constructor(shortcutData: any, dataService: DataService) {
     super(shortcutData, dataService);
+
+    this.type = 'string'; // force this for all shortcuts
   }
 
 }

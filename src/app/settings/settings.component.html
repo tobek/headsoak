@@ -1,15 +1,41 @@
 <h1>{{ sectionName }}</h1>
 
+<div *ngIf="section === 'shortcuts'">
+  <label>
+    Modifier key:
+    <input type="text" [ngModel]="settings['sMod']" (ngModelChange)="settingUpdatedDebounced('sMod', $event)">
+    <span title="This will prefix all of these shortcuts. Your options are:&#10;&#10;- 'ctrl'&#10;- 'shift'&#10;- 'alt'&#10;- 'option'&#10;- 'command' (only on Mac)&#10;- 'meta' (doesn't work?)&#10;- 'mod' ('ctrl' on a PC, 'command' on a Mac).&#10;&#10;You can also combine them, e.g. 'ctrl+shift', or leave blank to control different shortcuts separately.">(?)</span>
+  </label>
+</div>
+
+<!-- @TODO/rewrite/settings Need tooltips in here -->
 <table>
+  <thead *ngIf="section === 'shortcuts'">
+    <tr>
+      <td>Action</td>
+      <td>
+        Shortcut
+        <span title="Simply type in a letter or symbol, or one of the following: backspace, tab, enter, return, capslock, esc, escape, space, pageup, pagedown, end, home, left, up, right, down, ins, del&#10;&#10;You may include modifier keys in here too, e.g. 'shift+alt+backspace'">(?)</span>
+      </td>
+      <td></td>
+    </tr>
+  </thead>
   <tbody>
     <tr *ngFor="let setting of displayedSettings">
-      <td title="{{ setting.description }}"><!-- @TODO/rewrite/settings Tooltip -->
+      <td>
         <label [attr.for]="'setting-' + setting.id">
           {{ setting.name }}
+          <span title="{{ setting.description }}" *ngIf="setting.description">(?)</span>
         </label>
       </td>
       <td>
-        <input type="checkbox" id="setting-{{ setting.id }}" [ngModel]="settings[setting.id]" (ngModelChange)="settingUpdated(setting, $event)" />
+        <span *ngIf="section === 'shortcuts'">{{ settings['sMod'] }}+</span>
+        <input
+          type="{{ setting.type === 'boolean' ? 'checkbox' : 'text' }}"
+          id="setting-{{ setting.id }}"
+          [ngModel]="settings[setting.id]"
+          (ngModelChange)="settingUpdatedDebounced(setting, $event)"
+        />
       </td>
       <td>
         <span *ngIf="dataService.isUnsaved(setting)">saving...</span>
@@ -17,5 +43,7 @@
     </tr>
   </tbody>
 </table>
+
+<p *ngIf="section === 'shortcuts'"><i>Note: Different browsers and operating systems handle web site shortcuts differently. You might find that some combinations don't work. (For example, <code>ctrl+n</code> will be overridden by "new window" in Chrome on Windows.)</i></p>
 
 <button (click)="revert()">Revert to defaults</button>
