@@ -98,7 +98,7 @@ export class NoteBrowserComponent {
     this.activeUIs.noteBrowser = this;
   }
 
-  newNote(noteData = {}): void {
+  newNote(noteData = {}, thenFocus = true, callback?: (noteComponent: NoteComponent) => any): void {
     // @TODO/rewrite/notes Do we want to support config option that newly created notes have any tags that are currently in the query? Does this even make sense with separate note browser vs. note editor?
     const newNote = this.notesService.createNote(noteData);
 
@@ -108,7 +108,21 @@ export class NoteBrowserComponent {
     // Have to wait cause angular hasn't updated the QueryList yet so wait for it:
     const sub = this.noteComponents.changes.subscribe(() => {
       sub.unsubscribe();
-      this.noteComponents.first.focus();
+
+      if (thenFocus) {
+        this.noteComponents.first.focus();
+      }
+
+      if (callback) {
+        callback(this.noteComponents.first);
+      }
+    });
+  }
+
+  newNoteAddTag(): void {
+    this.newNote({}, false, (noteComponent: NoteComponent) => {
+      noteComponent.addTag();
+      noteComponent.cdrRef.detectChanges();
     });
   }
 

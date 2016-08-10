@@ -117,13 +117,12 @@ export class SettingsService {
       name: 'New note, add tag',
       description: 'Create a new note and immediately open the input field to add a tag to that note.',
       default: 'shift+n',
-      // fn: function() {
-      //   $s.n.createNut({});
-      //   $timeout(function() {
-      //     var scope = $s.n.getFocusedNutScope();
-      //     if (scope) { scope.openAddTagField(); }
-      //   }, 25);
-      // },
+      fn: () => {
+        if (this.activeUIs.noteBrowser) {
+          this.activeUIs.noteBrowser.newNoteAddTag();
+        }
+      },
+      routeTo: '/',
       ngZone: true,
       section: 'shortcuts',
     },

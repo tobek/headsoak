@@ -1,4 +1,4 @@
-import {Component, EventEmitter, ElementRef, Input, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, ElementRef, Input, Output, ViewChild, ChangeDetectorRef} from '@angular/core';
 
 import {AnalyticsService} from '../analytics.service';
 import {Note} from '../notes/note.model';
@@ -30,6 +30,7 @@ export class NoteComponent {
   @ViewChild('addTagInput') addTagInputRef: ElementRef;
 
   constructor(
+    public cdrRef: ChangeDetectorRef,
     private analyticsService: AnalyticsService,
     private autocompleteService: AutocompleteService,
     private notesService: NotesService
@@ -46,7 +47,7 @@ export class NoteComponent {
     this.bodyInputRef.nativeElement.focus();
   }
 
-  addTagFocus() {
+  addTagFocused() {
     // We can't rely on blur to close the tag field because then clicking on add tag button also closes tag field.
     window.removeEventListener('click', this.closeAddTagFieldHandler);
     window.addEventListener('click', this.closeAddTagFieldHandler.bind(this));
