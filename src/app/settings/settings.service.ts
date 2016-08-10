@@ -105,12 +105,10 @@ export class SettingsService {
       default: 'n',
       fn: () => {
         if (this.activeUIs.noteBrowser) {
-          this.ngZone.run(() => {
-            this.activeUIs.noteBrowser.newNote();
-          });
+          this.activeUIs.noteBrowser.newNote();
         }
       },
-      // apply: true,
+      ngZone: true,
       section: 'shortcuts',
     },
     {
@@ -125,7 +123,7 @@ export class SettingsService {
       //     if (scope) { scope.openAddTagField(); }
       //   }, 25);
       // },
-      // apply: true,
+      ngZone: true,
       section: 'shortcuts',
     },
     {
@@ -137,7 +135,7 @@ export class SettingsService {
       //   var id = $s.n.getFocusedNutID();
       //   if (id) { $s.n.duplicateNoteTags(id); }
       // },
-      // apply: true,
+      ngZone: true,
       section: 'shortcuts',
     },
     {
@@ -149,7 +147,7 @@ export class SettingsService {
       //   var id = $s.n.getFocusedNutID();
       //   if (id) { $s.n.deleteNut(id); }
       // },
-      // apply: true,
+      ngZone: true,
       section: 'shortcuts',
     },
     {
@@ -162,7 +160,7 @@ export class SettingsService {
       //   if (id) { $s.n.deleteNut(id, true); }
       // },
       overkill: true,
-      // apply: true,
+      ngZone: true,
       section: 'shortcuts',
     },
     {
@@ -174,7 +172,7 @@ export class SettingsService {
       //   var scope = $s.n.getFocusedNutScope();
       //   if (scope) { scope.openAddTagField(); }
       // },
-      // apply: true,
+      ngZone: true,
       section: 'shortcuts',
     },
 
@@ -194,7 +192,7 @@ export class SettingsService {
       // fn: function() {
       //   $s.q.clear();
       // },
-      // apply: true
+      ngZone: true,
       section: 'shortcuts',
     },
 
@@ -257,7 +255,6 @@ export class SettingsService {
   private dataService: DataService;
 
   constructor(
-    private ngZone: NgZone,
     private activeUIs: ActiveUIsService
   ) {}
 

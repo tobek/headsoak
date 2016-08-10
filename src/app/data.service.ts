@@ -1,4 +1,4 @@
-import {Injectable, EventEmitter} from '@angular/core';
+import {Injectable, EventEmitter, NgZone} from '@angular/core';
 import {Subscription} from 'rxjs';
 
 const Firebase = require('firebase');
@@ -42,6 +42,7 @@ export class DataService {
   private onlineStateRef: Firebase;
 
   constructor(
+    public ngZone: NgZone,
     public user: UserService,
     public notes: NotesService,
     public tags: TagsService,

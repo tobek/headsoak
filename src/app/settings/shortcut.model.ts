@@ -9,7 +9,7 @@ export class Shortcut extends Setting {
   value: string;
 
   /** The function that gets run when this shortcut is used. */
-  fn: Function;
+  fn: () => any;
 
   /** Work even in text input areas without "mousetrap" class. */
   global = true;
@@ -17,10 +17,30 @@ export class Shortcut extends Setting {
   /** Do not add the global `mod` to binding. Currently not supported in the UI and only used for internal/overkill shortcuts. */
   noMod = false;
 
+  /** Whether this shortcut should be run in Angular's NgZone in order to do change detection, update view, etc. */
+  ngZone: boolean;
+
+  /** Our version of this.fn than wraps it with necessary checks. */
+  private _fn: () => any;
+
   constructor(shortcutData: any, dataService: DataService) {
     super(shortcutData, dataService);
+    _.extend(this, shortcutData); // see https://github.com/Microsoft/TypeScript/issues/1617
 
     this.type = 'string'; // force this for all shortcuts
+
+    if (this.id === 'sNewNote') {
+      console.log("YO BINDING", this.ngZone, shortcutData);
+    }
+    this._fn = () => {
+      // @TODO/rewrite/shortcuts Do we want to block shortcuts under certain conditions (not logged in, in a blocking modal, etc.)?
+      if (this.ngZone) {
+        this.dataService.ngZone.run(this.fn);
+      }
+      else {
+        this.fn();
+      }
+    };
 
     this.bindShortcut();
   }
@@ -33,8 +53,7 @@ export class Shortcut extends Setting {
     const binding = this.noMod ? this.value : this.dataService.settings['sMod'] + '+' + this.value;
     const bindFuncName = this.global ? 'bindGlobal' : 'bind';
 
-    // @TODO/rewrite/shortcuts Do we want to block shortcuts under certain conditions (not logged in, in a blocking modal, etc.)? If so we can wrap `this.fn` with some logic. Also we used to have an `apply` property for having to run angular scope apply - might need something similar.
-    Mousetrap[bindFuncName](binding, this.fn);
+    Mousetrap[bindFuncName](binding, this._fn);
 
     return false; // prevent keyboard event
   }
