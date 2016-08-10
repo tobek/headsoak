@@ -229,11 +229,14 @@ export class NoteBrowserComponent {
     this.queryAddTag(tag);
   }
 
-  queryClear(): void {
+  queryClear(thenFocus = true): void {
     this.queryTags = [];
     this.query = '';
     this.queryUpdated();
-    this.queryEnsureFocusAndAutocomplete();
+
+    if (thenFocus) {
+      this.queryEnsureFocusAndAutocomplete();
+    }
   }
 
   sort(sortOpt): void {

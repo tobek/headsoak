@@ -195,9 +195,12 @@ export class SettingsService {
       id: 'sClearSearch',
       name: 'Clear search bar',
       default: '0',
-      // fn: () => {
-      //   $s.q.clear();
-      // },
+      fn: () => {
+        if (this.activeUIs.noteBrowser) {
+          this.activeUIs.noteBrowser.queryClear();
+        }
+      },
+      routeTo: '/', // @TODO/shortcuts Ditto note on `sSearch`
       ngZone: true,
       section: 'shortcuts',
     },
@@ -217,12 +220,16 @@ export class SettingsService {
       id: 'sSearchAlt',
       name: 'Go to search bar (alt)',
       default: '/',
-      // fn: () => {
-      //   $s.q.focus();
-      // },
+      fn: () => {
+        if (this.activeUIs.noteBrowser) {
+          this.activeUIs.noteBrowser.queryFocus();
+        }
+      },
       global: false,
-      overkill: true, // @TODO: not really overkill but just don't show in shortcuts modal. really this calls for ability to do nomod inside shortcut controls so that they can set this instead of mod+f or whatever, and then this should be default
-      nomod: true,
+      overkill: true, // @TODO: not really overkill but just don't show in shortcuts modal. really this calls for ability to do noMod inside shortcut controls so that they can set this instead of mod+f or whatever, and then this should be default
+      noMod: true,
+      onlyOnRoute: '/', // @TODO/shortcuts Ditto note on `sSearch`
+      keyEvent: 'keyup', // otherwise we move to search bar on keydown and then a '/' is typed cause of keydown
       section: 'shortcuts',
     },
 
@@ -249,7 +256,7 @@ export class SettingsService {
       //   angular.element('#blur-hack')[0].focus();
       // },
       internal: true,
-      nomod: true,
+      noMod: true,
       // allowOnModal: true,
       section: 'shortcuts',
     },
