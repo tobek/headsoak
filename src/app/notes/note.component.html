@@ -11,16 +11,35 @@
 
     <div class="tags">
       <span class="tag new-tag">
-        <input type="text" placeholder="add tag" ref-addTagInput class="new-tag-input" [class.adding-tag]="addingTag" [(ngModel)]="addTagName" (focus)="addTagFocus()" (keyup.esc)="closeAddTagField()"/>
+        <input type="text" placeholder="add tag" class="new-tag-input"
+          ref-addTagInput
+          [class.adding-tag]="addingTag"
+          [(ngModel)]="addTagName"
+          (focus)="addTagFocused()"
+          (keyup.esc)="closeAddTagField()"
+        />
         <button class="new-tag-button" (click)="addTag()">{{ addingTag ? '✓' : '+' }}</button>
       </span>
 
-      <tag class="tag-{{ tagId }}" *ngFor="let tagId of note.tags" [tagId]="tagId" (click)="toggleTag(tagId, $event)" [removable]="true" (removed)="note.removeTagId(tagId)"></tag>
+      <tag class="tag-{{ tagId }}"
+        *ngFor="let tagId of note.tags"
+        [tagId]="tagId"
+        (click)="toggleTag(tagId, $event)"
+        [removable]="true"
+        (removed)="note.removeTagId(tagId)"
+      ></tag>
 
-      <span class="tag note-id" *ngIf="true"><!-- @TODO/rewrite only show if config.showNoteIds -->{{ note.id }}</span>
+      <span class="tag note-id" *ngIf="true"><!-- @TODO/rewrite/settings Only show if config.showNoteIds -->{{ note.id }}</span>
     </div>
   </div>
 
-  <textarea ref-bodyInput class="body" tabindex=2 *ngIf="! note.sharedBody" [ngModel]="note.body" (ngModelChange)="note.body = $event; note.changed()" (focus)="note.focused()" (blur)="note.blurred()"></textarea>
+  <textarea class="body" tabindex=2
+    ref-bodyInput
+    *ngIf="! note.sharedBody"
+    [ngModel]="note.body"
+    (ngModelChange)="note.body = $event; note.changed()"
+    (focus)="note.focused()"
+    (blur)="note.blurred()"
+  ></textarea>
   <!-- @TODO/rewrite/sharing Better to put read-only class and disabled attribute on above textarea so reference is preserved <textarea class="body read-only" disabled="disabled" tabindex=2 *ngIf="note.sharedBody">{{ note.sharedBody }}</textarea> -->
 </div>
