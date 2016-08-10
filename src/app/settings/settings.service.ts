@@ -209,12 +209,14 @@ export class SettingsService {
       id: 'sGoToFirstNote',
       name: 'Go to first note',
       default: '1',
-      // fn: () => {
-      //   var el = angular.element('#nuts .nut textarea')[0];
-      //   if (el) { el.focus(); }
-      // },
+      fn: () => {
+        if (this.activeUIs.noteBrowser) {
+          this.activeUIs.noteBrowser.noteComponents.first.bodyFocus();
+        }
+      },
       section: 'shortcuts',
     },
+    // @TODO/shortcuts Should 2-9 jump to appropriate note on note browser?
 
     {
       id: 'sSearchAlt',
