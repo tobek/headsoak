@@ -67,10 +67,11 @@ export class NoteComponent {
   }
 
   addTagAutocompleteSelect(suggestion, event): void {
-    this.addTag(suggestion.value);
+    const addAnotherTag = event.shiftKey;
 
-    if (event.shiftKey) {
-      // Hold shift to open add tag field again
+    this.addTag(suggestion.value, ! addAnotherTag);
+
+    if (addAnotherTag) {
       setTimeout(() => {
         this.addTagSetUpAutocomplete();
         this.addTag();
@@ -89,23 +90,29 @@ export class NoteComponent {
 
     this.closeAddTagField();
   }
-  closeAddTagField() {
+  closeAddTagField(focusOnBody = false) {
     window.removeEventListener('click', this.closeAddTagFieldHandler);
     this.addingTag = false;
+
+    if (focusOnBody) {
+      this.focus();
+    }
   }
 
-  addTag(tagText = this.addTagName) {
+  addTag(tagText = this.addTagName, focusOnBody = true) {
     if (this.addingTag) {
       if (tagText === '') {
-        this.closeAddTagField();
+        this.closeAddTagField(focusOnBody);
+
         return;
       }
 
       const tagAdded = this.note.addTagFromText(tagText);
 
       if (tagAdded) {
-        this.addingTag = false;
         this.addTagName = '';
+
+        this.closeAddTagField(focusOnBody);
       }
     }
     else {

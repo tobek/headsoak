@@ -16,7 +16,7 @@
           [class.adding-tag]="addingTag"
           [(ngModel)]="addTagName"
           (focus)="addTagFocused()"
-          (keyup.esc)="closeAddTagField()"
+          (keyup.esc)="closeAddTagField(true)"
         />
         <button class="new-tag-button" (click)="addTag()">{{ addingTag ? '✓' : '+' }}</button>
       </span>
