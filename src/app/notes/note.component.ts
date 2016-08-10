@@ -30,6 +30,8 @@ export class NoteComponent {
   @ViewChild('bodyInput') bodyInputRef: ElementRef;
   @ViewChild('addTagInput') addTagInputRef: ElementRef;
 
+  private boundCloseAddTagFieldHandler = this.closeAddTagFieldHandler.bind(this);
+
   constructor(
     public cdrRef: ChangeDetectorRef,
     private activeUIs: ActiveUIsService,
@@ -66,8 +68,8 @@ export class NoteComponent {
 
   addTagFocused() {
     // We can't rely on blur to close the tag field because then clicking on add tag button also closes tag field.
-    window.removeEventListener('click', this.closeAddTagFieldHandler);
-    window.addEventListener('click', this.closeAddTagFieldHandler.bind(this));
+    window.removeEventListener('click', this.boundCloseAddTagFieldHandler);
+    window.addEventListener('click', this.boundCloseAddTagFieldHandler);
 
     this.addTagSetUpAutocomplete();
   }
@@ -107,8 +109,9 @@ export class NoteComponent {
 
     this.closeAddTagField();
   }
+  
   closeAddTagField(focusOnBody = false) {
-    window.removeEventListener('click', this.closeAddTagFieldHandler);
+    window.removeEventListener('click', this.boundCloseAddTagFieldHandler);
     this.addingTag = false;
 
     if (focusOnBody) {
