@@ -86,6 +86,9 @@ export class NoteComponent {
   }
 
   addTagAutocompleteSelect(suggestion, event): void {
+    event.preventDefault();
+    event.stopPropagation();
+
     const addAnotherTag = event.shiftKey;
 
     this.completeAddTag(suggestion.value, ! addAnotherTag);

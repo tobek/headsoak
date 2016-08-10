@@ -27,6 +27,12 @@ nav li.active {
   display: none !important;
 }
 
+#blur-hack {
+  position: fixed;
+  z-index: -100000;
+  opacity: 0;
+}
+
 /* @TODO/rewrite check browser compability for this - last I remember it didn't work right in FF. */
 [placeholder][contenteditable]:empty:before {
   content: attr(placeholder);

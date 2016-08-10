@@ -240,30 +240,20 @@ export class SettingsService {
       name: 'Unfocus',
       description: 'Unfocuses from any input/textarea, closes any open modal.',
       default: 'esc',
-      // fn: () => {
-      //   var nutScope = $s.n.getFocusedNutScope();
-      //   if (nutScope) {
-      //     if (nutScope.addingTag) {
-      //       nutScope.closeAddTagField();
-      //       nutScope.focus();
-      //     }
-      //     else {
-      //       nutScope.deactivateNut();
-      //     }
-      //   }
+      fn: () => {
+        // @TODO Focusing on #blur-hack prevents user from using arrow keys to scroll, and triggeringclick on window or other element doesn't seem to help.
+        (<HTMLInputElement> document.querySelector('#blur-hack')).focus();
 
-      //   $timeout($s.m.cancelModal);
-
-      //   // @TODO focusing on #blur-hack prevents user from using arrow keys to scroll
-      //   angular.element('#blur-hack')[0].focus();
-      // },
+        // @TODO/rewrite/modals What if they're in a cancellable modal? This could help:
+        // utils.simulateClick(document.querySelector('body'));
+      },
       internal: true,
       noMod: true,
       // allowOnModal: true,
       section: 'shortcuts',
     },
 
-    // @TODO: scroll up/down?
+    // @TODO: scroll up/down note browser?
   ];
 
   private _logger: Logger = new Logger(this.constructor.name);

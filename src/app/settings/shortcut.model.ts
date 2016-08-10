@@ -22,6 +22,9 @@ export class Shortcut extends Setting {
   /** What kind of key event we should listen for: 'keyup' | 'keydown' | 'keypress' */
   keyEvent: string;
 
+  /** Whether preventDefault() should be called on the key event handler. */
+  preventDefault = true;
+
   /** Whether this shortcut's function should be run in Angular's NgZone in order to do change detection, update view, etc. */
   ngZone = false;
 
@@ -112,7 +115,7 @@ export class Shortcut extends Setting {
 
     Mousetrap[bindFuncName](binding, this._fn, this.keyEvent || undefined);
 
-    return false; // prevent keyboard event
+    return ! this.preventDefault;
   }
 
   updated(newVal: string): void {

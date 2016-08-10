@@ -16,7 +16,8 @@
           [class.adding-tag]="addingTag"
           [(ngModel)]="addTagName"
           (focus)="addTagFocused()"
-          (keyup.esc)="closeAddTagField(true)"
+          (keyup.enter)="closeAddTagField(true)"
+          (keydown.esc)="closeAddTagField(true); $event.stopPropagation(); $event.preventDefault()"
         />
         <button class="new-tag-button" (click)="addingTag ? completeAddTag() : initializeAddTag()">{{ addingTag ? '✓' : '+' }}</button>
       </span>

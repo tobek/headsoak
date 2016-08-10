@@ -51,5 +51,16 @@ export var utils = {
       textRange.collapse(false);
       textRange.select();
     }
+  },
+
+  /** Returns true if click went through, false if a click handler called preventDefault. */
+  simulateClick(el: HTMLElement | Window): boolean {
+    const event = new MouseEvent('click', {
+      'view': window,
+      'bubbles': true,
+      'cancelable': true
+    });
+
+    return el.dispatchEvent(event);
   }
 };
