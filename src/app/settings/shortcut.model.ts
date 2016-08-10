@@ -19,11 +19,16 @@ export class Shortcut extends Setting {
   /** Do not add the global `mod` to binding. Currently not supported in the UI and only used for internal/overkill shortcuts. */
   noMod = false;
 
+  /** What kind of key event we should listen for: 'keyup' | 'keydown' | 'keypress' */
+  keyEvent: string;
+
   /** Whether this shortcut's function should be run in Angular's NgZone in order to do change detection, update view, etc. */
   ngZone = false;
 
   /** If set, identifies the route that this shortcut's function must be run in. If not already in that route, this will navigate there and then execute the function. */
   routeTo: string;
+  /** If set, this shortcut should only do anything on the specified route, and otherwise do nothing. */
+  onlyOnRoute: string;
 
   /** Our version of this.fn than wraps it with necessary checks. */
   private _fn: () => any;
@@ -34,44 +39,61 @@ export class Shortcut extends Setting {
     super(shortcutData, dataService);
     _.extend(this, shortcutData); // see https://github.com/Microsoft/TypeScript/issues/1617
 
+    if (this.routeTo && this.onlyOnRoute) {
+      throw Error('Shortcut with `routeTo` and `onlyOnRoute` is ambiguous - must specify no more than 1.');
+    }
+
     this.type = 'string'; // force this for all shortcuts
 
-    this._routedFn = () => {
-      if (this.routeTo && this.dataService.router.url !== this.routeTo) {
-        const sub = this.dataService.router.events.subscribe((event) => {
-          if (! (event instanceof NavigationEnd)) {
-            return;
-          }
+    if (this.routeTo) {
+      this._routedFn = () => {
+        if (this.dataService.router.url === this.routeTo) {
+          this.fn();
+        }
+        else {
+          const sub = this.dataService.router.events.subscribe((event) => {
+            if (! (event instanceof NavigationEnd)) {
+              return;
+            }
 
-          if (! this.ngZone) {
-            // Changing route requires we run in ngZone
-            this.dataService.ngZone.run(() => {
-              // And for some reason it still doesn't always work (specifically `sSearch` shortcut)
-              setTimeout(this.fn, 0);
-            });
-          }
-          else {
-            // We've already been wrapped in ngZone.run call
-            this.fn();
-          }
+            if (! this.ngZone) {
+              // Changing route requires we run in ngZone
+              this.dataService.ngZone.run(() => {
+                // And for some reason it still doesn't always work (specifically `sSearch` shortcut)
+                setTimeout(this.fn, 0);
+              });
+            }
+            else {
+              // We've already been wrapped in ngZone.run call
+              this.fn();
+            }
 
-          sub.unsubscribe();
-        });
-        this.dataService.router.navigateByUrl(this.routeTo);
-      }
-      else {
-        this.fn();
-      }
-    };
+            sub.unsubscribe();
+          });
+          this.dataService.router.navigateByUrl(this.routeTo);
+        }
+      };
+    }
+    else if (this.onlyOnRoute) {
+      this._routedFn = () => {
+        if (this.dataService.router.url === this.onlyOnRoute) {
+          this.fn();
+        }
+      };
+    }
+    else {
+      this._routedFn = this.fn;
+    }
 
-    this._zonedFn = () => {
-      if (this.ngZone) {
+
+    if (this.ngZone) {
+      this._zonedFn = () => {
         this.dataService.ngZone.run(this._routedFn);
-      }
-      else {
-        this._routedFn();
-      }
-    };
+      };
+    }
+    else {
+      this._zonedFn = this._routedFn;
+    }
 
     // @TODO/rewrite/shortcuts Do we want to block shortcuts under certain conditions (not logged in, in a blocking modal, etc.)?
 
@@ -88,7 +110,7 @@ export class Shortcut extends Setting {
     const binding = this.noMod ? this.value : this.dataService.settings['sMod'] + '+' + this.value;
     const bindFuncName = this.global ? 'bindGlobal' : 'bind';
 
-    Mousetrap[bindFuncName](binding, this._fn);
+    Mousetrap[bindFuncName](binding, this._fn, this.keyEvent || undefined);
 
     return false; // prevent keyboard event
   }
