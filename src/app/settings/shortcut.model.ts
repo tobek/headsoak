@@ -1,3 +1,5 @@
+import {NavigationEnd} from '@angular/router';
+
 import {DataService} from '../';
 
 import {Setting} from './';
@@ -36,8 +38,23 @@ export class Shortcut extends Setting {
 
     this._routedFn = () => {
       if (this.routeTo && this.dataService.router.url !== this.routeTo) {
-        const sub = this.dataService.router.events.subscribe(() => {
-          this.fn();
+        const sub = this.dataService.router.events.subscribe((event) => {
+          if (! (event instanceof NavigationEnd)) {
+            return;
+          }
+
+          if (! this.ngZone) {
+            // Changing route requires we run in ngZone
+            this.dataService.ngZone.run(() => {
+              // And for some reason it still doesn't always work (specifically `sSearch` shortcut)
+              setTimeout(this.fn, 0);
+            });
+          }
+          else {
+            // We've already been wrapped in ngZone.run call
+            this.fn();
+          }
+
           sub.unsubscribe();
         });
         this.dataService.router.navigateByUrl(this.routeTo);

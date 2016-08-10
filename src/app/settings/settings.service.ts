@@ -131,7 +131,7 @@ export class SettingsService {
       name: 'Duplicate note tags',
       description: 'Create a new note with the same tags as the currently focused note',
       default: 'd',
-      // fn: function() {
+      // fn: () => {
       //   var id = $s.n.getFocusedNutID();
       //   if (id) { $s.n.duplicateNoteTags(id); }
       // },
@@ -143,7 +143,7 @@ export class SettingsService {
       name: 'Delete note',
       description: 'Deletes the note that you are currently editing.',
       default: 'backspace',
-      // fn: function() {
+      // fn: () => {
       //   var id = $s.n.getFocusedNutID();
       //   if (id) { $s.n.deleteNut(id); }
       // },
@@ -155,7 +155,7 @@ export class SettingsService {
       name: 'Delete note (no confirm)',
       description: 'Deletes the note that you are currently editing. Does not ask \'Are you sure?\'',
       default: 'shift+backspace',
-      // fn: function() {
+      // fn: () => {
       //   var id = $s.n.getFocusedNutID();
       //   if (id) { $s.n.deleteNut(id, true); }
       // },
@@ -168,7 +168,7 @@ export class SettingsService {
       name: 'Add tag',
       description: 'Adds tag to the note that you are currently editing.',
       default: 't',
-      // fn: function() {
+      // fn: () => {
       //   var scope = $s.n.getFocusedNutScope();
       //   if (scope) { scope.openAddTagField(); }
       // },
@@ -180,16 +180,19 @@ export class SettingsService {
       id: 'sSearch',
       name: 'Go to search bar',
       default: 'l',
-      // fn: function() {
-      //   $s.q.focus();
-      // },
+      fn: () => {
+        if (this.activeUIs.noteBrowser) {
+          this.activeUIs.noteBrowser.queryFocus();
+        }
+      },
+      routeTo: '/', // @TODO/shortcuts Ideally this should work in tag browser and highlight that search field instead. Would need a more complicated `routeTo` implementation, and check route and find tag browser in activeUIs instead.
       section: 'shortcuts',
     },
     {
       id: 'sClearSearch',
       name: 'Clear search bar',
       default: '0',
-      // fn: function() {
+      // fn: () => {
       //   $s.q.clear();
       // },
       ngZone: true,
@@ -200,7 +203,7 @@ export class SettingsService {
       id: 'sGoToFirstNote',
       name: 'Go to first note',
       default: '1',
-      // fn: function() {
+      // fn: () => {
       //   var el = angular.element('#nuts .nut textarea')[0];
       //   if (el) { el.focus(); }
       // },
@@ -211,7 +214,7 @@ export class SettingsService {
       id: 'sSearchAlt',
       name: 'Go to search bar (alt)',
       default: '/',
-      // fn: function() {
+      // fn: () => {
       //   $s.q.focus();
       // },
       global: false,
@@ -225,7 +228,7 @@ export class SettingsService {
       name: 'Unfocus',
       description: 'Unfocuses from any input/textarea, closes any open modal.',
       default: 'esc',
-      // fn: function() {
+      // fn: () => {
       //   var nutScope = $s.n.getFocusedNutScope();
       //   if (nutScope) {
       //     if (nutScope.addingTag) {

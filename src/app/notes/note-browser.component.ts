@@ -145,6 +145,10 @@ export class NoteBrowserComponent {
     this.queryUpdated$.next(null);
   }
 
+  queryFocus(): void {
+    this.queryInput.nativeElement.focus();
+  }
+
   querySetUpAutocomplete(): void {
     this.autocompleteService.autocompleteTags({
       context: 'query',
@@ -165,7 +169,7 @@ export class NoteBrowserComponent {
   queryEnsureFocusAndAutocomplete(): void {
     if (document.activeElement !== this.queryInput.nativeElement) {
       // Lost focus on the input (user may have clicked on autocomplete suggestion or clicked on a tag to remove it, etc.)
-      this.queryInput.nativeElement.focus(); // this will trigger querySetUpAutocomplete
+      this.queryFocus(); // this will trigger querySetUpAutocomplete
     }
     else {
       this.querySetUpAutocomplete(); // reset autocomplete so that newly added tag will not be in suggestions
