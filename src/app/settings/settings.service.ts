@@ -131,10 +131,11 @@ export class SettingsService {
       name: 'Duplicate note tags',
       description: 'Create a new note with the same tags as the currently focused note',
       default: 'd',
-      // fn: () => {
-      //   var id = $s.n.getFocusedNutID();
-      //   if (id) { $s.n.duplicateNoteTags(id); }
-      // },
+      fn: () => {
+        if (this.activeUIs.noteComponent) {
+          this.activeUIs.noteComponent.newNoteWithSameTags();
+        }
+      },
       ngZone: true,
       section: 'shortcuts',
     },
@@ -143,11 +144,12 @@ export class SettingsService {
       name: 'Delete note',
       description: 'Deletes the note that you are currently editing.',
       default: 'backspace',
-      // fn: () => {
-      //   var id = $s.n.getFocusedNutID();
-      //   if (id) { $s.n.deleteNut(id); }
-      // },
-      ngZone: true,
+      fn: () => {
+        if (this.activeUIs.noteComponent) {
+          this.activeUIs.noteComponent.delete();
+        }
+      },
+      // ngZone: true, // not needed cause of the confirmation prompt?
       section: 'shortcuts',
     },
     {
@@ -155,10 +157,11 @@ export class SettingsService {
       name: 'Delete note (no confirm)',
       description: 'Deletes the note that you are currently editing. Does not ask \'Are you sure?\'',
       default: 'shift+backspace',
-      // fn: () => {
-      //   var id = $s.n.getFocusedNutID();
-      //   if (id) { $s.n.deleteNut(id, true); }
-      // },
+      fn: () => {
+        if (this.activeUIs.noteComponent) {
+          this.activeUIs.noteComponent.delete(true);
+        }
+      },
       overkill: true,
       ngZone: true,
       section: 'shortcuts',
@@ -168,11 +171,11 @@ export class SettingsService {
       name: 'Add tag',
       description: 'Adds tag to the note that you are currently editing.',
       default: 't',
-      // fn: () => {
-      //   var scope = $s.n.getFocusedNutScope();
-      //   if (scope) { scope.openAddTagField(); }
-      // },
-      ngZone: true,
+      fn: () => {
+        if (this.activeUIs.noteComponent) {
+          this.activeUIs.noteComponent.initializeAddTag();
+        }
+      },
       section: 'shortcuts',
     },
 

@@ -110,7 +110,7 @@ export class NoteBrowserComponent {
       sub.unsubscribe();
 
       if (thenFocus) {
-        this.noteComponents.first.focus();
+        this.noteComponents.first.bodyFocus();
       }
 
       if (callback) {
@@ -121,7 +121,7 @@ export class NoteBrowserComponent {
 
   newNoteAddTag(): void {
     this.newNote({}, false, (noteComponent: NoteComponent) => {
-      noteComponent.addTag();
+      noteComponent.initializeAddTag();
       noteComponent.cdrRef.detectChanges();
     });
   }

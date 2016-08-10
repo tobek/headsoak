@@ -207,7 +207,7 @@ export class Note {
   changed(): void {
     this.dataService.status = 'unsynced';
 
-    // @TODO/rewrite Need to autosize note?
+    // @TODO/rewrite/notes Need to autosize note?
   }
 
   /** Finds or creates tag, adds to note, and returns it. Returns null if no tag added. */

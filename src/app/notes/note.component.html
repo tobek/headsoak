@@ -18,7 +18,7 @@
           (focus)="addTagFocused()"
           (keyup.esc)="closeAddTagField(true)"
         />
-        <button class="new-tag-button" (click)="addTag()">{{ addingTag ? '✓' : '+' }}</button>
+        <button class="new-tag-button" (click)="addingTag ? completeAddTag() : initializeAddTag()">{{ addingTag ? '✓' : '+' }}</button>
       </span>
 
       <tag class="tag-{{ tagId }}"
@@ -38,8 +38,8 @@
     *ngIf="! note.sharedBody"
     [ngModel]="note.body"
     (ngModelChange)="note.body = $event; note.changed()"
-    (focus)="note.focused()"
-    (blur)="note.blurred()"
+    (focus)="bodyFocused()"
+    (blur)="bodyBlurred()"
   ></textarea>
   <!-- @TODO/rewrite/sharing Better to put read-only class and disabled attribute on above textarea so reference is preserved <textarea class="body read-only" disabled="disabled" tabindex=2 *ngIf="note.sharedBody">{{ note.sharedBody }}</textarea> -->
 </div>

@@ -1,5 +1,6 @@
 import {Component, EventEmitter, ElementRef, Input, Output, ViewChild, ChangeDetectorRef} from '@angular/core';
 
+import {ActiveUIsService} from '../active-uis.service';
 import {AnalyticsService} from '../analytics.service';
 import {Note} from '../notes/note.model';
 import {NotesService} from '../notes/notes.service';
@@ -31,6 +32,7 @@ export class NoteComponent {
 
   constructor(
     public cdrRef: ChangeDetectorRef,
+    private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
     private autocompleteService: AutocompleteService,
     private notesService: NotesService
@@ -39,12 +41,27 @@ export class NoteComponent {
   ngOnInit() {
   }
 
+  ngOnDestroy() {
+  }
+
   toggleTag(tagId: string, event: MouseEvent) {
     this.tagToggled.emit({ tagId: tagId, shiftHeld: (event && event.shiftKey) });
   }
 
-  focus() {
+  bodyFocus() {
     this.bodyInputRef.nativeElement.focus();
+  }
+
+  bodyFocused() {
+    this.activeUIs.noteComponent = this;
+    this.note.focused();
+  }
+
+  bodyBlurred() {
+    if (this.activeUIs.noteComponent === this) {
+      this.activeUIs.noteComponent = null;
+    }
+    this.note.blurred();
   }
 
   addTagFocused() {
@@ -69,12 +86,12 @@ export class NoteComponent {
   addTagAutocompleteSelect(suggestion, event): void {
     const addAnotherTag = event.shiftKey;
 
-    this.addTag(suggestion.value, ! addAnotherTag);
+    this.completeAddTag(suggestion.value, ! addAnotherTag);
 
     if (addAnotherTag) {
       setTimeout(() => {
         this.addTagSetUpAutocomplete();
-        this.addTag();
+        this.initializeAddTag();
       }, 100);
     }
   }
@@ -95,34 +112,34 @@ export class NoteComponent {
     this.addingTag = false;
 
     if (focusOnBody) {
-      this.focus();
+      this.bodyFocus();
     }
   }
 
-  addTag(tagText = this.addTagName, focusOnBody = true) {
-    if (this.addingTag) {
-      if (tagText === '') {
-        this.closeAddTagField(focusOnBody);
+  initializeAddTag(tagText = this.addTagName, focusOnBody = true) {
+    this.addingTag = true;
+    this.addTagInputRef.nativeElement.focus();
+  }
 
-        return;
-      }
+  completeAddTag(tagText = this.addTagName, focusOnBody = true) {
+    if (tagText === '') {
+      this.closeAddTagField(focusOnBody);
 
-      const tagAdded = this.note.addTagFromText(tagText);
-
-      if (tagAdded) {
-        this.addTagName = '';
-
-        this.closeAddTagField(focusOnBody);
-      }
+      return;
     }
-    else {
-      this.addingTag = true;
-      this.addTagInputRef.nativeElement.focus();
+
+    const tagAdded = this.note.addTagFromText(tagText);
+
+    if (tagAdded) {
+      this.addTagName = '';
+
+      this.closeAddTagField(focusOnBody);
     }
   }
 
-  delete(event: MouseEvent) {
-    let noConfirm = event.shiftKey;
+  delete(eventOrNoConfirm?: MouseEvent | boolean) {
+    const noConfirm = (eventOrNoConfirm instanceof MouseEvent) ? eventOrNoConfirm.shiftKey : eventOrNoConfirm;
+
     if (this.note.delete(noConfirm)) {
       this.deleted.emit(this.note);
     }
@@ -132,3 +149,4 @@ export class NoteComponent {
     this.newWithSameTags.emit(this.note);
   }
 }
+
