@@ -17,11 +17,16 @@ export class Shortcut extends Setting {
   /** Do not add the global `mod` to binding. Currently not supported in the UI and only used for internal/overkill shortcuts. */
   noMod = false;
 
-  /** Whether this shortcut should be run in Angular's NgZone in order to do change detection, update view, etc. */
-  ngZone: boolean;
+  /** Whether this shortcut's function should be run in Angular's NgZone in order to do change detection, update view, etc. */
+  ngZone = false;
+
+  /** If set, identifies the route that this shortcut's function must be run in. If not already in that route, this will navigate there and then execute the function. */
+  routeTo: string;
 
   /** Our version of this.fn than wraps it with necessary checks. */
   private _fn: () => any;
+  private _routedFn: () => any;
+  private _zonedFn: () => any;
 
   constructor(shortcutData: any, dataService: DataService) {
     super(shortcutData, dataService);
@@ -29,18 +34,31 @@ export class Shortcut extends Setting {
 
     this.type = 'string'; // force this for all shortcuts
 
-    if (this.id === 'sNewNote') {
-      console.log("YO BINDING", this.ngZone, shortcutData);
-    }
-    this._fn = () => {
-      // @TODO/rewrite/shortcuts Do we want to block shortcuts under certain conditions (not logged in, in a blocking modal, etc.)?
-      if (this.ngZone) {
-        this.dataService.ngZone.run(this.fn);
+    this._routedFn = () => {
+      if (this.routeTo && this.dataService.router.url !== this.routeTo) {
+        const sub = this.dataService.router.events.subscribe(() => {
+          this.fn();
+          sub.unsubscribe();
+        });
+        this.dataService.router.navigateByUrl(this.routeTo);
       }
       else {
         this.fn();
       }
     };
+
+    this._zonedFn = () => {
+      if (this.ngZone) {
+        this.dataService.ngZone.run(this._routedFn);
+      }
+      else {
+        this._routedFn();
+      }
+    };
+
+    // @TODO/rewrite/shortcuts Do we want to block shortcuts under certain conditions (not logged in, in a blocking modal, etc.)?
+
+    this._fn = this._zonedFn;
 
     this.bindShortcut();
   }

@@ -108,6 +108,7 @@ export class SettingsService {
           this.activeUIs.noteBrowser.newNote();
         }
       },
+      routeTo: '/',
       ngZone: true,
       section: 'shortcuts',
     },

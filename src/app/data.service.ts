@@ -1,4 +1,5 @@
 import {Injectable, EventEmitter, NgZone} from '@angular/core';
+import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 
 const Firebase = require('firebase');
@@ -43,6 +44,7 @@ export class DataService {
 
   constructor(
     public ngZone: NgZone,
+    public router: Router,
     public user: UserService,
     public notes: NotesService,
     public tags: TagsService,
