@@ -17,6 +17,8 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 
 import 'firebase';
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 import 'jquery';
 import 'lodash';
 import 'lunr';
