@@ -103,7 +103,12 @@ export class NoteBrowserComponent {
   }
 
   newNote(noteData = {}, thenFocus = true, callback?: (noteComponent: NoteComponent) => any): void {
-    // @TODO/rewrite/notes Do we want to support config option that newly created notes have any tags that are currently in the query? Does this even make sense with separate note browser vs. note editor?
+    if (this.settings.get('addQueryTagsToNewNuts')) {
+      noteData['tags'] = _.union(
+        noteData['tags'] || [],
+        _.map(this.queryTags, (tag: Tag) => tag.id)
+      );
+    }
     const newNote = this.notesService.createNote(noteData);
 
     // Have to re-assign this.notes (rather than mutate it) otherwise the view won't update
