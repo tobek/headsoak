@@ -18,6 +18,8 @@ export class SettingsComponent {
   sectionName: string;
   section: string; // currently 'settings' or 'shortcuts'
 
+  initialized = false;
+
   private syncDebounced = _.debounce(this.dataService.sync.bind(this.dataService), 1000);
   private checkEmptyModKeyDebounced = _.debounce(this.checkEmptyModKey.bind(this), 1000);
 
@@ -56,26 +58,23 @@ export class SettingsComponent {
       return setting.section === this.section && ! setting.overkill && ! setting.internal;
     });
 
+    this.initialized = true;
+
     this.checkEmptyModKey();
   }
 
-  settingUpdated(setting: Setting | Shortcut, newVal: any): void {
-    if (! this.modKeyCheck(setting, newVal)) {
+  settingUpdated(setting: Setting | Shortcut, newVal?: any): void {
+    if (! this.modKeyCheck(setting)) {
       return;
     }
 
-    if (newVal === setting.value) {
-      return;
-    }
-
-    if (setting instanceof Shortcut && newVal === '' && setting.id !== 'sMod') {
-      setting.value = this.settings[setting.id] = setting.default;
+    if (setting instanceof Shortcut && setting.value === '' && setting.id !== 'sMod') {
+      this.settings.set(setting.id, setting.default);
       return;
     }
 
     // @TODO/rewrite/settings We should check for duplicate shortcuts here. Ideally we can have a per-setting place for errors (and the modless issue should be shown there).
 
-    this.settings[setting.id] = newVal;
     setting.updated(newVal);
 
     this.syncDebounced(); // Digest sync is 5s which is a bit long if user is sitting there waiting for setting to save
@@ -84,18 +83,18 @@ export class SettingsComponent {
   }
 
   /** Returns true if `sMod` setting is ok. */
-  modKeyCheck(setting: Setting | Shortcut, newVal: string): boolean {
+  modKeyCheck(setting: Setting | Shortcut): boolean {
     if (setting.id !== 'sMod') {
       return true;
     }
 
     let allGood = true;
-    if (newVal === '') {
+    if (setting.value === '') {
       // Valid but requires caution
       this.checkEmptyModKeyDebounced();
     }
     else {
-      newVal.split('+').forEach((modKey) => {
+      setting.value.split('+').forEach((modKey) => {
         if (Shortcut.VALID_MOD_KEYS.indexOf(modKey) === -1) {
           this.modKeyError = '"' + modKey + '" is not a valid modifier key. Valid modifier keys are: ' + Shortcut.VALID_MOD_KEYS.join(', ') + '.';
           allGood = false;
@@ -111,7 +110,7 @@ export class SettingsComponent {
   }
 
   checkEmptyModKey() {
-    if (this.section !== 'shortcuts' || this.settings['sMod'] !== '') {
+    if (this.section !== 'shortcuts' || this.settings.get('sMod') !== '') {
       return;
     }
 
@@ -132,10 +131,11 @@ export class SettingsComponent {
 
     _.each(revertThese, (setting: Setting | Shortcut) => {
       if (setting.value !== setting.default) {
-        this.settings[setting.id] = setting.default;
         setting.updated(setting.default);
       }
     });
+
+    this.modKeyError = '';
 
     this.syncDebounced();
   }

@@ -33,10 +33,14 @@ export class Setting {
     this._logger = new Logger('Note ' + this.id);
   }
 
-  updated(newVal: any): void {
-    this._logger.log('Updating to', newVal);
-
-    this.value = newVal;
+  updated(newVal?: any): void {
+    if (newVal !== undefined) {
+      this._logger.log('Updating to', newVal);
+      this.value = newVal;
+    }
+    else {
+      this._logger.log('Updated to', this.value);
+    }
 
     this.dataService.digest$.emit(this);
   }

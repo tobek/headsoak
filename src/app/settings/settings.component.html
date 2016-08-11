@@ -1,12 +1,12 @@
 <h1>{{ sectionName }}</h1>
 
-<div *ngIf="section === 'shortcuts'">
+<div *ngIf="initialized && section === 'shortcuts'">
   <label>
     Modifier key(s):
     <input type="text"
-      [(ngModel)]="settings['sMod']"
-      (blur)="settingUpdated(settings.data['sMod'], settings['sMod'])"
-      (keyup.enter)="settingUpdated(settings.data['sMod'], settings['sMod'])"
+      [(ngModel)]="settings.data['sMod'].value"
+      (blur)="settingUpdated(settings.data['sMod'])"
+      (keyup.enter)="settingUpdated(settings.data['sMod'])"
     />
     <span title="This will prefix all of these shortcuts. Your options are:&#10;&#10;- 'ctrl'&#10;- 'shift'&#10;- 'alt'&#10;- 'option'&#10;- 'command' (only on Mac)&#10;- 'meta' (doesn't work?)&#10;- 'mod' ('ctrl' on a PC, 'command' on a Mac).&#10;&#10;You can also combine them, e.g. 'ctrl+shift', or leave blank to control different shortcuts separately.">(?)</span>
   </label>
@@ -35,21 +35,21 @@
         </label>
       </td>
       <td>
-        <span *ngIf="section === 'shortcuts' && settings.data['sMod'].value">{{ settings.data['sMod'].value }}+</span>
+        <span *ngIf="section === 'shortcuts' && settings.get('sMod')">{{ settings.get('sMod') }}+</span>
         <input
           *ngIf="setting.type === 'boolean'"
           type="checkbox"
           id="setting-{{ setting.id }}"
-          [ngModel]="settings[setting.id]"
+          [ngModel]="setting.value"
           (ngModelChange)="settingUpdated(setting, $event)"
         />
         <input
           *ngIf="setting.type === 'string'"
           type="text"
           id="setting-{{ setting.id }}"
-          [(ngModel)]="settings[setting.id]"
-          (blur)="settingUpdated(setting, settings[setting.id])"
-          (keyup.enter)="settingUpdated(setting, settings[setting.id])"
+          [(ngModel)]="setting.value"
+          (blur)="settingUpdated(setting, setting.value)"
+          (keyup.enter)="settingUpdated(setting)"
         />
       </td>
       <td>

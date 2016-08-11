@@ -118,7 +118,7 @@ export class Shortcut extends Setting {
     return ! this.preventDefault;
   }
 
-  updated(newVal: string): void {
+  updated(newVal?: string): void {
     const oldBinding = this.noMod ? this.value : this.dataService.settings['sMod'] + '+' + this.value;
     const unbindFuncName = this.global ? 'unbindGlobal' : 'unbind';
     Mousetrap[unbindFuncName](oldBinding);

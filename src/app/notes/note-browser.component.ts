@@ -91,7 +91,7 @@ export class NoteBrowserComponent {
   }
 
   initNotes(): void {
-    this.sortOpt = _.find(this.notesService.sortOpts, { id: this.settings.nutSortBy });
+    this.sortOpt = _.find(this.notesService.sortOpts, { id: this.settings.get('nutSortBy') });
 
     // @NOTE @todo/rewrite since we feed this through the pure ArrayLimitPipe, the pipe won't re-evaluate if this array is changed, only if this.notes is actually made to point to a different array. So either we make it an unpure pipe (which is costly) or we reassign this.notes when sorting (which we might want to do anyway)
     this.notes = this.notesService.sortNotes(this.sortOpt);
@@ -244,7 +244,7 @@ export class NoteBrowserComponent {
   }
 
   sort(sortOpt): void {
-    this.settings.data['nutSortBy'].updated(sortOpt.id);
+    this.settings.set('nutSortBy', sortOpt.id);
     this.sortOpt = sortOpt;
     this.notes = this.notesService.sortNotes(this.sortOpt, this.notes);
   }

@@ -11,16 +11,6 @@ import {Logger, utils} from '../utils/';
 export class SettingsService {
   initialized$ = new Subject<void>();
 
-  addQueryTagsToNewNuts: boolean;
-  tagChangesChangeNutModifiedTimestamp: boolean;
-  nutChangesChangeTagModifiedTimestamp: boolean;
-  showNoteIds: boolean;
-  maxHistory: number;
-
-  // internal use
-  nutSortBy: string; // see IDs in notesService.sortOpts
-  tagSortBy: string; // see IDs in tagsService.sortOpts
-
   data: { [key: string]: Setting | Shortcut} = {};
 
   private settingsSourceData = [
@@ -284,6 +274,21 @@ export class SettingsService {
     }
     else {
       this.data[setting.id] = new Setting(setting, this.dataService);
+    }
+  }
+
+  get(settingId: string) {
+    if (this.data[settingId]) {
+      return this.data[settingId].value;
+    }
+    else {
+      return undefined;
+    }
+  }
+
+  set(settingId: string, newVal: any) {
+    if (this.data[settingId]) {
+      this.data[settingId].updated(newVal);
     }
   }
 }

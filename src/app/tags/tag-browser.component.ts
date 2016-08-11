@@ -85,7 +85,7 @@ export class TagBrowserComponent {
   }
 
   initTags(): void {
-    this.sortOpt = _.find(this.tagsService.sortOpts, { id: this.settings.tagSortBy });
+    this.sortOpt = _.find(this.tagsService.sortOpts, { id: this.settings.get('tagSortBy') });
 
     this.tags = this.tagsService.sortTags(this.sortOpt);
   }
@@ -101,7 +101,7 @@ export class TagBrowserComponent {
 
   sort(sortOpt?): void {
     if (sortOpt) {
-      this.settings.data['tagSortBy'].updated(sortOpt.id);
+      this.settings.set('tagSortBy', sortOpt.id);
       this.sortOpt = sortOpt;
     }
 
