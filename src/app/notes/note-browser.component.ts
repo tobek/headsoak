@@ -4,6 +4,7 @@ import 'rxjs/add/operator/debounceTime';
 
 import {ActiveUIsService} from '../active-uis.service';
 import {AnalyticsService} from '../analytics.service';
+import {SettingsService} from '../settings/settings.service';
 import {Note} from './note.model';
 import {NoteComponent} from './note.component';
 import {NotesService} from './notes.service';
@@ -51,6 +52,7 @@ export class NoteBrowserComponent {
     private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
     private autocompleteService: AutocompleteService,
+    private settings: SettingsService,
     private scrollMonitor: ScrollMonitorService,
     private notesService: NotesService,
     private tagsService: TagsService,
@@ -89,6 +91,8 @@ export class NoteBrowserComponent {
   }
 
   initNotes(): void {
+    this.sortOpt = _.find(this.notesService.sortOpts, { id: this.settings.nutSortBy });
+
     // @NOTE @todo/rewrite since we feed this through the pure ArrayLimitPipe, the pipe won't re-evaluate if this array is changed, only if this.notes is actually made to point to a different array. So either we make it an unpure pipe (which is costly) or we reassign this.notes when sorting (which we might want to do anyway)
     this.notes = this.notesService.sortNotes(this.sortOpt);
 
@@ -240,6 +244,7 @@ export class NoteBrowserComponent {
   }
 
   sort(sortOpt): void {
+    this.settings.data['nutSortBy'].updated(sortOpt.id);
     this.sortOpt = sortOpt;
     this.notes = this.notesService.sortNotes(this.sortOpt, this.notes);
   }

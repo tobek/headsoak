@@ -3,6 +3,7 @@ import {Subject, Subscription} from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
 
 import {AnalyticsService} from '../analytics.service';
+import {SettingsService} from '../settings/settings.service';
 // import {Note} from '../notes/note.model';
 // import {NoteComponent} from '../notes/note.component';
 // import {NotesService} from '../notes/notes.service';
@@ -45,6 +46,7 @@ export class TagBrowserComponent {
   constructor(
     private elRef: ElementRef,
     private analyticsService: AnalyticsService,
+    private settings: SettingsService,
     // private autocompleteService: AutocompleteService,
     // private scrollMonitor: ScrollMonitorService,
     // private notesService: NotesService,
@@ -83,6 +85,8 @@ export class TagBrowserComponent {
   }
 
   initTags(): void {
+    this.sortOpt = _.find(this.tagsService.sortOpts, { id: this.settings.tagSortBy });
+
     this.tags = this.tagsService.sortTags(this.sortOpt);
   }
 
@@ -97,6 +101,7 @@ export class TagBrowserComponent {
 
   sort(sortOpt?): void {
     if (sortOpt) {
+      this.settings.data['tagSortBy'].updated(sortOpt.id);
       this.sortOpt = sortOpt;
     }
 
