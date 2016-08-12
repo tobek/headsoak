@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild, ViewChildren, QueryList} from '@angular/core';
+import {Component, Output, ElementRef, ViewChild, ViewChildren, QueryList, EventEmitter} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
 
@@ -34,6 +34,8 @@ export class NoteBrowserComponent {
 
   /** How notes in this list component are sorted on init. @TODO/rewrite/config load from config. */
   sortOpt: Object = this.notesService.sortOpts[0];
+
+  @Output() noteOpened = new EventEmitter<Note>();
 
   @ViewChild('queryInput') queryInput: ElementRef;
   @ViewChildren(NoteComponent) noteComponents: QueryList<NoteComponent>;
@@ -100,6 +102,10 @@ export class NoteBrowserComponent {
     // $timeout($s.n.autosizeAllNuts);
 
     this.activeUIs.noteBrowser = this;
+  }
+
+  _noteOpened(note: Note) {
+    this.noteOpened.emit(note);
   }
 
   newNote(noteData = {}, thenFocus = true, callback?: (noteComponent: NoteComponent) => any): void {

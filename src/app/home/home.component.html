@@ -1,0 +1,11 @@
+<note class="note-{{ openNote.id }}"
+  *ngIf="openNote"
+  [note]="openNote"
+  [opened]="true"
+  (noteClosed)="noteClosed()"
+  (tagToggled)="queryTagToggled($event.tagId, ! $event.shiftHeld)"
+  (deleted)="noteDeleted($event)"
+  (newWithSameTags)="newNoteWithSameTags($event)"
+></note>
+
+<note-browser (noteOpened)="noteOpened($event)"></note-browser>

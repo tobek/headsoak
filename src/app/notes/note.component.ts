@@ -24,6 +24,9 @@ export class NoteComponent {
   addingTag = false;
 
   @Input() note: Note;
+  @Input() opened = false;
+  @Output() noteOpened = new EventEmitter<Note>();
+  @Output() noteClosed = new EventEmitter<Note>();
   @Output() tagToggled = new EventEmitter<Object>();
   @Output() deleted= new EventEmitter<Note>();
   @Output() newWithSameTags = new EventEmitter<Note>();
@@ -44,6 +47,14 @@ export class NoteComponent {
   }
 
   ngOnDestroy() {
+  }
+
+  openNote() {
+    this.noteOpened.emit(this.note);
+  }
+
+  closeNote() {
+    this.noteClosed.emit(this.note);
   }
 
   toggleTag(tagId: string, event: MouseEvent) {

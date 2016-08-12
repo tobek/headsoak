@@ -5,7 +5,7 @@ import {DataService} from '../data.service';
 import {Logger} from '../utils/logger';
 
 import {LoginComponent} from '../account';
-import {NoteBrowserComponent} from '../notes/';
+import {Note, NoteComponent, NoteBrowserComponent} from '../notes/';
 
 
 @Component({
@@ -14,12 +14,15 @@ import {NoteBrowserComponent} from '../notes/';
   providers: [ ],
   directives: [
     LoginComponent,
+    NoteComponent,
     NoteBrowserComponent,
   ],
   styleUrls: [],
-  templateUrl: './home.html'
+  templateUrl: './home.component.html'
 })
 export class HomeComponent {
+  openNote: Note;
+
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
@@ -29,6 +32,14 @@ export class HomeComponent {
 
   ngOnInit() {
     this._logger.log('Component initializing');
+  }
+
+  noteOpened(note: Note) {
+    this.openNote = note;
+  }
+
+  noteClosed() {
+    this.openNote = null;
   }
 
 }
