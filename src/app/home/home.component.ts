@@ -18,7 +18,7 @@ import {Note, NoteComponent, NoteBrowserComponent} from '../notes/';
     NoteComponent,
     NoteBrowserComponent,
   ],
-  styleUrls: [],
+  styleUrls: [ './home.component.css' ],
   templateUrl: './home.component.html'
 })
 export class HomeComponent {
