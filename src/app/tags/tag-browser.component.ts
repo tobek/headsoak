@@ -29,7 +29,7 @@ export class TagBrowserComponent {
   /** Only show this many nuts at a time unless infinite scrolling. */
   limit: number = this.DEFAULT_TAGS_LIMIT;
 
-  /** How tags in this list component are sorted on init. @TODO/rewrite/config load from config. */
+  /** How tags in this list component are sorted on init. */
   sortOpt: Object = this.tagsService.sortOpts[0];
 
   @ViewChild('queryInput') queryInput: ElementRef;

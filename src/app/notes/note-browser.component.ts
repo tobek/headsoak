@@ -32,7 +32,7 @@ export class NoteBrowserComponent {
   /** Only show this many nuts at a time unless infinite scrolling. */
   limit: number = this.DEFAULT_NOTES_LIMIT;
 
-  /** How notes in this list component are sorted on init. @TODO/rewrite/config load from config. */
+  /** How notes in this list component are sorted on init. */
   sortOpt: Object = this.notesService.sortOpts[0];
 
   @Output() noteOpened = new EventEmitter<Note>();

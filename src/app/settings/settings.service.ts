@@ -24,19 +24,19 @@ export class SettingsService {
     },
 
     {
-      id: 'tagChangesChangeNutModifiedTimestamp',
-      default: false,
-      name: 'Tagging updates note timestamps',
-      description: 'If this is checked then adding, removing, and renaming tags will change the "modified" timestamp of notes they are attached to.',
+      id: 'nutChangesChangeTagModifiedTimestamp',
+      default: true,
+      name: 'Editing notes updates tag timestamps',
+      description: 'If this is checked then whenever you edit a note, it will change the "modified" timestamp (used e.g. to sort by \'recently used\') of all tags on that note.',
       type: 'boolean',
       section: 'settings'
     },
 
     {
-      id: 'nutChangesChangeTagModifiedTimestamp',
-      default: true,
-      name: 'Editing notes updates tag timestamps',
-      description: 'If this is checked then whenever you edit a note, it will change the "modified" timestamp (used e.g. to sort by \'recently used\') of all tags on that note.',
+      id: 'tagChangesChangeNutModifiedTimestamp',
+      default: false,
+      name: 'Tagging updates note timestamps',
+      description: 'If this is checked then adding or removing a tag to/from a note will update the "modified" timestamp of that note.',
       type: 'boolean',
       section: 'settings'
     },

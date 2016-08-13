@@ -75,13 +75,6 @@ export class Tag {
       this.modified = Date.now();
     }
 
-    // @TODO/rewrite/tags
-    // if (updateNut && tag.docs) {
-    //   tag.docs.forEach(function(docId) {
-    //     $s.n.nutUpdated(docId, $s.c.config.tagChangesChangeNutModifiedTimestamp); // update history, index, maybe modified (depends on config)
-    //   });
-    // }
-
     this._logger.log('Updated');
 
     this.dataService.digest$.emit(this);

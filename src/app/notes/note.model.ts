@@ -121,17 +121,10 @@ export class Note {
 
     if (updateModified) {
       this.modified = Date.now();
-
-      // @TODO/rewrite/config @TODO/rewrite/tags
-      // if ($s.c.config.nutChangesChangeTagModifiedTimestamp && this.tags) {
-      //   this.tags.forEach(function (tagId) {
-      //     $s.t.tagUpdated(tagId, false, true);
-      //   });
-      // }
     }
 
     if (fullUpdate) {
-      this.doFullUpdate();
+      this.doFullUpdate(updateModified);
     }
 
     this._logger.log('Updated');
@@ -154,11 +147,18 @@ export class Note {
   }
 
   /**
-   * 1. Updates lunr index. Note: this can be slow: 0.5s for 40k char text on one machine).
-   * 2. Runs through all programmatic tags. Might be slow depending on user functions.
+   * 1. Updates timestamps of attached tags, if appropriate
+   * 2. Updates lunr index. Note: this can be slow: 0.5s for 40k char text on one machine).
+   * 3. Runs through all programmatic tags. Might be slow depending on user functions.
    */
-  doFullUpdate(): void {
+  doFullUpdate(updateModified = true): void {
     this._logger.log('Doing full update');
+
+    if (updateModified && this.dataService.settings.get('nutChangesChangeTagModifiedTimestamp')) {
+      this.tags.forEach((tagId: string) => {
+        this.dataService.tags.tags[tagId].updated();          
+      });
+    }
 
     this.dataService.notes.updateNoteInIndex(this);
 
@@ -243,8 +243,8 @@ export class Note {
     tag.addNoteId(this.id);
 
     this.rebuildNoteSharing();
-    // @TODO/rewrite/config first param should reflect config.tagChangesChangeNutModifiedTimestamp
-    this.updated(true, fullUpdate);
+
+    this.updated(this.dataService.settings.get('tagChangesChangeNutModifiedTimestamp'), fullUpdate);
 
     return tag;
   }
@@ -265,8 +265,7 @@ export class Note {
     tag.removeNoteId(this.id);
 
     this.rebuildNoteSharing();
-    // @TODO/rewrite/config first param should reflect config.tagChangesChangeNutModifiedTimestamp
-    this.updated(true, fullUpdate);
+    this.updated(this.dataService.settings.get('tagChangesChangeNutModifiedTimestamp'), fullUpdate);
   }
 
   progTagCantChangeAlert(tag: Tag): void {
