@@ -2,6 +2,7 @@ import {Component, EventEmitter, ElementRef, Input, Output, ViewChild, ChangeDet
 
 import {ActiveUIsService} from '../active-uis.service';
 import {AnalyticsService} from '../analytics.service';
+import {SettingsService} from '../settings/settings.service';
 import {Note} from '../notes/note.model';
 import {NotesService} from '../notes/notes.service';
 import {TagComponent} from '../tags/';
@@ -38,6 +39,7 @@ export class NoteComponent {
     private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
     private autocompleteService: AutocompleteService,
+    private settings: SettingsService,
     private notesService: NotesService
   ) {}
 

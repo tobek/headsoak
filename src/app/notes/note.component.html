@@ -32,7 +32,7 @@
         (removed)="note.removeTagId(tagId)"
       ></tag>
 
-      <span class="tag note-id" *ngIf="true"><!-- @TODO/rewrite/settings Only show if config.showNoteIds -->{{ note.id }}</span>
+      <span class="tag note-id" *ngIf="settings.get('showNoteIds')">{{ note.id }}</span>
     </div>
   </div>
 
