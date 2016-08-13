@@ -122,8 +122,8 @@ export class SettingsService {
       description: 'Create a new note with the same tags as the currently focused note',
       default: 'd',
       fn: () => {
-        if (this.activeUIs.noteComponent) {
-          this.activeUIs.noteComponent.newNoteWithSameTags();
+        if (this.activeUIs.focusedNoteComponent) {
+          this.activeUIs.focusedNoteComponent.newNoteWithSameTags();
         }
       },
       ngZone: true,
@@ -135,8 +135,8 @@ export class SettingsService {
       description: 'Deletes the note that you are currently editing.',
       default: 'backspace',
       fn: () => {
-        if (this.activeUIs.noteComponent) {
-          this.activeUIs.noteComponent.delete();
+        if (this.activeUIs.focusedNoteComponent) {
+          this.activeUIs.focusedNoteComponent.delete();
         }
       },
       // ngZone: true, // not needed cause of the confirmation prompt?
@@ -148,8 +148,8 @@ export class SettingsService {
       description: 'Deletes the note that you are currently editing. Does not ask \'Are you sure?\'',
       default: 'shift+backspace',
       fn: () => {
-        if (this.activeUIs.noteComponent) {
-          this.activeUIs.noteComponent.delete(true);
+        if (this.activeUIs.focusedNoteComponent) {
+          this.activeUIs.focusedNoteComponent.delete(true);
         }
       },
       overkill: true,
@@ -162,8 +162,8 @@ export class SettingsService {
       description: 'Adds tag to the note that you are currently editing.',
       default: 't',
       fn: () => {
-        if (this.activeUIs.noteComponent) {
-          this.activeUIs.noteComponent.initializeAddTag();
+        if (this.activeUIs.focusedNoteComponent) {
+          this.activeUIs.focusedNoteComponent.initializeAddTag();
         }
       },
       section: 'shortcuts',

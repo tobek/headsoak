@@ -66,13 +66,13 @@ export class NoteComponent {
   }
 
   bodyFocused() {
-    this.activeUIs.noteComponent = this;
+    this.activeUIs.focusedNoteComponent = this;
     this.note.focused();
   }
 
   bodyBlurred() {
-    if (this.activeUIs.noteComponent === this) {
-      this.activeUIs.noteComponent = null;
+    if (this.activeUIs.focusedNoteComponent === this) {
+      this.activeUIs.focusedNoteComponent = null;
     }
     this.note.blurred();
   }
