@@ -33,7 +33,5 @@
   *ngFor="let note of (notes | arrayLimit:limit)"
   [note]="note"
   (noteOpened)="_noteOpened($event)"
-  (tagToggled)="queryTagToggled($event.tagId, ! $event.shiftHeld)"
   (deleted)="noteDeleted($event)"
-  (newWithSameTags)="newNoteWithSameTags($event)"
 ></note>

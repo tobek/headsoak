@@ -3,9 +3,7 @@
   [note]="openNote"
   [opened]="true"
   (noteClosed)="noteClosed()"
-  (tagToggled)="queryTagToggled($event.tagId, ! $event.shiftHeld)"
-  (deleted)="noteDeleted($event)"
-  (newWithSameTags)="newNoteWithSameTags($event)"
+  (deleted)="noteBrowser.noteDeleted($event); noteClosed()"
 ></note>
 
 <note-browser (noteOpened)="noteOpened($event)"></note-browser>

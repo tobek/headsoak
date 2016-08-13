@@ -27,9 +27,7 @@ export class NoteComponent {
   @Input() opened = false;
   @Output() noteOpened = new EventEmitter<Note>();
   @Output() noteClosed = new EventEmitter<Note>();
-  @Output() tagToggled = new EventEmitter<Object>();
   @Output() deleted= new EventEmitter<Note>();
-  @Output() newWithSameTags = new EventEmitter<Note>();
   @ViewChild('bodyInput') bodyInputRef: ElementRef;
   @ViewChild('addTagInput') addTagInputRef: ElementRef;
 
@@ -58,7 +56,9 @@ export class NoteComponent {
   }
 
   toggleTag(tagId: string, event: MouseEvent) {
-    this.tagToggled.emit({ tagId: tagId, shiftHeld: (event && event.shiftKey) });
+    if (this.activeUIs.noteBrowser) {
+      this.activeUIs.noteBrowser.queryTagToggled(tagId, event && event.shiftKey);
+    }
   }
 
   bodyFocus() {
@@ -163,7 +163,9 @@ export class NoteComponent {
   }
 
   newNoteWithSameTags() {
-    this.newWithSameTags.emit(this.note);
+    if (this.activeUIs.noteBrowser) {
+      this.activeUIs.noteBrowser.newNoteWithSameTags(this.note);
+    }
   }
 }
 
