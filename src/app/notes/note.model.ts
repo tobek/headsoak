@@ -19,6 +19,9 @@ export class Note {
   sharedBody: string;
   tags: string[]; // Array of tag IDs
 
+  /** Currently used to a) hide new/unsaved notes from browser, and b) distinguish a new note with empty body from old note with empty body for the purposes of placeholder text. */
+  new = false;
+
   /** Hold interval for checking if we should sync note body while it's focused. */
   private nutSaver: number;
 
@@ -104,6 +107,8 @@ export class Note {
    * 4. Adds to digest to be saved to data store
    */
   updated(updateModified = true, fullUpdate = true): void {
+    this.new = false;
+
     // History disabled for now
     // if ($s.c.config.maxHistory > 0) {
     //   // @TODO history is a bit overzealous. this function can get called every second. at the very least, history should only be separated when the note blurs. or it could even be by session. and should maybe be stored separately from the note so that not EVERY SINGLE push sends whole history

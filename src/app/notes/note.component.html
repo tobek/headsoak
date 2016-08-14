@@ -4,11 +4,13 @@
 
     <div class="note-actions">
       <button *ngIf="! opened" (click)="openNote()">open note</button>
-      <button *ngIf="opened" (click)="closeNote()">close note</button>
+      <button *ngIf="opened && ! note.new" (click)="closeNote()">close note</button>
       <button (click)="note.showShareSettings()">share</button>
       <button (click)="note.togglePrivate()">private</button>
-      <button (click)="newNoteWithSameTags()">new note same tags</button>
-      <button (click)="delete($event)">delete</button>
+      <span *ngIf="! note.new">
+        <button (click)="newNoteWithSameTags()">new note same tags</button>
+        <button (click)="delete($event)">delete</button>
+      </span>
     </div>
 
     <div class="tags">
@@ -39,6 +41,7 @@
   <textarea class="body" tabindex=2
     ref-bodyInput
     *ngIf="! note.sharedBody"
+    placeholder="{{ note.new ? 'Enter a new note' : 'What are you trying to say?' }}"
     [ngModel]="note.body"
     (ngModelChange)="note.body = $event; note.changed()"
     (focus)="bodyFocused()"
