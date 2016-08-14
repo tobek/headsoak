@@ -161,6 +161,10 @@ export class NoteComponent {
 
     if (this.note.delete(noConfirm)) {
       this.deleted.emit(this.note);
+
+      if (this.activeUIs.openNoteComponent && this.activeUIs.openNoteComponent.note.id === this.note.id) {
+        this.activeUIs.openNoteComponent.delete(true);
+      }
     }
   }
 
