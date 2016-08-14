@@ -116,7 +116,9 @@ export class NoteComponent {
 
   closeAddTagFieldHandler(event: MouseEvent) {
     const clickedEl = <HTMLElement> event.target;
-    if (clickedEl && clickedEl.classList.contains('new-tag-button')) {
+    if (clickedEl &&
+      (clickedEl.classList.contains('new-tag-button') || clickedEl.classList.contains('new-tag-input'))
+      ) {
       return;
     }
     else if (document.querySelector('.autocomplete-suggestions').contains(clickedEl)) {
