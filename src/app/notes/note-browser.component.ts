@@ -44,6 +44,7 @@ export class NoteBrowserComponent {
   queryTags: Tag[] = [];
   private queryUpdated$: Subject<void> = new Subject<void>();
 
+  private newNoteSub: Subscription;
   private querySub: Subscription;
   private scrollSub: Subscription;
 
@@ -76,8 +77,7 @@ export class NoteBrowserComponent {
     this.querySub = this.queryUpdated$
       .debounceTime(250)
       .subscribe(() => {
-        let queriedNotes = this.notesService.doQuery(this.query, this.queryTags);
-        this.notes = this.notesService.sortNotes(undefined, queriedNotes);
+        this.notes = this.getNotes();
       });
 
     this.scrollSub = this.scrollMonitor.scroll$.subscribe(this.infiniteScrollCheck.bind(this));
@@ -86,6 +86,7 @@ export class NoteBrowserComponent {
   ngOnDestroy() {
     this.querySub.unsubscribe();
     this.scrollSub.unsubscribe();
+    this.newNoteSub.unsubscribe();
 
     if (this.activeUIs.noteBrowser === this) {
       this.activeUIs.noteBrowser = null;
@@ -102,6 +103,8 @@ export class NoteBrowserComponent {
     // $timeout($s.n.autosizeAllNuts);
 
     this.activeUIs.noteBrowser = this;
+
+    this.newNoteSub = this.notesService.noteUpdated$.subscribe(this.noteUpdated.bind(this));
   }
 
   _noteOpened(note: Note) {
@@ -134,6 +137,21 @@ export class NoteBrowserComponent {
     });
   }
 
+  /** Check if the updated note did not used to be in the currently visible notes, but should be. @TODO/ece Right now this only ever adds notes but never removes unless the user explicitly re-sorts - what do you think? */
+  noteUpdated(note: Note) {
+    if (_.includes(this.notes, note)) {
+      // Updated note is already visible, whatever (maybe sort would change but that could whip things away from the user?)
+      return;
+    }
+
+    const newNoteList = this.getNotes();
+    if (_.includes(newNoteList, note)) {
+      // Updated note should be visible so let's make it happen. @TODO We should make sure to preserve scroll position
+      this._logger.log('Updated note wasn\'t in notes but should be:', note);
+      this.notes = newNoteList;
+    }
+  }
+
   newNoteAddTag(): void {
     this.newNote({}, false, (noteComponent: NoteComponent) => {
       noteComponent.initializeAddTag();
@@ -154,6 +172,12 @@ export class NoteBrowserComponent {
   noteDeleted(deletedNote: Note): void {
     // Have to re-assign this.notes (rather than mutate it) otherwise the view won't update
     this.notes = _.filter(this.notes, (note: Note) => note.id !== deletedNote.id);
+  }
+
+  /** Gets notes based on current query and sort. */
+  getNotes(): Note[] {
+    const queriedNotes = this.notesService.doQuery(this.query, this.queryTags);
+    return this.notesService.sortNotes(undefined, queriedNotes);
   }
 
   queryUpdated(): void {

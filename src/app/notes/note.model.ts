@@ -171,6 +171,8 @@ export class Note {
     // $s.n.runProgTags(nut);
 
     delete this.fullUpdateRequired;
+
+    this.dataService.notes.noteUpdated$.next(this);
   }
 
   focused(): void {

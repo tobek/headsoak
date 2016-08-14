@@ -13,6 +13,7 @@ const lunr = require('lunr');
 export class NotesService {
   notes: { [key: string]: Note } = {}; // id -> Note instance
   initialized$ = new Subject<void>();
+  noteUpdated$ = new Subject<Note>();
   index: lunr.Index;
 
   /**
