@@ -84,6 +84,9 @@ export class NoteComponent {
     window.addEventListener('click', this.boundCloseAddTagFieldHandler);
 
     this.addTagSetUpAutocomplete();
+
+    // This still counts as the focused note component - e.g. delete shortcut while in add tag field should still delete the note.
+    this.activeUIs.focusedNoteComponent = this;
   }
 
   addTagSetUpAutocomplete(): void {
@@ -130,6 +133,10 @@ export class NoteComponent {
   closeAddTagField(focusOnBody = false) {
     window.removeEventListener('click', this.boundCloseAddTagFieldHandler);
     this.addingTag = false;
+    
+    if (this.activeUIs.focusedNoteComponent === this) {
+      this.activeUIs.focusedNoteComponent = null;
+    }
 
     if (focusOnBody) {
       this.bodyFocus();

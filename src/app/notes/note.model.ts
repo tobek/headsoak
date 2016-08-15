@@ -324,6 +324,10 @@ export class Note {
     this.dataService.notes.noteUpdated$.next(this);
     this.dataService.notes.removeNote(this);
 
+    if (this.dataService.activeUIs.focusedNoteComponent && this.dataService.activeUIs.focusedNoteComponent.note === this) {
+      this.dataService.activeUIs.focusedNoteComponent = null;
+    }
+
     // @TODO/rewrite/sharing Do we need to do anything with sharing?
 
     // @TODO/rewrite need to do something like this otherwise it's still visible
