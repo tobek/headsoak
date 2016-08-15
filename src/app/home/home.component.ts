@@ -110,6 +110,8 @@ export class HomeComponent {
 
   noteOpened(note: Note): void {
     this.openNote = note;
+
+    this.noteComponent.bodyFocus();
   }
 
   closeNote(): void {
