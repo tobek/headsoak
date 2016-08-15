@@ -111,7 +111,7 @@ export class NoteBrowserComponent {
     this.noteOpened.emit(note);
   }
 
-  newNote(noteData = {}, thenFocus = true, callback?: (noteComponent: NoteComponent) => any): void {
+  newNote(noteData = {}, thenFocus = true): void {
     if (this.activeUIs.home) {
       this.activeUIs.home.goToNewNote();
     }
@@ -158,13 +158,6 @@ export class NoteBrowserComponent {
       this._logger.log('Updated note wasn\'t in notes but should be:', note);
       this.notes = newNoteList;
     }
-  }
-
-  newNoteAddTag(): void {
-    this.newNote({}, false, (noteComponent: NoteComponent) => {
-      noteComponent.initializeAddTag();
-      noteComponent.cdrRef.detectChanges();
-    });
   }
 
   newNoteWithSameTags(note: Note): void {

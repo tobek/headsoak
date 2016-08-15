@@ -104,18 +104,22 @@ export class HomeComponent {
     }
   }
 
-  goToNewNote() {
+  goToNewNote(thenFocus = true) {
     if (! this.openNote.new) {
       // We have a note open that is not new - it has changes/content
       this.closeNote(); // will set up a new note
     }
 
     // Now we have an untouched new note open
-    this.noteComponent.bodyFocus();
+    if (thenFocus) {
+      this.noteComponent.bodyFocus();
+    }
   }
 
   goToNewNoteAddTag() {
-
+    this.goToNewNote(false);
+    this.noteComponent.initializeAddTag();
+    // this.noteComponent.cdrRef.detectChanges(); // this was necessary when new note happened in/from note browser but no longer seems necessary, but keeping it here for reference.
   }
 
 }
