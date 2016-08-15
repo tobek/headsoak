@@ -38,11 +38,12 @@ export class NoteBrowserComponent {
   @Output() noteOpened = new EventEmitter<Note>();
 
   @ViewChild('queryInput') queryInput: ElementRef;
-  @ViewChildren(NoteComponent) noteComponents: QueryList<NoteComponent>;
+  // @ViewChildren(NoteComponent) noteComponents: QueryList<NoteComponent>;
 
   query: string;
   queryTags: Tag[] = [];
-  private queryUpdated$: Subject<void> = new Subject<void>();
+  queryTagsUpdated$ = new Subject<Tag[]>();
+  private queryUpdated$ = new Subject<void>();
 
   private noteUpdatedSub: Subscription;
   private querySub: Subscription;
@@ -115,32 +116,9 @@ export class NoteBrowserComponent {
     if (this.activeUIs.home) {
       this.activeUIs.home.goToNewNote();
     }
-    // if (this.settings.get('addQueryTagsToNewNuts')) {
-    //   noteData['tags'] = _.union(
-    //     noteData['tags'] || [],
-    //     _.map(this.queryTags, (tag: Tag) => tag.id)
-    //   );
-    // }
-    // const newNote = this.notesService.createNote(noteData);
-
-    // // Have to re-assign this.notes (rather than mutate it) otherwise the view won't update
-    // this.notes = _.concat([newNote], this.notes);
-
-    // // Have to wait cause angular hasn't updated the QueryList yet so wait for it:
-    // const sub = this.noteComponents.changes.subscribe(() => {
-    //   sub.unsubscribe();
-
-    //   if (thenFocus) {
-    //     this.noteComponents.first.bodyFocus();
-    //   }
-
-    //   if (callback) {
-    //     callback(this.noteComponents.first);
-    //   }
-    // });
   }
 
-  /** Check if the updated note did not used to be in the currently visible notes, but should be. If note was deleted we simply remove note from visible notes if necessary. @TODO/ece Right now for non-delete updates this only ever adds notes but never removes unless the user explicitly re-sorts - what do you think? */
+  /** Check if the updated note did not used to be in the currently visible notes, but should be. If note was deleted we simply remove note from visible notes if necessary. @TODO/ece Right now for non-delete updates this only ever adds notes but never removes unless the user explicitly re-sorts - what do you think? @TODO/rewrite when removed, don't replace with newNoteList, just do _.without? */
   noteUpdated(note: Note) {
     if (note.deleted) {
       this.noteDeleted(note);
@@ -238,6 +216,8 @@ export class NoteBrowserComponent {
   queryAddTag(tag: Tag): void {
     this.queryTags.push(tag);
     this.queryUpdated();
+
+    this.queryTagsUpdated$.next(this.queryTags);
   }
 
   queryRemoveTag(tag: Tag): void {
@@ -245,6 +225,8 @@ export class NoteBrowserComponent {
     if (i !== -1) {
       this.queryTags.splice(i, 1);
       this.queryUpdated();
+
+      this.queryTagsUpdated$.next(this.queryTags);
     }
   }
 

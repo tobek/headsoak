@@ -110,7 +110,14 @@ export class Note {
    * 4. Adds to digest to be saved to data store
    */
   updated(updateModified = true, fullUpdate = true): void {
-    this.new = false;
+    if (this.new) {
+      this.new = false;
+
+      // Also, for any tags we put on here, we haven't actually updated the tag models with this note, so do that now.
+      this.tags.forEach((tagId: string) => {
+        this.dataService.tags.tags[tagId].addNoteId(this.id);          
+      });
+    }
 
     // History disabled for now
     // if ($s.c.config.maxHistory > 0) {
