@@ -187,7 +187,7 @@ export class SettingsService {
       default: '0',
       fn: () => {
         if (this.activeUIs.noteBrowser) {
-          this.activeUIs.noteBrowser.queryClear();
+          this.activeUIs.noteBrowser.queryClear(false);
         }
       },
       routeTo: '/', // @TODO/shortcuts Ditto note on `sSearch`
