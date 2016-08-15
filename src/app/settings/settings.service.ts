@@ -16,7 +16,7 @@ export class SettingsService {
   private settingsSourceData = [
     {
       id: 'addQueryTagsToNewNuts',
-      default: true,
+      default: false,
       name: 'Add filtered tags to new notes',
       description: 'If this is checked, new notes created while searching for certain tags will have those tags too.',
       type: 'boolean', // only boolean supported for now
