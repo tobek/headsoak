@@ -22,6 +22,9 @@ export class Note {
   /** Currently used to a) hide new/unsaved notes from browser, and b) distinguish a new note with empty body from old note with empty body for the purposes of placeholder text. */
   new = false;
 
+  /** Temporary flag attached to note model as it's passed around, indicating that it's about to be deleted. */
+  deleted = false;
+
   /** Hold interval for checking if we should sync note body while it's focused. */
   private nutSaver: number;
 
@@ -310,12 +313,15 @@ export class Note {
       return false;
     }
 
+    this.deleted = true;
+
     if (this.tags) {
       this.tags.forEach((tagId) => {
         this.dataService.tags.tags[tagId].removeNoteId(this.id);
       });
     }
 
+    this.dataService.notes.noteUpdated$.next(this);
     this.dataService.notes.removeNote(this);
 
     // @TODO/rewrite/sharing Do we need to do anything with sharing?

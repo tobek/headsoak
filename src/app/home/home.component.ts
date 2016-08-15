@@ -1,4 +1,5 @@
 import {Component, ViewChildren, QueryList} from '@angular/core';
+import {Subscription} from 'rxjs';
 
 import {ActiveUIsService} from '../active-uis.service';
 import {AnalyticsService} from '../analytics.service';
@@ -28,6 +29,8 @@ export class HomeComponent {
   /** We only ever actually have one NoteCompont, but because that changes and we still need a reference to it, and because setTimeout doesn't seem to be sufficing, let's just use a QueryList so that we can subscribe to changes from it. */
   @ViewChildren(NoteComponent) noteComponents: QueryList<NoteComponent>;
 
+  private noteUpdatedSub: Subscription;
+
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
@@ -42,14 +45,24 @@ export class HomeComponent {
 
     // Wait for notes service to be ready and then initialize new note
     if (! _.isEmpty(this.notesService.notes)) {
-      this.setUpNewNote();
+      this.init();
     }
     else {
       let subscription = this.notesService.initialized$.subscribe(() => {
-        this.setUpNewNote();
+        this.init();
         subscription.unsubscribe();
       });
     }
+  }
+
+  ngOnDestroy() {
+    this.noteUpdatedSub.unsubscribe();
+  }
+
+  init() {
+    this.noteUpdatedSub = this.notesService.noteUpdated$.subscribe(this.noteUpdated.bind(this));
+
+    this.setUpNewNote();
   }
 
   setUpNewNote() {
@@ -82,6 +95,12 @@ export class HomeComponent {
     }
 
     this.setUpNewNote();
+  }
+
+  noteUpdated(note: Note) {
+    if (note.deleted && this.openNote === note) {
+      this.noteClosed();
+    }
   }
 
 }

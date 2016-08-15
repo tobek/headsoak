@@ -28,7 +28,6 @@ export class NoteComponent {
   @Input() opened = false;
   @Output() noteOpened = new EventEmitter<Note>();
   @Output() noteClosed = new EventEmitter<Note>();
-  @Output() deleted= new EventEmitter<Note>();
   @ViewChild('bodyInput') bodyInputRef: ElementRef;
   @ViewChild('addTagInput') addTagInputRef: ElementRef;
 
@@ -161,13 +160,7 @@ export class NoteComponent {
   delete(eventOrNoConfirm?: MouseEvent | boolean) {
     const noConfirm = (eventOrNoConfirm instanceof MouseEvent) ? eventOrNoConfirm.shiftKey : eventOrNoConfirm;
 
-    if (this.note.delete(noConfirm)) {
-      this.deleted.emit(this.note);
-
-      if (this.activeUIs.openNoteComponent && this.activeUIs.openNoteComponent.note.id === this.note.id) {
-        this.activeUIs.openNoteComponent.delete(true);
-      }
-    }
+    this.note.delete(noConfirm);
   }
 
   newNoteWithSameTags() {

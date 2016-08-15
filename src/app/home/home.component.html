@@ -3,7 +3,6 @@
   [note]="openNote"
   [opened]="true"
   (noteClosed)="noteClosed()"
-  (deleted)="noteBrowser.noteDeleted($event); noteClosed()"
 ></note>
 
 <note-browser ref-noteBrowser (noteOpened)="noteOpened($event)"></note-browser>

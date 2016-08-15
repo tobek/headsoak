@@ -44,7 +44,7 @@ export class NoteBrowserComponent {
   queryTags: Tag[] = [];
   private queryUpdated$: Subject<void> = new Subject<void>();
 
-  private newNoteSub: Subscription;
+  private noteUpdatedSub: Subscription;
   private querySub: Subscription;
   private scrollSub: Subscription;
 
@@ -86,7 +86,7 @@ export class NoteBrowserComponent {
   ngOnDestroy() {
     this.querySub.unsubscribe();
     this.scrollSub.unsubscribe();
-    this.newNoteSub.unsubscribe();
+    this.noteUpdatedSub.unsubscribe();
 
     if (this.activeUIs.noteBrowser === this) {
       this.activeUIs.noteBrowser = null;
@@ -104,7 +104,7 @@ export class NoteBrowserComponent {
 
     this.activeUIs.noteBrowser = this;
 
-    this.newNoteSub = this.notesService.noteUpdated$.subscribe(this.noteUpdated.bind(this));
+    this.noteUpdatedSub = this.notesService.noteUpdated$.subscribe(this.noteUpdated.bind(this));
   }
 
   _noteOpened(note: Note) {
@@ -137,8 +137,13 @@ export class NoteBrowserComponent {
     });
   }
 
-  /** Check if the updated note did not used to be in the currently visible notes, but should be. @TODO/ece Right now this only ever adds notes but never removes unless the user explicitly re-sorts - what do you think? */
+  /** Check if the updated note did not used to be in the currently visible notes, but should be. If note was deleted we simply remove note from visible notes if necessary. @TODO/ece Right now for non-delete updates this only ever adds notes but never removes unless the user explicitly re-sorts - what do you think? */
   noteUpdated(note: Note) {
+    if (note.deleted) {
+      this.noteDeleted(note);
+      return;
+    }
+
     if (_.includes(this.notes, note)) {
       // Updated note is already visible, whatever (maybe sort would change but that could whip things away from the user?)
       return;
@@ -168,8 +173,12 @@ export class NoteBrowserComponent {
     });
   }
 
-  /** Called when one of the notes in this component is deleted. */
   noteDeleted(deletedNote: Note): void {
+    if (! _.includes(this.notes, deletedNote)) {
+      // Don't have to update our notes cause this one wasn't visible
+      return;
+    }
+
     // Have to re-assign this.notes (rather than mutate it) otherwise the view won't update
     this.notes = _.filter(this.notes, (note: Note) => note.id !== deletedNote.id);
   }
