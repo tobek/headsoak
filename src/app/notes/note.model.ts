@@ -72,6 +72,8 @@ export class Note {
       // history: [], // an array of notes, last is the latest
     });
 
+    this.oldBody = this.body;
+
     // @TODO/rewrite/tags
     // if (this.tags && this.tags.length > 0) {
     //   // Add this doc id to each of the tags
@@ -202,15 +204,17 @@ export class Note {
   }
 
   maybeUpdate(blurred = false): void {
-    let bodyChanged = this.oldBody !== this.body;
+    const bodyChanged = this.oldBody !== this.body;
 
     if (blurred && (this.fullUpdateRequired || bodyChanged)) {
       // We don't update index/prog tags/etc while typing/focused because it can be slow. If there was any change detected while focused, we have to do that now
-      this._logger.log('Note has changed since focus');
+      this._logger.log('Note has changed since focus. Was`' + this.oldBody + '`, now is `' + this.body + '`');
+      
       this.updated(bodyChanged, true);
-    }
 
-    if (this.oldBody !== this.body) {
+      this.oldBody = this.body;
+    }
+    else if (bodyChanged) {
       this._logger.log('Note changed!');
 
       this.fullUpdateRequired = true; // We haven't blurred now, so we're not doing full update. Need to make sure we full update (update lunr index and prog tags) later even if nut is unchanged by the time we blur. This persists to database too so that even if we're disconnected, the change will be done later.

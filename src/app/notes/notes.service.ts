@@ -129,7 +129,7 @@ export class NotesService {
   /**
    * Returns an array of Notes filtered by various means - everything is `and`ed
    */
-  doQuery(query: string, tags?: Tag[]): Note[] {
+  doQuery(query = '', tags?: Tag[]): Note[] {
     this._logger.time('doing query');
 
     this._logger.log('queried "' + query + '" with tags', tags);
