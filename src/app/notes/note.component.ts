@@ -158,6 +158,11 @@ export class NoteComponent {
   }
 
   delete(eventOrNoConfirm?: MouseEvent | boolean) {
+    if (this.note.new) {
+      // Deleting this note doesn't make sense, as it would immediately be replaced with another blank new note.
+      return;
+    }
+
     const noConfirm = (eventOrNoConfirm instanceof MouseEvent) ? eventOrNoConfirm.shiftKey : eventOrNoConfirm;
 
     this.note.delete(noConfirm);
