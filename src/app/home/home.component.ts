@@ -9,7 +9,7 @@ import {Logger} from '../utils/logger';
 
 import {LoginComponent} from '../account';
 import {Note, NoteComponent, NoteBrowserComponent, NotesService} from '../notes/';
-import {Tag} from '../tags/';
+import {Tag, TagsService} from '../tags/';
 
 
 @Component({
@@ -39,6 +39,7 @@ export class HomeComponent {
     public activeUIs: ActiveUIsService,
     public analyticsService: AnalyticsService,
     public notesService: NotesService,
+    public tagsService: TagsService,
     public dataService: DataService,
     public settings: SettingsService
    ) {}
@@ -142,6 +143,15 @@ export class HomeComponent {
     this.goToNewNote(false);
     this.noteComponent.initializeAddTag();
     // this.noteComponent.cdrRef.detectChanges(); // this was necessary when new note happened in/from note browser but no longer seems necessary, but keeping it here for reference.
+  }
+
+  goToNewNoteWithSameTags(note: Note): void {
+    this.goToNewNote();
+    
+    this.newNote.tags = note.tags.filter((tagId: string) => {
+      const tag = this.tagsService.tags[tagId];
+      return ! tag.prog && ! tag.readOnly;
+    });
   }
 
 }

@@ -105,7 +105,8 @@ export class NoteBrowserComponent {
     this.noteOpened.emit(note);
   }
 
-  newNote(noteData = {}, thenFocus = true): void {
+  newNote(thenFocus = true): void {
+    // @TODO/rewrite When on the Browse screen will have to slide over to Write
     if (this.activeUIs.home) {
       this.activeUIs.home.goToNewNote();
     }
@@ -132,15 +133,6 @@ export class NoteBrowserComponent {
       this._logger.log('Updated note wasn\'t visible but should be now:', note);
       this.notes = newNoteList;
     }
-  }
-
-  newNoteWithSameTags(note: Note): void {
-    this.newNote({
-      tags: note.tags.filter((tagId: string) => {
-        const tag = this.tagsService.tags[tagId];
-        return ! tag.prog && ! tag.readOnly;
-      })
-    });
   }
 
   noteDeleted(deletedNote: Note): void {

@@ -183,8 +183,8 @@ export class NoteComponent {
   }
 
   newNoteWithSameTags() {
-    if (this.activeUIs.noteBrowser) {
-      this.activeUIs.noteBrowser.newNoteWithSameTags(this.note);
+    if (this.activeUIs.home) {
+      this.activeUIs.home.goToNewNoteWithSameTags(this.note);
     }
   }
 }
