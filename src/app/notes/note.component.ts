@@ -63,7 +63,14 @@ export class NoteComponent {
   }
 
   bodyFocus() {
-    this.bodyInputRef.nativeElement.focus();
+    if (this.bodyInputRef) {
+      this.bodyInputRef.nativeElement.focus();
+    }
+    else {
+      setTimeout(() => {
+        this.bodyInputRef.nativeElement.focus();
+      }, 5);
+    }
   }
 
   bodyFocused() {
@@ -133,7 +140,7 @@ export class NoteComponent {
   closeAddTagField(focusOnBody = false) {
     window.removeEventListener('click', this.boundCloseAddTagFieldHandler);
     this.addingTag = false;
-    
+
     if (this.activeUIs.focusedNoteComponent === this) {
       this.activeUIs.focusedNoteComponent = null;
     }
