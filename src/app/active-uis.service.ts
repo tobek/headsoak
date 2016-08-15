@@ -1,9 +1,12 @@
 import {Injectable} from '@angular/core';
 
+import {HomeComponent} from './home';
 import {Note, NoteBrowserComponent, NoteComponent} from './notes';
 
 @Injectable()
 export class ActiveUIsService {
+  public home: HomeComponent;
+  
   public noteBrowser: NoteBrowserComponent;
 
   /** Note where the textarea currently has focus. */

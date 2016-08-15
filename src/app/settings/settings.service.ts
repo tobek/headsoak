@@ -94,8 +94,8 @@ export class SettingsService {
       name: 'New note',
       default: 'n',
       fn: () => {
-        if (this.activeUIs.noteBrowser) {
-          this.activeUIs.noteBrowser.newNote();
+        if (this.activeUIs.home) {
+          this.activeUIs.home.goToNewNote();
         }
       },
       routeTo: '/',
@@ -108,8 +108,8 @@ export class SettingsService {
       description: 'Create a new note and immediately open the input field to add a tag to that note.',
       default: 'shift+n',
       fn: () => {
-        if (this.activeUIs.noteBrowser) {
-          this.activeUIs.noteBrowser.newNoteAddTag();
+        if (this.activeUIs.home) {
+          this.activeUIs.home.goToNewNoteAddTag();
         }
       },
       routeTo: '/',
@@ -206,7 +206,7 @@ export class SettingsService {
       },
       section: 'shortcuts',
     },
-    // @TODO/shortcuts Should 2-9 jump to appropriate note on note browser?
+    // @TODO/shortcuts Should 2-9 jump to appropriate note on note browser? Should 1 go to "open note", 2 go to first in browser, etc.?
 
     {
       id: 'sSearchAlt',

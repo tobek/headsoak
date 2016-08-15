@@ -1,8 +1,7 @@
-<note class="open-note note-{{ openNote.id }}"
-  *ngIf="openNote"
+<note class="open-note note-{{ openNote ? openNote.id : 'none' }}"
   [note]="openNote"
   [opened]="true"
-  (noteClosed)="noteClosed()"
+  (noteClosed)="closeNote()"
 ></note>
 
 <note-browser ref-noteBrowser (noteOpened)="noteOpened($event)"></note-browser>

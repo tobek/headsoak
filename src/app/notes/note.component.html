@@ -1,4 +1,4 @@
-<div class="note-wrapper">
+<div class="note-wrapper" *ngIf="note">
   <div class="header">
     <a class="time">{{ 'created: ' + (note.created | date:'medium') + '\nmodified: ' + (note.modified | date:'medium') }}</a><!-- @TODO/rewrite should be tooltip? --><!--@TODO/rewrite angular2 date pipe is "pure" and won't check for updates, so note.created and note.modified will have to be reassigned, confirm it works, etc. -->
 

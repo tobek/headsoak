@@ -1,4 +1,4 @@
-import {Component, ViewChildren, QueryList} from '@angular/core';
+import {Component, ViewChild, QueryList} from '@angular/core';
 import {Subscription} from 'rxjs';
 
 import {ActiveUIsService} from '../active-uis.service';
@@ -26,8 +26,7 @@ export class HomeComponent {
   openNote: Note;
   newNote: Note;
 
-  /** We only ever actually have one NoteCompont, but because that changes and we still need a reference to it, and because setTimeout doesn't seem to be sufficing, let's just use a QueryList so that we can subscribe to changes from it. */
-  @ViewChildren(NoteComponent) noteComponents: QueryList<NoteComponent>;
+  @ViewChild(NoteComponent) noteComponent: NoteComponent;
 
   private noteUpdatedSub: Subscription;
 
@@ -57,12 +56,23 @@ export class HomeComponent {
 
   ngOnDestroy() {
     this.noteUpdatedSub.unsubscribe();
+
+    if (this.activeUIs.home === this) {
+      this.activeUIs.home = null;
+    }
+
+    if (this.activeUIs.openNoteComponent === this.noteComponent) {
+      this.activeUIs.openNoteComponent = null;
+    }
   }
 
   init() {
     this.noteUpdatedSub = this.notesService.noteUpdated$.subscribe(this.noteUpdated.bind(this));
 
     this.setUpNewNote();
+
+    this.activeUIs.home = this;
+    this.activeUIs.openNoteComponent = this.noteComponent;
   }
 
   setUpNewNote() {
@@ -79,28 +89,33 @@ export class HomeComponent {
   }
 
   noteOpened(note: Note) {
-    const sub = this.noteComponents.changes.subscribe(() => {
-      sub.unsubscribe();
-      this.activeUIs.openNoteComponent = this.noteComponents.first;
-    });
-
     this.openNote = note;
   }
 
-  noteClosed() {
+  closeNote() {
     this.openNote = null;
-
-    if (this.activeUIs.openNoteComponent === this.noteComponents.first) {
-      this.activeUIs.openNoteComponent = null;
-    }
 
     this.setUpNewNote();
   }
 
   noteUpdated(note: Note) {
     if (note.deleted && this.openNote === note) {
-      this.noteClosed();
+      this.closeNote();
     }
+  }
+
+  goToNewNote() {
+    if (! this.openNote.new) {
+      // We have a note open that is not new - it has changes/content
+      this.closeNote(); // will set up a new note
+    }
+
+    // Now we have an untouched new note open
+    this.noteComponent.bodyFocus();
+  }
+
+  goToNewNoteAddTag() {
+
   }
 
 }
