@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Subject} from 'rxjs/Subject';
+import {ReplaySubject, Subject} from 'rxjs';
 
 import {Logger, utils} from '../utils/';
 import {DataService} from '../';
@@ -12,7 +12,7 @@ const lunr = require('lunr');
 @Injectable()
 export class NotesService {
   notes: { [key: string]: Note } = {}; // id -> Note instance
-  initialized$ = new Subject<void>();
+  initialized$ = new ReplaySubject<void>(1);
   noteUpdated$ = new Subject<Note>();
   index: lunr.Index;
 

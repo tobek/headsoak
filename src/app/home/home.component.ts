@@ -46,16 +46,8 @@ export class HomeComponent {
   ngOnInit() {
     this._logger.log('Component initializing');
 
-    // Wait for notes service to be ready and then initialize new note
-    if (! _.isEmpty(this.notesService.notes)) {
-      this.init();
-    }
-    else {
-      let subscription = this.notesService.initialized$.subscribe(() => {
-        this.init();
-        subscription.unsubscribe();
-      });
-    }
+    // Will fire immediately if already initialized, otherwise will wait for initialization and then fire. Either way, will unsubscribe immediately after.
+    this.notesService.initialized$.first().subscribe(this.init.bind(this));
   }
 
   ngOnDestroy() {

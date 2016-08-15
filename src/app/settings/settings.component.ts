@@ -40,15 +40,8 @@ export class SettingsComponent {
     this.sectionName = this.route.snapshot.data['name'];
     this.section = this.route.snapshot.data['section'];
 
-    if (! _.isEmpty(this.settings.data)) {
-      this.init();
-    }
-    else {
-      let subscription = this.settings.initialized$.subscribe(() => {
-        this.init();
-        subscription.unsubscribe();
-      });
-    }
+    // Will fire immediately if already initialized, otherwise will wait for initialization and then fire. Either way, will unsubscribe immediately after.
+    this.settings.initialized$.first().subscribe(this.init.bind(this));
   }
 
   init(): void {

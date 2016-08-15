@@ -1,5 +1,5 @@
 import {Injectable, NgZone} from '@angular/core';
-import {Subject} from 'rxjs/Subject';
+import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 import {Setting, Shortcut} from './';
 import {ActiveUIsService} from '../active-uis.service';
@@ -9,7 +9,7 @@ import {Logger, utils} from '../utils/';
 
 @Injectable()
 export class SettingsService {
-  initialized$ = new Subject<void>();
+  initialized$ = new ReplaySubject<void>(1);
 
   data: { [key: string]: Setting | Shortcut} = {};
 

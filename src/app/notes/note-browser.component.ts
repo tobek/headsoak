@@ -65,15 +65,8 @@ export class NoteBrowserComponent {
   }
 
   ngOnInit() {
-    if (! _.isEmpty(this.notesService.notes)) {
-      this.initNotes();
-    }
-    else {
-      let subscription = this.notesService.initialized$.subscribe(() => {
-        this.initNotes();
-        subscription.unsubscribe();
-      });
-    }
+    // Will fire immediately if already initialized, otherwise will wait for initialization and then fire. Either way, will unsubscribe immediately after.
+    this.notesService.initialized$.first().subscribe(this.initNotes.bind(this));
 
     this.querySub = this.queryUpdated$
       .debounceTime(250)

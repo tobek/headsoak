@@ -56,15 +56,8 @@ export class TagBrowserComponent {
   }
 
   ngOnInit() {
-    if (! _.isEmpty(this.tagsService.tags)) {
-      this.initTags();
-    }
-    else {
-      let subscription = this.tagsService.initialized$.subscribe(() => {
-        this.initTags();
-        subscription.unsubscribe();
-      });
-    }
+    // Will fire immediately if already initialized, otherwise will wait for initialization and then fire. Either way, will unsubscribe immediately after.
+    this.tagsService.initialized$.first().subscribe(this.initTags.bind(this));
 
     this.querySub = this.queryUpdated$
       .debounceTime(200)

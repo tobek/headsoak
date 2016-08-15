@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Subject} from 'rxjs/Subject';
+import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 import {Logger, utils} from '../utils/';
 import {DataService} from '../';
@@ -9,7 +9,7 @@ import {Tag} from './tag.model'; // For some reason this breaks with `TypeError:
 @Injectable()
 export class TagsService {
   tags: { [key: string]: Tag } = {}; // id -> Tag instance
-  initialized$ = new Subject<void>();
+  initialized$ = new ReplaySubject<void>(1);
 
   /**
    * id format: `[desiredOrder] + '-' + field + '-' + rev`
