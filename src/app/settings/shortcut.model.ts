@@ -56,23 +56,19 @@ export class Shortcut extends Setting {
         else {
           const sub = this.dataService.router.events.subscribe((event) => {
             if (! (event instanceof NavigationEnd)) {
+              // Keep listening for events til we get NavigationEnd. This event isn't one of them.
               return;
             }
 
-            if (! this.ngZone) {
-              // Changing route requires we run in ngZone
-              this.dataService.ngZone.run(() => {
-                // And for some reason it still doesn't always work (specifically `sSearch` shortcut)
-                setTimeout(this.fn, 0);
-              });
-            }
-            else {
-              // We've already been wrapped in ngZone.run call
-              this.fn();
-            }
+            // Changing route requires we run in ngZone after route change, regardless of the this.ngZone setting
+            this.dataService.ngZone.run(() => {
+              // And for some reason it still doesn't always work (specifically `sSearch` shortcut)
+              setTimeout(this.fn, 0);
+            });
 
             sub.unsubscribe();
           });
+          
           this.dataService.router.navigateByUrl(this.routeTo);
         }
       };
@@ -91,7 +87,14 @@ export class Shortcut extends Setting {
 
     if (this.ngZone) {
       this._zonedFn = () => {
-        this.dataService.ngZone.run(this._routedFn);
+        if (this.routeTo && this.dataService.router.url !== this.routeTo) {
+          // No need to wrap in ngZone because the function is about to route to somewhere new, wait til routing is completed, and then has to run in ngZone anyway:
+          this._routedFn();
+        }
+        else {
+          // No routing is happening, so gotta do in the zone:
+          this.dataService.ngZone.run(this._routedFn);
+        }
       };
     }
     else {
