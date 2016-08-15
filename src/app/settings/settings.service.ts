@@ -200,13 +200,17 @@ export class SettingsService {
       name: 'Go to first note',
       default: '1',
       fn: () => {
-        if (this.activeUIs.noteBrowser) {
-          this.activeUIs.noteBrowser.noteComponents.first.bodyFocus();
+        // if (this.activeUIs.noteBrowser) {
+        //   this.activeUIs.noteBrowser.noteComponents.first.bodyFocus();
+        // }
+        if (this.activeUIs.home) {
+          this.activeUIs.home.noteComponent.bodyFocus();
         }
       },
+      routeTo: '/',
       section: 'shortcuts',
     },
-    // @TODO/shortcuts Should 2-9 jump to appropriate note on note browser? Should 1 go to "open note", 2 go to first in browser, etc.?
+    // @TODO/shortcuts Should 2-9 jump to appropriate note on note browser? Should 1 go to "open note", 2 go to first in browser, etc.? Or, 0 could be open note and diff shortcut for clear search, 1 could be first in browser, etc
 
     {
       id: 'sSearchAlt',
