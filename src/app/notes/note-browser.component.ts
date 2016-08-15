@@ -111,22 +111,25 @@ export class NoteBrowserComponent {
     }
   }
 
-  /** Check if the updated note did not used to be in the currently visible notes, but should be. If note was deleted we simply remove note from visible notes if necessary. @TODO/ece Right now for non-delete updates this only ever adds notes but never removes unless the user explicitly re-sorts - what do you think? @TODO/rewrite when removed, don't replace with newNoteList, just do _.without? */
+  /**
+   * Check if the updated note should be added or removed from currently visible notes. If note was deleted we simply remove note from visible notes if necessary.
+   * @TODO Make sure to maintain scroll position
+   * @TODO Ideally when removing a note, we should show some indicator about how the note is no longer visible due to query (and button to clear query)
+   */
   noteUpdated(note: Note) {
     if (note.deleted) {
       this.noteDeleted(note);
       return;
     }
 
-    if (_.includes(this.notes, note)) {
-      // Updated note is already visible, whatever (maybe sort would change but that could whip things away from the user?)
-      return;
-    }
-
     const newNoteList = this.getNotes();
-    if (_.includes(newNoteList, note)) {
-      // Updated note should be visible so let's make it happen. @TODO We should make sure to preserve scroll position
-      this._logger.log('Updated note wasn\'t in notes but should be:', note);
+
+    if (_.includes(this.notes, note) && ! _.includes(newNoteList, note)) {
+      this._logger.log('Updated note was visible but shouldn\'t be any more:', note);
+      this.notes = _.without(this.notes, note);
+    }
+    else if (! _.includes(this.notes, note) && _.includes(newNoteList, note)) {
+      this._logger.log('Updated note wasn\'t visible but should be now:', note);
       this.notes = newNoteList;
     }
   }
@@ -147,7 +150,7 @@ export class NoteBrowserComponent {
     }
 
     // Have to re-assign this.notes (rather than mutate it) otherwise the view won't update
-    this.notes = _.filter(this.notes, (note: Note) => note.id !== deletedNote.id);
+    this.notes = _.without(this.notes, deletedNote);
   }
 
   /** Gets notes based on current query and sort. */
