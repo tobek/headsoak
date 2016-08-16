@@ -217,7 +217,7 @@ export class NotesService {
    * 
    * Note that we don't want sort order updating *while* you're editing some property that we're sorting on, e.g. you're sorting on recently modified and as you start typing, that note shoots to the top. So we need to control this separately and only change order when we want to.
    */
-  sortNotes(sortOpt?, notesToSort?): Array<Note> {
+  sortNotes(sortOpt?, notesToSort?): Note[] {
     if (! notesToSort) notesToSort = this.notes;
     if (! notesToSort || notesToSort.length === 0) return [];
 
@@ -254,5 +254,12 @@ export class NotesService {
     this._logger.timeEnd('Sorting notes');
 
     return sortedNotes;
+  }
+
+  /**
+   * Returns an array of Notes run through both query filtering and sorting.
+   */
+  getNotes(query = '', queryTags?: Tag[], sortOpt?, notesToSort?: Note[]): Note[] {
+    return this.sortNotes(sortOpt, this.doQuery(query, queryTags));
   }
 }

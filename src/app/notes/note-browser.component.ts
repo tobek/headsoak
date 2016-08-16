@@ -71,7 +71,7 @@ export class NoteBrowserComponent {
     this.querySub = this.queryUpdated$
       .debounceTime(250)
       .subscribe(() => {
-        this.notes = this.getNotes();
+        this.notes = this.notesService.getNotes(this.query, this.queryTags, this.sortOpt);
       });
 
     this.scrollSub = this.scrollMonitor.scroll$.subscribe(this.infiniteScrollCheck.bind(this));
@@ -123,7 +123,8 @@ export class NoteBrowserComponent {
       return;
     }
 
-    const newNoteList = this.getNotes();
+    // No need to sort yet, first let's just see if we need to add/remove note:
+    const newNoteList = this.notesService.doQuery(this.query, this.queryTags);
 
     if (_.includes(this.notes, note) && ! _.includes(newNoteList, note)) {
       this._logger.log('Updated note was visible but shouldn\'t be any more:', note);
@@ -131,7 +132,7 @@ export class NoteBrowserComponent {
     }
     else if (! _.includes(this.notes, note) && _.includes(newNoteList, note)) {
       this._logger.log('Updated note wasn\'t visible but should be now:', note);
-      this.notes = newNoteList;
+      this.notes = this.notesService.sortNotes(this.sortOpt, newNoteList);
     }
   }
 
@@ -143,12 +144,6 @@ export class NoteBrowserComponent {
 
     // Have to re-assign this.notes (rather than mutate it) otherwise the view won't update
     this.notes = _.without(this.notes, deletedNote);
-  }
-
-  /** Gets notes based on current query and sort. */
-  getNotes(): Note[] {
-    const queriedNotes = this.notesService.doQuery(this.query, this.queryTags);
-    return this.notesService.sortNotes(undefined, queriedNotes);
   }
 
   queryUpdated(): void {
