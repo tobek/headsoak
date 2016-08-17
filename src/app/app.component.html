@@ -1,6 +1,8 @@
 <header>
   <h1>{{ name }}</h1>
 
+  <note-query [hidden]="! dataService.user.loggedIn"></note-query>
+
   <login></login>
 </header>
 

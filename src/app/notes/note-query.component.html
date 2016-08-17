@@ -1,0 +1,28 @@
+<div class="note-query-bar">
+  <span class="tags">
+    <tag
+      *ngFor="let tag of tags"
+      [tagId]="tag.id"
+      [removable]="true"
+      (removed)="removeTag(tag)"
+    ></tag>
+  </span>
+
+  <input tabindex=1 type="text" placeholder="Search notes"
+    ref-textInput
+    [(ngModel)]="queryText"
+    (ngModelChange)="queryUpdated()"
+    (focus)="setUpAutocomplete()"
+    (keydown)="inputKeydown($event)"
+  >
+  <button (click)="clear()">x</button>
+
+  <label>
+    Sort {{ notes.length }} note{{ notes.length !== 1 ? 's' : '' }} by
+    <select tabindex=3 [ngModel]="sortOpt" (ngModelChange)="sort($event)">
+      <option *ngFor="let opt of notesService.sortOpts" [ngValue]="opt">{{opt.name}}</option>
+    </select>
+  </label>
+
+  <button (click)="newNote()">new note</button>
+</div>

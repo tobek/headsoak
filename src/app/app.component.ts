@@ -9,6 +9,7 @@ import {routes} from './';
 
 import {HomeComponent} from './home';
 import {LoginComponent} from './account';
+import {NoteQueryComponent} from './notes';
 import {TagBrowserComponent} from './tags/tag-browser.component'; // @NOTE No idea why, but adding this to `tags/index.ts` and importing from './tags/' makes angular unable to resolve TagBrowerComponent
 
 /*
@@ -22,6 +23,7 @@ import {TagBrowserComponent} from './tags/tag-browser.component'; // @NOTE No id
   directives: [
     LoginComponent,
     HomeComponent,
+    NoteQueryComponent,
     TagBrowserComponent,
   ],
   encapsulation: ViewEncapsulation.None,

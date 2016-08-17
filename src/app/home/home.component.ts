@@ -72,8 +72,8 @@ export class HomeComponent {
     this.activeUIs.home = this;
     this.activeUIs.openNoteComponent = this.noteComponent;
 
-    this.activeUIs.noteBrowser$.first().subscribe((noteBrowser: NoteBrowserComponent) => {
-      this.queryTagsUpdatedSub = noteBrowser.queryTagsUpdated$.subscribe(
+    this.activeUIs.noteQuery$.first().subscribe((noteQuery) => {
+      this.queryTagsUpdatedSub = noteQuery.tagsUpdated$.subscribe(
         this.setUpNewNoteTags.bind(this)
        );
     });
@@ -104,8 +104,8 @@ export class HomeComponent {
       return;
     }
 
-    if (this.activeUIs.noteBrowser) {
-      this.newNote.tags = this.activeUIs.noteBrowser.queryTags.map((tag: Tag) => tag.id);
+    if (this.activeUIs.noteQuery) {
+      this.newNote.tags = this.activeUIs.noteQuery.tags.map((tag: Tag) => tag.id);
     }
   }
 

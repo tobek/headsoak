@@ -57,8 +57,8 @@ export class NoteComponent {
   }
 
   toggleTag(tagId: string, event: MouseEvent) {
-    if (this.activeUIs.noteBrowser) {
-      this.activeUIs.noteBrowser.queryTagToggled(tagId, event && event.shiftKey);
+    if (this.activeUIs.noteQuery) {
+      this.activeUIs.noteQuery.tagToggled(tagId, event && event.shiftKey);
     }
   }
 

@@ -174,8 +174,8 @@ export class SettingsService {
       name: 'Go to search bar',
       default: 'l',
       fn: () => {
-        if (this.activeUIs.noteBrowser) {
-          this.activeUIs.noteBrowser.queryFocus();
+        if (this.activeUIs.noteQuery) {
+          this.activeUIs.noteQuery.focus();
         }
       },
       routeTo: '/', // @TODO/shortcuts Ideally this should work in tag browser and highlight that search field instead. Would need a more complicated `routeTo` implementation, and check route and find tag browser in activeUIs instead.
@@ -186,8 +186,8 @@ export class SettingsService {
       name: 'Clear search bar',
       default: '0',
       fn: () => {
-        if (this.activeUIs.noteBrowser) {
-          this.activeUIs.noteBrowser.queryClear(false);
+        if (this.activeUIs.noteQuery) {
+          this.activeUIs.noteQuery.clear(false);
         }
       },
       routeTo: '/', // @TODO/shortcuts Ditto note on `sSearch`
@@ -217,8 +217,8 @@ export class SettingsService {
       name: 'Go to search bar (alt)',
       default: '/',
       fn: () => {
-        if (this.activeUIs.noteBrowser) {
-          this.activeUIs.noteBrowser.queryFocus();
+        if (this.activeUIs.noteQuery) {
+          this.activeUIs.noteQuery.focus();
         }
       },
       global: false,
