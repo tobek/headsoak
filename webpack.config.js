@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-=======
-/**
- * @author: @AngularClass
- */
-
->>>>>>> starter/master
 // Look in ./config folder for webpack.dev.js
 switch (process.env.NODE_ENV) {
   case 'prod':
