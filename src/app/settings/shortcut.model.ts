@@ -28,10 +28,10 @@ export class Shortcut extends Setting {
   /** Whether this shortcut's function should be run in Angular's NgZone in order to do change detection, update view, etc. */
   ngZone = false;
 
-  /** If set, identifies the route that this shortcut's function must be run in. If not already in that route, this will navigate there and then execute the function. */
-  routeTo: string;
-  /** If set, this shortcut should only do anything on the specified route, and otherwise do nothing. */
-  onlyOnRoute: string;
+  /** If set, identifies the routes that this shortcut's function must be run in. If not already in one of these routes, this will navigate to the first route and then execute the function. */
+  routeTo: string[];
+  /** If set, this shortcut should only do anything on the specified route(s), and otherwise do nothing. */
+  onlyOnRoutes: string[];
 
   /** Our version of this.fn than wraps it with necessary checks. */
   private _fn: () => any;
@@ -42,15 +42,21 @@ export class Shortcut extends Setting {
     super(shortcutData, dataService);
     _.extend(this, shortcutData); // see https://github.com/Microsoft/TypeScript/issues/1617
 
-    if (this.routeTo && this.onlyOnRoute) {
+    if (this.routeTo && this.onlyOnRoutes) {
       throw Error('Shortcut with `routeTo` and `onlyOnRoute` is ambiguous - must specify no more than 1.');
+    }
+    else if (this.routeTo && ! this.routeTo.length) {
+      throw Error('If `routeTo` is specified, at least one route must be provided');
+    }
+    else if (this.onlyOnRoutes && ! this.onlyOnRoutes.length) {
+      throw Error('If `onlyOnRoutes` is specified, at least one route must be provided');
     }
 
     this.type = 'string'; // force this for all shortcuts
 
     if (this.routeTo) {
       this._routedFn = () => {
-        if (this.dataService.router.url === this.routeTo) {
+        if (_.includes(this.routeTo, this.dataService.router.url)) {
           this.fn();
         }
         else {
@@ -64,13 +70,13 @@ export class Shortcut extends Setting {
             });
           });
 
-          this.dataService.router.navigateByUrl(this.routeTo);
+          this.dataService.router.navigateByUrl(this.routeTo[0]);
         }
       };
     }
-    else if (this.onlyOnRoute) {
+    else if (this.onlyOnRoutes) {
       this._routedFn = () => {
-        if (this.dataService.router.url === this.onlyOnRoute) {
+        if (_.includes(this.onlyOnRoutes, this.dataService.router.url)) {
           this.fn();
         }
       };
@@ -82,7 +88,7 @@ export class Shortcut extends Setting {
 
     if (this.ngZone) {
       this._zonedFn = () => {
-        if (this.routeTo && this.dataService.router.url !== this.routeTo) {
+        if (this.routeTo && ! _.includes(this.routeTo, this.dataService.router.url)) {
           // No need to wrap in ngZone because the function is about to route to somewhere new, wait til routing is completed, and then has to run in ngZone anyway:
           this._routedFn();
         }

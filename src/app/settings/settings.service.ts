@@ -98,7 +98,7 @@ export class SettingsService {
           this.activeUIs.home.goToNewNote();
         }
       },
-      routeTo: '/',
+      routeTo: ['/', '/focus'], // @TODO In theory, if you're on the Browse screen, it could open a new note there
       ngZone: true,
       section: 'shortcuts',
     },
@@ -112,7 +112,7 @@ export class SettingsService {
           this.activeUIs.home.goToNewNoteAddTag();
         }
       },
-      routeTo: '/',
+      routeTo: ['/', '/focus'],
       ngZone: true,
       section: 'shortcuts',
     },
@@ -178,7 +178,7 @@ export class SettingsService {
           this.activeUIs.noteQuery.focus();
         }
       },
-      routeTo: '/', // @TODO/shortcuts Ideally this should work in tag browser and highlight that search field instead. Would need a more complicated `routeTo` implementation, and check route and find tag browser in activeUIs instead.
+      // @TODO/shortcuts Ideally this should work in tag browser and highlight that search field instead. Would need a more complicated `routeTo` implementation, and check route and find tag browser in activeUIs instead. Also, the constant SEARCHABLE_ROUTES in NoteQueryComponent would have to be updated too.
       section: 'shortcuts',
     },
     {
@@ -188,9 +188,10 @@ export class SettingsService {
       fn: () => {
         if (this.activeUIs.noteQuery) {
           this.activeUIs.noteQuery.clear(false);
+          this.activeUIs.noteQuery.ensureCorrectRoute();
         }
       },
-      routeTo: '/', // @TODO/shortcuts Ditto note on `sSearch`
+      // @TODO/shortcuts Ditto note on `sSearch`
       ngZone: true,
       section: 'shortcuts',
     },
@@ -207,7 +208,7 @@ export class SettingsService {
           this.activeUIs.home.noteComponent.bodyFocus();
         }
       },
-      routeTo: '/',
+      routeTo: ['/', '/focus'],
       section: 'shortcuts',
     },
     // @TODO/shortcuts Should 2-9 jump to appropriate note on note browser? Should 1 go to "open note", 2 go to first in browser, etc.? Or, 0 could be open note and diff shortcut for clear search, 1 could be first in browser, etc
@@ -224,7 +225,7 @@ export class SettingsService {
       global: false,
       overkill: true, // @TODO: not really overkill but just don't show in shortcuts modal. really this calls for ability to do noMod inside shortcut controls so that they can set this instead of mod+f or whatever, and then this should be default
       noMod: true,
-      onlyOnRoute: '/', // @TODO/shortcuts Ditto note on `sSearch`
+      // @TODO/shortcuts Ditto note on `sSearch`
       keyEvent: 'keyup', // otherwise we move to search bar on keydown and then a '/' is typed cause of keydown
       section: 'shortcuts',
     },

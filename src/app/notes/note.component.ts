@@ -67,7 +67,9 @@ export class NoteComponent {
     }
     else {
       setTimeout(() => {
-        this.bodyInputRef.nativeElement.focus();
+        if (this.bodyInputRef) {
+          this.bodyInputRef.nativeElement.focus();
+        }
       }, 5);
     }
   }

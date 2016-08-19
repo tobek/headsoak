@@ -19,14 +19,19 @@ import {Logger, AutocompleteService} from '../utils/';
   template: require('./note-query.component.html')
 })
 export class NoteQueryComponent {
+  static SEARCHABLE_ROUTES = ['/', '/browse'];
+  static DEFAULT_ROUTE = '/browse';
+
   _notes: Array<Note> = [];
+
+  ensureCorrectRoute = _.throttle(this._ensureCorrectRoute, 1000);
 
   /** How notes in this list component are sorted on init. */
   sortOpt: Object = this.notesService.sortOpts[0];
 
   queriedNotes$ = new ReplaySubject<Note[]>(1);
 
-  @ViewChild('textInput') textInput: ElementRef; 
+  @ViewChild('textInput') textInput: ElementRef;
 
   queryText: string;
   tags: Tag[] = [];
@@ -180,12 +185,16 @@ export class NoteQueryComponent {
   clear(thenFocus = true): void {
     this.tags = [];
     this.tagsUpdated$.next(this.tags);
-    
+
     this.queryText = '';
     this.queryUpdated();
 
     if (thenFocus) {
       this.ensureFocusAndAutocomplete();
+      // No need to ensure correct route, cause focusing does that
+    }
+    else {
+      this.ensureCorrectRoute();
     }
   }
 
@@ -227,6 +236,13 @@ export class NoteQueryComponent {
 
     // Have to re-assign this.notes (rather than mutate it) otherwise the view won't update
     this.notes = _.without(this.notes, deletedNote);
+  }
+
+
+  private _ensureCorrectRoute() {
+    if (! _.includes(NoteQueryComponent.SEARCHABLE_ROUTES, this.notesService.dataService.router.url)) {
+      this.notesService.dataService.router.navigateByUrl(NoteQueryComponent.DEFAULT_ROUTE);
+    }
   }
 
 }

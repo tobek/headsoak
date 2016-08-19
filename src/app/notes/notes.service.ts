@@ -32,8 +32,8 @@ export class NotesService {
     // @NOTE: changes to the fields might require changes to the noteSort filter
   ];
 
+  dataService: DataService;
   private _logger: Logger = new Logger(this.constructor.name);
-  private dataService: DataService;
 
   constructor(
     public tagsService: TagsService
