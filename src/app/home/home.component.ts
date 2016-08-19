@@ -78,7 +78,7 @@ export class HomeComponent {
     });
   }
 
-  setUpNewNote(): void {
+  setUpNewNote(thenFocus = true): void {
     // This is a blank new note for the user to be able to use as soon as they open the app. We pass `init` true to `createNote` so that the note isn't saved to data store. As soon as they make anything that calls`note.update` (editing text, adding tag, sharing), it'll get saved to data store.
 
     if (! this.newNote || ! this.newNote.new){
@@ -89,7 +89,7 @@ export class HomeComponent {
       this.setUpNewNoteTags();
     }
 
-    this.noteOpened(this.newNote);
+    this.noteOpened(this.newNote, thenFocus);
   }
 
   setUpNewNoteTags(): void {
@@ -108,16 +108,18 @@ export class HomeComponent {
     }
   }
 
-  noteOpened(note: Note): void {
+  noteOpened(note: Note, thenFocus = true): void {
     this.openNote = note;
 
-    this.noteComponent.bodyFocus();
+    if (thenFocus) {
+      this.noteComponent.bodyFocus();
+    }
   }
 
-  closeNote(): void {
+  closeNote(thenFocus = true): void {
     this.openNote = null;
 
-    this.setUpNewNote();
+    this.setUpNewNote(thenFocus);
   }
 
   noteUpdated(note: Note): void {

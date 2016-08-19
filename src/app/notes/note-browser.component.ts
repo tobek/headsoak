@@ -29,6 +29,7 @@ export class NoteBrowserComponent {
   limit: number = this.DEFAULT_NOTES_LIMIT;
 
   @Output() noteOpened = new EventEmitter<Note>();
+  @Output() noteClosed = new EventEmitter<Note>();
 
   // @ViewChildren(NoteComponent) noteComponents: QueryList<NoteComponent>;
 
@@ -77,6 +78,10 @@ export class NoteBrowserComponent {
 
   _noteOpened(note: Note) {
     this.noteOpened.emit(note);
+  }
+
+  _noteClosed(note: Note) {
+    this.noteClosed.emit(note);
   }
 
   // @TODO/testing infinite scroll e2e both directions

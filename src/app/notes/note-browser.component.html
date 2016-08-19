@@ -4,4 +4,5 @@
   [class.is--open]="activeUIs.home && activeUIs.home.openNote === note"
   [note]="note"
   (noteOpened)="_noteOpened($event)"
+  (noteClosed)="_noteClosed($event)"
 ></note>

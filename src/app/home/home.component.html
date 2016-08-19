@@ -4,4 +4,8 @@
   (noteClosed)="closeNote()"
 ></note>
 
-<note-browser ref-noteBrowser (noteOpened)="noteOpened($event)"></note-browser>
+<note-browser
+    ref-noteBrowser
+    (noteOpened)="noteOpened($event)"
+    (noteClosed)="closeNote(false)"
+></note-browser>
