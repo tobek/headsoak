@@ -1,28 +1,37 @@
-<header>
-  <div class="logo">
-    <h1>{{ name }}</h1>
+<header class="app-header">
+  <div class="inner">
+    <div class="logo">
+      <h1>{{ name }}</h1>
+    </div>
+
+    <note-query [hidden]="! dataService.user.loggedIn"></note-query>
+
+    <div class="menu" [hidden]="! dataService.user.loggedIn">
+      you
+      ({{ dataService.status }})
+
+      <ul class="menu-body">
+        <li *ngFor="let route of menuNavRoutes" [class.active]="'/' + route.path === router.url">
+          <a [routerLink]="[route.path]">{{ route.data.name }}</a>
+        </li>
+
+        <li (click)="loginComponent.logout()"><a>Logout</a></li>
+      </ul>
+    </div>
   </div>
-
-  <note-query [hidden]="! dataService.user.loggedIn"></note-query>
-
-  <div class="menu" [hidden]="! dataService.user.loggedIn">
-    (you)
-  </div>
-
-  <login></login>
-  
-  <hr>
-
-  <nav>
-    <ul>
-      <li *ngFor="let route of routes" [class.active]="'/' + route.path === router.url">
-        <a *ngIf="! route.data.hideFromNav" [routerLink]="[route.path]">{{ route.data.name }}</a>
-      </li>
-    </ul>
-  </nav>
-
-  <div>sync status: {{ dataService.status }}</div>
 </header>
+
+<login></login>
+
+<nav class="app-nav" *ngIf="dataService.user.loggedIn">
+  <a class="new-note" (click)="newNote()">New Note</a>
+
+  <ul>
+    <li *ngFor="let route of mainNavRoutes" [class.active]="'/' + route.path === router.url">
+      <a [routerLink]="[route.path]">{{ route.data.name }}</a>
+    </li>
+  </ul>
+</nav>
 
 <main [hidden]="! dataService.user.loggedIn">
 

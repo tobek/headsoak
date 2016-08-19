@@ -1,13 +1,60 @@
-nav
+.app-header
+  background-color: $card-bg
+
+  .inner
+    +container($screen-large)
+    display: flex
+    align-items: center
+
+  .logo,
+  .menu
+    flex: 1
+
+  .menu
+    position: relative
+    cursor: pointer
+    border: 1px solid black // @TODO/rewrite @TODO/ece Vary based on sync status
+    border-radius: 50%
+
+    .menu-body
+      +plain-list
+      display: none
+      z-index: 10
+      position: absolute
+      cursor: default
+      margin: 0
+      background-color: $card-bg
+
+      li
+        display: block
+
+    &:hover .menu-body
+      display: block
+
+  note-query
+    flex: 10
+
+.app-nav
+  +container($screen-large)
+  padding: 10px 0
+
+  text-align: right
+
+  .new-note
+    float: left
+
   ul
-    display: inline
-    list-style-type: none
-    margin: 0
-    padding: 0
-    width: 60px
+    +plain-list
 
   li
-    display: inline
+    margin-right: 30px
+    &:last-of-type
+      margin-right: 0
 
     &.active
-      background-color: lightgray
+      border-bottom: 4px solid $card-bg
+
+  a
+    text-decoration: none
+    color: $card-bg
+    font-size: 20px

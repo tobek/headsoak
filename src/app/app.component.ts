@@ -1,5 +1,5 @@
-import {Component, ViewEncapsulation, HostBinding} from '@angular/core';
-import {Router, NavigationEnd} from '@angular/router';
+import {Component, ViewChild, ViewEncapsulation, HostBinding} from '@angular/core';
+import {Route, Router, NavigationEnd} from '@angular/router';
 import {Subscription} from 'rxjs';
 
 import {AnalyticsService} from './analytics.service';
@@ -34,9 +34,14 @@ import {TagBrowserComponent} from './tags/tag-browser.component'; // @NOTE No id
 export class App {
   name = 'nutmeg';
 
-  routes = routes;
+  routes: Route[] = routes;
+  mainNavRoutes: Route[];
+  menuNavRoutes: Route[];
 
   @HostBinding('class') hostClass = '';
+
+  @ViewChild(LoginComponent) loginComponent: LoginComponent;
+  @ViewChild(HomeComponent) homeComponent: HomeComponent;
 
   private routerSub: Subscription;
 
@@ -47,6 +52,9 @@ export class App {
     public analyticsService: AnalyticsService,
     public dataService: DataService
    ) {
+    this.mainNavRoutes = _.filter(this.routes, { data: { navSection: 'main' } });
+    this.menuNavRoutes = _.filter(this.routes, { data: { navSection: 'menu' } });
+
     this.routerSub = router.events
       .filter(event => event instanceof NavigationEnd)
       .subscribe((event: NavigationEnd) => {
@@ -61,6 +69,11 @@ export class App {
   ngOnDestroy() {
     this.routerSub.unsubscribe();
     this._logger.log('App component destroyed!');
+  }
+
+  newNote(thenFocus = true): void {
+    // @TODO/rewrite When on the Browse screen will have to slide over to Write
+    this.homeComponent.goToNewNote();
   }
 
 }

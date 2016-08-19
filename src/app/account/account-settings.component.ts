@@ -9,6 +9,8 @@ import { ActivatedRoute } from '@angular/router';
     <h1>
       Account Settings
     </h1>
+    <!-- @TODO/rewrite This doesn't work obvs, but we can pass the message on. -->
+    <a (click)="loginComponent.deleteAccount()">Delete account</a>
   `
 })
 export class AccountSettingsComponent {

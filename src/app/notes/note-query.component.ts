@@ -86,13 +86,6 @@ export class NoteQueryComponent {
     this.noteUpdatedSub = this.notesService.noteUpdated$.subscribe(this.noteUpdated.bind(this));
   }
 
-  newNote(thenFocus = true): void {
-    // @TODO/rewrite When on the Browse screen will have to slide over to Write
-    if (this.activeUIs.home) {
-      this.activeUIs.home.goToNewNote();
-    }
-  }
-
   queryUpdated(): void {
     this.queryUpdated$.next(null);
   }
