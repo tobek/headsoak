@@ -1,16 +1,24 @@
 note
+  position: relative
+  display: block
 
-  .note-wrapper,
-  .open-note-indicator
-    display: block
-    margin-bottom: 20px
-    padding-bottom: 20px
-    border-bottom: 1px solid gray
+  // @TODO/styles Put in mixin
+  background-color: white
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5)
 
-  &:first-of-type
-    .note-wrapper,
-    .open-note-indicator
-      margin-top: 20px
+  .header
+    .time
+      display: none // @TODO/ece @TODO/rewrite/styles how will we show timestamps?
+
+    .note-actions
+      position: absolute
+      bottom: 0
+      width: 100%
+      text-align: right
+      font-size: 12px // @TODO/rewrite/styles
+
+    .note-action--open
+      float: left
 
   .body
     width: 100%
