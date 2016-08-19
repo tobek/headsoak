@@ -1,6 +1,13 @@
 tag
 
   display: inline-block
-  padding: 5px
   margin: 5px 5px 5px 0
-  border: 1px dotted black
+  font-size: 14px
+  color: $tag-color
+
+  .tag-actions
+    // @TODO/ece What's the tag action flow? must include easy toggle and remove from note
+    display: none
+
+  &:hover .tag-actions
+    display: inline

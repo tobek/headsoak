@@ -1,28 +1,26 @@
 note
+  +card
+
   position: relative
   display: block
 
-  // @TODO/styles Put in mixin
-  background-color: white
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5)
+  .note-wrapper
+    height: 100%
+
+  .header,
+  .note-actions
+    position: absolute
+    left: 0
+    width: 100%
+    height: 30px
 
   .header
-    .time
-      display: none // @TODO/ece @TODO/rewrite/styles how will we show timestamps?
+    top: 0
 
-    .note-actions
-      position: absolute
-      bottom: 0
-      width: 100%
-      text-align: right
-      font-size: 12px // @TODO/rewrite/styles
-
-    .note-action--open
-      float: left
-
-  .body
+  .tags
+    // @TODO/ece How do we show all tags on a note?
+    +single-line-truncate
     width: 100%
-    min-height: 100px
 
   .new-tag-input
     width: 0
@@ -35,6 +33,24 @@ note
     &.adding-tag
       width: 100px
       padding: 2px
+
+
+  .time
+    display: none // @TODO/ece @TODO/rewrite/styles how will we show timestamps?
+
+
+  .body-input
+    width: 100%
+    height: 100%
+
+
+  .note-actions
+    bottom: 0
+    text-align: right
+    font-size: 14px // @TODO/rewrite/styles
+
+  .note-action--open
+    float: left
 
   .open-note-indicator
     display: none

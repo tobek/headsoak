@@ -2,17 +2,6 @@
   <div class="header">
     <a class="time">{{ 'created: ' + (note.created | date:'medium') + '\nmodified: ' + (note.modified | date:'medium') }}</a><!-- @TODO/rewrite should be tooltip? --><!--@TODO/rewrite angular2 date pipe is "pure" and won't check for updates, so note.created and note.modified will have to be reassigned, confirm it works, etc. -->
 
-    <div class="note-actions">
-      <button class="note-action--open" *ngIf="! opened" (click)="openNote()">open note</button>
-      <button *ngIf="opened && ! note.new" (click)="closeNote()">close note</button>
-      <button (click)="note.showShareSettings()">share</button>
-      <button (click)="note.togglePrivate()">private</button>
-      <span *ngIf="! note.new">
-        <button (click)="newNoteWithSameTags()">new note same tags</button>
-        <button (click)="delete($event)">delete</button>
-      </span>
-    </div>
-
     <div class="tags">
       <span class="tag new-tag">
         <input type="text" placeholder="add tag" class="new-tag-input"
@@ -38,7 +27,7 @@
     </div>
   </div>
 
-  <textarea class="body" tabindex=2
+  <textarea class="body-input" tabindex=2
     ref-bodyInput
     *ngIf="! note.sharedBody"
     placeholder="{{ note.new ? 'Enter a new note' : 'What are you trying to say?' }}"
@@ -48,6 +37,17 @@
     (blur)="bodyBlurred()"
   ></textarea>
   <!-- @TODO/rewrite/sharing Better to put read-only class and disabled attribute on above textarea so reference is preserved <textarea class="body read-only" disabled="disabled" tabindex=2 *ngIf="note.sharedBody">{{ note.sharedBody }}</textarea> -->
+
+  <div class="note-actions">
+    <button class="note-action--open" *ngIf="! opened" (click)="openNote()">open</button>
+    <button *ngIf="opened && ! note.new" (click)="closeNote()">close note</button>
+    <button (click)="note.showShareSettings()">share</button>
+    <button (click)="note.togglePrivate()">priv</button>
+    <span *ngIf="! note.new">
+      <button (click)="newNoteWithSameTags()">NNST</button>
+      <button (click)="delete($event)">del</button>
+    </span>
+  </div>
 </div>
 
 <div class="open-note-indicator">

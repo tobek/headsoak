@@ -1,22 +1,49 @@
 home
 
   note.open-note
-    +span(12)
+    +span(12 last)
+
+    height: calc(100vh - 200px) // @TODO/rewrite/styles 200px is a magic number, should be the header height
 
     +susy-breakpoint($tablet-large, $susy)
       +span(8)
 
+    .route--browse &
+      display: none;
+
   note-browser
-    // @TODO/rewrite obvs should be visible in browse mode
-    // +span(12)
     display: none
+
+    note
+      height: 220px // @TODO/ece This right?
+      margin-bottom: gutter(4)
+
+      &:last-of-type
+        margin-bottom: 0
 
     +susy-breakpoint($tablet-large, $susy)
       +span(4 last)
       display: block
 
-      note
-        margin-bottom: gutter(4)
+    .route--browse &
+      +span(12 last)
+      display: block
 
-        &:last-of-type
-          margin-bottom: 0
+      note
+        +span(12 last)
+
+        +susy-breakpoint($tablet-small, $susy)
+          +gallery(6 of 12)
+
+        +susy-breakpoint($tablet-large, $susy)
+          +gallery(4 of 12)
+
+        +susy-breakpoint($screen-small, $susy)
+          +gallery(3 of 12)
+
+      +susy-breakpoint($screen-large, $susy)
+        +nested(10)
+
+        note
+          +gallery(2 of 10)
+

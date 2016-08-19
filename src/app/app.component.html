@@ -10,9 +10,7 @@
   </div>
 
   <login></login>
-</header>
-
-<main [hidden]="! dataService.user.loggedIn">
+  
   <hr>
 
   <nav>
@@ -24,6 +22,9 @@
   </nav>
 
   <div>sync status: {{ dataService.status }}</div>
+</header>
+
+<main [hidden]="! dataService.user.loggedIn">
 
   <router-outlet></router-outlet>
   <home [hidden]="router.url !== '/' && router.url !== '/browse'"></home>
