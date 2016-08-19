@@ -1,7 +1,13 @@
 <header>
-  <h1>{{ name }}</h1>
+  <div class="logo">
+    <h1>{{ name }}</h1>
+  </div>
 
   <note-query [hidden]="! dataService.user.loggedIn"></note-query>
+
+  <div class="menu" [hidden]="! dataService.user.loggedIn">
+    (you)
+  </div>
 
   <login></login>
 </header>
