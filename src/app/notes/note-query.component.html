@@ -1,26 +1,34 @@
-<div class="note-query-bar">
-  <span class="tags">
-    <tag
-      *ngFor="let tag of tags"
-      [tagId]="tag.id"
-      [removable]="true"
-      (removed)="removeTag(tag)"
-    ></tag>
-  </span>
+<span class="tags">
+  <tag
+    *ngFor="let tag of tags"
+    [tagId]="tag.id"
+    [removable]="true"
+    (removed)="removeTag(tag)"
+  ></tag>
+</span>
 
-  <input tabindex=1 type="text" placeholder="Search notes"
-    ref-textInput
-    [(ngModel)]="queryText"
-    (ngModelChange)="queryUpdated()"
-    (focus)="setUpAutocomplete()"
-    (keydown)="inputKeydown($event)"
-  >
-  <button (click)="clear()">x</button>
+<input class="text-input" tabindex=1 type="text" placeholder="Search notes"
+  ref-textInput
+  [(ngModel)]="queryText"
+  (ngModelChange)="queryUpdated()"
+  (focus)="setUpAutocomplete()"
+  (keydown)="inputKeydown($event)"
+>
 
+<span class="controls">
   <label>
-    Sort {{ notes.length }} note{{ notes.length !== 1 ? 's' : '' }} by
+    {{ notes.length }} NOTE{{ notes.length !== 1 ? 'S' : '' }}
     <select tabindex=3 [ngModel]="sortOpt" (ngModelChange)="sort($event)">
       <option *ngFor="let opt of notesService.sortOpts" [ngValue]="opt">{{opt.name}}</option>
     </select>
   </label>
-</div>
+
+  <button
+    *ngIf="queryText || tags.length"
+    (click)="clear()"
+  >X</button>
+  <button
+    *ngIf="! queryText && ! tags.length"
+    (click)="focus()"
+  ><span style="display: inline-block; transform: rotate(-45deg)">&#x26B2;</span></button><!-- @TODO/rewrite Shitty magnifying glass -->
+</span>

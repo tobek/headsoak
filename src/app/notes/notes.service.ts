@@ -129,7 +129,7 @@ export class NotesService {
   /**
    * Returns an array of Notes filtered by various means - everything is `and`ed
    */
-  doQuery(query = '', tags?: Tag[]): Note[] {
+  doQuery(query = '', tags?: Tag[], excludeNew = true): Note[] {
     this._logger.time('doing query');
 
     this._logger.log('queried "' + query + '" with tags', tags);
@@ -197,6 +197,10 @@ export class NotesService {
     // @TODO/rewrite - i think these are handled by whoever called the query?
     // $s.n.sortNuts($s.n.sortOpts[$s.c.config.nutSortBy], filteredNotes); // re-sort, cause who knows what we've added into `$s.n.nuts` (sortNuts also autosizes textareas)
     // $s.n.moreNutsCheck(); // new query may mean we have to increase/decrease limit
+
+    if (excludeNew){
+      filteredNotes = _.filter(filteredNotes, (note: Note) => ! note.new);
+    }
 
     this._logger.timeEnd('doing query');
 
