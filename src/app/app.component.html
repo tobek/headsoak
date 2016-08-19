@@ -37,7 +37,7 @@
 <main [hidden]="! dataService.user.loggedIn">
 
   <router-outlet></router-outlet>
-  <home [hidden]="router.url !== '/' && router.url !== '/browse'"></home>
+  <home [hidden]="router.url !== '/' && router.url !== '/focus' && router.url !== '/browse'"></home>
   <tag-browser [hidden]="router.url !== '/tags'"></tag-browser>
 
 </main>

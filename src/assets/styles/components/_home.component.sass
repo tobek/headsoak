@@ -8,9 +8,6 @@ home
     +susy-breakpoint($tablet-large, $susy)
       +span(8)
 
-    .route--browse &
-      display: none;
-
   note-browser
     display: none
 
@@ -25,7 +22,11 @@ home
       +span(4 last)
       display: block
 
-    .route--browse &
+  .route--browse &
+    note.open-note
+      display: none
+
+    note-browser
       +span(12 last)
       display: block
 
@@ -46,4 +47,12 @@ home
 
         note
           +gallery(2 of 10)
+
+  .route--focus &
+    note.open-note
+      +span(12 last)
+
+    note-browser
+      display: none
+
 
