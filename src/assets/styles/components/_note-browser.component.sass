@@ -1,1 +1,21 @@
 note-browser
+  note
+    height: 220px // @TODO/ece This right?
+    margin-bottom: gutter(4)
+
+    &:last-of-type
+      margin-bottom: 0
+
+    @at-root
+      .open-note-indicator
+        display: none
+
+    .route--write &.is--open
+      height: auto
+      padding-top: 25px
+      padding-bottom: 25px
+
+      & .open-note-indicator
+        display: block
+      & .note-wrapper
+        display: none
