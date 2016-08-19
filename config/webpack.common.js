@@ -116,7 +116,13 @@ module.exports = {
           helpers.root('node_modules/@ngrx'),
           helpers.root('node_modules/@angular2-material'),
         ]
-      }
+      },
+      
+      {
+        test: /\.sass$/,
+        exclude: /node_modules/,
+        loader: 'import-glob-loader'
+      },
 
     ],
 
@@ -238,7 +244,10 @@ module.exports = {
      */
     new CopyWebpackPlugin([{
       from: 'src/assets',
-      to: 'assets'
+      to: 'assets',
+      ignore: [
+        '*.sass',
+      ],
     }]),
 
     /*

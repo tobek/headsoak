@@ -1,0 +1,20 @@
+@charset 'utf-8'
+
+// See <https://sass-guidelin.es/#architecture> for more structure (and general good advice)
+
+@import 'normalize'
+@import 'variables'
+@import 'mixins'
+@import 'typography'
+
+
+// @NOTE: Adding a new file to one of these globbed folders, e.g. `components/foo.sass` won't register with webpack dev server (won't reload, page won't update with the styles) unless you restart webpack dev server OR make a change to this file that imports the glob.
+
+// Major regions of the page - currently just header which may later be a component, so maybe unnecessary
+@import 'layout/*.sass'
+
+// Reusable parts like menus, form stuff, autocomplete...
+@import 'parts/*.sass'
+
+// "Components" in the Angular sense (Note, NoteBrowser, Tag, etc.)
+@import 'components/*.sass'

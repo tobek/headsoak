@@ -21,7 +21,6 @@ import {Tag, TagsService} from '../tags/';
     NoteComponent,
     NoteBrowserComponent,
   ],
-  styleUrls: [ './home.component.css' ],
   templateUrl: './home.component.html'
 })
 export class HomeComponent {

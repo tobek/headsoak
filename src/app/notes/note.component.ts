@@ -15,7 +15,6 @@ import {AutocompleteService} from '../utils/';
   directives: [
     TagComponent,
   ],
-  styles: [ require('./note.component.css') ],
   template: require('./note.component.html')
 })
 export class NoteComponent {

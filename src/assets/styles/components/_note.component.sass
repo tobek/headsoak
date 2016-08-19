@@ -1,0 +1,37 @@
+note
+
+  .note-wrapper,
+  .open-note-indicator
+    display: block
+    margin-bottom: 20px
+    padding-bottom: 20px
+    border-bottom: 1px solid gray
+
+  &:first-of-type
+    .note-wrapper,
+    .open-note-indicator
+      margin-top: 20px
+
+  .body
+    width: 100%
+    min-height: 100px
+
+  .new-tag-input
+    width: 0
+    transition: width 0.2s, padding 0.2s
+
+    padding: 2px 0
+    border: none
+    outline: none
+
+    &.adding-tag
+      width: 100px
+      padding: 2px
+
+  .open-note-indicator
+    display: none
+  &.is--open
+    & .open-note-indicator
+      display: block
+    & .note-wrapper
+      display: none

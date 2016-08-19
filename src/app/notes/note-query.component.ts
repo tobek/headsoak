@@ -16,7 +16,6 @@ import {Logger, AutocompleteService} from '../utils/';
   directives: [
     TagComponent,
   ],
-  styles: [require('./note-query.component.css')],
   template: require('./note-query.component.html')
 })
 export class NoteQueryComponent {

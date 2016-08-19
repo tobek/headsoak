@@ -1,7 +1,7 @@
 <note class="note-{{ note.id }}"
   *ngFor="let note of (notes | arrayLimit:limit)"
   [hidden]="note.new"
-  [class.opened]="activeUIs.home && activeUIs.home.openNote === note"
+  [class.is--open]="activeUIs.home && activeUIs.home.openNote === note"
   [note]="note"
   (noteOpened)="_noteOpened($event)"
 ></note>

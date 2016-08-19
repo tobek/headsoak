@@ -6,7 +6,6 @@ import {AccountService} from './account.service';
 @Component({
   selector: 'login',
   pipes: [],
-  styles: [ require('./login.component.css') ],
   template: require('./login.component.html')
 })
 export class LoginComponent {

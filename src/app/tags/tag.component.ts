@@ -9,7 +9,6 @@ import {utils} from '../utils/';
 @Component({
   selector: 'tag',
   pipes: [],
-  styles: [ require('./tag.component.css') ],
   template: require('./tag.component.html')
 })
 export class TagComponent {

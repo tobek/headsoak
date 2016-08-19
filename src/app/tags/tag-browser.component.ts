@@ -16,7 +16,6 @@ import {Logger/*, ScrollMonitorService, AutocompleteService*/} from '../utils/';
   directives: [
     TagComponent,
   ],
-  styles: [require('./tag-browser.component.css')],
   template: require('./tag-browser.component.html')
 })
 export class TagBrowserComponent {

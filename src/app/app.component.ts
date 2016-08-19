@@ -27,7 +27,7 @@ import {TagBrowserComponent} from './tags/tag-browser.component'; // @NOTE No id
     TagBrowserComponent,
   ],
   encapsulation: ViewEncapsulation.None,
-  styles: [ require('./styles/global.sass') ],
+  styles: [ require('../assets/styles/_main.sass') ],
   template: require('./app.component.html')
 })
 export class App {

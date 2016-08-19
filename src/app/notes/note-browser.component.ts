@@ -15,7 +15,6 @@ import {Logger, ScrollMonitorService} from '../utils/';
   directives: [
     NoteComponent,
   ],
-  styles: [require('./note-browser.component.css')],
   template: require('./note-browser.component.html')
 })
 export class NoteBrowserComponent {
