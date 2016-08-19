@@ -20,6 +20,8 @@ const METADATA = {
   isDevServer: helpers.isWebpackDevServer()
 };
 
+const autoprefixer = require('autoprefixer');
+
 /*
  * Webpack configuration
  *
@@ -78,6 +80,8 @@ module.exports = {
     modulesDirectories: ['node_modules'],
 
   },
+
+  postcss: [autoprefixer],
 
   /*
    * Options affecting the normal modules.
@@ -173,7 +177,7 @@ module.exports = {
       {
         test: /\.sass$/,
         exclude: /node_modules/,
-        loaders: ['raw-loader', 'sass-loader']
+        loaders: ['raw-loader', 'postcss-loader?parser=postcss-scss', 'sass-loader']
       },
 
       /* Raw loader support for *.html
