@@ -44,7 +44,8 @@
     <button (click)="note.showShareSettings()">share</button>
     <button (click)="note.togglePrivate()">priv</button>
     <span *ngIf="! note.new">
-      <button (click)="newNoteWithSameTags()">NNST</button>
+      <!-- @TODO/rewrite @TODO/ece Do we want this? Can we fit it? -->
+      <!-- <button (click)="newNoteWithSameTags()">NNST</button> -->
       <button (click)="delete($event)">del</button>
     </span>
   </div>
