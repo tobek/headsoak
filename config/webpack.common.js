@@ -242,13 +242,23 @@ module.exports = {
      *
      * See: https://www.npmjs.com/package/copy-webpack-plugin
      */
-    new CopyWebpackPlugin([{
-      from: 'src/assets',
-      to: 'assets',
-      ignore: [
-        '*.sass',
-      ],
-    }]),
+    new CopyWebpackPlugin([
+      {
+        from: 'src/assets',
+        to: 'assets',
+        ignore: [
+          '*.sass',
+        ],
+      },
+      {
+        from: 'src/*.html', // in the future if we need template parsing in some of these we can use HtmlWebpackPlugin
+        to: '.',
+        flatten: true,
+        ignore: [
+          'index.html', // handled by HtmlWebpackPlugin
+        ],
+      },
+    ]),
 
     /*
      * Plugin: HtmlWebpackPlugin
