@@ -13,8 +13,23 @@
   .menu
     position: relative
     cursor: pointer
+
+    width: 25px
+    height: 25px
+    max-width: 25px
+    padding: 5px
+
     border: 1px solid black // @TODO/rewrite @TODO/ece Vary based on sync status
     border-radius: 50%
+
+    &.status--synced
+      border-color: $success-stroke
+    &.status--syncing
+      border-color: mix($success-stroke, $warning-stroke)
+    &.status--unsynced
+      border-color: $warning-stroke
+    &.status--disconnected
+      border-color: $error-stroke
 
     .menu-body
       +plain-list
@@ -22,6 +37,7 @@
       z-index: 10
       position: absolute
       cursor: default
+      width: 150px
       margin: 0
       background-color: $card-bg
 
