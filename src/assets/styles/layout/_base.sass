@@ -1,0 +1,18 @@
+$mobile: 320px
+$tablet-small: 480px
+$tablet-large: 768px
+$screen-small: 1024px
+$screen-large: 1280px
+
+// Sass doesn't yet support multi-line variable declartions <https://github.com/sass/sass/issues/216>
+// Details about these settings at <http://susydocs.oddbird.net/en/latest/settings/>
+$susy: ( columns: 12, gutters: 1/4, global-box-sizing: border-box, /*debug: (image: show, color: lightblue),*/ )
+
+body
+  +container($screen-large)
+
+html
+  box-sizing: border-box
+
+*, *:before, *:after
+  box-sizing: inherit

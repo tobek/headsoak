@@ -1,10 +1,16 @@
 home
 
   note.open-note
-    display: inline-block
-    width: 65%
+    +span(12)
+
+    +susy-breakpoint($tablet-large, $susy)
+      +span(8)
 
   note-browser
-    display: inline-block
-    float: right
-    width: 33%
+    // @TODO/rewrite obvs should be visible in browse mode
+    // +span(12)
+    display: none
+
+    +susy-breakpoint($tablet-large, $susy)
+      +span(4 last)
+      display: block
