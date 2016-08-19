@@ -1,4 +1,5 @@
 import {Component, Output, ElementRef, /*ViewChildren, QueryList,*/ EventEmitter} from '@angular/core';
+import {NavigationEnd} from '@angular/router';
 import {Subscription} from 'rxjs';
 
 import {ActiveUIsService} from '../active-uis.service';
@@ -76,11 +77,25 @@ export class NoteBrowserComponent {
     this.activeUIs.noteBrowser = this;
   }
 
-  _noteOpened(note: Note) {
-    this.noteOpened.emit(note);
+  _noteOpened(note: Note): void {
+    // @TODO If we have to do this again (we do something very similar in Shortcut model) we should wrap a service around the Router and have a `routeThenDo` function.
+    if (this.notesService.dataService.router.url === '/browse') {
+      this.notesService.dataService.router.events
+        .filter(event => event instanceof NavigationEnd)
+        .first().subscribe((event) => {
+          // @HACK Not sure why but this additionall setTimeout is necessary to focus to work, it seems
+          setTimeout(() => {
+            this.noteOpened.emit(note);
+          });
+        });
+      this.notesService.dataService.router.navigateByUrl('/');
+    }
+    else {
+      this.noteOpened.emit(note);
+    }
   }
 
-  _noteClosed(note: Note) {
+  _noteClosed(note: Note): void {
     this.noteClosed.emit(note);
   }
 
