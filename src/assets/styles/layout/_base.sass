@@ -8,10 +8,6 @@ $screen-large: 1280px
 // Details about these settings at <http://susydocs.oddbird.net/en/latest/settings/>
 $susy: ( columns: 12, gutters: 1/4, global-box-sizing: border-box, /*debug: (image: show, color: lightblue),*/ )
 
-body
-  // @TODO/styles Put in variables
-  background-color: #0e465e
-  background-image: linear-gradient(201deg, #16697f, #0e465e)
 
 html
   box-sizing: border-box
@@ -19,6 +15,19 @@ html
 *, *:before, *:after
   box-sizing: inherit
 
+
+.app-bg
+  +app-bg
+
+  z-index: -1
+  position: fixed
+  width: 100%
+  height: 100%
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+    
 
 main
   +container($screen-large)
