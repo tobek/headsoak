@@ -179,6 +179,8 @@ export class NoteQueryComponent {
 
   clear(thenFocus = true): void {
     this.tags = [];
+    this.tagsUpdated$.next(this.tags);
+    
     this.queryText = '';
     this.queryUpdated();
 
