@@ -18,7 +18,7 @@
   <nav>
     <ul>
       <li *ngFor="let route of routes" [class.active]="'/' + route.path === router.url">
-        <a *ngIf="route.data && route.data.name" [routerLink]="[route.path]">{{ route.data.name }}</a>
+        <a *ngIf="! route.data.hideFromNav" [routerLink]="[route.path]">{{ route.data.name }}</a>
       </li>
     </ul>
   </nav>

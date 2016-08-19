@@ -38,7 +38,7 @@ export class SettingsComponent {
 
   ngOnInit() {
     this.sectionName = this.route.snapshot.data['name'];
-    this.section = this.route.snapshot.data['section'];
+    this.section = this.route.snapshot.data['slug'];
 
     // Will fire immediately if already initialized, otherwise will wait for initialization and then fire. Either way, will unsubscribe immediately after.
     this.settings.initialized$.first().subscribe(this.init.bind(this));

@@ -1,5 +1,6 @@
-import { Component, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
+import {Component, ViewEncapsulation, HostBinding} from '@angular/core';
+import {Router, NavigationEnd} from '@angular/router';
+import {Subscription} from 'rxjs';
 
 import {AnalyticsService} from './analytics.service';
 import {DataService} from './data.service';
@@ -35,18 +36,30 @@ export class App {
 
   routes = routes;
 
+  @HostBinding('class') hostClass = '';
+
+  private routerSub: Subscription;
+
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
     private router: Router,
     public analyticsService: AnalyticsService,
     public dataService: DataService
-   ) {}
+   ) {
+    this.routerSub = router.events
+      .filter(event => event instanceof NavigationEnd)
+      .subscribe((event: NavigationEnd) => {
+        const routeInfo = _.find(this.routes, { path: event.url.substring(1) });
+        this.hostClass = 'route--' + routeInfo.data['slug'];
+      });
+  }
 
   ngOnInit() {
     this._logger.log('App component initializing');
   }
   ngOnDestroy() {
+    this.routerSub.unsubscribe();
     this._logger.log('App component destroyed!');
   }
 
