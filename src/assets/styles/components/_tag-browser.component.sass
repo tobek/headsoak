@@ -1,5 +1,26 @@
 tag-browser
-  display: block
-  margin: 10px 0
-  padding: 10px
-  background-color: #ddd
+
+  .tag-list
+    +span(4)
+    +card
+
+  .search-bar
+    border-bottom: solid 1px $input-underline
+
+    .clear
+      float: right
+
+  .controls
+    font-weight: bold
+    margin: 10px 0 20px
+
+    .new
+      float: right
+
+
+  tag
+    +span(2 of 4)
+    display: inline-block
+
+    &:nth-child(2n+1)
+      +span(2 of 4 last)

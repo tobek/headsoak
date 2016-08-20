@@ -1,27 +1,31 @@
-<div class="tag-query-bar">
-  <input tabindex=1 type="text" placeholder="Search tags"
-    ref-queryInput [(ngModel)]="query"
-    (ngModelChange)="queryUpdated()"
-  >
-  <button (click)="queryClear()">x</button>
+<div class="tag-list">
+  <div class="tag-query">
+    <div class="search-bar">
+      <input tabindex=1 type="text" placeholder="Search tags"
+        ref-queryInput [(ngModel)]="query"
+        (ngModelChange)="queryUpdated()"
+      >
+      <button class="clear" (click)="queryClear()">x</button>
+    </div>
 
-  <label>
-    Sort {{ tags.length }} tag{{ tags.length !== 1 ? 's' : '' }} by
-    <select tabindex=3 [ngModel]="sortOpt" (ngModelChange)="sort($event)">
-      <option *ngFor="let opt of tagsService.sortOpts" [ngValue]="opt">{{opt.name}}</option>
-    </select>
-  </label>
+    <div class="controls">
+      <label>
+        {{ tags.length }} TAG{{ tags.length !== 1 ? 'S' : '' }}
+        <select tabindex=3 [ngModel]="sortOpt" (ngModelChange)="sort($event)">
+          <option *ngFor="let opt of tagsService.sortOpts" [ngValue]="opt">{{opt.name}}</option>
+        </select>
+      </label>
 
-  <button (click)="newTag()">new tag</button>
+      <button class="new" (click)="newTag()">new</button>
+    </div>
+  </div>
 
-  <hr>
+  <tag class="tag tag-{{ tag.id }}"
+    *ngFor="let tag of (tags | arrayLimit:limit)"
+    (click)="tagSelected(tag)"
+    [tagId]="tag.id"
+    [showCount]="true"
+    [editable]="true"
+    (deleted)="tagDeleted($event)"
+  ></tag>
 </div>
-
-<tag class="tag tag-{{ tag.id }}"
-  *ngFor="let tag of (tags | arrayLimit:limit)"
-  (click)="tagToggled(tag)"
-  [tagId]="tag.id"
-  [showCount]="true"
-  [editable]="true"
-  (deleted)="tagDeleted($event)"
-></tag>

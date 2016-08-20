@@ -116,9 +116,9 @@ export class TagBrowserComponent {
     this.tags = _.filter(this.tags, (tag: Tag) => tag.id !== deletedTag.id);
   }
 
-  tagToggled(tag: Tag): void {
+  tagSelected(tag: Tag): void {
     // @TODO/rewrite/tags Need to find a way to toggle this tag in the appropriate note browser component
-    this._logger.log('Toggling tag', tag);
+    this._logger.log('Selecting tag', tag);
   }
 
   // // @TODO/testing infinite scroll e2e both directions
