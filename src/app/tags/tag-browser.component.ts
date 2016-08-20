@@ -19,7 +19,7 @@ import {Logger/*, ScrollMonitorService, AutocompleteService*/} from '../utils/';
   template: require('./tag-browser.component.html')
 })
 export class TagBrowserComponent {
-  DEFAULT_TAGS_LIMIT: number = 100;
+  DEFAULT_TAGS_LIMIT: number = Infinity; // @TODO/tags There should prob be a limit?
 
   el: HTMLElement;
 
