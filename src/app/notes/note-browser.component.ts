@@ -19,7 +19,7 @@ import {Logger, ScrollMonitorService} from '../utils/';
   template: require('./note-browser.component.html')
 })
 export class NoteBrowserComponent {
-  DEFAULT_NOTES_LIMIT: number = 15;
+  DEFAULT_NOTES_LIMIT: number = 20;
 
   el: HTMLElement;
 
@@ -69,6 +69,8 @@ export class NoteBrowserComponent {
   init(noteQueryComponent): void {
     this.querySub = noteQueryComponent.queriedNotes$.subscribe((notes: Note[]) => {
       this.notes = notes;
+      // Wait for these notes to get set up and then see if this.limit needs changing
+      setTimeout(this.infiniteScrollCheck.bind(this), 0);
     });
 
     // @TODO/rewrite
@@ -105,14 +107,14 @@ export class NoteBrowserComponent {
       return;
     }
 
-    let lastNote = this.el.querySelector('note:last-child');
+    const lastNote = this.el.querySelector('note:last-child');
     if (! lastNote) {
       return;
     }
 
-    let scrollPos = document.documentElement.scrollTop || document.body.scrollTop;
-    let viewportBottomPos = scrollPos + window.innerHeight; // Distance from top of document to bottom of viewport
-    let distanceTilLastNote = lastNote.getBoundingClientRect().top - viewportBottomPos;
+    const scrollPos = document.documentElement.scrollTop || document.body.scrollTop;
+    const viewportBottomPos = scrollPos + window.innerHeight; // Distance from top of document to bottom of viewport
+    const distanceTilLastNote = lastNote.getBoundingClientRect().top - viewportBottomPos;
 
     if (distanceTilLastNote < 500) {
       this.limit += 10;
