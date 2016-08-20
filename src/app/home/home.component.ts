@@ -94,7 +94,6 @@ export class HomeComponent {
 
   setUpNewNoteTags(): void {
     if (! this.newNote.new) {
-      // They've edited this note - body or tags - so don't modify the tags futher, regardless of what happens in the query. @TODO/ece This sound right?
       return;
     }
 

@@ -1,7 +1,7 @@
 note-browser
   note
     height: 220px // @TODO/ece This right?
-    margin-bottom: gutter(4)
+    margin-bottom: (gutter() / 100%) * 100vw // gutter() gives us a percentage and dividing by 100% turns that into a unit-less number, which we can then multiply by 100vw to achieve a gutter size proportional to the viewport, which, if the element isn't in a 12-wide container, we wouldn't get with the simple percentage we get back from gutter(). Even though the container doesn't always match 100vw, this gets us pretty close. (But maybe it should be like 95 or 90vw at non-mobile widths.)
 
     &:last-of-type
       margin-bottom: 0
