@@ -70,7 +70,8 @@ export class NotesService {
     }
 
     // @TODO/rewrite/sharing Temporarily hide shared notes until they're set up again
-    if (noteObj.sharedBy) {
+    // @TODO/rewrite/private Temporarily hide private notes until they're set up again
+    if (noteObj.sharedBy || noteObj.private) {
       return null;
     }
 
