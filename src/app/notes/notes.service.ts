@@ -200,7 +200,7 @@ export class NotesService {
     // $s.n.moreNutsCheck(); // new query may mean we have to increase/decrease limit
 
     if (excludeNew){
-      filteredNotes = _.filter(filteredNotes, (note: Note) => ! note.new);
+      filteredNotes = _.filter(filteredNotes, (note: Note) => note && ! note.new);
     }
 
     this._logger.timeEnd('doing query');
