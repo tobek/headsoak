@@ -24,6 +24,9 @@ export class Setting {
   /** Function called to make setting take effect - e.g. called when setting first initialized and every time it's updated. */
   enact = () => {};
 
+  /** Raw HTML spit out after setting label. @TODO/settings There is a much better way to do this. Setting should be a componenton its own with its own instantiations and views and actions. **/
+  postSettingHtml = '';
+
   private _logger: Logger;
 
   constructor(settingData: any, public dataService: DataService) {
