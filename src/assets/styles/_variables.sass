@@ -12,5 +12,13 @@ $error-stroke: red
   border-bottom: 1px solid $input-underline-color
 
 =app-bg
-  background-color: #0e465e
-  background-image: linear-gradient(201deg, #16697f, #0e465e)
+  // for background images set by user in settings (@TODO/settings/bg Should be controllabe)
+  background-position: center center
+  background-repeat: no-repeat
+  background-size: cover
+  background-attachment: fixed
+
+  &,
+  &.default
+    background-color: #0e465e
+    background-image: linear-gradient(201deg, #16697f, #0e465e)

@@ -50,6 +50,28 @@ export class SettingsService {
     },
 
     {
+      id: 'bgImageUrl',
+      default: null,
+      name: 'Background image URL',
+      type: 'string',
+      section: 'settings',
+      enact: function() {
+        // @TODO/settings/bg Check it's a URL and that it fetches (validation property function!)
+
+        const el = <HTMLElement> document.querySelector('#app-bg');
+
+        if (this.value) {
+          el.style.backgroundImage = this.value ? 'url("' + this.value + '")' : '';
+          el.classList.remove('default');
+        }
+        else {
+          el.classList.add('default');
+          el.style.backgroundImage = '';
+        }
+      }
+    },
+
+    {
       id: 'maxHistory',
       default: 0,
       name: 'Note history length',
