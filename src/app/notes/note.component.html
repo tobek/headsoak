@@ -39,14 +39,15 @@
   <!-- @TODO/rewrite/sharing Better to put read-only class and disabled attribute on above textarea so reference is preserved <textarea class="body read-only" disabled="disabled" tabindex=2 *ngIf="note.sharedBody">{{ note.sharedBody }}</textarea> -->
 
   <div class="note-actions">
-    <button class="note-action--open" *ngIf="! opened" (click)="openNote()">open</button>
-    <button *ngIf="opened && ! note.new" (click)="closeNote()">close note</button>
-    <button (click)="note.showShareSettings()">share</button>
-    <button (click)="note.togglePrivate()">priv</button>
+    <span class="note-action--open" *ngIf="! opened" (click)="openNote()"><i class="fa fa-long-arrow-left"></i></span>
+    <span *ngIf="opened && ! note.new" (click)="closeNote()"><i class="fa fa-close"></i></span>
+    <span (click)="note.showShareSettings()"><i class="fa fa-users"></i></span>
+    <span (click)="note.togglePrivate()"><i class="fa fa-lock"></i></span>
     <span *ngIf="! note.new">
       <!-- @TODO/rewrite @TODO/ece Do we want this? Can we fit it? -->
-      <!-- <button (click)="newNoteWithSameTags()">NNST</button> -->
-      <button (click)="delete($event)">del</button>
+      <!-- <span (click)="newNoteWithSameTags()">NNST</span> -->
+      <span (click)="delete($event)"><i class="fa fa-trash"></i></span>
+      <span (click)="alert('nothin yet')"><i class="fa fa-sliders"></i></span>
     </span>
   </div>
 </div>

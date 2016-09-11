@@ -8,14 +8,16 @@
 
 <span *ngIf="showCount">({{ tag.docs.length }})</span>
 
-<span class="tag-actions" (click)="$event.stopPropagation()">
+<span class="tag-state">
   <span class="share" *ngIf="tag.share">
-    [shared]
+    <i class="fa fa-users"></i>
   </span>
   <span class="prog" *ngIf="tag.prog">
-    [prog]
+    <i class="fa fa-bolt"></i>
   </span>
+</span>
 
+<span class="tag-actions" (click)="$event.stopPropagation()">
   <span class="hover-cover"></span>
   <button class="tag-action--remove" *ngIf="removable" (click)="remove()">x</button>
 
