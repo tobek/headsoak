@@ -260,7 +260,10 @@ export class Note {
       return null;
     }
 
-    this.tags = _.union(this.tags, [tag.id]);
+    if (! _.includes(this.tags, tag.id)) {
+      // Add at the front - this makes tags on notes ordered by most-recently-added, which a) is fine, and b) looks good when you add a new tag. Later order could be smarter.
+      this.tags.unshift(tag.id);
+    }
     tag.addNoteId(this.id);
 
     this.rebuildNoteSharing();

@@ -5,22 +5,25 @@ note
   display: block
 
   .note-wrapper
+    position: relative
     height: 100%
 
   .header,
   .note-actions
     position: absolute
-    left: 0
     width: 100%
     height: 30px
 
   .header
-    top: 0
+    top: -35px
 
   .tags
     // @TODO/ece How do we show all tags on a note?
     +single-line-truncate
     width: 100%
+
+  .new-tag
+    +tag-chiclet
 
   .new-tag-input
     width: 0
@@ -31,6 +34,10 @@ note
     &.adding-tag
       width: 100px
       padding: 2px
+      background: none
+
+  .new-tag-button
+    cursor: pointer
 
 
   .time
@@ -44,7 +51,7 @@ note
 
 
   .note-actions
-    bottom: 0
+    bottom: -35px
     height: 22px // @TODO/rewrite/styles Magic number
     text-align: right
     font-size: 14px // @TODO/rewrite/styles
