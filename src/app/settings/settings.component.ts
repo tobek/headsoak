@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ViewChildren, QueryList} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 
 import {Logger} from '../utils/';
@@ -7,10 +7,12 @@ import {DataService} from '../data.service';
 import {SettingsService} from './settings.service';
 import {Setting, Shortcut} from './';
 
+import {SettingComponent} from './setting.component';
+
 @Component({
   selector: 'settings',
-  styles: [
-    // require('./settings.component.css')
+  directives: [
+    SettingComponent,
   ],
   template: require('./settings.component.html')
 })
@@ -19,6 +21,8 @@ export class SettingsComponent {
   section: string; // currently 'settings' or 'shortcuts'
 
   initialized = false;
+
+  @ViewChildren(SettingComponent) settingComponents: QueryList<SettingComponent>;
 
   private syncDebounced = _.debounce(this.dataService.sync.bind(this.dataService), 1000);
   private checkEmptyModKeyDebounced = _.debounce(this.checkEmptyModKey.bind(this), 1000);
@@ -54,6 +58,11 @@ export class SettingsComponent {
     this.initialized = true;
 
     this.checkEmptyModKey();
+  }
+
+  /** Trying to pass args directly from SettingComponent to here - seemingly can't use ES6 splats/parameter magic in template, and had some issues with `this`, so this is where we ended up. */
+  settingUpdatedProxy(args){
+    this.settingUpdated.apply(this, args);
   }
 
   settingUpdated(setting: Setting | Shortcut, newVal?: any): void {
@@ -102,6 +111,7 @@ export class SettingsComponent {
     return allGood;
   }
 
+  /** Check if a) no global modKey, and b) at least one shortcut also has no modifier. This makes an aggressive shortcut! So warn the user. */
   checkEmptyModKey() {
     if (this.section !== 'shortcuts' || this.settings.get('sMod') !== '') {
       return;

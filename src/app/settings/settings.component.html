@@ -27,36 +27,12 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let setting of displayedSettings">
-      <td>
-        <label [attr.for]="'setting-' + setting.id">
-          {{ setting.name }}
-          <span title="{{ setting.description }}" *ngIf="setting.description">(?)</span>
-        </label>
-        <div class="notes" *ngIf="setting.postSettingHtml" [innerHTML]="setting.postSettingHtml"></div>
-      </td>
-      <td>
-        <span *ngIf="section === 'shortcuts' && settings.get('sMod')">{{ settings.get('sMod') }}+</span>
-        <input
-          *ngIf="setting.type === 'boolean'"
-          type="checkbox"
-          id="setting-{{ setting.id }}"
-          [ngModel]="setting.value"
-          (ngModelChange)="settingUpdated(setting, $event)"
-        />
-        <input
-          *ngIf="setting.type === 'string'"
-          type="text"
-          id="setting-{{ setting.id }}"
-          [(ngModel)]="setting.value"
-          (blur)="settingUpdated(setting, setting.value)"
-          (keyup.enter)="settingUpdated(setting)"
-        />
-      </td>
-      <td>
-        <span *ngIf="dataService.isUnsaved(setting)">saving...</span>
-      </td>
-    </tr>
+    <setting
+      *ngFor="let setting of displayedSettings"
+      [setting]="setting"
+      class="setting-{{ setting.id }}"
+      (updated)="settingUpdatedProxy($event)"
+    ></setting>
   </tbody>
 </table>
 
