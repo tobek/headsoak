@@ -27,6 +27,9 @@ export class Setting {
   /** Raw HTML spit out after setting label. @TODO/settings There is a much better way to do this. Setting should be a componenton its own with its own instantiations and views and actions. **/
   postSettingHtml = '';
 
+  /** This gets attached to the SettingComponent element and will catch any clicks as they bubble up. */
+  clickHandler: Function;
+
   private _logger: Logger;
 
   constructor(settingData: any, public dataService: DataService) {
@@ -38,7 +41,7 @@ export class Setting {
 
     this.enact();
 
-    this._logger = new Logger('Note ' + this.id);
+    this._logger = new Logger('Setting ' + this.id);
   }
 
   updated(newVal?: any): void {

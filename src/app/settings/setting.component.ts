@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {Component, Input, Output, EventEmitter, ElementRef, Renderer} from '@angular/core';
 
 import {Logger} from '../utils/';
 
@@ -13,9 +13,12 @@ export class SettingComponent {
   @Input() setting: Setting;
   @Output() updated = new EventEmitter<Array<any>>();
 
+  private removeHandler: Function;
   private _logger = new Logger(this.constructor.name);
 
   constructor(
+    private elementRef: ElementRef,
+    private renderer: Renderer,
     private dataService: DataService
   ) {
   }
@@ -23,7 +26,18 @@ export class SettingComponent {
   ngOnInit() {
   }
 
-  init(): void {
+  ngAfterViewInit() {
+    if (this.setting.clickHandler) {
+      this.removeHandler = this.renderer.listen(this.elementRef.nativeElement, 'click', (e) => {
+        this.setting.clickHandler(e);
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.removeHandler) {
+      this.removeHandler();
+    }
   }
 
   settingUpdated(...args): void {

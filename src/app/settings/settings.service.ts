@@ -69,20 +69,28 @@ export class SettingsService {
           el.style.backgroundImage = '';
         }
       },
-      // @TODO/settings Ridiculous, should be in a SettingComponent, see note in Setting model
-      // @TODO/settings/bg Do a "show me what you got" (link to rick momrty "show me what you got" gegt schwifty) gives a random one and alerts to credit the image
-      postSettingHtml: `
-        <p>
-          Try these background images! (fuck thumbnails!)
-        </p>
-        <pre style="">
-https://s3.amazonaws.com/thereitwas.com/images/russian/Nikolay+Dubovskoy+-+1890+-+Quieting+Down.jpg
-https://s3.amazonaws.com/thereitwas.com/images/hyperdude111+-+Buzz+-+2560x1440.jpg
-https://s3.amazonaws.com/thereitwas.com/images/The+Fox+is+Black+-+Desktop+Wallpaper+Project/Adam-Hanson-2560x1440.jpeg
-https://s3.amazonaws.com/thereitwas.com/images/The+Fox+is+Black+-+Desktop+Wallpaper+Project/chris-jaurique-2560x1440.jpg
-https://s3.amazonaws.com/thereitwas.com/images/The+Fox+is+Black+-+Desktop+Wallpaper+Project/upso-1920x1200.jpg
-        </pre>
-      `
+      clickHandler: function(event: MouseEvent) {
+        if (! (<HTMLElement> event.target).classList.contains('random')) {
+          return;
+        }
+
+        let newBgUrl;
+        do {
+          newBgUrl = _.sample(this['EXAMPLE_BG_URLS']);
+        } while (newBgUrl === this.value);
+
+        // @TODO/settings/bg Would be nice if it alerted to credit the artist
+        this.updated(newBgUrl);
+      },
+
+      EXAMPLE_BG_URLS: [
+        'http://thereitwas.com/images/russian/Nikolay Dubovskoy - 1890 - Quieting Down.jpg',
+        'http://thereitwas.com/images/hyperdude111 - Buzz - 2560x1440.jpg',
+        'http://thereitwas.com/images/The Fox is Black - Desktop Wallpaper Project/Adam-Hanson-2560x1440.jpeg',
+        'http://thereitwas.com/images/The Fox is Black - Desktop Wallpaper Project/chris-jaurique-2560x1440.jpg',
+        'http://thereitwas.com/images/The Fox is Black - Desktop Wallpaper Project/upso-1920x1200.jpg',
+      ],
+      postSettingHtml: '(<a class="random">SHOW ME WHAT YOU GOT</a>)',
     },
 
     {
