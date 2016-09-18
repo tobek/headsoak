@@ -15,6 +15,12 @@ home
       +span(4 last)
       display: block
 
+      .route--write & note
+        // We have to specify that the gutter is in a 4 column context, not the full container
+        padding-left: gutter(4)
+        padding-right: gutter(4)
+        margin-bottom: gutter(4) * 1.25
+
   .route--browse &
     note.open-note
       display: none
@@ -42,6 +48,7 @@ home
       //     +gallery(2 of 10)
 
   .route--focus &
+    // @TODO/rewrite @TODO/redesign This should be a modal
     note.open-note
       +span(12 last)
 

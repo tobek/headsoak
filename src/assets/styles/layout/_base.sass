@@ -6,7 +6,10 @@ $screen-large: 1280px
 
 // Sass doesn't yet support multi-line variable declartions <https://github.com/sass/sass/issues/216>
 // Details about these settings at <http://susydocs.oddbird.net/en/latest/settings/>
-$susy: ( columns: 12, gutters: 1/4, global-box-sizing: border-box, /*debug: (image: show, color: lightblue),*/ )
+$susy: ( columns: 12, gutters: 1/3, global-box-sizing: border-box/*, debug: (image: show, color: lightblue)*/ )
+
+// Note - below used when trying out a static grid (making math using `gutter()` much easier). Worked out to 1269px instead of 1280px, but then making it responsive was a pain.
+// $susy: ( math: static, columns: 12, column-width: 81px, gutters: 1/3, global-box-sizing: border-box, debug: (image: show, color: lightblue) )
 
 
 html
@@ -30,5 +33,4 @@ html
     
 
 main
-  +container($screen-large)
-  padding: 0 gutter()
+  +outer-container

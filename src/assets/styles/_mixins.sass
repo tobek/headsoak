@@ -1,10 +1,15 @@
+=outer-container
+  +container($screen-large)
+  padding-left: gutter()
+  padding-right: gutter()
+
 =card
-  padding: 50px 40px
+  padding: 50px gutter() * 2
   background-color: $card-bg
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5)
 
   note-browser &
-    padding: 40px 20px
+    padding: 50px gutter()
 
 =tag-chiclet
   display: inline-block

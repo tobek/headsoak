@@ -2,9 +2,8 @@
   background-color: $card-bg
 
   .inner
-    +container($screen-large)
+    +outer-container
     display: flex
-    padding: 0 gutter()
     align-items: center
 
   .logo,
@@ -52,8 +51,9 @@
     flex: 10
 
 .app-nav
-  +container($screen-large)
-  padding: 10px gutter()
+  +outer-container
+  padding-top: 10px
+  padding-bottom: 10px
 
   text-align: right
 
