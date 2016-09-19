@@ -128,6 +128,49 @@ export class SettingsService {
     },
   ];
 
+  private accountSettingsSourceData = [
+    {
+      id: 'profileImageUrl',
+      default: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+      name: 'Profile image URL',
+      type: 'string',
+      section: 'account',
+
+      clickHandler: function(event: MouseEvent) {
+        if (! (<HTMLElement> event.target).classList.contains('random')) {
+          return;
+        }
+
+        let newProfileUrl;
+        do {
+          newProfileUrl = _.sample(this['EXAMPLE_PROFILE_URLS']);
+        } while (newProfileUrl === this.value);
+
+        // @TODO/settings Would be nice if it alerted to credit the artist
+        this.updated(newProfileUrl);
+      },
+
+      EXAMPLE_PROFILE_URLS: [
+        'https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/P.G._Wodehouse_-_My_Man_Jeeves_-_1st_American_edition_%281920_printing%29_-_Crop.jpg/151px-P.G._Wodehouse_-_My_Man_Jeeves_-_1st_American_edition_%281920_printing%29_-_Crop.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/John_Bauer_-_Princess_Tuvstarr_gazing_down_into_the_dark_waters_of_the_forest_tarn._-_Google_Art_Project.jpg/238px-John_Bauer_-_Princess_Tuvstarr_gazing_down_into_the_dark_waters_of_the_forest_tarn._-_Google_Art_Project.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/William_Blake_-_Sconfitta_-_Frontispiece_to_The_Song_of_Los.jpg/184px-William_Blake_-_Sconfitta_-_Frontispiece_to_The_Song_of_Los.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Europe_a_Prophecy%2C_copy_D%2C_object_1_%28Bentley_1%2C_Erdman_i%2C_Keynes_i%29_British_Museum.jpg/176px-Europe_a_Prophecy%2C_copy_D%2C_object_1_%28Bentley_1%2C_Erdman_i%2C_Keynes_i%29_British_Museum.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Newton-WilliamBlake.jpg/312px-Newton-WilliamBlake.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Denslow%27s_Humpty_Dumpty_1904.jpg/185px-Denslow%27s_Humpty_Dumpty_1904.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/The_Journey2.jpg/158px-The_Journey2.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Signac_-_Portrait_de_F%C3%A9lix_F%C3%A9n%C3%A9on.jpg/301px-Signac_-_Portrait_de_F%C3%A9lix_F%C3%A9n%C3%A9on.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Table-cloth_2008-1.jpg/320px-Table-cloth_2008-1.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Le_repr%C3%A9sentant_du_peuple_Fran%C3%A7ois_en_fonction2.jpg/169px-Le_repr%C3%A9sentant_du_peuple_Fran%C3%A7ois_en_fonction2.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Genthe_nude_edit.jpg/165px-Genthe_nude_edit.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Rosette%2C_Titles_of_Sha_Jahan.jpg/164px-Rosette%2C_Titles_of_Sha_Jahan.jpg',
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/17.17-37-1969-Kaukasisk-broderi.jpg/219px-17.17-37-1969-Kaukasisk-broderi.jpg',
+        'http://thereitwas.com/images/avatars/agho100x100.jpg',
+        'http://thereitwas.com/images/avatars/pinkeyeosmu.png',
+      ],
+      postSettingHtml: '(<a class="random">WHAT ARE YOU??</a>)',
+    },
+  ];
+
   private shortcutsSourceData = [
     {
       id: 'sMod',
@@ -309,6 +352,7 @@ export class SettingsService {
     this.dataService = dataService;
 
     _.each(this.settingsSourceData, _.partial(this.initSetting, settingsData).bind(this));
+    _.each(this.accountSettingsSourceData, _.partial(this.initSetting, settingsData).bind(this));
     _.each(this.shortcutsSourceData, _.partial(this.initSetting, settingsData).bind(this));
 
     this.initialized$.next(null);
@@ -329,12 +373,12 @@ export class SettingsService {
     }
   }
 
-  get(settingId: string) {
+  get(settingId: string, fallback = undefined) {
     if (this.data[settingId]) {
       return this.data[settingId].value;
     }
     else {
-      return undefined;
+      return fallback;
     }
   }
 

@@ -4,6 +4,7 @@ import {Subscription} from 'rxjs';
 
 import {AnalyticsService} from './analytics.service';
 import {DataService} from './data.service';
+import {SettingsService} from './settings/';
 import {Logger} from './utils/logger';
 
 import {routes} from './';
@@ -50,6 +51,7 @@ export class App {
   constructor(
     private router: Router,
     public analyticsService: AnalyticsService,
+    public settings: SettingsService,
     public dataService: DataService
    ) {
     this.mainNavRoutes = _.filter(this.routes, { data: { navSection: 'main' } });
