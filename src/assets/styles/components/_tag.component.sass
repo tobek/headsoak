@@ -9,6 +9,15 @@ tag
   &:hover .tag-actions
     display: inline
 
+  .name
+    display: inline-block
+
+    &:focus
+      cursor: text
+      outline: 0
+      border-bottom: 2px solid $input-underline-color
+      margin-bottom: -2px
+
   note-query & .tag-action--remove
     cursor: pointer
     position: absolute

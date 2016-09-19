@@ -1,4 +1,4 @@
-<span placeholder="tag name"
+<span class="name" placeholder="tag name"
   ref-tagName
   [attr.contenteditable]="renaming"
   (keydown.enter)="renameFinish($event)"
@@ -18,12 +18,12 @@
 </span>
 
 <span class="tag-actions" (click)="$event.stopPropagation()">
-  <a class="tag-action--remove" *ngIf="removable" (click)="remove()">
+  <a title="Remove" class="tag-action--remove" *ngIf="removable" (click)="remove()">
     <i class="fa fa-times"></i>
   </a>
 
   <span *ngIf="editable && ! tag.readOnly">
-    <a (click)="renameStart()"><i class="fa fa-pencil"></i></a>
-    <a (click)="delete($event.shiftKey)"><i class="fa fa-trash-o"></i></a>
+    <a title="Rename" (click)="renameStart()"><i class="fa fa-pencil"></i></a>
+    <a title="Delete" class="tag-action--delete" (click)="delete($event.shiftKey)"><i class="fa fa-trash-o"></i></a>
   </span>
 </span>

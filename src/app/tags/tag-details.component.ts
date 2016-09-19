@@ -15,7 +15,7 @@ import {Logger} from '../utils/';
   template: require('./tag-details.component.html')
 })
 export class TagDetailsComponent {
-  activePane = '';
+  activePane = 'explore';
 
   @Input() tag: Tag;
   @Output() goBack = new EventEmitter<void>();

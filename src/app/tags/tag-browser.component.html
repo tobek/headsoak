@@ -1,36 +1,40 @@
-<div class="tag-list" *ngIf="! activeTag">
-  <div class="tag-query">
-    <div class="search-bar">
-      <input tabindex=1 type="text" placeholder="Search tags"
-        ref-queryInput [(ngModel)]="query"
-        (ngModelChange)="queryUpdated()"
-      >
-      <button class="clear" (click)="queryClear()">x</button>
+<div *ngIf="! activeTag">
+  <div class="tag-list">
+    <div class="tag-query">
+      <div class="search-bar">
+        <input tabindex=1 type="text" placeholder="Search tags"
+          ref-queryInput [(ngModel)]="query"
+          (ngModelChange)="queryUpdated()"
+        >
+        <button class="clear" (click)="queryClear()">x</button>
+      </div>
+
+      <div class="controls">
+        <label>
+          {{ tags.length }} TAG{{ tags.length !== 1 ? 'S' : '' }}
+          <select tabindex=3 [ngModel]="sortOpt" (ngModelChange)="sort($event)">
+            <option *ngFor="let opt of tagsService.sortOpts" [ngValue]="opt">{{opt.name}}</option>
+          </select>
+        </label>
+
+        <button class="new" (click)="newTag()">new</button>
+      </div>
     </div>
 
-    <div class="controls">
-      <label>
-        {{ tags.length }} TAG{{ tags.length !== 1 ? 'S' : '' }}
-        <select tabindex=3 [ngModel]="sortOpt" (ngModelChange)="sort($event)">
-          <option *ngFor="let opt of tagsService.sortOpts" [ngValue]="opt">{{opt.name}}</option>
-        </select>
-      </label>
-
-      <button class="new" (click)="newTag()">new</button>
-    </div>
+    <tag class="tag tag-{{ tag.id }}"
+      *ngFor="let tag of (tags | arrayLimit:limit)"
+      (click)="tagSelected(tag)"
+      [tagId]="tag.id"
+      [showCount]="true"
+      (deleted)="tagDeleted($event)"
+    ></tag>
   </div>
 
-  <tag class="tag tag-{{ tag.id }}"
-    *ngFor="let tag of (tags | arrayLimit:limit)"
-    (click)="tagSelected(tag)"
-    [tagId]="tag.id"
-    [showCount]="true"
-    [editable]="true"
-    (deleted)="tagDeleted($event)"
-  ></tag>
+  <div class="tag-pane"></div>
 </div>
 
 <tag-details
+  *ngIf="activeTag"
   [tag]="activeTag"
   (goBack)="activeTag = null"
 ></tag-details>

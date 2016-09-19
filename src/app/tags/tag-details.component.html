@@ -1,50 +1,59 @@
-<div class="tag-overview" *ngIf="tag">
+<div class="tag-overview">
   <a class="go-back" (click)="goBack.emit()"><i class="fa fa-long-arrow-left"></i>Back to all tags</a>
 
   <tag class="tag tag-{{ tag.id }}"
     [tagId]="tag.id"
-    [showCount]="true"
     [editable]="true"
     (deleted)="tagDeleted($event)"
   ></tag>
 
-  <ul>
-    <li><a (click)="activePane = 'explore'">
+  <ul class="menu">
+    <li class="item"><a (click)="activePane = 'explore'">
+      <i class="fa fa-fw fa-lg fa-bar-chart"></i>
       Explore
     </a></li>
-    <li><a (click)="activePane = 'share'">
+    <li class="item"><a (click)="activePane = 'share'">
+      <i class="fa fa-fw fa-lg fa-users"></i>
       Share
     </a></li>
-    <li><a (click)="activePane = 'smartTag'">
+    <li class="item"><a (click)="activePane = 'smartTag'">
+      <i class="fa fa-fw fa-lg fa-magic"></i>
       Smart tag
     </a></li>
-    <li><a (click)="activePane = 'privateTag'">
+    <li class="item"><a (click)="activePane = 'privateTag'">
+      <i class="fa fa-fw fa-lg fa-lock"></i>
       Private tag
     </a></li>
-    <li><a (click)="activePane = 'delete'">
+    <li class="item"><a (click)="activePane = 'delete'">
+      <i class="fa fa-fw fa-lg fa-trash-o"></i>
       Delete
     </a></li>
   </ul>
 </div>
 
-<div class="tag-pane" *ngIf="! activePane"></div>
-
 <div class="tag-pane" *ngIf="activePane === 'explore'">
-  <h2>Explore</h2>
+  <h2 class="card-heading">Explore <span class="tag-name">{{ tag.name }}</span></h2>
 </div>
 
 <div class="tag-pane" *ngIf="activePane === 'share'">
-  <h2>Share</h2>
+  <h2 class="card-heading">Manage sharing for <span class="tag-name">{{ tag.name }}</span></h2>
+  <p>Hold yer horses!</p>
 </div>
 
 <div class="tag-pane" *ngIf="activePane === 'smartTag'">
-  <h2>Smart tag</h2>
+  <h2 class="card-heading">Smart Tag settings for <span class="tag-name">{{ tag.name }}</span></h2>
+  <p>Coming soon to a web browser near you.</p>
 </div>
 
 <div class="tag-pane" *ngIf="activePane === 'privateTag'">
-  <h2>Private tag</h2>
+  <h2 class="card-heading">Manage privacy for <span class="tag-name">{{ tag.name }}</span></h2>
+  <p>Like, really soon.</p>
 </div>
 
 <div class="tag-pane" *ngIf="activePane === 'delete'">
-  <h2>Delete</h2>
+  <h2 class="card-heading">Delete <span class="tag-name">{{ tag.name }}</span></h2>
+  <p>Deleting this tag will remove if from {{ tag.docs.length === 1 ? 'the 1 note' : 'all ' + tag.docs.length + ' notes' }} tagged with it. Your notes will remain.</p>
+  <p>Are you sure you want to continue?</p>
+
+  <button class="btn btn-default">Yes, delete this tag</button>
 </div>

@@ -1,9 +1,16 @@
 tag-browser
 
-  .tag-list
-    +span(4)
+  .tag-list,
+  .tag-pane
     +card
     min-height: $full-height
+    padding: 20px 25px
+
+  .tag-list
+    +span(4)
+
+  .tag-pane
+    +span(8 last)
 
   .search-bar
     +input-underline
@@ -21,7 +28,11 @@ tag-browser
 
   tag
     +span(2 of 4)
+    cursor: pointer
     display: inline-block
 
     &:nth-child(2n+1)
       +span(2 of 4 last)
+
+    &:hover
+      background-color: $tag-bg-hover

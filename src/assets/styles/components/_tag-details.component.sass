@@ -7,14 +7,64 @@ tag-details
 
   .tag-overview
     +span(4)
+    padding: 20px
 
   .tag-pane
     +span(8 last)
+    padding: 20px 30px
 
   .go-back,
   tag
     display: block
     width: 100%
 
+  .go-back
+    +control-heading
+
+    .fa
+      margin-right: 10px
+
   tag
+    cursor: default
     float: none
+    margin: 20px 0 15px
+    padding: 0
+    background: none !important
+    font-size: 24px
+
+    .name
+      padding-right: 10px
+
+    .tag-state,
+    .tag-actions
+      color: $gray-dark
+
+    .tag-actions
+      display: inline
+
+      .tag-action--delete
+        // We have a dedicated section for this, so don't show in the actual tag component
+        display: none
+
+  .menu
+    +plain-list
+
+    .item
+      display: block
+
+      a
+        // @TODO/ece Active state for these?
+        +control-heading
+        display: inline-block
+        padding: 7px 0
+
+  .tag-pane
+    .tag-name
+      +tag-face
+
+    .btn
+      margin-top: 5px
+
+  .card-heading
+    +card-heading
+    margin-top: 0
