@@ -7,7 +7,7 @@ import {SettingsService} from '../settings/settings.service';
 // import {Note} from '../notes/note.model';
 // import {NoteComponent} from '../notes/note.component';
 // import {NotesService} from '../notes/notes.service';
-import {Tag, TagComponent, TagsService} from './';
+import {Tag, TagComponent, TagDetailsComponent, TagsService} from './';
 import {Logger/*, ScrollMonitorService, AutocompleteService*/} from '../utils/';
 
 @Component({
@@ -15,6 +15,7 @@ import {Logger/*, ScrollMonitorService, AutocompleteService*/} from '../utils/';
   pipes: [],
   directives: [
     TagComponent,
+    TagDetailsComponent,
   ],
   template: require('./tag-browser.component.html')
 })
@@ -24,6 +25,7 @@ export class TagBrowserComponent {
   el: HTMLElement;
 
   tags: Tag[] = [];
+  activeTag: Tag = null;
 
   /** Only show this many nuts at a time unless infinite scrolling. */
   limit: number = this.DEFAULT_TAGS_LIMIT;
@@ -117,8 +119,7 @@ export class TagBrowserComponent {
   }
 
   tagSelected(tag: Tag): void {
-    // @TODO/rewrite/tags Need to find a way to toggle this tag in the appropriate note browser component
-    this._logger.log('Selecting tag', tag);
+    this.activeTag = tag;
   }
 
   // // @TODO/testing infinite scroll e2e both directions

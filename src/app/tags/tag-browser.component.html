@@ -1,4 +1,4 @@
-<div class="tag-list">
+<div class="tag-list" *ngIf="! activeTag">
   <div class="tag-query">
     <div class="search-bar">
       <input tabindex=1 type="text" placeholder="Search tags"
@@ -29,3 +29,8 @@
     (deleted)="tagDeleted($event)"
   ></tag>
 </div>
+
+<tag-details
+  [tag]="activeTag"
+  (goBack)="activeTag = null"
+></tag-details>

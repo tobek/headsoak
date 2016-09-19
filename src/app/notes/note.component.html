@@ -45,7 +45,7 @@
       <!-- <a (click)="newNoteWithSameTags()">NNST</a> -->
       <a title="{{ 'created: ' + (note.created | date:'medium') + '\nmodified: ' + (note.modified | date:'medium') }}" ><i class="fa fa-clock-o"></i></a><!--@TODO/rewrite angular2 date pipe is "pure" and won't check for updates, so note.created and note.modified will have to be reassigned, confirm it works, etc. -->
       <a title="Explore note" (click)="note.explore()"><i class="fa fa-bar-chart"></i></a>
-      <a title="Delete note" (click)="delete($event)"><i class="fa fa-trash"></i></a>
+      <a title="Delete note" (click)="delete($event)"><i class="fa fa-trash-o"></i></a>
     </span>
   </div>
 </div>

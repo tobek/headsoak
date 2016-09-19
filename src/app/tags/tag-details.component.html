@@ -1,0 +1,50 @@
+<div class="tag-overview" *ngIf="tag">
+  <a class="go-back" (click)="goBack.emit()"><i class="fa fa-long-arrow-left"></i>Back to all tags</a>
+
+  <tag class="tag tag-{{ tag.id }}"
+    [tagId]="tag.id"
+    [showCount]="true"
+    [editable]="true"
+    (deleted)="tagDeleted($event)"
+  ></tag>
+
+  <ul>
+    <li><a (click)="activePane = 'explore'">
+      Explore
+    </a></li>
+    <li><a (click)="activePane = 'share'">
+      Share
+    </a></li>
+    <li><a (click)="activePane = 'smartTag'">
+      Smart tag
+    </a></li>
+    <li><a (click)="activePane = 'privateTag'">
+      Private tag
+    </a></li>
+    <li><a (click)="activePane = 'delete'">
+      Delete
+    </a></li>
+  </ul>
+</div>
+
+<div class="tag-pane" *ngIf="! activePane"></div>
+
+<div class="tag-pane" *ngIf="activePane === 'explore'">
+  <h2>Explore</h2>
+</div>
+
+<div class="tag-pane" *ngIf="activePane === 'share'">
+  <h2>Share</h2>
+</div>
+
+<div class="tag-pane" *ngIf="activePane === 'smartTag'">
+  <h2>Smart tag</h2>
+</div>
+
+<div class="tag-pane" *ngIf="activePane === 'privateTag'">
+  <h2>Private tag</h2>
+</div>
+
+<div class="tag-pane" *ngIf="activePane === 'delete'">
+  <h2>Delete</h2>
+</div>

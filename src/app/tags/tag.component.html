@@ -23,7 +23,7 @@
   </a>
 
   <span *ngIf="editable && ! tag.readOnly">
-    <button (click)="renameStart()">rename</button>
-    <button (click)="delete($event.shiftKey)">delete</button>
+    <a (click)="renameStart()"><i class="fa fa-pencil"></i></a>
+    <a (click)="delete($event.shiftKey)"><i class="fa fa-trash-o"></i></a>
   </span>
 </span>
