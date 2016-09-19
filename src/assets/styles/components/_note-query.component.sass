@@ -1,18 +1,37 @@
 note-query
-  +input-underline
-
   display: flex
   align-items: center
 
   line-height: 12px
-  padding: 0 15px
+  padding: 10px 15px 0
 
-  // @TODO/ece Clarify visibility of contents here
+
+  // Active/inactive styles
+  transition: color 0.2s, border-color 0.2s
+  border-bottom: 1px solid transparent
+  color: transparent
+  .text-input
+    transition: opacity 0.2s
+    opacity: 0
+
+  &:hover,
+  &.is--active
+    +input-underline
+    color: $dark-gray
+    .text-input
+      opacity: 1
+  // End active/inactive styles
+
 
   .tags
   .controls
     flex: 1
     white-space: nowrap
+
+  tag
+    position: relative
+    margin-top: -10px // @TODO Magic number to make note-query bottom border not move down when tags are visible
+    margin-bottom: 0
 
   .text-input
     flex: 5
@@ -27,7 +46,7 @@ note-query
     width: 150px;
     margin-right: 4px
 
-    // @NOTE: A bunch of the following styles are copying bootstrap styles needed by the ng-select component. These should probably be elsewhere as a reusable generic dropdown
+    // @NOTE: A bunch of the following styles are copying bootstrap styles needed by the ng-select component. These should probably be elsewhere as a reusable generic dropdown.
 
     .ui-select-container
       outline: 0 !important
@@ -88,6 +107,7 @@ note-query
     cursor: pointer
     position: relative
     top: -2px;
+    color: $dark-gray
     font-size: 24px
 
     &:hover

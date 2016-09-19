@@ -1,4 +1,4 @@
-import {Component, ViewChild, ElementRef} from '@angular/core';
+import {Component, ViewChild, ElementRef, Renderer} from '@angular/core';
 import {ReplaySubject, Subject, Subscription} from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
 import {SELECT_DIRECTIVES} from 'ng2-select';
@@ -45,6 +45,8 @@ export class NoteQueryComponent {
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
+    private elementRef: ElementRef,
+    private renderer: Renderer,
     private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
     private autocompleteService: AutocompleteService,
@@ -72,6 +74,8 @@ export class NoteQueryComponent {
         this.notes = this.notesService.getNotes(this.queryText, this.tags, this.sortOpt);
       });
 
+    this.renderer.listen(this.textInput.nativeElement, 'focus', this.focused.bind(this));
+    this.renderer.listen(this.textInput.nativeElement, 'blur', this.blurred.bind(this));
   }
 
   ngOnDestroy() {
@@ -99,6 +103,21 @@ export class NoteQueryComponent {
 
   focus(): void {
     this.textInput.nativeElement.focus();
+  }
+  focused(): void {
+    this.active();
+  }
+  blurred(): void {
+    if (! this.queryText && this.tags.length === 0) {
+      this.inactive();
+    }
+  }
+
+  active(): void {
+    (<HTMLElement> this.elementRef.nativeElement).classList.add('is--active');
+  }
+  inactive(): void {
+    (<HTMLElement> this.elementRef.nativeElement).classList.remove('is--active');
   }
 
   setUpAutocomplete(): void {
@@ -196,6 +215,7 @@ export class NoteQueryComponent {
       // No need to ensure correct route, cause focusing does that
     }
     else {
+      this.inactive();
       this.ensureCorrectRoute();
     }
   }
@@ -204,6 +224,8 @@ export class NoteQueryComponent {
     // ngSelect just gives us back object with id and text. We need to get full sortOpt:
     const sortOpt = _.find(this.notesService.sortOpts, { id: option.id });
     this.sort(sortOpt);
+    this.active();
+    setTimeout(this.focus.bind(this), 0);
   }
 
   sort(sortOpt): void {
