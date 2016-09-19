@@ -16,6 +16,7 @@
           <li class="sync-status">Status: {{ dataService.status }}</li>
           <li *ngFor="let route of menuNavRoutes" [class.active]="'/' + route.path === router.url">
             <a [routerLink]="[route.path]">
+              <!-- @TODO/optimization These could be a one time binding -->
               <i class="fa fa-lg fa-fw fa-{{ route.data.iconSlug }}"></i>
               {{ route.data.name }}
             </a>
@@ -43,11 +44,18 @@
 <login></login>
 
 <nav class="app-nav" *ngIf="dataService.user.loggedIn">
-  <a class="new-note" (click)="newNote()">New Note</a>
+  <a class="new-note" (click)="newNote()">
+    <i class="fa fa-lg fa-pencil-square-o"></i>
+    New Note
+  </a>
 
   <ul>
     <li *ngFor="let route of mainNavRoutes" [class.active]="'/' + route.path === router.url">
-      <a [routerLink]="[route.path]">{{ route.data.name }}</a>
+      <a class="nav-link" [routerLink]="[route.path]">
+        <!-- @TODO/optimization These could be a one time binding -->
+        <div><i class="fa fa-lg fa-{{ route.data.iconSlug }}"></i></div>
+        {{ route.data.name }}
+      </a>
     </li>
   </ul>
 </nav>

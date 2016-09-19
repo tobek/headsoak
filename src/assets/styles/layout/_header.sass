@@ -72,6 +72,7 @@
     background-color: $card-bg
     border: 1px solid $transparent-gray-light
     border-top-width: 0
+    letter-spacing: 0.5px
 
     li
       display: block
@@ -113,13 +114,14 @@
 
 .app-nav
   +outer-container
-  padding-top: 10px
-  padding-bottom: 10px
+  padding-top: 6px
+  padding-bottom: 4px
 
   text-align: right
 
   .new-note
     float: left
+    margin-top: 13px // @HACK Magic number to vertically align. Lazy.
 
   ul
     +plain-list
@@ -129,10 +131,25 @@
     &:last-of-type
       margin-right: 0
 
-    &.active
-      border-bottom: 4px solid $card-bg
-
   a
     text-decoration: none
     color: $card-bg
-    font-size: 20px
+    font-size: 16px
+    letter-spacing: 1.2px
+    text-shadow: 0 1px 4px $transparent-gray-dark
+
+    &.nav-link
+      display: inline-block
+      text-align: center
+
+      .fa
+        display: inline-block
+        margin-bottom: -3px
+        padding: 0 5px 4px
+        transition: border-color 0.2s
+        border-bottom: 4px solid transparent
+
+  .active a .fa
+    border-color: $card-bg
+  .active a:hover .fa
+    border-color: $link-hover

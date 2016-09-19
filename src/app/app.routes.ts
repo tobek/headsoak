@@ -21,6 +21,7 @@ export const routes: RouterConfig = [
       name: 'Focus',
       slug: 'focus',
       navSection: 'main',
+      iconSlug: 'square',
     },
     component: EmptyComponent
   },
@@ -30,6 +31,7 @@ export const routes: RouterConfig = [
       name: 'Write',
       slug: 'write',
       navSection: 'main',
+      iconSlug: 'th-large',
     },
     component: EmptyComponent
   },
@@ -39,6 +41,7 @@ export const routes: RouterConfig = [
       name: 'Browse',
       slug: 'browse',
       navSection: 'main',
+      iconSlug: 'th',
     },
     component: EmptyComponent
   },
@@ -48,6 +51,7 @@ export const routes: RouterConfig = [
       name: 'Tags',
       slug: 'tags',
       navSection: 'main',
+      iconSlug: 'hashtag',
     },
     component: EmptyComponent
   },
