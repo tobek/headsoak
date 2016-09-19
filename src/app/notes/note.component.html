@@ -1,7 +1,5 @@
 <div class="note-wrapper" *ngIf="note">
   <div class="header">
-    <a class="time">{{ 'created: ' + (note.created | date:'medium') + '\nmodified: ' + (note.modified | date:'medium') }}</a><!-- @TODO/rewrite should be tooltip? --><!--@TODO/rewrite angular2 date pipe is "pure" and won't check for updates, so note.created and note.modified will have to be reassigned, confirm it works, etc. -->
-
     <div class="tags"
       ><span class="tag new-tag"
         ><input type="text" placeholder="add tag" class="new-tag-input"
@@ -38,15 +36,16 @@
   <!-- @TODO/rewrite/sharing Better to put read-only class and disabled attribute on above textarea so reference is preserved <textarea class="body read-only" disabled="disabled" tabindex=2 *ngIf="note.sharedBody">{{ note.sharedBody }}</textarea> -->
 
   <div class="note-actions">
-    <span class="note-action--open" *ngIf="! opened" (click)="openNote()"><i class="fa fa-long-arrow-left"></i></span>
-    <span *ngIf="opened && ! note.new" (click)="closeNote()"><i class="fa fa-close"></i></span>
-    <span (click)="note.showShareSettings()"><i class="fa fa-users"></i></span>
-    <span (click)="note.togglePrivate()"><i class="fa fa-lock"></i></span>
+    <a title="Expand note" class="note-action--open" *ngIf="! opened" (click)="openNote()"><i class="fa fa-expand"></i></a>
+    <a title="Close note" *ngIf="opened && ! note.new" (click)="closeNote()"><i class="fa fa-close"></i></a>
+    <a title="Share settings" (click)="note.showShareSettings()"><i class="fa fa-users"></i></a>
+    <a title="Make private" (click)="note.togglePrivate()"><i class="fa fa-lock"></i></a>
     <span *ngIf="! note.new">
       <!-- @TODO/rewrite @TODO/ece Do we want this? Can we fit it? -->
-      <!-- <span (click)="newNoteWithSameTags()">NNST</span> -->
-      <span (click)="delete($event)"><i class="fa fa-trash"></i></span>
-      <span (click)="alert('nothin yet')"><i class="fa fa-sliders"></i></span>
+      <!-- <a (click)="newNoteWithSameTags()">NNST</a> -->
+      <a title="{{ 'created: ' + (note.created | date:'medium') + '\nmodified: ' + (note.modified | date:'medium') }}" ><i class="fa fa-clock-o"></i></a><!--@TODO/rewrite angular2 date pipe is "pure" and won't check for updates, so note.created and note.modified will have to be reassigned, confirm it works, etc. -->
+      <a title="Explore note" (click)="note.explore()"><i class="fa fa-bar-chart"></i></a>
+      <a title="Delete note" (click)="delete($event)"><i class="fa fa-trash"></i></a>
     </span>
   </div>
 </div>

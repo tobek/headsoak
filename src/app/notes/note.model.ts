@@ -309,6 +309,10 @@ export class Note {
     alert('not yet!');
   }
 
+  explore() {
+    alert('not yet!');
+  }
+
   /** Returns true if note was deleted. */
   delete(noConfirm = false): boolean {
     let confirmMessage = 'Are you sure you want to delete this note? This can\'t be undone.';
