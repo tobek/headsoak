@@ -4,7 +4,8 @@ note-query
   display: flex
   align-items: center
 
-  margin: 0 30px;
+  line-height: 12px
+  padding: 0 15px
 
   // @TODO/ece Clarify visibility of contents here
 
@@ -16,5 +17,82 @@ note-query
   .text-input
     flex: 5
 
-  .controls
+  .note-count
+    margin-right: 4px
     font-weight: bold
+    letter-spacing: 1.2px
+
+  .sort-dropdown
+    display: inline-block
+    width: 150px;
+    margin-right: 4px
+
+    // @NOTE: A bunch of the following styles are copying bootstrap styles needed by the ng-select component. These should probably be elsewhere as a reusable generic dropdown
+
+    .ui-select-container
+      outline: 0 !important
+
+    .ui-select-toggle
+      display: inline-block
+      vertical-align: middle
+      touch-action: manipulation
+      cursor: pointer
+      user-select: none
+      padding-right: 25px
+      letter-spacing: 1.1px
+
+      .caret
+        display: inline-block
+        right: auto
+        width: 0
+        height: 0
+        margin-left: 5px
+        vertical-align: middle
+        border-top: 4px solid
+        border-right: 4px solid transparent
+        border-left: 4px solid transparent
+
+    .dropdown
+      position: relative
+
+    .dropdown-menu
+      +card
+      position: absolute
+      top: 100%
+      z-index: 1000
+      display: none
+      padding: 0
+      margin: -17px 0 0 // magic number to vert align with note count text
+
+    .open
+      input
+        // The plugin lets users search within the dropdown - ours is so small that let's hide this and just use the dropdown popup.
+        position: absolute
+        height: 0
+        padding: 0
+
+      > .dropdown-menu
+        display: block
+
+    .ui-select-choices-row-inner
+      padding: 5px
+      line-height: 1
+      text-decoration: none
+      color: $dark-gray
+
+    .ui-select-choices-row.active .ui-select-choices-row-inner
+      // @TODO/ece Active color?
+      background-color: $tag-color
+
+  .control-icon
+    cursor: pointer
+    position: relative
+    top: -2px;
+    font-size: 24px
+
+    &:hover
+      // @TODO/ece Hover color?
+      color: $tag-color
+
+
+

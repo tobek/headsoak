@@ -1,6 +1,7 @@
 import {Component, ViewChild, ElementRef} from '@angular/core';
 import {ReplaySubject, Subject, Subscription} from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
+import {SELECT_DIRECTIVES} from 'ng2-select';
 
 import {ActiveUIsService} from '../active-uis.service';
 import {AnalyticsService} from '../analytics.service';
@@ -15,6 +16,7 @@ import {Logger, AutocompleteService} from '../utils/';
   pipes: [],
   directives: [
     TagComponent,
+    SELECT_DIRECTIVES,
   ],
   template: require('./note-query.component.html')
 })
@@ -196,6 +198,12 @@ export class NoteQueryComponent {
     else {
       this.ensureCorrectRoute();
     }
+  }
+
+  ngSelectSelected(option): void {
+    // ngSelect just gives us back object with id and text. We need to get full sortOpt:
+    const sortOpt = _.find(this.notesService.sortOpts, { id: option.id });
+    this.sort(sortOpt);
   }
 
   sort(sortOpt): void {

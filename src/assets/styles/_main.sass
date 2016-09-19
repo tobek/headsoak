@@ -2,6 +2,9 @@
 
 // See <https://sass-guidelin.es/#architecture> for more structure (and general good advice)
 
+// @HACK: Not sure what a good way to include vendor CSS (from npm modules) in here is - I'm used to Bower! So just symlinking to the style in `node_modules` in this directory (and renaming to .scss otherwise... it's not working)
+@import 'vendor/*.scss'
+
 @import 'normalize'
 @import 'variables'
 @import 'mixins'

@@ -16,19 +16,23 @@
 >
 
 <span class="controls">
-  <label>
+  <span class="note-count">
     {{ notes.length }} NOTE{{ notes.length !== 1 ? 'S' : '' }}
-    <select tabindex=3 [ngModel]="sortOpt" (ngModelChange)="sort($event)">
-      <option *ngFor="let opt of notesService.sortOpts" [ngValue]="opt">{{opt.name}}</option>
-    </select>
-  </label>
+  </span>
+  <ng-select class="sort-dropdown"
+    [items]="notesService.sortOpts"
+    [data]="notesService.sortOpts[0]"
+    [showSearchInputInDropdown]="false"
+    (selected)="ngSelectSelected($event)"
+    placeholder="{{ sortOpt.text }}"
+  ></ng-select>
 
-  <button
+  <span class="control-icon"
     *ngIf="queryText || tags.length"
     (click)="clear()"
-  >X</button>
-  <button
+  ><i class="fa fa-times"></i></span>
+  <span class="control-icon"
     *ngIf="! queryText && ! tags.length"
     (click)="focus()"
-  ><span style="display: inline-block; transform: rotate(-45deg)">&#x26B2;</span></button><!-- @TODO/rewrite Shitty magnifying glass -->
+  ><i class="fa fa-search"></i></span>
 </span>
