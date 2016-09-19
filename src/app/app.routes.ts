@@ -58,6 +58,7 @@ export const routes: RouterConfig = [
       name: 'Settings',
       slug: 'settings',
       navSection: 'menu',
+      iconSlug: 'sliders',
     },
     component: SettingsComponent
   },
@@ -67,6 +68,7 @@ export const routes: RouterConfig = [
       name: 'Shortcuts',
       slug: 'shortcuts',
       navSection: 'menu',
+      iconSlug: 'fighter-jet',
     },
     component: SettingsComponent
   },
@@ -76,6 +78,7 @@ export const routes: RouterConfig = [
       name: 'Account',
       slug: 'account',
       navSection: 'menu',
+      iconSlug: 'smile-o',
     },
     component: AccountSettingsComponent
   },

@@ -13,13 +13,27 @@
         <img class="avatar" src="{{ settings.get('profileImageUrl', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7') }}" />
 
         <ul class="menu-body">
-          <li>Status: {{ dataService.status }}</li>
-          <li><hr></li>
+          <li class="sync-status">Status: {{ dataService.status }}</li>
           <li *ngFor="let route of menuNavRoutes" [class.active]="'/' + route.path === router.url">
-            <a [routerLink]="[route.path]">{{ route.data.name }}</a>
+            <a [routerLink]="[route.path]">
+              <i class="fa fa-lg fa-fw fa-{{ route.data.iconSlug }}"></i>
+              {{ route.data.name }}
+            </a>
           </li>
 
-          <li (click)="loginComponent.logout()"><a>Logout</a></li>
+          <li class="unimplemented"><a>
+            <i class="fa fa-lg fa-fw fa-user-secret"></i>
+            Private Mode
+          </a></li>
+          <li class="unimplemented"><a>
+            <i class="fa fa-lg fa-fw fa-comment-o"></i>
+            Feedback
+          </a></li>
+
+          <li (click)="loginComponent.logout()"><a>
+            <i class="fa fa-lg fa-fw fa-sign-out"></i>
+            Logout
+          </a></li>
         </ul>
       </div>
     </div>

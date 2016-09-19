@@ -41,12 +41,20 @@
 
     &.status--synced
       border-color: $success-stroke
+      .sync-status
+        color: $success-stroke
     &.status--syncing
       border-color: mix($success-stroke, $warning-stroke)
+      .sync-status
+        color: mix($success-stroke, $warning-stroke)
     &.status--unsynced
       border-color: $warning-stroke
+      .sync-status
+        color: $warning-stroke
     &.status--disconnected
       border-color: $error-stroke
+      .sync-status
+        color: $error-stroke
 
   .menu-body
     +plain-list
@@ -60,13 +68,35 @@
     right: -1px // needed to line up with .menu-wrapper border
     width: 150px
     margin: 0
-    padding: 10px 10px 20px
+    padding: 10px 0 15px
     background-color: $card-bg
     border: 1px solid $transparent-gray-light
     border-top-width: 0
 
     li
       display: block
+
+      &.sync-status
+        padding: 0 0 10px
+        text-align: center
+        font-style: italic
+
+      &.unimplemented
+        opacity: 0.3
+        a
+          cursor: default
+
+      a
+        display: inline-block
+        padding: 2px 10px
+        text-decoration: none
+        color: $gray-dark !important
+
+        &:hover
+          color: $tag-color !important
+
+        .fa
+          margin-right: 5px;
 
   .avatar
     display: inline-block
