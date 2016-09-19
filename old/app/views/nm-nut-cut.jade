@@ -1,0 +1,24 @@
+div(ng-show="nut && (!nut.sharedBy || nut.sharedBody)", ng-click="activateNut()")
+  div.nut-header.clearfix
+    div.icons
+      //- PARTIALLY DONE
+      a.privacy.widest.tooltip(ng-click="togglePrivate()", ng-attr-data-tooltip="Make this note {{ nut.private ? 'not' : '' }} private", ng-class="nut.private ? 'is-private' : ''")
+        i.fa.fa-lock
+        i.fa.fa-unlock-alt
+
+    div.tags
+      span.tag(ng-repeat="tagId in nut.tags",  ng-click="$event.stopPropagation(); q.toggleTag(tagId, $event)", ng-class="{queried: (q.tags.indexOf(tagId) != -1), 'read-only': t.tags[tagId].readOnly}")
+        | {{t.tags[tagId].name}}
+        span.share.icon.wide.tooltip(ng-click="$event.stopPropagation();", ng-show="t.tags[tagId].share", ng-mouseover="t.setShareTooltip(t.tags[tagId])", ng-attr-data-tooltip="{{ t.tags[tagId].shareTooltip }}")
+          //- TODO this will give simplelogin:xx, need to get names instead
+          //- PARTIALLY DONE
+          i.fa.fa-fw(ng-class="t.tags[tagId].sharedBy ? 'fa-user' : 'fa-users'")
+        span.delete.icon(ng-click="n.removeTagIdFromNut(tagId, nut.id)", ng-show="! t.tags[tagId].prog && !(t.tags[tagId].sharedBy && t.tags[tagId].readOnly)")
+          i.fa.fa-fw.fa-times
+        span.prog.icon.wide.tooltip(ng-click="$event.stopPropagation(); t.progTagCantChangeAlert(tagId)", ng-show="t.tags[tagId].prog", data-tooltip="algorithmic tag")
+          //- PARTIALLY DONE
+          i.fa.fa-fw.fa-bolt
+      //- DONE
+
+  div.tawrapper
+    //- DONE

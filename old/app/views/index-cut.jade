@@ -1,0 +1,151 @@
+extends header
+
+block content
+
+  //- we can call focus on this in order to blur all
+  input.mousetrap#blur-hack
+
+  div#bg-image
+
+  div#modalclickoff(ng-click="m.cancelModal()", ng-show="m.modal")
+  div.modal.modaloff(ng-class="{modalon: m.modal, modaloff: !m.modal, 'large-circle': m.modalLarge, 'huge-box': m.modalHuge }", ng-click="m.cancelModal()")
+    h1#title(ng-show="!u.loggedIn") nutmeg
+    div.circle-holder
+      a#close-modal(ng-click="m.cancelModal()", ng-show="u.loggedIn && !m.lockedOut") x
+      div.circle(ng-click="$event.stopPropagation()")
+
+        div.about(ng-show="m.modal == 'about'")
+          h3 about
+          p The <a href="https://s3.amazonaws.com/nutmeg-app/builds/osx64/nutmeg.app.zip" class="download-link"><b>nutmeg</b></a> tree is any of several species of trees in genus <b>Myristica</b>. The nutmeg tree is important for two spices derived from the fruit: nutmeg and mace.
+
+        div.shortcuts(ng-show="m.modal == 'shortcuts'")
+          //- DONE
+        div.settings(ng-show="m.modal == 'settings'")
+          //- DONE
+
+        div.account(ng-show="m.modal == 'account'")
+          h4 {{ u.displayNameSet ? 'change display name' : 'set display name' }}
+            span.tooltip-holder
+              span.tooltip(data-tooltip="Your display name is visible to others if you share any notes. It does not have to be unique and may contain any character.")
+                i.fa.fa-info-circle
+          form(ng-submit="u.changeDisplayName(u.user.displayName)")
+            input(type="text", ng-model="u.user.displayName", placeholder="{{::u.displayNamePlaceholder}}")
+            br
+            input(type="submit", value="{{ u.displayNameSet ? 'change name' : 'set name' }}")
+
+          h4 change password
+          form(ng-submit="u.changePassword()")
+            input(type="password", placeholder="current password", autocomplete="off", ng-model="u.password")
+            br
+            input(type="password", placeholder="new password", autocomplete="new-password", ng-model="u.newPass1")
+            br
+            input(type="password", placeholder="repeat new password", autocomplete="new-password", ng-model="u.newPass2")
+            br
+            input(type="submit", value="change password")
+            br
+
+          h4 change email
+          p To change the email address associated with your account, please email <a href="mailto:support@nutmeg.io">support@nutmeg.io</a> and we'll get you sorted.
+
+        div.feedback(ng-show="m.modal == 'feedback'")
+          h3 feedback 
+          //- if submitFeedback() returns true, clear fields and close modal
+          form(ng-submit="submitFeedback(feedback, name) && ((feedback='') || (name='') || m.closeModal())")
+            textarea(placeholder="Bug reports and suggestions are eagerly awaited. You'll hear from me personally.", ng-model="feedback")
+            input(type="text", placeholder="name (optional)", ng-model="name")
+            input(type="submit", value="submit")
+
+        div.login(ng-show="m.modal == 'login'")
+          //- DONE
+
+        div.create-account(ng-show="m.modal == 'createaccount'")
+          //- DONE
+
+        div.dynamic(ng-show="m.modal == 'dynamic'")
+          h3(ng-show="m.dynamic.title") {{ m.dynamic.title }}
+
+          div.custom-body(ng-bind-html="m.dynamic.bodyHTML", ng-show="m.dynamic.bodyHTML")
+          p(ng-show="m.dynamic.message") {{ m.dynamic.message }}
+
+          form(ng-submit="m.acceptModal(m.dynamic.inputVal)")
+            input(type="password", ng-show="m.dynamic.passwordInput", ng-model="m.dynamic.inputVal")
+            input(type="text", ng-show="m.dynamic.textInput", placeholder="{{ m.dynamic.placeholder }}", ng-model="m.dynamic.inputVal")
+            //- slightly byzantine rules for whether ng-submit gets called means that since we have more than one input, a submit button has to be here in order for `enter` in an input field to call ng-submit: https://docs.angularjs.org/api/ng/directive/form#submitting-a-form-and-preventing-the-default-action
+            input(type="submit", ng-hide="true")
+
+          div.prog-tag-editor(ng-show="m.dynamic.progTag")
+            pre function(note) {
+            pre#prog-tag-editor-field
+            pre }
+
+          div.button-holder
+            input.ok-button(type="submit", value="{{ m.dynamic.okText || 'ok' }}", ng-click="m.acceptModal(m.dynamic.inputVal)", ng-show="m.dynamic.ok || m.dynamic.okText")
+            input(type="submit", value="{{ m.dynamic.cancelText || 'cancel' }}", ng-click="m.cancelModal()", ng-show="m.dynamic.cancel || m.dynamic.cancelText")
+            input(type="submit", value="{{ m.dynamic.thirdButton }}", ng-click="m.dynamic.thirdButtonCb()", ng-show="m.dynamic.thirdButton")
+
+        div.working-overlay(ng-class="{working: m.working}")
+          div.inner
+            img.logo(src="/img/nutmeg100h-white.png", alt="nutmeg")
+
+  div#full-page-loading.modal.modalon(ng-show="u.loggedIn && u.loading && ! u.loggingIn")
+    div.circle-holder
+        div.circle
+          div.inner
+            img.logo(src="/img/nutmeg100h-white.png", alt="nutmeg")
+
+
+  div#nonmodal(ng-class="{modalon: m.modal, loggedout: !u.loggedIn}", ng-show="u.loggedIn && ! u.loading", ng-cloak)
+
+    span#sync-status.tooltip(ng-class="digest.status", ng-attr-data-tooltip="Notes {{digest.status}}")
+      i.cloud.fa.fa-cloud-upload
+
+    div#menu
+      ul
+        li(ng-click="m.modal='about'") about 
+          i.fa.fa-fw.fa-info-circle
+        li(ng-click="m.modal='feedback'") feedback 
+          i.fa.fa-fw.fa-comment-o
+        li.incomplete export 
+          i.fa.fa-fw.fa-share-square-o
+        li.incomplete importer 
+          i.fa.fa-fw.fa-download
+        li(ng-click="m.modal='sharing'; m.modalLarge=true") sharing 
+          i.fa.fa-fw.fa-users
+        li.private-mode.tooltip.on-left(ng-click="p.togglePrivateMode()", ng-class="p.privateMode ? 'on' : ''", ng-attr-data-tooltip="private notes currently {{ p.privateMode ? 'visible' : 'hidden' }}, click to {{ p.privateMode ? 'hide' : 'show' }}") private mode 
+          i.fa.fa-fw.fa-unlock-alt
+          i.fa.fa-fw.fa-lock
+        li(ng-click="m.modal='layout'; c.backup('layout')") layout 
+          i.fa.fa-fw.fa-list.fa-flip-horizontal
+        li(ng-click="m.modal='shortcuts'; m.modalLarge=true") shortcuts 
+          i.fa.fa-fw.fa-keyboard-o
+        li(ng-click="m.modal='settings'; m.modalLarge=true; c.backup('settings')") settings 
+          i.fa.fa-fw.fa-gears
+        li(ng-show="u.loggedIn", ng-click="m.modal='account'; m.modalLarge=true") account
+          i.fa.fa-fw.fa-user
+        li(ng-show="u.loggedIn", ng-click="u.auth.logout()") log out 
+          i.fa.fa-fw.fa-power-off
+        li(ng-show="!u.loggedIn", ng-click="m.modal='login'") log in 
+          i.fa.fa-fw.fa-sign-in
+      img#menuimage(src="/img/nutmeg40h.png", alt="nutmeg")
+
+    div#query
+      div.inner
+        div.search-bar
+          div.flex-container
+            i.fa.fa-search(ng-click="q.focus()")
+            span.private-mode.chiclet(ng-show="p.privateMode", ng-click="p.togglePrivateMode()")
+              | private mode
+              span.hover-cover
+                i.fa.fa-times
+            span.tags
+              //- DONE
+            //- PARTIALLY DONE
+
+        div.nut-control
+          //- DONE
+
+    div#main(ng-class="{'hide-tag-browser': !c.config.showTagBrowser}")
+      div#nuts
+          //- DONE
+      div#tagContainer
+          //- DONE
