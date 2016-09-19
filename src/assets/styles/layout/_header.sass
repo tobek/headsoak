@@ -11,8 +11,24 @@
   .menu
     flex: 1
 
-  .menu
+  .menu-wrapper
     position: relative
+    margin-right: -15px // matching padding - want avatar to align with edge, but menu border to go outside
+    padding: 5px 15px
+
+    border: 1px solid transparent
+    border-top-width: 0
+    border-bottom-width: 0
+    transition: border-color 0.2s
+
+    &:hover
+      border-color: $transparent-gray-light
+
+      .menu-body
+        visibility: visible
+        opacity: 1
+
+  .menu
     cursor: pointer
 
     width: 40px
@@ -32,20 +48,24 @@
     &.status--disconnected
       border-color: $error-stroke
 
-    .menu-body
-      +plain-list
-      display: none
-      z-index: 10
-      position: absolute
-      cursor: default
-      width: 150px
-      margin: 0
-      background-color: $card-bg
+  .menu-body
+    +plain-list
+    visibility: hidden
+    opacity: 0
+    transition: visibility 0.2s, opacity 0.2s
 
-      li
-        display: block
+    z-index: 10
+    cursor: default
+    position: absolute
+    right: -1px // needed to line up with .menu-wrapper border
+    width: 150px
+    margin: 0
+    padding: 10px 10px 20px
+    background-color: $card-bg
+    border: 1px solid $transparent-gray-light
+    border-top-width: 0
 
-    &:hover .menu-body
+    li
       display: block
 
   .avatar
@@ -59,7 +79,7 @@
 
   note-query
     flex: 10
-    margin: 0 30px
+    margin: 0 15px 0 30px
 
 .app-nav
   +outer-container
