@@ -18,8 +18,9 @@
 </span>
 
 <span class="tag-actions" (click)="$event.stopPropagation()">
-  <span class="hover-cover"></span>
-  <button class="tag-action--remove" *ngIf="removable" (click)="remove()">x</button>
+  <a class="tag-action--remove" *ngIf="removable" (click)="remove()">
+    <i class="fa fa-times"></i>
+  </a>
 
   <span *ngIf="editable && ! tag.readOnly">
     <button (click)="renameStart()">rename</button>
