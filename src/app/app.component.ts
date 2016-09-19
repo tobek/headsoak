@@ -74,8 +74,8 @@ export class App {
   }
 
   newNote(thenFocus = true): void {
-    // @TODO/rewrite When on the Browse screen will have to slide over to Write
-    this.homeComponent.goToNewNote();
+    // @HACK: Make this work on all routes by hijacking the shortcut for this, which includes `routeTo` logic to make sure we're in the right place.
+    this.settings.data['sNewNote']['_fn']();
   }
 
 }
