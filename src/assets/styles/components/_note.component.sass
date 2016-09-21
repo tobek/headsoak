@@ -5,7 +5,6 @@ note
   display: block
 
   .note-wrapper
-    position: relative
     height: 100%
 
   .header,
@@ -16,7 +15,9 @@ note
     // @TODO/ece Vertical spacing between header and body and actions and body needs tweaking, but will wait on that til tag styles and other stuff are done
 
   .header
-    top: -35px
+    top: 5px
+    left: 0
+    padding: 0 10px
 
   .tags
     // @TODO/ece How do we show all tags on a note?
@@ -25,21 +26,38 @@ note
 
   .new-tag
     +tag-chiclet
+    +tag-face
+    cursor: pointer
 
-  .new-tag-input
-    width: 0
-    transition: width 0.2s, padding 0.2s
-
-    padding: 2px 0
+    &:hover .fa
+      color: $link-hover
 
     &.adding-tag
-      width: 100px
-      padding: 2px
-      background: none
+      cursor: default
+
+      &:hover .fa
+        color: $tag-color
+
+      .new-tag-button:hover .fa
+        color: $link-hover
+
+  .new-tag-input
+    +tag-face
+    width: 0
+    background: none
+    padding: 0
+
+    transition: width 0.2s, padding 0.2s
+
+  .new-tag.adding-tag .new-tag-input
+    width: 100px
+    padding: 0 2px
 
   .new-tag-button
     cursor: pointer
 
+    .fa
+      font-size: 12px
 
   .time
     display: none // @TODO/ece @TODO/rewrite/styles how will we show timestamps? (show with "explore" or info, tooltip, popup)
@@ -52,9 +70,32 @@ note
 
 
   .note-actions
-    bottom: -45px// @TODO/rewrite/styles Magic number
+    width: 100%
+    height: 30px
+    left: 0;
+    bottom: 2px
+    padding: 0 10px
+
     text-align: right
+    color: $gray-dark
     font-size: 20px
+
+    &:before
+      content: ''
+      display: inline-block
+      position: absolute
+      width: 100%
+      height: 25px
+      left: 0
+      top: -20px
+      background-image: linear-gradient(transparent, $card-bg)
+
+  .note-action
+    margin-right: 5px
+    position: relative
+
+    &:last-child
+      margin-right: 0
 
   .note-action--open
     float: left
@@ -72,4 +113,5 @@ note
         display: block
 
       .body-input
-        overflow-y: scroll
+        // @TODO/ece I still think there should be some indicator that a) the note is too long, and b) you can scroll here. Actually, without this you can't actually scroll at all.
+        // overflow-y: scroll

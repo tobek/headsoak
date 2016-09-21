@@ -2,14 +2,15 @@
   <div class="header">
     <div class="tags"
       ><span class="tag new-tag"
+        [class.adding-tag]="addingTag"
+        (click)="newTagClick()"
         ><input type="text" placeholder="add tag" class="new-tag-input"
           ref-addTagInput
-          [class.adding-tag]="addingTag"
           [(ngModel)]="addTagName"
           (focus)="addTagFocused()"
           (keyup.enter)="closeAddTagField(true)"
           (keydown.esc)="closeAddTagField(true); $event.stopPropagation(); $event.preventDefault()"
-        /><span class="new-tag-button" (click)="addingTag ? completeAddTag() : initializeAddTag()">{{ addingTag ? '✓' : '+' }}</span
+        /><span class="new-tag-button" (click)="newTagIconClick($event)"><i *ngIf="! addingTag" class="fa fa-plus"></i><i *ngIf="addingTag" class="fa fa-check"></i></span
       ></span
 
       ><tag class="tag-{{ tagId }}"
@@ -36,16 +37,15 @@
   <!-- @TODO/rewrite/sharing Better to put read-only class and disabled attribute on above textarea so reference is preserved <textarea class="body read-only" disabled="disabled" tabindex=2 *ngIf="note.sharedBody">{{ note.sharedBody }}</textarea> -->
 
   <div class="note-actions">
-    <a title="Expand note" class="note-action--open" *ngIf="! opened" (click)="openNote()"><i class="fa fa-expand"></i></a>
-    <a title="Close note" *ngIf="opened && ! note.new" (click)="closeNote()"><i class="fa fa-close"></i></a>
-    <a title="Share settings" (click)="note.showShareSettings()"><i class="fa fa-users"></i></a>
-    <a title="Make private" (click)="note.togglePrivate()"><i class="fa fa-lock"></i></a>
+    <a title="Expand note" class="note-action note-action--open" *ngIf="! opened" (click)="openNote()"><i class="fa fa-pencil-square-o"></i></a>
+    <a title="Close note" class="note-action" *ngIf="opened && ! note.new" (click)="closeNote()"><i class="fa fa-close"></i></a>
+    <a title="Share settings" class="note-action" (click)="note.showShareSettings()"><i class="fa fa-users"></i></a>
+    <a title="Make private" class="note-action" (click)="note.togglePrivate()"><i class="fa fa-lock"></i></a>
     <span *ngIf="! note.new">
       <!-- @TODO/rewrite @TODO/ece Do we want this? Can we fit it? -->
       <!-- <a (click)="newNoteWithSameTags()">NNST</a> -->
-      <a title="{{ 'created: ' + (note.created | date:'medium') + '\nmodified: ' + (note.modified | date:'medium') }}" ><i class="fa fa-clock-o"></i></a><!--@TODO/rewrite angular2 date pipe is "pure" and won't check for updates, so note.created and note.modified will have to be reassigned, confirm it works, etc. -->
-      <a title="Explore note" (click)="note.explore()"><i class="fa fa-bar-chart"></i></a>
-      <a title="Delete note" (click)="delete($event)"><i class="fa fa-trash-o"></i></a>
+      <a title="{{ 'Explore note\n\ncreated: ' + (note.created | date:'medium') + '\nmodified: ' + (note.modified | date:'medium') }}" class="note-action" (click)="note.explore()"><i class="fa fa-bar-chart"></i></a><!--@TODO/rewrite angular2 date pipe is "pure" and won't check for updates, so note.created and note.modified will have to be reassigned, confirm it works, etc. -->
+      <a title="Delete note" class="note-action" (click)="delete($event)"><i class="fa fa-trash-o"></i></a>
     </span>
   </div>
 </div>

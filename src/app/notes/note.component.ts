@@ -151,12 +151,27 @@ export class NoteComponent {
     }
   }
 
-  initializeAddTag(tagText = this.addTagName, focusOnBody = true) {
-    this.addingTag = true;
-    this.addTagInputRef.nativeElement.focus();
+  newTagClick(): void {
+    if (! this.addingTag) {
+      this.initializeAddTag();
+    }
+  }
+  newTagIconClick(event: MouseEvent): void {
+    if (this.addingTag) {
+      event.stopPropagation();
+      this.completeAddTag();
+    }
   }
 
-  completeAddTag(tagText = this.addTagName, focusOnBody = true) {
+  initializeAddTag(tagText = this.addTagName, focusOnBody = true): void {
+    // @HACK: Not sure why, but using the font-awesome icons inside the add tag button is prevent the addingTag state and/or focus unless we do it in the next tick:
+    setTimeout(() => {
+      this.addingTag = true;
+      this.addTagInputRef.nativeElement.focus();
+    }, 0);
+  }
+
+  completeAddTag(tagText = this.addTagName, focusOnBody = true): void {
     if (tagText === '') {
       this.closeAddTagField(focusOnBody);
 
