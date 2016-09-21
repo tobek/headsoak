@@ -2,6 +2,10 @@
  * outputs complete JSON content of Firebase to stdout
  * all other output is to stderr
  *
+ * example shell invocation with nice file name:
+ *
+ *     filename=backups/firebase_dump_`date +"%Y-%m-%d"`.json && node backup.js > $filename && gzip $filename
+ *
  * example cron invocation (note, %'s need to be escaped in cron jobs):
  *
  *     0 0 * * * filename=/home/ubuntu/nutmeg/backups/firebase_dump_`date +"\%Y-\%m-\%d"`.json && node /home/ubuntu/nutmeg/backup.js > $filename && gzip $filename

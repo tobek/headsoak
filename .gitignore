@@ -1,3 +1,9 @@
+/s3config.json
+/config.json
+/backups
+
+# Below is the .gitignore from angular2-webpack-starter
+
 # Logs
 logs
 *.log
