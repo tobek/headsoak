@@ -23,12 +23,12 @@ export class TagComponent {
   @ViewChild('tagName') tagNameRef: ElementRef;
   tagNameEl: HTMLInputElement; // Not actually, but contenteditable so it behaves as such
 
-  @Input() editable: boolean;
+  @Input() renamable: boolean;
   @Input() removable: boolean;
   @Input() showCount: boolean;
 
   @Output() removed = new EventEmitter<Tag>(); // removed from given context (e.g. note, search query)
-  @Output() deleted= new EventEmitter<Tag>(); // deleted entirely
+  @Output() deleted = new EventEmitter<Tag>(); // deleted entirely
 
   constructor(
     private analyticsService: AnalyticsService,
@@ -37,11 +37,15 @@ export class TagComponent {
 
   ngOnInit() {
     this.tag = this.tagsService.tags[this.tagId];
+
+    if (! this.tag) {
+      throw new Error('Can\'t initialize TagComponent: no tag found for tag ID ' + this.tagId);
+    }
     this.tagNameEl = this.tagNameRef.nativeElement;
 
     if (! this.tag.name) {
       this.isNewTag = true;
-      this.editable = false;
+      this.renamable = false;
     }
   }
 
@@ -70,7 +74,7 @@ export class TagComponent {
 
     if (this.isNewTag) {
       this.isNewTag = false;
-      this.editable = true;
+      this.renamable = true;
     }
   }
   renameCancel() {

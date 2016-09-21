@@ -3,7 +3,7 @@
 
   <tag class="tag tag-{{ tag.id }}"
     [tagId]="tag.id"
-    [editable]="true"
+    [renamable]="true"
     (deleted)="tagDeleted($event)"
   ></tag>
 
@@ -52,8 +52,12 @@
 
 <div class="tag-pane" *ngIf="activePane === 'delete'">
   <h2 class="card-heading">Delete <span class="tag-name">{{ tag.name }}</span></h2>
-  <p>Deleting this tag will remove if from {{ tag.docs.length === 1 ? 'the 1 note' : 'all ' + tag.docs.length + ' notes' }} tagged with it. Your notes will remain.</p>
-  <p>Are you sure you want to continue?</p>
 
-  <button class="btn btn-default">Yes, delete this tag</button>
+  <p *ngIf="tag.docs.length === 0">This tag isn't used on any of your notes, so deleting it isn't really a big deal.</p>
+
+  <p *ngIf="tag.docs.length !== 0">Deleting this tag will remove if from {{ tag.docs.length === 1 ? 'the 1 note' : 'all ' + tag.docs.length + ' notes' }} tagged with it. {{ tag.docs.length === 1 ? 'That note' : 'Those notes' }} will remain undeleted.</p>
+
+  <p>Are you sure you want to continue? This can't be undone.</p>
+
+  <button class="btn btn-danger" (click)="_deleted()">Yes, delete the <span class="tag-name">{{ tag.name }}</span> tag</button>
 </div>

@@ -37,4 +37,5 @@
   *ngIf="activeTag"
   [tag]="activeTag"
   (goBack)="activeTag = null"
+  (deleted)="tagDeleted($event)"
 ></tag-details>

@@ -22,8 +22,5 @@
     <i class="fa fa-times"></i>
   </a>
 
-  <span *ngIf="editable && ! tag.readOnly">
-    <a title="Rename" (click)="renameStart()"><i class="fa fa-pencil"></i></a>
-    <a title="Delete" class="tag-action--delete" (click)="delete($event.shiftKey)"><i class="fa fa-trash-o"></i></a>
-  </span>
+  <a *ngIf="renamable && ! tag.readOnly" title="Rename" (click)="renameStart()"><i class="fa fa-pencil"></i></a>
 </span>
