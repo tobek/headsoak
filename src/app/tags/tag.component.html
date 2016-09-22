@@ -29,22 +29,23 @@
   <a class="tag-action">
     <i class="fa fa-fw fa-eye"></i>
     View {{ tag.docs.length }} note{{ tag.docs.length !== 1 ? 's' : '' }}
-    <!-- @TODO/now Emit toggle event -->
+    <!-- @TODO/ece Should clicking on the name still toggle? What about elsehwere in the dropdown? Right now anywhere except the other tag actions will toggle. -->
+    <!-- @TODO/ece Active state for these should be more obvious? And not sure about on/off. -->
   </a>
   <a class="tag-action">
     <i class="fa fa-fw fa-users"></i>
     Share
-    <span class="current-state">Off &raquo;</span>
+    <span class="current-state">{{ tag.share ? 'On' : 'Off' }} &raquo;</span>
   </a>
   <a class="tag-action">
     <i class="fa fa-fw fa-magic"></i>
     Smart Tag
-    <span class="current-state">Off &raquo;</span>
+    <span class="current-state">{{ tag.prog ? 'On' : 'Off' }} &raquo;</span>
   </a>
   <a class="tag-action">
     <i class="fa fa-fw fa-lock"></i>
     Private Tag
-    <span class="current-state">Off &raquo;</span>
+    <span class="current-state">{{ tag.private ? 'On' : 'Off' }} &raquo;</span>
   </a>
   <a class="tag-action">
     <i class="fa fa-fw fa-bar-chart"></i>
