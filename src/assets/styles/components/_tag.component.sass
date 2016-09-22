@@ -4,6 +4,7 @@ tag
 
   .tag-actions
     // @TODO/ece What's the tag action flow? must include easy toggle and remove from note
+    // @TODO/ece Still need a way to view all tags
     display: none
 
   &:hover .tag-actions
@@ -15,7 +16,7 @@ tag
     top: 5px
     padding: 4px 7px 0 0 // Top padding is magic number to vertically align - couldn't get anything else to work easily here
     width: 50px
-    height: 100%
+    height: calc(100% - 4px) // With box-sizing this shouldn't be necessary but seems like it is? Anyway this is visible on long tags where the tag is longer than the dropdown.
     background-color: #f2f2f2
     text-align: right
 
@@ -41,6 +42,7 @@ tag
 
   .tag-actions-dropdown
     // @TODO/bug Dropdown can get hidden off right edgeof the screen (also making horizontal scrollbar appear)
+    // @TODO/bug For very long tag names this is SHORTER and looks a bit weird, and for very very long tag names, the box shadow from .tag-actions doesn't go far enough back... looks weird
     +menu-dropdown
     z-index: 1
     position: absolute
