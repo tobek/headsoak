@@ -260,9 +260,9 @@ export class Note {
       return null;
     }
 
-    if (! _.includes(this.tags, tag.id)) {
+    if (! _.includes(this.tags, '' + tag.id)) {
       // Add at the front - this makes tags on notes ordered by most-recently-added, which a) is fine, and b) looks good when you add a new tag. Later order could be smarter.
-      this.tags.unshift(tag.id);
+      this.tags.unshift('' + tag.id);
     }
     tag.addNoteId(this.id);
 
@@ -278,14 +278,14 @@ export class Note {
   }
 
   removeTag(tag: Tag, fullUpdate = true, viaProg = false): void {
-    this._logger.log('Removing tag', tag);
-
     if (tag.prog && ! viaProg) {
       this.progTagCantChangeAlert(tag);
       return;
     }
 
-    this.tags = _.without(this.tags, tag.id);
+    this._logger.log('Removing tag', tag);
+
+    this.tags = _.without(this.tags, '' + tag.id);
     tag.removeNoteId(this.id);
 
     this.rebuildNoteSharing();

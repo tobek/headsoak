@@ -114,12 +114,12 @@ export class Tag {
 
   addNoteId(noteId: string): void {
     this._logger.log('Adding note id', noteId);
-    this.docs = _.union(this.docs, [noteId]);
+    this.docs = _.union(this.docs, ['' + noteId]);
     this.updated();
   }
   removeNoteId(noteId: string): void {
     this._logger.log('Removing note id', noteId);
-    this.docs = _.without(this.docs, noteId);
+    this.docs = _.without(this.docs, '' + noteId);
     this.updated();
   }
 }
