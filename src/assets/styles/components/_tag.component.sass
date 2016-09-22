@@ -7,7 +7,17 @@ tag
     display: none
 
   &:hover .tag-actions
-    display: inline
+    display: inline-block
+
+  &.dropdown-enabled .tag-actions
+    +menu-dropdown
+    position: absolute
+    top: 5px
+    padding: 4px 7px 0 0 // Top padding is magic number to vertically align - couldn't get anything else to work easily here
+    width: 50px
+    height: 100%
+    background-color: #f2f2f2
+    text-align: right
 
   .name
     display: inline-block
@@ -28,3 +38,27 @@ tag
     text-align: center
     background-color: rgba(255, 255, 255, 0.6)
     color: black
+
+  .tag-actions-dropdown
+    // @TODO/bug Dropdown can get hidden off right edgeof the screen (also making horizontal scrollbar appear)
+    +menu-dropdown
+    z-index: 1
+    position: absolute
+    width: 200px
+    margin-left: -8px // magic number to align with left edge of tag - we can't do left 0 and position the tag relatively because then we'll run afoul of tag container with overflow hidden
+    padding: 10px 15px 10px 10px
+    background-color: $tag-bg
+    color: $gray-dark
+    font-size: 16px
+    letter-spacing: 1.2px
+    font-weight: normal
+
+    .tag-action
+      display: block
+      text-decoration: none
+
+      .current-state
+        float: right
+        font-size: 14px
+        letter-spacing: 1.1px
+        text-decoration: underline

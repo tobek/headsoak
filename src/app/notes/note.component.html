@@ -18,6 +18,7 @@
         [tagId]="tagId"
         (click)="toggleTag(tagId, $event)"
         [removable]="true"
+        [enableDropdown]="true"
         (removed)="note.removeTagId(tagId)"
       ></tag>
 

@@ -24,3 +24,30 @@
 
   <a *ngIf="renamable && ! tag.readOnly" title="Rename" (click)="renameStart()"><i class="fa fa-pencil"></i></a>
 </span>
+
+<div class="tag-actions-dropdown" *ngIf="enableDropdown && hovered">
+  <a class="tag-action">
+    <i class="fa fa-fw fa-eye"></i>
+    View {{ tag.docs.length }} note{{ tag.docs.length !== 1 ? 's' : '' }}
+    <!-- @TODO/now Emit toggle event -->
+  </a>
+  <a class="tag-action">
+    <i class="fa fa-fw fa-users"></i>
+    Share
+    <span class="current-state">Off &raquo;</span>
+  </a>
+  <a class="tag-action">
+    <i class="fa fa-fw fa-magic"></i>
+    Smart Tag
+    <span class="current-state">Off &raquo;</span>
+  </a>
+  <a class="tag-action">
+    <i class="fa fa-fw fa-lock"></i>
+    Private Tag
+    <span class="current-state">Off &raquo;</span>
+  </a>
+  <a class="tag-action">
+    <i class="fa fa-fw fa-bar-chart"></i>
+    Explore more
+  </a>
+</div>

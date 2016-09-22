@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output, ElementRef, ViewChild} from '@angular/core';
+import {Component, HostListener, HostBinding, EventEmitter, Input, Output, ElementRef, ViewChild} from '@angular/core';
 
 import {AnalyticsService} from '../analytics.service';
 import {Tag} from './tag.model';
@@ -26,9 +26,19 @@ export class TagComponent {
   @Input() renamable: boolean;
   @Input() removable: boolean;
   @Input() showCount: boolean;
+  @HostBinding('class.dropdown-enabled') @Input() enableDropdown: boolean;
 
   @Output() removed = new EventEmitter<Tag>(); // removed from given context (e.g. note, search query)
   @Output() deleted = new EventEmitter<Tag>(); // deleted entirely
+
+  @HostListener('mouseover') onMouseover(btn) {
+    this.hovered = true;
+  }
+  @HostListener('mouseleave') onMouseleave(btn) {
+    this.hovered = false;
+  }
+
+  private hovered = false;
 
   constructor(
     private analyticsService: AnalyticsService,
