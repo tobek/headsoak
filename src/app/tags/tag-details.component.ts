@@ -20,13 +20,11 @@ export class TagDetailsComponent {
   DEFAULT_PANE = 'explore'
   activePane = this.DEFAULT_PANE;
 
-  exploreComputed = false;
+  /** ID of tag that has been explored, if any. */
+  exploreComputed: string;
   exploreStats: {
     topCooccurrences: [ { tag: Tag, numNotes: number }],
     bottomCooccurrences: [ { tag: Tag, numNotes: number }]
-  } = {
-    topCooccurrences: [<{ tag: Tag, numNotes: number }>],
-    bottomCooccurrences: [<{ tag: Tag, numNotes: number }>],
   };
 
   @Input() tag: Tag;
@@ -83,16 +81,26 @@ export class TagDetailsComponent {
     }
 
     if (this.activePane === 'explore') {
-      this.computeExplore();
+      // Wait a tick while router change hits Tag Browser and changes the tag that gets @Input into us
+      setTimeout(this.computeExplore.bind(this), 0);
     }
   }
 
+  exploreStatsReset(): void {
+    this.exploreStats = {
+      topCooccurrences: [<{ tag: Tag, numNotes: number }>],
+      bottomCooccurrences: [<{ tag: Tag, numNotes: number }>],
+    };
+  }
+
   computeExplore(): void {
-    if (this.exploreComputed) {
+    if (this.exploreComputed === this.tag.id) {
       return;
     }
 
     this._logger.time('Calculating explore stats');
+
+    this.exploreStatsReset();
 
     const cooccurrences: { [key: string]: number } = {}; // tagId => # of cooccurrences
     this.tag.docs.forEach((noteId) => {
@@ -149,7 +157,7 @@ export class TagDetailsComponent {
       }
     }
 
-    this.exploreComputed = true;
+    this.exploreComputed = this.tag.id;
 
     this._logger.timeEnd('Calculating explore stats');
   }
