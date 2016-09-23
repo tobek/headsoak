@@ -143,6 +143,10 @@ export class SettingsComponent implements OnInit {
   }
 
   revert() {
+    if (! confirm('Are you sure you want to revert these ' + this.section + ' to their default values?\n\nThis can\'t be undone.')) {
+      return;
+    }
+
     const revertThese = this.section === 'shortcuts' ? _.concat([this.settings.data['sMod']], this.displayedSettings) : this.displayedSettings;
 
     _.each(revertThese, (setting: Setting | Shortcut) => {
