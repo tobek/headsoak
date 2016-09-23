@@ -2,6 +2,25 @@
 
 An API for your writing.
 
+### Running it
+
+Before running it the first time, install dependencies:
+
+    npm install -g typescript@beta typings webpack-dev-server rimraf webpack
+    npm install
+
+(Last I checked, Aug 2016, `typescript@beta` was needed, but it may no longer be beta?)
+
+Then you're ready:
+
+    npm start
+
+and then navigate to <http://localhost:3000>
+
+### Misc notes
+
+- To avoid type errors between Protractor and jQuery (both of which use `$`), you can comment out the two declarations of `$` from the end of `@types/jquery/index.d.ts`. (As a result, we refer to jQuery by `jQuery` not `$`.)
+
 ***
 
 Below is the readme from [angular2-webpack-starter](https://github.com/AngularClass/angular2-webpack-starter) on which the web app architecture is based.
