@@ -20,7 +20,7 @@ export const routes: RouterConfig = [
     data: {
       name: 'Focus',
       slug: 'focus',
-      navSection: 'main',
+      // navSection: 'main', // @TODO/rewrite Hidden entirely for now - we'll support it from elsewhere? Menu or as a note action?
       iconSlug: 'square',
     },
     component: EmptyComponent
