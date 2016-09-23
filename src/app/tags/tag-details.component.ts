@@ -88,8 +88,8 @@ export class TagDetailsComponent {
 
   exploreStatsReset(): void {
     this.exploreStats = {
-      topCooccurrences: [<{ tag: Tag, numNotes: number }>],
-      bottomCooccurrences: [<{ tag: Tag, numNotes: number }>],
+      topCooccurrences: <[{ tag: Tag, numNotes: number }]>[],
+      bottomCooccurrences: <[{ tag: Tag, numNotes: number }]>[],
     };
   }
 
