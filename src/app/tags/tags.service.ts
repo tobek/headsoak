@@ -26,8 +26,8 @@ export class TagsService {
     { id: '7-name-true', field: 'name', rev: true, name: 'Alpha (reversed)'},
   ];
 
+  dataService: DataService;
   private _logger: Logger = new Logger(this.constructor.name);
-  private dataService: DataService;
 
   init(tagsData: Object, dataService: DataService) {
     this.dataService = dataService;

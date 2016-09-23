@@ -34,6 +34,42 @@
 
   <div class="tag-pane" *ngIf="activePane === 'explore'">
     <h2 class="card-heading">Explore <span class="tag-name">{{ tag.name }}</span></h2>
+
+    <div class="note-count-heading">{{ tag.docs.length }} Note{{ tag.docs.length !== 1 ? 's' : '' }}</div>
+
+    <!-- @TODO/tags Betterloading indicator while this is loading. Also check computing this doesn't block stuff. -->
+    <p *ngIf="! exploreComputed">
+      Loading tag stats...
+    </p>
+
+    <div *ngIf="exploreComputed">
+      <p *ngIf="! exploreStats.topCooccurrences.length && ! exploreStats.bottomCooccurrences.length">This tag has not been paired with any other tags.</p>
+
+      <div *ngIf="exploreStats.topCooccurrences.length" class="cooccurrences">
+        Most commonly paired with:
+
+        <ul class="cooccurring-tags">
+          <li *ngFor="let cooccurrence of exploreStats.topCooccurrences">
+            <span class="tag-name" [routerLink]="['/tags', cooccurrence.tag.id, cooccurrence.tag.name]">
+              {{ cooccurrence.tag.name }}
+            </span>
+            <!-- @TODO/tags Should link these to the search query! -->
+            ({{ cooccurrence.numNotes }} note{{ cooccurrence.numNotes !== 1 ? 's' : '' }})
+        </ul>
+      </div>
+
+      <div *ngIf="exploreStats.bottomCooccurrences.length" class="cooccurrences">
+        Least commonly paired with:
+
+        <ul class="cooccurring-tags">
+          <li *ngFor="let cooccurrence of exploreStats.bottomCooccurrences">
+            <span class="tag-name" [routerLink]="['/tags', cooccurrence.tag.id, cooccurrence.tag.name]">
+              {{ cooccurrence.tag.name }}
+            </span>
+            ({{ cooccurrence.numNotes }} note{{ cooccurrence.numNotes !== 1 ? 's' : '' }})
+        </ul>
+      </div>
+    </div>
   </div>
 
   <div class="tag-pane" *ngIf="activePane === 'share'">
