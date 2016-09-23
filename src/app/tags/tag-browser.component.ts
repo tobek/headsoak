@@ -1,4 +1,5 @@
 import {Component, ElementRef, ViewChild, ViewChildren, QueryList} from '@angular/core';
+import {Router} from '@angular/router';
 import {Subject, Subscription} from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
 
@@ -25,7 +26,6 @@ export class TagBrowserComponent {
   el: HTMLElement;
 
   tags: Tag[] = [];
-  activeTag: Tag = null;
 
   /** Only show this many nuts at a time unless infinite scrolling. */
   limit: number = this.DEFAULT_TAGS_LIMIT;
@@ -45,6 +45,7 @@ export class TagBrowserComponent {
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
+    private router: Router,
     private elRef: ElementRef,
     private analyticsService: AnalyticsService,
     private settings: SettingsService,
@@ -116,10 +117,6 @@ export class TagBrowserComponent {
   /** Called when one of the tags in this component is deleted. */
   tagDeleted(deletedTag: Tag): void {
     this.tags = _.filter(this.tags, (tag: Tag) => tag.id !== deletedTag.id);
-  }
-
-  tagSelected(tag: Tag): void {
-    this.activeTag = tag;
   }
 
   // // @TODO/testing infinite scroll e2e both directions

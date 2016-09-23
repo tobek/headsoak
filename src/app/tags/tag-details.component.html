@@ -1,63 +1,65 @@
-<div class="tag-overview">
-  <a class="go-back" (click)="goBack.emit()"><i class="fa fa-long-arrow-left"></i>Back to all tags</a>
+<div *ngIf="tag">
+  <div class="tag-overview">
+    <a class="go-back" [routerLink]="['/tags']"><i class="fa fa-long-arrow-left"></i>Back to all tags</a>
 
-  <tag class="tag tag-{{ tag.id }}"
-    [tagId]="tag.id"
-    [renamable]="true"
-    (deleted)="tagDeleted($event)"
-  ></tag>
+    <tag class="tag tag-{{ tag.id }}"
+      [tagId]="tag.id"
+      [renamable]="true"
+      (deleted)="tagDeleted($event)"
+    ></tag>
 
-  <ul class="menu">
-    <li class="item"><a (click)="activePane = 'explore'">
-      <i class="fa fa-fw fa-lg fa-bar-chart"></i>
-      Explore
-    </a></li>
-    <li class="item"><a (click)="activePane = 'share'">
-      <i class="fa fa-fw fa-lg fa-users"></i>
-      Share
-    </a></li>
-    <li class="item"><a (click)="activePane = 'smartTag'">
-      <i class="fa fa-fw fa-lg fa-magic"></i>
-      Smart tag
-    </a></li>
-    <li class="item"><a (click)="activePane = 'privateTag'">
-      <i class="fa fa-fw fa-lg fa-lock"></i>
-      Private tag
-    </a></li>
-    <li class="item"><a (click)="activePane = 'delete'">
-      <i class="fa fa-fw fa-lg fa-trash-o"></i>
-      Delete
-    </a></li>
-  </ul>
-</div>
+    <ul class="menu">
+      <li class="item"><a (click)="activePane = 'explore'">
+        <i class="fa fa-fw fa-lg fa-bar-chart"></i>
+        Explore
+      </a></li>
+      <li class="item"><a (click)="activePane = 'share'">
+        <i class="fa fa-fw fa-lg fa-users"></i>
+        Share
+      </a></li>
+      <li class="item"><a (click)="activePane = 'smartTag'">
+        <i class="fa fa-fw fa-lg fa-magic"></i>
+        Smart tag
+      </a></li>
+      <li class="item"><a (click)="activePane = 'privateTag'">
+        <i class="fa fa-fw fa-lg fa-lock"></i>
+        Private tag
+      </a></li>
+      <li class="item"><a (click)="activePane = 'delete'">
+        <i class="fa fa-fw fa-lg fa-trash-o"></i>
+        Delete
+      </a></li>
+    </ul>
+  </div>
 
-<div class="tag-pane" *ngIf="activePane === 'explore'">
-  <h2 class="card-heading">Explore <span class="tag-name">{{ tag.name }}</span></h2>
-</div>
+  <div class="tag-pane" *ngIf="activePane === 'explore'">
+    <h2 class="card-heading">Explore <span class="tag-name">{{ tag.name }}</span></h2>
+  </div>
 
-<div class="tag-pane" *ngIf="activePane === 'share'">
-  <h2 class="card-heading">Manage sharing for <span class="tag-name">{{ tag.name }}</span></h2>
-  <p>Hold yer horses!</p>
-</div>
+  <div class="tag-pane" *ngIf="activePane === 'share'">
+    <h2 class="card-heading">Manage sharing for <span class="tag-name">{{ tag.name }}</span></h2>
+    <p>Hold yer horses!</p>
+  </div>
 
-<div class="tag-pane" *ngIf="activePane === 'smartTag'">
-  <h2 class="card-heading">Smart Tag settings for <span class="tag-name">{{ tag.name }}</span></h2>
-  <p>Coming soon to a web browser near you.</p>
-</div>
+  <div class="tag-pane" *ngIf="activePane === 'smartTag'">
+    <h2 class="card-heading">Smart Tag settings for <span class="tag-name">{{ tag.name }}</span></h2>
+    <p>Coming soon to a web browser near you.</p>
+  </div>
 
-<div class="tag-pane" *ngIf="activePane === 'privateTag'">
-  <h2 class="card-heading">Manage privacy for <span class="tag-name">{{ tag.name }}</span></h2>
-  <p>Like, really soon.</p>
-</div>
+  <div class="tag-pane" *ngIf="activePane === 'privateTag'">
+    <h2 class="card-heading">Manage privacy for <span class="tag-name">{{ tag.name }}</span></h2>
+    <p>Like, really soon.</p>
+  </div>
 
-<div class="tag-pane" *ngIf="activePane === 'delete'">
-  <h2 class="card-heading">Delete <span class="tag-name">{{ tag.name }}</span></h2>
+  <div class="tag-pane" *ngIf="activePane === 'delete'">
+    <h2 class="card-heading">Delete <span class="tag-name">{{ tag.name }}</span></h2>
 
-  <p *ngIf="tag.docs.length === 0">This tag isn't used on any of your notes, so deleting it isn't really a big deal.</p>
+    <p *ngIf="tag.docs.length === 0">This tag isn't used on any of your notes, so deleting it isn't really a big deal.</p>
 
-  <p *ngIf="tag.docs.length !== 0">Deleting this tag will remove if from {{ tag.docs.length === 1 ? 'the 1 note' : 'all ' + tag.docs.length + ' notes' }} tagged with it. {{ tag.docs.length === 1 ? 'That note' : 'Those notes' }} will remain undeleted.</p>
+    <p *ngIf="tag.docs.length !== 0">Deleting this tag will remove if from {{ tag.docs.length === 1 ? 'the 1 note' : 'all ' + tag.docs.length + ' notes' }} tagged with it. {{ tag.docs.length === 1 ? 'That note' : 'Those notes' }} will remain undeleted.</p>
 
-  <p>Are you sure you want to continue? This can't be undone.</p>
+    <p>Are you sure you want to continue? This can't be undone.</p>
 
-  <button class="btn btn-danger" (click)="_deleted()">Yes, delete the <span class="tag-name">{{ tag.name }}</span> tag</button>
+    <button class="btn btn-danger" (click)="_deleted()">Yes, delete the <span class="tag-name">{{ tag.name }}</span> tag</button>
+  </div>
 </div>

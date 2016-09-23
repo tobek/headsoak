@@ -1,4 +1,5 @@
-<div *ngIf="! activeTag">
+<!-- e.g. just `/tags` -->
+<div *ngIf="router.url.split('/').length < 3">
   <div class="tag-list">
     <div class="tag-query">
       <div class="search-bar">
@@ -23,7 +24,7 @@
 
     <tag class="tag tag-{{ tag.id }}"
       *ngFor="let tag of (tags | arrayLimit:limit)"
-      (click)="tagSelected(tag)"
+      [routerLink]="['/tags', tag.id, tag.name]"
       [tagId]="tag.id"
       [showCount]="true"
       (deleted)="tagDeleted($event)"
@@ -33,9 +34,9 @@
   <div class="tag-pane"></div>
 </div>
 
+<!-- e.g. `/tags/:tagId...` -->
 <tag-details
-  *ngIf="activeTag"
-  [tag]="activeTag"
-  (goBack)="activeTag = null"
+  *ngIf="router.url.split('/').length > 2"
+  [tag]="tagsService.tags[router.url.split('/')[2]]"
   (deleted)="tagDeleted($event)"
 ></tag-details>

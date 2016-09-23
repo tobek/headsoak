@@ -64,6 +64,6 @@
 
   <router-outlet></router-outlet>
   <home [hidden]="router.url !== '/' && router.url !== '/focus' && router.url !== '/browse'"></home>
-  <tag-browser [hidden]="router.url !== '/tags'"></tag-browser>
+  <tag-browser [hidden]="router.url.indexOf('/tags') !== 0"></tag-browser>
 
 </main>

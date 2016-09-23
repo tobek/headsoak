@@ -56,6 +56,15 @@ export const routes: RouterConfig = [
     component: EmptyComponent
   },
 
+  // Just to avoid 404s:
+  {
+    path: 'tags/:tagId/:tagName',
+    data: {
+      navSection: '[none]',
+    },
+    component: EmptyComponent
+  }
+
   {
     path: 'settings',
     data: {
