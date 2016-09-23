@@ -1,6 +1,6 @@
 import {Component, EventEmitter/*, ElementRef*/, Input, Output} from '@angular/core';
 import {Router, NavigationEnd} from '@angular/router';
-// import {Subject, Subscription} from 'rxjs';
+import {Subscription} from 'rxjs';
 // import 'rxjs/add/operator/debounceTime';
 
 import {AnalyticsService} from '../analytics.service';
