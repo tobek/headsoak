@@ -1,4 +1,4 @@
-import {Component, HostListener, HostBinding, EventEmitter, Input, Output, ElementRef, ViewChild} from '@angular/core';
+import {Component, HostListener, HostBinding, EventEmitter, Input, Output, SimpleChange, ElementRef, ViewChild} from '@angular/core';
 
 import {AnalyticsService} from '../analytics.service';
 import {Tag} from './tag.model';
@@ -45,13 +45,23 @@ export class TagComponent {
     private tagsService: TagsService
   ) {}
 
+  ngOnChanges(changes: {[propName: string]: SimpleChange}) {
+    if (changes['tagId'] && changes['tagId'].currentValue !== changes['tagId'].previousValue) {
+      this.tagIdUpdated(changes['tagId'].currentValue);
+    }
+  }
+
+  /** Called after `ngOnChanges`, so that's where we set up this.tag. */
   ngOnInit() {
-    this.tag = this.tagsService.tags[this.tagId];
+    this.tagNameEl = this.tagNameRef.nativeElement;
+  }
+
+  tagIdUpdated(newTagId: string): void {
+    this.tag = this.tagsService.tags[newTagId];
 
     if (! this.tag) {
-      throw new Error('Can\'t initialize TagComponent: no tag found for tag ID ' + this.tagId);
+      throw new Error('Can\'t set up TagComponent: no tag found for tag ID ' + newTagId);
     }
-    this.tagNameEl = this.tagNameRef.nativeElement;
 
     if (! this.tag.name) {
       this.isNewTag = true;
