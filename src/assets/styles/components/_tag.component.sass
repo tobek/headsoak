@@ -21,13 +21,17 @@ tag
     text-align: right
 
   .name
-    display: inline-block
+    display: inline
 
     &:focus
+      display: inline-block // cursor doesn't display properly (in Chrome at least) on inline contenteditable elements
       cursor: text
       outline: 0
       border-bottom: 2px solid $input-underline-color
       margin-bottom: -2px
+
+  &.renaming .tag-actions
+    display: none
 
   note-query & .tag-action--remove
     cursor: pointer

@@ -18,7 +18,7 @@ export class TagComponent {
   /** If this is a new tag not yet saved to data store but just created for the user to type new tag name into. */
   isNewTag = false;
 
-  renaming = false;
+  @HostBinding('class.renaming') renaming = false;
 
   @ViewChild('tagName') tagNameRef: ElementRef;
   tagNameEl: HTMLInputElement; // Not actually, but contenteditable so it behaves as such

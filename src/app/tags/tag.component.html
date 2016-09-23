@@ -1,10 +1,10 @@
 <span class="name" placeholder="tag name"
   ref-tagName
   [attr.contenteditable]="renaming"
+  (click)="renaming && $event.stopPropagation()"
   (keydown.enter)="renameFinish($event)"
   (keydown.esc)="renameCancel()"
   (blur)="renameCancel()"
-  (click)="renaming && $event.stopPropagation()"
 >{{ tag.name }}</span>
 
 <span *ngIf="showCount">({{ tag.docs.length }})</span>
@@ -23,7 +23,7 @@
     <i class="fa fa-times"></i>
   </a>
 
-  <a *ngIf="renamable && ! tag.readOnly" title="Rename" (click)="renameStart()"><i class="fa fa-pencil"></i></a>
+  <a *ngIf="renamable && ! tag.readOnly" title="Rename" class="tag-action--rename" (click)="renameStart()"><i class="fa fa-pencil"></i></a>
 </span>
 
 <div class="tag-actions-dropdown" *ngIf="enableDropdown && hovered">
