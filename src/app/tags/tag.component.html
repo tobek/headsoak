@@ -4,6 +4,7 @@
   (keydown.enter)="renameFinish($event)"
   (keydown.esc)="renameCancel()"
   (blur)="renameCancel()"
+  (click)="renaming && $event.stopPropagation()"
 >{{ tag.name }}</span>
 
 <span *ngIf="showCount">({{ tag.docs.length }})</span>
