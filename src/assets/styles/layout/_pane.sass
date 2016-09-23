@@ -1,0 +1,43 @@
+// Used for split pane layout with overview/menu on left, and selected pane on right - e.g. used for tag browser/details and for settings
+
+.pane-layout
+  .overview,
+  .pane
+    +card
+    min-height: $full-height
+
+  .overview
+    +span(4)
+    padding: 20px
+
+  .pane
+    +span(8 last)
+    padding: 20px 30px
+
+  .go-back
+    +control-heading
+    display: block
+    width: 100%
+    color: $gray-dark
+
+    &:hover
+      color: $link-hover
+
+    .fa
+      margin-right: 10px
+
+  .menu
+    +plain-list
+
+    .item
+      display: block
+
+      a
+        // @TODO/ece Active state for these?
+        +control-heading
+        display: inline-block
+        padding: 7px 0
+        color: $gray-dark
+
+      &:hover a
+        color: $link-hover

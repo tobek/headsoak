@@ -1,32 +1,8 @@
 tag-details
 
-  .tag-overview,
-  .tag-pane
-    +card
-    min-height: $full-height
-
-  .tag-overview
-    +span(4)
-    padding: 20px
-
-  .tag-pane
-    +span(8 last)
-    padding: 20px 30px
-
-  .go-back,
   tag
     display: block
     width: 100%
-
-  .go-back
-    +control-heading
-    color: $gray-dark
-
-    &:hover
-      color: $link-hover
-
-    .fa
-      margin-right: 10px
 
   tag
     cursor: default
@@ -46,25 +22,7 @@ tag-details
     .tag-actions
       display: inline
 
-  .menu
-    +plain-list
-
-    .item
-      display: block
-
-      a
-        // @TODO/ece Active state for these?
-        +control-heading
-        display: inline-block
-        padding: 7px 0
-        color: $gray-dark
-
-      &:hover a
-        color: $link-hover
-
-
-
-  .tag-pane
+  .pane
     // @TODO/style Animate pane visiblity (and entire tag details component really)
     .tag-name
       +tag-face

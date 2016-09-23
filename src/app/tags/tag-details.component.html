@@ -1,5 +1,5 @@
-<div *ngIf="tag">
-  <div class="tag-overview">
+<div *ngIf="tag" class="pane-layout">
+  <div class="overview">
     <a class="go-back" [routerLink]="['/tags']"><i class="fa fa-long-arrow-left"></i>ALL TAGS</a>
 
     <tag class="tag tag-{{ tag.id }}"
@@ -32,7 +32,7 @@
     </ul>
   </div>
 
-  <div class="tag-pane" *ngIf="activePane === 'explore'">
+  <div class="pane" *ngIf="activePane === 'explore'">
     <h2 class="card-heading">Explore <span class="tag-name">{{ tag.name }}</span></h2>
 
     <div class="note-count-heading">{{ tag.docs.length }} Note{{ tag.docs.length !== 1 ? 's' : '' }}</div>
@@ -72,22 +72,22 @@
     </div>
   </div>
 
-  <div class="tag-pane" *ngIf="activePane === 'share'">
+  <div class="pane" *ngIf="activePane === 'share'">
     <h2 class="card-heading">Manage sharing for <span class="tag-name">{{ tag.name }}</span></h2>
     <p>This tag is <b>{{ tag.share ? '' : 'not' }} shared</b>. You can't change this right now.</p>
   </div>
 
-  <div class="tag-pane" *ngIf="activePane === 'smartness'">
+  <div class="pane" *ngIf="activePane === 'smartness'">
     <h2 class="card-heading">Smart Tag settings for <span class="tag-name">{{ tag.name }}</span></h2>
     <p>This tag is <b>{{ tag.prog ? 'smart' : 'dumb' }}</b>. You can't change this right now.</p>
   </div>
 
-  <div class="tag-pane" *ngIf="activePane === 'privacy'">
+  <div class="pane" *ngIf="activePane === 'privacy'">
     <h2 class="card-heading">Manage privacy for <span class="tag-name">{{ tag.name }}</span></h2>
     <p>This tag is <b>{{ tag.private ? '' : 'not' }} hidden</b>. You can't change this right now.</p>
   </div>
 
-  <div class="tag-pane" *ngIf="activePane === 'delete'">
+  <div class="pane" *ngIf="activePane === 'delete'">
     <h2 class="card-heading">Delete <span class="tag-name">{{ tag.name }}</span></h2>
 
     <p *ngIf="tag.docs.length === 0">This tag isn't used on any of your notes, so deleting it isn't really a big deal.</p>

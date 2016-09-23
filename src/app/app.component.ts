@@ -34,8 +34,6 @@ import {TagBrowserComponent} from './tags/tag-browser.component'; // @NOTE No id
   template: require('./app.component.html')
 })
 export class App {
-  name = 'nutmeg';
-
   routes: Route[] = routes;
   mainNavRoutes: Route[];
   menuNavRoutes: Route[];

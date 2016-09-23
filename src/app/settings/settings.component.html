@@ -1,41 +1,76 @@
-<h1>{{ sectionName }}</h1>
+<div class="pane-layout">
+  <div class="overview">
+    <a class="go-back" [routerLink]="['/']"><i class="fa fa-long-arrow-left"></i>BACK TO NOTES</a>
 
-<div *ngIf="initialized && section === 'shortcuts'">
-  <label>
-    Modifier key(s):
-    <input type="text"
-      [(ngModel)]="settings.data['sMod'].value"
-      (blur)="settingUpdated(settings.data['sMod'])"
-      (keyup.enter)="settingUpdated(settings.data['sMod'])"
-    />
-    <span title="This will prefix all of these shortcuts. Your options are:&#10;&#10;- 'ctrl'&#10;- 'shift'&#10;- 'alt'&#10;- 'option'&#10;- 'command' (only on Mac)&#10;- 'meta' (doesn't work?)&#10;- 'mod' ('ctrl' on a PC, 'command' on a Mac).&#10;&#10;You can also combine them, e.g. 'ctrl+shift', or leave blank to control different shortcuts separately.">(?)</span>
-  </label>
-  <span *ngIf="dataService.isUnsaved(settings.data['sMod'])">saving...</span>
-  <span style="color: red">{{ modKeyError }}</span>
+    <div class="logo">
+      <h1 (click)="logoClick()"><i class="fa fa-circle"></i>nutmeg</h1>
+    </div>
+
+    <ul class="menu">
+      <li class="item"><a [routerLink]="['/settings']">
+        <i class="fa fa-fw fa-lg fa-sliders"></i>
+        Settings
+      </a></li>
+      <li class="item"><a [routerLink]="['/settings', 'shortcuts']">
+        <i class="fa fa-fw fa-lg fa-fighter-jet"></i>
+        Shortcuts
+      </a></li>
+      <li class="item"><a [routerLink]="['/settings', 'account']">
+        <i class="fa fa-fw fa-lg fa-smile-o"></i>
+        Account
+      </a></li>
+      <li class="item"><a [routerLink]="['/settings', 'private-mode']">
+        <i class="fa fa-fw fa-lg fa-user-secret"></i>
+        Private Mode
+      </a></li>
+      <li class="item"><a [routerLink]="['/settings', 'feedback']">
+        <i class="fa fa-fw fa-lg fa-comment-o"></i>
+        Feedback
+      </a></li>
+    </ul>
+  </div>
+
+  <div class="pane">
+    <h1>{{ sectionName }}</h1>
+
+    <div *ngIf="initialized && section === 'shortcuts'">
+      <label>
+        Modifier key(s):
+        <input type="text"
+          [(ngModel)]="settings.data['sMod'].value"
+          (blur)="settingUpdated(settings.data['sMod'])"
+          (keyup.enter)="settingUpdated(settings.data['sMod'])"
+        />
+        <span title="This will prefix all of these shortcuts. Your options are:&#10;&#10;- 'ctrl'&#10;- 'shift'&#10;- 'alt'&#10;- 'option'&#10;- 'command' (only on Mac)&#10;- 'meta' (doesn't work?)&#10;- 'mod' ('ctrl' on a PC, 'command' on a Mac).&#10;&#10;You can also combine them, e.g. 'ctrl+shift', or leave blank to control different shortcuts separately.">(?)</span>
+      </label>
+      <span *ngIf="dataService.isUnsaved(settings.data['sMod'])">saving...</span>
+      <span style="color: red">{{ modKeyError }}</span>
+    </div>
+
+    <!-- @TODO/rewrite/settings Need tooltips in here -->
+    <table>
+      <thead *ngIf="section === 'shortcuts'">
+        <tr>
+          <td>Action</td>
+          <td>
+            Shortcut
+            <span title="Simply type in a letter or symbol, or one of the following: backspace, tab, enter, return, capslock, esc, escape, space, pageup, pagedown, end, home, left, up, right, down, ins, del&#10;&#10;You may include modifier keys in here too, e.g. 'shift+alt+backspace'">(?)</span>
+          </td>
+          <td></td>
+        </tr>
+      </thead>
+      <tbody>
+        <setting
+          *ngFor="let setting of displayedSettings"
+          [setting]="setting"
+          class="setting-{{ setting.id }}"
+          (updated)="settingUpdatedProxy($event)"
+        ></setting>
+      </tbody>
+    </table>
+
+    <p *ngIf="section === 'shortcuts'"><i>Note: Different browsers and operating systems handle web site shortcuts differently. You might find that some combinations don't work. (For example, <code>ctrl+n</code> will be overridden by "new window" in Chrome on Windows.)</i></p>
+
+    <button class="revert" (click)="revert()">Revert to defaults</button>
+  </div>
 </div>
-
-<!-- @TODO/rewrite/settings Need tooltips in here -->
-<table>
-  <thead *ngIf="section === 'shortcuts'">
-    <tr>
-      <td>Action</td>
-      <td>
-        Shortcut
-        <span title="Simply type in a letter or symbol, or one of the following: backspace, tab, enter, return, capslock, esc, escape, space, pageup, pagedown, end, home, left, up, right, down, ins, del&#10;&#10;You may include modifier keys in here too, e.g. 'shift+alt+backspace'">(?)</span>
-      </td>
-      <td></td>
-    </tr>
-  </thead>
-  <tbody>
-    <setting
-      *ngFor="let setting of displayedSettings"
-      [setting]="setting"
-      class="setting-{{ setting.id }}"
-      (updated)="settingUpdatedProxy($event)"
-    ></setting>
-  </tbody>
-</table>
-
-<p *ngIf="section === 'shortcuts'"><i>Note: Different browsers and operating systems handle web site shortcuts differently. You might find that some combinations don't work. (For example, <code>ctrl+n</code> will be overridden by "new window" in Chrome on Windows.)</i></p>
-
-<button class="revert" (click)="revert()">Revert to defaults</button>
