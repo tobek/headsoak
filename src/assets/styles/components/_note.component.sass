@@ -127,6 +127,9 @@ note
 
   home &.open-note
     .body-input
-      // These achieve a "max width" of 600px while filling the rest with padding. Additionally, it's aligned a little towards the left from centered
-      padding-right: calc(75% - 450px)
-      padding-left: calc(25% - 150px)
+      padding-left: 10px
+      
+      +susy-breakpoint($screen-small, $susy)
+        // These achieve a "max width" of 600px while filling the rest with padding. Additionally, it's aligned a little towards the left from centered
+        padding-right: calc(75% - 450px)
+        padding-left: calc(25% - 150px)
