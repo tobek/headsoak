@@ -21,13 +21,14 @@
       </div>
     </div>
 
-    <tag class="tag tag-{{ tag.id }}"
-      *ngFor="let tag of (tags | arrayLimit:limit)"
-      [routerLink]="['/tags', tag.id, tag.name]"
-      [tagId]="tag.id"
-      [showCount]="true"
-      (deleted)="tagDeleted($event)"
-    ></tag>
+    <span *ngFor="let tag of (tags | arrayLimit:limit)" class="tag-wrapper">
+      <tag class="tag tag-{{ tag.id }}"
+        [routerLink]="['/tags', tag.id, tag.name]"
+        [tagId]="tag.id"
+        [showCount]="true"
+        (deleted)="tagDeleted($event)"
+      ></tag>
+    </span>
   </div>
 
   <div class="tag-pane"></div>
