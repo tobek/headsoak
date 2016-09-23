@@ -1,4 +1,4 @@
-<!-- `[hidden]` not `*ngIf` because it's wasteful to re-initialize the tag browser view every time you go out of details. -->
+<!-- `[hidden]` not `*ngIf` because it's wasteful/slow to re-initialize the tag browser view every time you go out of details. -->
 <div [hidden]="activeTag">
   <div class="tag-list">
     <div class="tag-query">

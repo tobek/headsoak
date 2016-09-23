@@ -74,17 +74,17 @@
 
   <div class="tag-pane" *ngIf="activePane === 'share'">
     <h2 class="card-heading">Manage sharing for <span class="tag-name">{{ tag.name }}</span></h2>
-    <p>Hold yer horses!</p>
+    <p>This tag is <b>{{ tag.share ? '' : 'not' }} shared</b>. You can't change this right now.</p>
   </div>
 
   <div class="tag-pane" *ngIf="activePane === 'smartness'">
     <h2 class="card-heading">Smart Tag settings for <span class="tag-name">{{ tag.name }}</span></h2>
-    <p>Coming soon to a web browser near you.</p>
+    <p>This tag is <b>{{ tag.prog ? 'smart' : 'dumb' }}</b>. You can't change this right now.</p>
   </div>
 
   <div class="tag-pane" *ngIf="activePane === 'privacy'">
     <h2 class="card-heading">Manage privacy for <span class="tag-name">{{ tag.name }}</span></h2>
-    <p>Like, really soon.</p>
+    <p>This tag is <b>{{ tag.private ? '' : 'not' }} hidden</b>. You can't change this right now.</p>
   </div>
 
   <div class="tag-pane" *ngIf="activePane === 'delete'">
