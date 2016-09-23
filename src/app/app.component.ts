@@ -59,10 +59,7 @@ export class App {
 
     this.routerSub = router.events
       .filter(event => event instanceof NavigationEnd)
-      .subscribe((event: NavigationEnd) => {
-        const routeInfo = _.find(this.routes, { path: event.url.substring(1) });
-        this.hostClass = 'route--' + routeInfo.data['slug'];
-      });
+      .subscribe(this.setRouteClass.bind(this));
   }
 
   ngOnInit() {
@@ -71,6 +68,13 @@ export class App {
   ngOnDestroy() {
     this.routerSub.unsubscribe();
     this._logger.log('App component destroyed!');
+  }
+
+  /** Sets class on component host element to reflect current route. @NOTE Right now only supporting "root" routes e.g. /home or /tags. This is because if we get a route like `/tags/199` it's less trivial to match that to the `/tags/:tagId` route, so we'll just match it  to `/tags`. */
+  setRouteClass(event: NavigationEnd): void {
+    const path = event.url.substring(1).split('/')[0];
+    const routeInfo = _.find(this.routes, { path: path });
+    this.hostClass = 'route--' + routeInfo.data['slug'];
   }
 
   newNote(thenFocus = true): void {
