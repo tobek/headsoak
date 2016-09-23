@@ -129,12 +129,7 @@
 
   ul
     +plain-list
-
-  li
-    margin-right: 30px
-    &:last-of-type
-      margin-right: 0
-
+ 
   a
     text-decoration: none
     color: $card-bg
@@ -144,6 +139,8 @@
 
     &.nav-link
       display: inline-block
+      width: span(1)
+      margin-right: gutter()
       text-align: center
 
       .fa
@@ -152,6 +149,9 @@
         padding: 0 5px 4px
         transition: border-color 0.2s
         border-bottom: 4px solid transparent
+
+  li:last-of-type a.nav-link
+    margin-right: 0
 
   .active a .fa
     border-color: $card-bg

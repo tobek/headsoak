@@ -49,15 +49,15 @@
     New Note
   </a>
 
-  <ul>
-    <li *ngFor="let route of mainNavRoutes" [class.active]="route.path ? router.url.indexOf('/' + route.path) === 0 : router.url === '/'">
-      <a class="nav-link" [routerLink]="[route.path]">
+  <ul
+    ><li *ngFor="let route of mainNavRoutes" [class.active]="route.path ? router.url.indexOf('/' + route.path) === 0 : router.url === '/'"
+      ><a class="nav-link" [routerLink]="[route.path]">
         <!-- @TODO/optimization These could be a one time binding -->
         <div><i class="fa fa-lg fa-{{ route.data.iconSlug }}"></i></div>
         {{ route.data.name }}
-      </a>
-    </li>
-  </ul>
+      </a
+    ></li
+  ></ul>
 </nav>
 
 <main [hidden]="! dataService.user.loggedIn">
