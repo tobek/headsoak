@@ -56,14 +56,15 @@ export const routes: RouterConfig = [
     component: EmptyComponent
   },
 
-  // Just to avoid 404s:
+  // @HACK These should be in `children` array of `/tags` path but I can't get it to work.
   {
     path: 'tags/:tagId/:tagName',
-    data: {
-      navSection: '[none]',
-    },
     component: EmptyComponent
-  }
+  },
+  {
+    path: 'tags/:tagId/:tagName/:section',
+    component: EmptyComponent
+  },
 
   {
     path: 'settings',

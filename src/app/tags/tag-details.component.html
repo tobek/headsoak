@@ -9,23 +9,23 @@
     ></tag>
 
     <ul class="menu">
-      <li class="item"><a (click)="activePane = 'explore'">
+      <li class="item"><a [routerLink]="['/tags', tag.id, tag.name]">
         <i class="fa fa-fw fa-lg fa-bar-chart"></i>
         Explore
       </a></li>
-      <li class="item"><a (click)="activePane = 'share'">
+      <li class="item"><a [routerLink]="['/tags', tag.id, tag.name, 'share']">
         <i class="fa fa-fw fa-lg fa-users"></i>
         Share
       </a></li>
-      <li class="item"><a (click)="activePane = 'smartTag'">
+      <li class="item"><a [routerLink]="['/tags', tag.id, tag.name, 'smartness']">
         <i class="fa fa-fw fa-lg fa-magic"></i>
         Smart tag
       </a></li>
-      <li class="item"><a (click)="activePane = 'privateTag'">
+      <li class="item"><a [routerLink]="['/tags', tag.id, tag.name, 'privacy']">
         <i class="fa fa-fw fa-lg fa-lock"></i>
         Private tag
       </a></li>
-      <li class="item"><a (click)="activePane = 'delete'">
+      <li class="item"><a [routerLink]="['/tags', tag.id, tag.name, 'delete']">
         <i class="fa fa-fw fa-lg fa-trash-o"></i>
         Delete
       </a></li>
@@ -41,12 +41,12 @@
     <p>Hold yer horses!</p>
   </div>
 
-  <div class="tag-pane" *ngIf="activePane === 'smartTag'">
+  <div class="tag-pane" *ngIf="activePane === 'smartness'">
     <h2 class="card-heading">Smart Tag settings for <span class="tag-name">{{ tag.name }}</span></h2>
     <p>Coming soon to a web browser near you.</p>
   </div>
 
-  <div class="tag-pane" *ngIf="activePane === 'privateTag'">
+  <div class="tag-pane" *ngIf="activePane === 'privacy'">
     <h2 class="card-heading">Manage privacy for <span class="tag-name">{{ tag.name }}</span></h2>
     <p>Like, really soon.</p>
   </div>

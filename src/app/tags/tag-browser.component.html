@@ -1,5 +1,4 @@
-<!-- e.g. just `/tags` -->
-<div *ngIf="router.url.split('/').length < 3">
+<div *ngIf="! activeTag">
   <div class="tag-list">
     <div class="tag-query">
       <div class="search-bar">
@@ -34,9 +33,8 @@
   <div class="tag-pane"></div>
 </div>
 
-<!-- e.g. `/tags/:tagId...` -->
 <tag-details
-  *ngIf="router.url.split('/').length > 2"
-  [tag]="tagsService.tags[router.url.split('/')[2]]"
+  *ngIf="activeTag"
+  [tag]="activeTag"
   (deleted)="tagDeleted($event)"
 ></tag-details>

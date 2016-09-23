@@ -20,6 +20,10 @@ tag-details
 
   .go-back
     +control-heading
+    color: $gray-dark
+
+    &:hover
+      color: $link-hover
 
     .fa
       margin-right: 10px
@@ -54,6 +58,12 @@ tag-details
         +control-heading
         display: inline-block
         padding: 7px 0
+        color: $gray-dark
+
+      &:hover a
+        color: $link-hover
+
+
 
   .tag-pane
     // @TODO/style Animate pane visiblity (and entire tag details component really)
