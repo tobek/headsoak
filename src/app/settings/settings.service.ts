@@ -295,8 +295,7 @@ export class SettingsService {
       default: '0',
       fn: () => {
         if (this.activeUIs.noteQuery) {
-          this.activeUIs.noteQuery.clear(false);
-          this.activeUIs.noteQuery.ensureCorrectRoute();
+          this.activeUIs.noteQuery.clearAndEnsureRoute();
         }
       },
       // @TODO/shortcuts Ditto note on `sSearch`

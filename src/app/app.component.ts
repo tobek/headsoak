@@ -2,6 +2,7 @@ import {Component, ViewChild, ViewEncapsulation, HostBinding} from '@angular/cor
 import {Route, Router, NavigationEnd} from '@angular/router';
 import {Subscription} from 'rxjs';
 
+import {ActiveUIsService} from './active-uis.service';
 import {AnalyticsService} from './analytics.service';
 import {DataService} from './data.service';
 import {SettingsService} from './settings/';
@@ -49,6 +50,7 @@ export class App {
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
+    private activeUIs: ActiveUIsService,
     private router: Router,
     public analyticsService: AnalyticsService,
     public settings: SettingsService,
@@ -75,6 +77,15 @@ export class App {
     const path = event.url.substring(1).split('/')[0];
     const routeInfo = _.find(this.routes, { path: path });
     this.hostClass = 'route--' + routeInfo.data['slug'];
+  }
+
+  logoClick(): void {
+    if (this.activeUIs.noteQuery) {
+      this.activeUIs.noteQuery.clearAndEnsureRoute();
+    }
+    else {
+      this.router.navigateByUrl('/');
+    }
   }
 
   newNote(thenFocus = true): void {

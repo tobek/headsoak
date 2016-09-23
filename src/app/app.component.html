@@ -3,7 +3,7 @@
 <header class="app-header">
   <div class="inner">
     <div class="logo">
-      <h1><i class="fa fa-circle"></i>{{ name }}</h1>
+      <h1 (click)="logoClick()"><i class="fa fa-circle"></i>{{ name }}</h1>
     </div>
 
     <note-query [hidden]="! dataService.user.loggedIn"></note-query>

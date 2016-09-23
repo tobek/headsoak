@@ -22,7 +22,7 @@ import {Logger, AutocompleteService} from '../utils/';
 })
 export class NoteQueryComponent {
   static SEARCHABLE_ROUTES = ['/', '/browse'];
-  static DEFAULT_ROUTE = '/browse';
+  static DEFAULT_ROUTE = '/';
 
   _notes: Array<Note> = [];
 
@@ -266,6 +266,12 @@ export class NoteQueryComponent {
 
     // Have to re-assign this.notes (rather than mutate it) otherwise the view won't update
     this.notes = _.without(this.notes, deletedNote);
+  }
+
+  // Clears query and ensures that we're on a a route where notes are visible
+  clearAndEnsureRoute(defaultRoute?): void {
+    this.clear(false);
+    this.ensureCorrectRoute();
   }
 
 
