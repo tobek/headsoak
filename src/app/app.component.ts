@@ -36,7 +36,7 @@ import {TagBrowserComponent} from './tags/tag-browser.component'; // @NOTE No id
 export class App {
   routes: Route[] = routes;
   mainNavRoutes: Route[];
-  menuNavRoutes: Route[];
+  menuNavSettingsRoutes: Route[];
 
   @HostBinding('class') hostClass = '';
 
@@ -55,7 +55,7 @@ export class App {
     public dataService: DataService
    ) {
     this.mainNavRoutes = _.filter(this.routes, { data: { navSection: 'main' } });
-    this.menuNavRoutes = _.filter(this.routes, { data: { navSection: 'menu' } });
+    this.menuNavSettingsRoutes = _.find(this.routes, { path: 'settings' })['children'];
 
     this.routerSub = router.events
       .filter(event => event instanceof NavigationEnd)

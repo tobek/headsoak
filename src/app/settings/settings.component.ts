@@ -1,5 +1,6 @@
-import {Component, ViewChildren, QueryList} from '@angular/core';
+import {Component, ViewChildren, QueryList, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {Subscription} from 'rxjs';
 
 import {Logger} from '../utils/';
 
@@ -16,9 +17,14 @@ import {SettingComponent} from './setting.component';
   ],
   template: require('./settings.component.html')
 })
-export class SettingsComponent {
-  sectionName: string;
-  section: string; // currently 'settings' or 'shortcuts'
+export class SettingsComponent implements OnInit {
+  section: string;
+  // Currently supported sections:
+  SECTION_NAME_MAP = {
+    settings: 'Settings',
+    shortcuts: 'Shortcuts',
+    account: 'Account',
+  };
 
   initialized = false;
 
@@ -31,6 +37,8 @@ export class SettingsComponent {
 
   private displayedSettings: Setting[] = [];
 
+  private routeDataSub: Subscription;
+
   private _logger = new Logger(this.constructor.name);
 
   constructor(
@@ -41,11 +49,16 @@ export class SettingsComponent {
   }
 
   ngOnInit() {
-    this.sectionName = this.route.snapshot.data['name'];
-    this.section = this.route.snapshot.data['slug'];
+    this.routeDataSub = this.route.data.subscribe((data) => {
+      this.section = data['slug'];
+    });
 
     // Will fire immediately if already initialized, otherwise will wait for initialization and then fire. Either way, will unsubscribe immediately after.
     this.settings.initialized$.first().subscribe(this.init.bind(this));
+  }
+
+  ngOnDestroy() {
+    this.routeDataSub.unsubscribe();
   }
 
   init(): void {

@@ -31,7 +31,7 @@
   </div>
 
   <div class="pane">
-    <h1>{{ sectionName }}</h1>
+    <h1>{{ SECTION_NAME_MAP[section] }}</h1>
 
     <div *ngIf="initialized && section === 'shortcuts'">
       <label>
@@ -71,6 +71,11 @@
 
     <p *ngIf="section === 'shortcuts'"><i>Note: Different browsers and operating systems handle web site shortcuts differently. You might find that some combinations don't work. (For example, <code>ctrl+n</code> will be overridden by "new window" in Chrome on Windows.)</i></p>
 
-    <button class="revert" (click)="revert()">Revert to defaults</button>
+    <button *ngIf="section !== 'account'" class="revert" (click)="revert()">Revert to defaults</button>
+
+    <div *ngIf="initialized && section === 'account'">
+      <!-- @TODO/rewrite This doesn't work obvs, but we can pass the message on. -->
+      <a (click)="loginComponent.deleteAccount()">Delete account</a>
+    </div>
   </div>
 </div>

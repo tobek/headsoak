@@ -14,8 +14,9 @@
 
         <ul class="menu-body">
           <li class="sync-status">Status: {{ dataService.status }}</li>
-          <li *ngFor="let route of menuNavRoutes" [class.active]="'/' + route.path === router.url">
-            <a [routerLink]="[route.path]">
+
+          <li *ngFor="let route of menuNavSettingsRoutes" [class.active]="router.url === '/settings' + (route.path ? '/' + route.path : '')">
+            <a [routerLink]="['/settings', route.path]">
               <!-- @TODO/optimization These could be a one time binding -->
               <i class="fa fa-lg fa-fw fa-{{ route.data.iconSlug }}"></i>
               {{ route.data.name }}
