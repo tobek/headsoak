@@ -78,3 +78,27 @@ tag-details
 
     .tag-name
       font-size: 24px
+
+
+  .note-count-heading
+    margin: 35px 0 15px
+    font-size: 48px
+    font-weight: 600 // @TODO/ece Designs say "semibold" which is 600, but this font doesn't seem to have that and it just rounds up to 700, which is bold
+
+  .cooccurrences
+    +span(6) // e.g. 50% (with a bit of padding)
+    &:last-of-type
+      +span(6 last)
+
+    .tag-name
+      cursor: pointer
+      // @TODO/ece Either these should be full tag chiclets with normal hover state for tags, or it's just the "chiclet-less tag name" style, but still needs hover state
+
+  ul.cooccurring-tags
+    +plain-list
+    padding-left: 15px
+    font-size: 12px
+
+    li
+      display: block
+      padding: 10px 0 0
