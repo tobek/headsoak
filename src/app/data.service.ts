@@ -159,15 +159,22 @@ export class DataService {
     window.setInterval(this.sync.bind(this), 5000);
     // @TODO/rewrite also sync before unload
 
-    // @TODO in theory this is where, later, we can listen for connection state always and handle online/offline
-    let onlineStateTimeout = window.setTimeout(this.offlineHandler.bind(this), 2500);
+    // @TODO in theory this is where, later, we can listen for connection state always and handle online/offline. For now we have an offline mode just when on local
+    let onlineStateTimeout;
+    if (document.location.href.indexOf('localhost') !== -1){
+      onlineStateTimeout = window.setTimeout(this.offlineHandler.bind(this), 5000);
+    }
+    
     this.onlineStateRef = this.ref.child('.info/connected');
     this.onlineStateRef.on('value', (snap) => {
       this.online = snap.val();
       this._logger.log('Online:', this.online);
 
       if (this.online) {
-        window.clearTimeout(onlineStateTimeout);
+        if (onlineStateTimeout) {
+          window.clearTimeout(onlineStateTimeout);
+        }
+
         this.onlineStateRef.off();
         this.fetchData(uid);
       }
@@ -175,7 +182,7 @@ export class DataService {
   }
 
   offlineHandler() {
-    this._logger.log('Still offline after 2.5 seconds');
+    this._logger.log('Still offline after 5 seconds');
     this.onlineStateRef.off();
 
     // @TODO/rewrite This should be dev only, otherwise should init from localStorage or something
