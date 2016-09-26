@@ -23,7 +23,8 @@ export class ActiveUIsService {
   private _focusedNoteComponent$ = new ReplaySubject<NoteComponent>(1);
   private _openNoteComponent$ = new ReplaySubject<NoteComponent>(1);
 
-  // The following can be subscribed to to be notified of updates to the active UI. If there is a current truthy value, any subscription will immediately be called with that value. Subscribing with `.first().subscribe(...)` will call immediately with current truthy value if any and then unsubscribe, otherwise will be called when there is a truthy value and then unsubscribe. (Filtering the private subject is what ensures that if the active UI is set to null, it doesn't replay or emit a null value.)
+  // The following can be subscribed to to be notified of updates to the active UI. If there is a current truthy value, any subscription will immediately be called with that value. Subscribing with `.first().subscribe(...)` will call immediately with current truthy value if any and then unsubscribe, otherwise will be called when there *is* a truthy value and then unsubscribe.
+  // (Filtering the private subject in the following declarations is what ensures that if the active UI is set to null, it doesn't replay or emit a null value.)
   public home$ = this._home$.filter(val => !! val);
   public noteBrowser$ = this._noteBrowser$.filter(val => !! val);
   public noteQuery$ = this._noteQuery$.filter(val => !! val);

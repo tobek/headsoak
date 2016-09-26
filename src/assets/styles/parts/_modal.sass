@@ -1,4 +1,4 @@
-.modal
+modal
   z-index: 100000
   overflow: auto // Not sure why, but saw this in Vex modal
 
@@ -11,32 +11,32 @@
     opacity: 1
     transition-timing-function: ease-out
 
-.modal,
-.modal-backdrop
-  -webkit-overflow-scrolling: touch // Not sure why, but saw this in Vex modal
-  position: fixed
-  top: 0
-  right: 0
-  bottom: 0
-  left: 0
+  &,
+  .modal-backdrop
+    -webkit-overflow-scrolling: touch // Not sure why, but saw this in Vex modal
+    position: fixed
+    top: 0
+    right: 0
+    bottom: 0
+    left: 0
 
-.modal-backdrop
-  -webkit-backface-visibility: hidden; // Not sure why, but saw this in Vex modal
-  background: rgba(0, 0, 0, 0.8)
+  .modal-backdrop
+    -webkit-backface-visibility: hidden; // Not sure why, but saw this in Vex modal
+    background: rgba(0, 0, 0, 0.7)
 
-.modal-content-container
-  +outer-container
-  height: 100%
+  .modal-content-container
+    +outer-container
+    height: 100%
 
-.modal-content
-  +card
-  position: relative 
-  width: 620px
-  top: 50%
-  transform: translateY(-35%)
-  margin: 0 auto
+  .modal-content
+    +card
+    position: relative 
+    width: 620px
+    top: 50%
+    transform: translateY(-35%)
+    margin: 0 auto
 
-  transition: transform 0.5s ease-in
-  .modal.on &
-    transform: translateY(-50%)
-    transition-timing-function: ease-out
+    transition: transform 0.5s ease-in
+    .modal.on &
+      transform: translateY(-50%)
+      transition-timing-function: ease-out

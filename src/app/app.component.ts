@@ -3,6 +3,7 @@ import {Route, Router, NavigationEnd} from '@angular/router';
 import {Subscription} from 'rxjs';
 
 import {ActiveUIsService} from './active-uis.service';
+import {ModalService} from './modals/modal.service';
 import {AnalyticsService} from './analytics.service';
 import {DataService} from './data.service';
 import {SettingsService} from './settings/';
@@ -10,9 +11,10 @@ import {Logger} from './utils/logger';
 
 import {routes} from './';
 
-import {HomeComponent} from './home';
-import {LoginComponent} from './account';
-import {NoteQueryComponent} from './notes';
+import {ModalComponent} from './modals/modal.component';
+import {HomeComponent} from './home/';
+import {LoginComponent} from './account/';
+import {NoteQueryComponent} from './notes/';
 import {TagBrowserComponent} from './tags/tag-browser.component'; // @NOTE No idea why, but adding this to `tags/index.ts` and importing from './tags/' makes angular unable to resolve TagBrowerComponent
 
 /*
@@ -24,6 +26,7 @@ import {TagBrowserComponent} from './tags/tag-browser.component'; // @NOTE No id
   pipes: [ ],
   providers: [ ],
   directives: [
+    ModalComponent,
     LoginComponent,
     HomeComponent,
     NoteQueryComponent,
@@ -49,6 +52,7 @@ export class App {
 
   constructor(
     private activeUIs: ActiveUIsService,
+    private modalService: ModalService,
     private router: Router,
     public analyticsService: AnalyticsService,
     public settings: SettingsService,
