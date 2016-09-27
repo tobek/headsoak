@@ -17,6 +17,7 @@ import {Logger} from '../utils/logger';
 export class FeedbackComponent {
 
   feedbackText = '';
+  
   feedbackSubmitted = false;
   isLoading = false;
   isError = false;
@@ -37,6 +38,10 @@ export class FeedbackComponent {
   }
 
   submit() {
+    if (! this.feedbackText) {
+      return;
+    }
+
     // @TODO/ece Loading state here. Maybe spinner in button? Full overlay of modal?
 
     this._logger.log('Submitting feedback:', this.feedbackText);
