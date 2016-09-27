@@ -71,17 +71,7 @@ export class App {
       { data: { navSection: 'menu' } }
     );
 
-    this.initializiationSub = this.dataService.initialized$.subscribe((initialized) => {
-      if (initialized) {
-        setTimeout(() => {
-          this.modalService.close(true);
-        }, 0);
-      }
-
-      document.querySelector('body').classList.add('hide-loader');
-
-      this.initialized = initialized;
-    });
+    this.initializiationSub = this.dataService.initialized$.subscribe(this.appInitialization.bind(this));
 
     this.routerSub = router.events
       .filter(event => event instanceof NavigationEnd)
@@ -97,6 +87,25 @@ export class App {
     this.initializiationSub.unsubscribe();
     this.routerSub.unsubscribe();
     this._logger.log('App component destroyed!');
+  }
+
+  appInitialization(isInitialized: boolean): void {
+    if (isInitialized) {
+      setTimeout(() => {
+        this.modalService.close(true);
+      }, 0);
+    }
+
+    const outerLoader = document.querySelector('.initial-loader.outer');
+    if (outerLoader) {
+      document.querySelector('body').classList.add('hide-loader');
+      setTimeout(function() {
+        // Probably not necesssary, but the .hide-loader class just does opacity and visibility in order for fade to work, and it seems like loader remains animated. Fuck it just get rid of it.
+        outerLoader.remove();
+      }, 5000);
+    }
+
+    this.initialized = isInitialized;
   }
 
   /** Sets class on component host element to reflect current route. @NOTE Right now only supporting "root" routes e.g. /home or /tags. This is because if we get a route like `/tags/199` it's less trivial to match that to the `/tags/:tagId` route, so we'll just match it  to `/tags`. */
