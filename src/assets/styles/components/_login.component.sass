@@ -1,4 +1,65 @@
 login
-  // @TODO/rewrite/account This should be modal or whatevs
-  +container($tablet-large)
   display: block
+  max-width: 300px
+  margin: 10vh auto 0
+
+  @media (max-height: 750px)
+    margin-top: 0
+
+  header
+    text-align: center
+    margin-bottom: 50px
+
+  .logo
+    h1
+      margin-bottom: 0
+
+    .fa
+      display: block
+      margin-bottom: 10px
+
+    .subheading
+      color: $gray
+      letter-spacing: 1.2px
+
+  input
+    display: block
+    width: 100%
+    margin-bottom: 40px
+    padding-right: 5px
+    padding-left: 5px
+    border-bottom-color: $transparent-gray-darkest
+
+    &:last-of-type
+      margin-bottom: 5px
+
+    &::-webkit-input-placeholder
+      color: $gray
+    &::-moz-placeholder
+      color: $gray
+    &:-ms-input-placeholder  
+      color: $gray
+
+  .btn-primary
+    width: 100%
+
+  .forgot-pass
+    opacity: 0.6
+    margin-bottom: 30px
+    padding: 0 10px
+    font-size: 12px
+    color: $transparent-gray
+    letter-spacing: 1.1px
+
+    a
+      color: $primary-fill
+      font-weight: bold
+
+  .sign-up-cta
+    text-align: center
+    letter-spacing: 1.2px
+
+    .btn
+      margin-left: 20px
+
+

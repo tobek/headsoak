@@ -27,8 +27,13 @@ export class ModalComponent {
     'login',
   ];
 
+  FULL_HEIGHT_MODALS = [
+    'login',
+  ];
+
   // @ViewChild(NoteComponent) noteComponent: NoteComponent;
 
+  @HostBinding('class.full-height') fullHeight = false;
   @HostBinding('class.on') visible = false;
   @HostBinding('class.cancellable') cancellable = true;
 
@@ -72,6 +77,7 @@ export class ModalComponent {
     this._activeModal = modalName;
 
     this.cancellable = this.UNCANCELLABLE_MODALS.indexOf(modalName) === -1;
+    this.fullHeight = this.FULL_HEIGHT_MODALS.indexOf(modalName) !== -1;
 
     this.visible = !! modalName;
   }

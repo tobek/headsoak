@@ -1,11 +1,12 @@
-input[type=text]
+input[type=text],
+input[type=email],
+input[type=password]
   border: none
   outline: none
+  +input-underline
+  padding-bottom: 5px
+  letter-spacing: 1.2px
 
-  settings &
-    +input-underline
-    padding-bottom: 5px
-  
 textarea,
   &,
   &:focus,
@@ -50,6 +51,17 @@ textarea,
 
   background-color: $primary-fill
   color: white
+  font-weight: bold
+  text-transform: uppercase
+
+.btn-secondary
+  height: 44px
+  padding: 13px 40px 10px
+
+  border: 1px solid $primary-fill
+  box-shadow: none
+
+  color: $transparent-gray
   font-weight: bold
   text-transform: uppercase
 

@@ -1,23 +1,29 @@
-<div *ngIf="view === 'login'">
-  <h3>log in</h3>
+<header>
+  <div class="logo">
+    <h1 (click)="logoClick()"><i class="fa fa-circle"></i>nutmeg</h1>
+    <div class="subheading">See your mind clearly</div>
+  </div>
+</header>
 
+<div *ngIf="view === 'login'">
   <form id="login-form" ref-loginForm="ngForm" (ngSubmit)="login(); pseudoLogin(pseudoLoginIframe)">
-    <input name="email" type="email" placeholder="email" autocomplete="email" required ngControl="email" [(ngModel)]="email">
-    <input name="password" type="password" placeholder="password" autocomplete="current-password" required ngControl="password" [(ngModel)]="password">
-    <input type="submit" value="go" [disabled]="! loginForm.valid">
+    <input name="email" type="email" placeholder="E-mail address" autocomplete="email" required ngControl="email" [(ngModel)]="email">
+
+    <input name="password" type="password" placeholder="Password" autocomplete="current-password" required ngControl="password" [(ngModel)]="password">
+    <div class="forgot-pass">
+      Forgot your password? <a (click)="forgotPassword()">Reset password</a>
+    </div>
+
+    <button class="btn btn-primary" type="submit" [disabled]="! loginForm.valid">Sign In</button>
     <!-- <p ng-show="u.loading" class="loader"><img src="/img/loader-white.gif"></p> -->
 
     <iframe ref-pseudoLoginIframe id="pseudo-login-iframe" src="/pseudo-login.html" style="width:0px; height:0px; border:0px;"></iframe>
   </form>
 
-  <p>
-    <button (click)="forgotPassword()">forgot password?</button>
-  </p>
-
-  <p>
-    or
-    <button class="create-account-link" (click)="view = 'create-account'">create an account</button>
-  </p>
+  <div class="sign-up-cta">
+    New to Nutmeg?
+    <button class="btn btn-secondary create-account-link" (click)="view = 'create-account'">Sign Up</button>
+  </div>
 </div>
 
 <div *ngIf="view === 'create-account'">
