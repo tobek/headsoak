@@ -69,9 +69,24 @@ modal
     margin-left: 10px
 
 
-.loading
+.loading-modal
+  z-index: 1
+  position: absolute
+  width: 100%
+  height: 100%
+  left: 0
+  top: 0
+  background-color: white
   text-align: center
-  
+
+  opacity: 0
+  visibility: hidden
+  transition: visibility $transition-med ease-in, opacity $transition-med ease-in
+
+  &.is--loading
+    opacity: 1
+    visibility: visible
+
 
 feedback
   display: block
