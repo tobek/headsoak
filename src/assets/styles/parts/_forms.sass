@@ -9,8 +9,11 @@ input[type=text]
 textarea,
   &,
   &:focus,
-  &:active // @TODO/ece @TODO/styles Active/focus state for note?
-    border: 0
+  &:active
+    // @TODO/ece @TODO/styles Active/focus state for note? For other textareas like in feedback modal?
+    width: 100%
+    padding: 20px
+    border: 1px solid $gray-stroke
     outline: none
 
 .btn
@@ -36,7 +39,16 @@ textarea,
   border: 0
   border-radius: 0
   outline: 0
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 2px 0 $transparent-gray-dark
+
+.btn-primary
+  height: 44px
+  padding: 13px 40px 10px
+
+  background-color: $primary-fill
+  color: white
+  font-weight: bold
+  text-transform: uppercase
 
 .btn-danger
   background-color: $error-fill
