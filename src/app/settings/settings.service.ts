@@ -3,6 +3,7 @@ import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 import {Setting, Shortcut} from './';
 import {ActiveUIsService} from '../active-uis.service';
+import {ModalService} from '../modals/modal.service';
 import {DataService} from '../';
 
 import {Logger, utils} from '../utils/';
@@ -343,12 +344,23 @@ export class SettingsService {
       description: 'Unfocuses from any input/textarea, closes any open modal.',
       default: 'esc',
       fn: () => {
+        if (this.modalService.isVisible) {
+          if (! this.modalService.isCancellable) {
+            return;
+          }
+          else {
+            this.modalService.close();
+            return;
+          }
+        }
+
         // @TODO Focusing on #blur-hack prevents user from using arrow keys to scroll, and triggeringclick on window or other element doesn't seem to help.
         (<HTMLInputElement> document.querySelector('#blur-hack')).focus();
 
         // @TODO/rewrite/modals What if they're in a cancellable modal? This could help:
         // utils.simulateClick(document.querySelector('body'));
       },
+      ngZone: true,
       internal: true,
       noMod: true,
       // allowOnModal: true,
@@ -362,7 +374,8 @@ export class SettingsService {
   private dataService: DataService;
 
   constructor(
-    private activeUIs: ActiveUIsService
+    private activeUIs: ActiveUIsService,
+    private modalService: ModalService
   ) {}
 
   init(settingsData: any, dataService: DataService): void {
