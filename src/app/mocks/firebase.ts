@@ -48,20 +48,23 @@ export class FirebaseMock {
   root() {
     return this;
   }
-  child(key) {
+  child(key: string) {
     return this;
   }
 
-  update(data, cb) {
+  update(data: any, cb: Function) {
     cb();
   }
-  set(value) {
+  set(value: any, cb: Function) {
+  }
+  push(value: any, cb: Function) {
+
   }
 
-  on(event, cb) {
+  on(event: string, cb: Function, err?: Function) {
     this.mockOnCb = cb;
   }
-  once(event, cb) {
+  once(event: string, cb: Function, err?: Function) {
     this.mockOnCb = cb;
   }
   off(event?) {}

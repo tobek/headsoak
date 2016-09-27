@@ -17,7 +17,7 @@ textarea,
     outline: none
 
 .btn
-  // @TODO/ece Hover and active states
+  // @TODO/ece Hover and active and disabled states
   cursor: pointer
   touch-action: manipulation
   user-select: none
@@ -41,6 +41,9 @@ textarea,
   outline: 0
   box-shadow: 0 1px 2px 0 $transparent-gray-dark
 
+  &[disabled]
+    cursor: default
+
 .btn-primary
   height: 44px
   padding: 13px 40px 10px
@@ -52,3 +55,11 @@ textarea,
 
 .btn-danger
   background-color: $error-fill
+
+
+.alert
+  // @TODO/animation Animate fading in
+  // @TODO/ece Currently only used in feedback, presumably something like http://getbootstrap.com/components/#alerts - or can we rely entirely on tooltips?
+
+.alert-danger
+  color: $error-stroke

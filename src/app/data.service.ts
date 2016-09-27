@@ -28,6 +28,8 @@ export class DataService {
 
   status: string; // 'synced' | 'syncing' | 'unsynced' | 'disconnected'
 
+  ref: Firebase | FirebaseMock;
+
   /** This stores data that needs to be synced to server. Periodically checked by this.sync() */
   private digest: {
     'nuts': { [key: string]: Note },
@@ -40,8 +42,7 @@ export class DataService {
   private syncTasksRemaining = 0;
 
   private _logger = new Logger(this.constructor.name);
-  private ref: Firebase | any;
-  private onlineStateRef: Firebase;
+  private onlineStateRef: Firebase | FirebaseMock;
 
   constructor(
     public ngZone: NgZone,

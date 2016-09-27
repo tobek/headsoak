@@ -1109,24 +1109,7 @@ function (
   }
 
   $s.submitFeedback = function(feedback, name) {
-    console.log("calling submitFeedback()");
-    if (!feedback) {
-      alert("You forgot to enter any feedback.");
-      return false;
-    }
-
-    new Firebase('https://nutmeg.firebaseio.com/feedback/').push({
-      'feedback': feedback,
-      'timestamp': new Date().toString(),
-      'name': name || null,
-      'email': $s.u.user.email
-    }, function(err) {
-      if (err) console.log(err);
-      console.log("feedback submitted and synced to Firebase");
-    });
-
-    alert("Thanks!");
-    return true;
+    // DONE
   };
 
   // handy for accessing and playing with things from console while debugging
