@@ -43,7 +43,7 @@ export class FeedbackComponent {
 
     this.isLoading = true;
 
-    this.dataService.ref.child('feedback').push({
+    this.dataService.ref.root().child('feedback').push({
       feedback: this.feedbackText,
       timestamp: new Date().toString(),
       uid: this.dataService.user.uid,

@@ -52,12 +52,12 @@ export class FirebaseMock {
     return this;
   }
 
-  update(data: any, cb: Function) {
+  update(data: any, cb?: Function) {
     cb();
   }
-  set(value: any, cb: Function) {
+  set(value: any, cb?: Function) {
   }
-  push(value: any, cb: Function) {
+  push(value: any, cb?: Function) {
 
   }
 
