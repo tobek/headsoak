@@ -6,6 +6,8 @@
       <i class="fa fa-times"></i>
     </span>
 
+    <login *ngIf="activeModal === 'login'"></login>
+
     <feedback *ngIf="activeModal === 'feedback'"></feedback>
 
     <div *ngIf="activeModal === 'alert'">

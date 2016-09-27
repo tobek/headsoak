@@ -1,10 +1,14 @@
 import {Injectable} from '@angular/core';
+import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 import {ModalComponent} from './modal.component';
 
 @Injectable()
 export class ModalService {
   modal: ModalComponent;
+
+  /** Emits changes in which modal is active. */
+  activeModal$ = new ReplaySubject<string>(1);
 
   constructor(
   ) {
@@ -16,19 +20,27 @@ export class ModalService {
 
   /** Whether there's an active modal that can be cancelled as opposed to a mandatory thing. Currently all modals are cancellable so just return true. */
   get isCancellable(): boolean {
-    return true;
+    return this.modal && this.modal.visible && this.modal.cancellable;
   }
 
-  close(): void {
-    this.modal.close();
+  close(evenIfUncancellable?: boolean): void {
+    if (! this.modal) {
+      return;
+    }
+    
+    this.modal.close(evenIfUncancellable);
+  }
+
+  login(): void {
+    this.activeModal$.next('login');
   }
 
   alert(message: string): void {
     this.modal.message = message;
-    this.modal.activeModal = 'alert';
+    this.activeModal$.next('alert');
   }
 
   feedback(): void {
-    this.modal.activeModal = 'feedback';
+    this.activeModal$.next('feedback');
   }
 }

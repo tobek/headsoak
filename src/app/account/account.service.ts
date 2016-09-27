@@ -1,17 +1,18 @@
 import {Injectable} from '@angular/core';
-import {Subject} from 'rxjs/Subject';
+import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 const Firebase = require('firebase');
 
 import {Logger} from '../utils/logger';
 import {AnalyticsService} from '../analytics.service';
 import {DataService} from '../data.service';
+import {ModalService} from '../modals/modal.service';
 import {UserService} from './user.service';
 import {NotesService} from '../notes/';
 
 @Injectable()
 export class AccountService {
-  loginState$: Subject<string>;
+  loginState$ = new ReplaySubject<string>(1);
 
   private _logger: Logger = new Logger(this.constructor.name);
   private ref: Firebase;
@@ -19,12 +20,11 @@ export class AccountService {
   constructor(
     private notes: NotesService,
     private dataService: DataService,
+    private modalService: ModalService,
     private analytics: AnalyticsService,
     public user: UserService
   ) {
     this.ref = new Firebase('https://nutmeg.firebaseio.com/');
-
-    this.loginState$ = new Subject<string>();
   }
 
   init() {
@@ -43,15 +43,16 @@ export class AccountService {
 
         // $s.u.loading = true; // while notes are loading @TODO/rewrite
 
-        this.handleLogIn(authData);
+        this.handleLoggedIn(authData);
       }
       else {
         // They're logged out
-        this.loggedOut();
+        this.handleLoggedOut();
       }
     });
   }
 
+  /** User has initiated login attempt. */
   login(email: string, password: string) {
     // @TODO/rewrite
     // $s.u.loading = true;
@@ -91,7 +92,11 @@ export class AccountService {
     });
   }
 
-  handleLogIn(authData) {
+  /** Firebase is in a logged-in state, whether page loaded that way or user has just logged in. */
+  handleLoggedIn(authData) {
+    // @TODO/now This is where loading state would show
+    this.modalService.close(true);
+
     this.user.setData({
       uid: authData.uid,
       email: authData.provider && authData[authData.provider] && authData[authData.provider].email
@@ -118,11 +123,11 @@ export class AccountService {
   /** User explicitly requested to logout. */
   logout() {
     this.analytics.event('Account', 'logout');
-    this.ref.unauth(); // will trigger `loggedOut` via firebase auth listener
+    this.ref.unauth(); // will trigger `handleLoggedOut` via firebase auth listener
   }
 
   /** Firebase is in a logged-out state, whether page loaded that way or user has just logged out. */
-  loggedOut() {
+  handleLoggedOut() {
     this._logger.info('logged out');
 
     this.dataService.clear();
@@ -133,6 +138,8 @@ export class AccountService {
     // $s.m.modal = 'login';
 
     this.loginState$.next('logged-out');
+
+    this.modalService.login();
   }
 
   passwordReset(email: string) {

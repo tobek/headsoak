@@ -4,6 +4,7 @@ import {Subscription} from 'rxjs';
 
 import {ActiveUIsService} from './active-uis.service';
 import {ModalService} from './modals/modal.service';
+import {AccountService} from './account/account.service';
 import {AnalyticsService} from './analytics.service';
 import {DataService} from './data.service';
 import {SettingsService} from './settings/';
@@ -13,7 +14,6 @@ import {routes} from './';
 
 import {ModalComponent} from './modals/modal.component';
 import {HomeComponent} from './home/';
-import {LoginComponent} from './account/';
 import {NoteQueryComponent} from './notes/';
 import {TagBrowserComponent} from './tags/tag-browser.component'; // @NOTE No idea why, but adding this to `tags/index.ts` and importing from './tags/' makes angular unable to resolve TagBrowerComponent
 
@@ -27,7 +27,6 @@ import {TagBrowserComponent} from './tags/tag-browser.component'; // @NOTE No id
   providers: [ ],
   directives: [
     ModalComponent,
-    LoginComponent,
     HomeComponent,
     NoteQueryComponent,
     TagBrowserComponent,
@@ -43,7 +42,6 @@ export class App {
 
   @HostBinding('class') hostClass = '';
 
-  @ViewChild(LoginComponent) loginComponent: LoginComponent;
   @ViewChild(HomeComponent) homeComponent: HomeComponent;
 
   private routerSub: Subscription;
@@ -54,6 +52,7 @@ export class App {
     private activeUIs: ActiveUIsService,
     private modalService: ModalService,
     private router: Router,
+    public accountService: AccountService,
     public analyticsService: AnalyticsService,
     public settings: SettingsService,
     public dataService: DataService
@@ -77,6 +76,8 @@ export class App {
 
   ngOnInit() {
     this._logger.log('App component initializing');
+
+    this.accountService.init();
   }
   ngOnDestroy() {
     this.routerSub.unsubscribe();

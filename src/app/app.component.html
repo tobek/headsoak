@@ -32,7 +32,7 @@
             Feedback
           </a></li>
 
-          <li (click)="loginComponent.logout()"><a>
+          <li (click)="accountService.logout()"><a>
             <i class="fa fa-lg fa-fw fa-sign-out"></i>
             Logout
           </a></li>
@@ -41,8 +41,6 @@
     </div>
   </div>
 </header>
-
-<login></login>
 
 <nav class="app-nav" *ngIf="dataService.user.loggedIn">
   <a class="new-note" (click)="newNote()">

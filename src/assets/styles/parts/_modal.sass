@@ -44,10 +44,14 @@ modal
 
   .modal-close
     +icon-button
+    display: none
     position: absolute
     padding: 10px
     top: 10px
     right: 10px
+
+  &.cancellable .modal-close
+    display: inline-block;
 
   h3
     +card-heading

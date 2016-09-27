@@ -13,7 +13,7 @@ export class LoginComponent {
   password: string = '';
   pass1: string = '';
   pass2: string = '';
-  view: string;
+  view: 'login' | 'create-account';
 
   private loginSub: Subscription;
 
@@ -21,14 +21,17 @@ export class LoginComponent {
   }
 
   ngOnInit() {
+    // Since accountService.loginState$ is a ReplaySubject, this will fire immediately if there already is a login state, otherwise will wait for initialization and then fire
     this.loginSub = this.accountService.loginState$.subscribe((loginState) => {
       // @TODO running in zone here shouldn't be necessary, Angular2 should use Zone to automatically detect Rx event and update view, and seems to work in regular usage, but e2e test isn't working without this.
       this.zone.run(() => {
         switch (loginState) {
           case 'logged-in':
-            this.view = 'logout';
+            this.view = null;
+            this.resetInputs();
             break;
           case 'logged-out':
+            this.resetInputs();
             this.view = 'login';
             break;
           case 'error':
@@ -41,8 +44,6 @@ export class LoginComponent {
           }
       });
     });
-
-    this.accountService.init();
   }
 
   ngOnDestroy() {
@@ -72,11 +73,6 @@ export class LoginComponent {
     emailInput.value = this.email;
     passwordInput.value = this.password;
     loginForm.submit();
-  }
-
-  logout() {
-    this.accountService.logout();
-    this.resetInputs();
   }
 
   forgotPassword() {
