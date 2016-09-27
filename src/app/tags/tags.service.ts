@@ -109,4 +109,8 @@ export class TagsService {
 
     return sortedTags;
   }
+
+  clear(): void {
+    this.tags = {};
+  }
 }

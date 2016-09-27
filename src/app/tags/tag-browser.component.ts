@@ -42,6 +42,7 @@ export class TagBrowserComponent {
 
   private querySub: Subscription;
   private routerSub: Subscription;
+  private tagInitializationSub: Subscription;
   // private scrollSub: Subscription;
 
   private _logger: Logger = new Logger(this.constructor.name);
@@ -60,8 +61,8 @@ export class TagBrowserComponent {
   }
 
   ngOnInit() {
-    // Will fire immediately if already initialized, otherwise will wait for initialization and then fire. Either way, will unsubscribe immediately after.
-    this.tagsService.initialized$.first().subscribe(this.initTags.bind(this));
+    // Will fire immediately if already initialized, otherwise will wait for initialization and then fire.
+    this.tagInitializationSub = this.tagsService.initialized$.subscribe(this.initTags.bind(this));
 
     this.querySub = this.queryUpdated$
       .debounceTime(200)
@@ -79,6 +80,7 @@ export class TagBrowserComponent {
   ngOnDestroy() {
     this.querySub.unsubscribe();
     this.routerSub.unsubscribe();
+    this.tagInitializationSub.unsubscribe();
     // this.scrollSub.unsubscribe();
   }
 

@@ -40,6 +40,7 @@ export class NoteQueryComponent {
   tagsUpdated$ = new Subject<Tag[]>();
   private queryUpdated$ = new Subject<void>();
   private querySub: Subscription;
+  private noteInitializationSub: Subscription;
   private noteUpdatedSub: Subscription;
 
   private _logger: Logger = new Logger(this.constructor.name);
@@ -65,8 +66,8 @@ export class NoteQueryComponent {
   }
 
   ngOnInit() {
-    // Will fire immediately if already initialized, otherwise will wait for initialization and then fire. Either way, will unsubscribe immediately after.
-    this.notesService.initialized$.first().subscribe(this.initNotes.bind(this));
+    // Will fire immediately if already initialized, otherwise will wait for initialization and then fire
+    this.noteInitializationSub = this.notesService.initialized$.subscribe(this.initNotes.bind(this));
 
     this.querySub = this.queryUpdated$
       .debounceTime(250)
@@ -80,6 +81,7 @@ export class NoteQueryComponent {
 
   ngOnDestroy() {
     this.querySub.unsubscribe();
+    this.noteInitializationSub.unsubscribe();
     this.noteUpdatedSub.unsubscribe();
 
     if (this.activeUIs.noteQuery === this) {

@@ -44,20 +44,10 @@ export class AccountService {
         // $s.u.loading = true; // while notes are loading @TODO/rewrite
 
         this.handleLogIn(authData);
-
-        this.loginState$.next('logged-in');
       }
       else {
         // They're logged out
-        this._logger.info('logged out');
-        this.user.clear();
-
-        // @TODO/rewrite
-        // $s.u.loading = false;
-        // window.clearInterval($s.u.digestInterval);
-        // $s.m.modal = 'login';
-
-        this.loginState$.next('logged-out');
+        this.loggedOut();
       }
     });
   }
@@ -121,12 +111,28 @@ export class AccountService {
 
       userRef.on('child_changed', this.userDataUpdated.bind(this));
     });
+
+    this.loginState$.next('logged-in');
   }
 
+  /** User explicitly requested to logout. */
   logout() {
-    // @TODO/rewrite/account Empty out data!
     this.analytics.event('Account', 'logout');
-    this.ref.unauth();
+    this.ref.unauth(); // will trigger `loggedOut` via firebase auth listener
+  }
+
+  /** Firebase is in a logged-out state, whether page loaded that way or user has just logged out. */
+  loggedOut() {
+    this._logger.info('logged out');
+
+    this.dataService.clear();
+
+    // @TODO/rewrite
+    // $s.u.loading = false;
+    // window.clearInterval($s.u.digestInterval);
+    // $s.m.modal = 'login';
+
+    this.loginState$.next('logged-out');
   }
 
   passwordReset(email: string) {

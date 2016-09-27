@@ -417,4 +417,8 @@ export class SettingsService {
       this.data[settingId].updated(newVal);
     }
   }
+
+  clear(): void {
+    this.data = {};
+  }
 }

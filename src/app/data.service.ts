@@ -166,7 +166,7 @@ export class DataService {
       onlineStateTimeout = window.setTimeout(this.offlineHandler.bind(this), 5000);
     }
     
-    this.onlineStateRef = this.ref.child('.info/connected');
+    this.onlineStateRef = this.ref.root().child('.info/connected');
     this.onlineStateRef.on('value', (snap) => {
       this.online = snap.val();
       this._logger.log('Online:', this.online);
@@ -195,7 +195,7 @@ export class DataService {
   }
 
   fetchData(uid: string) {
-    this.ref = this.ref.child('users/' + uid);
+    this.ref = this.ref.root().child('users/' + uid);
 
     this.ref.once('value', (snapshot) => {
       var data = snapshot.val();
@@ -359,5 +359,13 @@ export class DataService {
     }, () => {});
 
     return [nuts, tags];
+  }
+
+  /** Clears all loaded data. */
+  clear(): void {
+    this.notes.clear();
+    this.tags.clear();
+    this.settings.clear();
+    this.user.clear();
   }
 }

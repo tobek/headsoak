@@ -38,12 +38,7 @@ export class NotesService {
   constructor(
     public tagsService: TagsService
   ) {
-    this.index = lunr(function() {
-      // this.field('title', {boost: 10});
-      this.field('tags', {boost: 100});
-      this.field('body', {boost: 1});
-      this.ref('id');
-    });
+    this.initializeIndex();
   }
 
   init(notesData: Object, dataService: DataService) {
@@ -99,6 +94,15 @@ export class NotesService {
     this.removeNoteFromIndex(note);
     this.dataService.removeData('note', note.id);
     delete this.notes[note.id];
+  }
+
+  initializeIndex(): void {
+    this.index = lunr(function() {
+      // this.field('title', {boost: 10});
+      this.field('tags', {boost: 100});
+      this.field('body', {boost: 1});
+      this.ref('id');
+    });
   }
 
   // @TODO/testing note indexing and querying should be tested
@@ -266,5 +270,10 @@ export class NotesService {
    */
   getNotes(query = '', queryTags?: Tag[], sortOpt?, notesToSort?: Note[]): Note[] {
     return this.sortNotes(sortOpt, this.doQuery(query, queryTags));
+  }
+
+  clear(): void {
+    this.notes = {};
+    this.initializeIndex();
   }
 }
