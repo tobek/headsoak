@@ -78,6 +78,7 @@ export const routes: RouterConfig = [
         data: {
           name: 'Settings',
           slug: 'settings',
+          navSection: 'menu',
           iconSlug: 'sliders',
         },
         component: SettingsComponent
@@ -99,6 +100,16 @@ export const routes: RouterConfig = [
           slug: 'account',
           navSection: 'menu',
           iconSlug: 'smile-o',
+        },
+        component: SettingsComponent
+      },
+      {
+        path: 'feedback',
+        data: {
+          name: 'Feedback',
+          slug: 'feedback',
+          // navSection: 'menu', // In the nav menu we activate the feedback modal rather than go to feedback in settings screen
+          iconSlug: 'comment-o',
         },
         component: SettingsComponent
       },

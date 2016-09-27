@@ -33,6 +33,8 @@
   <div class="pane">
     <h1>{{ SECTION_NAME_MAP[section] }}</h1>
 
+    <feedback *ngIf="section === 'feedback'"></feedback>
+
     <div *ngIf="initialized && section === 'shortcuts'">
       <label>
         Modifier key(s):
@@ -48,7 +50,7 @@
     </div>
 
     <!-- @TODO/rewrite/settings Need tooltips in here -->
-    <table>
+    <table *ngIf="section !== 'feedback'">
       <thead *ngIf="section === 'shortcuts'">
         <tr>
           <td>Action</td>
@@ -72,7 +74,7 @@
     <p *ngIf="section === 'shortcuts'"><i>Note: Different browsers and operating systems handle web site shortcuts differently. You might find that some combinations don't work. (For example, <code>ctrl+n</code> will be overridden by "new window" in Chrome on Windows.)</i></p>
 
     <!-- @TODO/ece What style should this button be? Could be danger but might be too intense and eye catching. Maybe warning? Or just default but pops up alert. -->
-    <button *ngIf="section !== 'account'" class="revert" (click)="revert()">Revert to defaults</button>
+    <button *ngIf="section !== 'account' && section !== 'feedback'" class="revert" (click)="revert()">Revert to defaults</button>
 
     <div *ngIf="initialized && section === 'account'">
       <img class="avatar" src="{{ settings.get('profileImageUrl', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7') }}" />

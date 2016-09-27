@@ -9,11 +9,13 @@ import {SettingsService} from './settings.service';
 import {Setting, Shortcut} from './';
 
 import {SettingComponent} from './setting.component';
+import {FeedbackComponent} from '../modals/feedback.component';
 
 @Component({
   selector: 'settings',
   directives: [
     SettingComponent,
+    FeedbackComponent,
   ],
   template: require('./settings.component.html')
 })
@@ -24,6 +26,7 @@ export class SettingsComponent implements OnInit {
     settings: 'Settings',
     shortcuts: 'Shortcuts',
     account: 'Account',
+    feedback: 'Feedback',
   };
 
   initialized = false;

@@ -58,8 +58,17 @@ export class App {
     public settings: SettingsService,
     public dataService: DataService
    ) {
-    this.mainNavRoutes = _.filter(this.routes, { data: { navSection: 'main' } });
-    this.menuNavSettingsRoutes = _.find(this.routes, { path: 'settings' })['children'];
+    this.mainNavRoutes = _.filter(
+      this.routes,
+      { data: { navSection: 'main' } }
+    );
+    this.menuNavSettingsRoutes = _.filter(
+      _.find(
+        this.routes,
+        { path: 'settings' }
+      )['children'],
+      { data: { navSection: 'menu' } }
+    );
 
     this.routerSub = router.events
       .filter(event => event instanceof NavigationEnd)
