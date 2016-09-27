@@ -4,7 +4,7 @@ modal
 
   visibility: hidden
   opacity: 0
-  transition: visibility 0.5s ease-in, opacity 0.5s ease-in
+  transition: visibility $transition-med ease-in, opacity $transition-med ease-in
 
   &.on
     visibility: visible
@@ -37,7 +37,7 @@ modal
     transform: translateY(-35%)
     margin: 0 auto
 
-    transition: transform 0.5s ease-in
+    transition: transform $transition-med ease-in
 
   &.on .modal-content
     transform: translateY(-50%)

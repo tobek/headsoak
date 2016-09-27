@@ -23,7 +23,7 @@
     border: 1px solid transparent
     border-top-width: 0
     border-bottom-width: 0
-    transition: border-color 0.2s
+    transition: border-color $transition-fast
 
     &:hover
       border-color: $transparent-gray-light
@@ -64,7 +64,7 @@
     +plain-list
     visibility: hidden
     opacity: 0
-    transition: visibility 0.2s, opacity 0.2s
+    transition: visibility $transition-fast, opacity $transition-fast
 
     z-index: 10
     cursor: default
@@ -146,7 +146,7 @@
         display: inline-block
         margin-bottom: -3px
         padding: 0 5px 4px
-        transition: border-color 0.2s
+        transition: border-color $transition-fast
         border-bottom: 4px solid transparent
 
   li:last-of-type a.nav-link
