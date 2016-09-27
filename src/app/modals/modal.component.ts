@@ -57,7 +57,17 @@ export class ModalComponent {
   }
   set activeModal(modalName: ModalType) {
     this._activeModal = modalName;
-    this.visible = true;
+
+    this.visible = !! modalName;
+  }
+
+  close() {
+    this.visible = false;
+
+    // Can't remove activeModal immediately or it'll disappear while modal is fading, so wait a little.
+    setTimeout(() => {
+      this.activeModal = null;
+    }, 1000);
   }
 
 }

@@ -1,7 +1,11 @@
-<div class="modal-backdrop"></div>
+<div class="modal-backdrop" (click)="close()"></div>
 
 <div class="modal-content-container">
   <div class="modal-content">
+    <span class="modal-close" (click)="close()">
+        <i class="fa fa-times"></i>
+    </span>
+
     <feedback *ngIf="activeModal === 'feedback'"></feedback>
   </div>
 </div>
