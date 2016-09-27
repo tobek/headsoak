@@ -72,6 +72,14 @@ export class App {
     );
 
     this.initializiationSub = this.dataService.initialized$.subscribe((initialized) => {
+      if (initialized) {
+        setTimeout(() => {
+          this.modalService.close(true);
+        }, 0);
+      }
+
+      document.querySelector('body').classList.add('hide-loader');
+
       this.initialized = initialized;
     });
 

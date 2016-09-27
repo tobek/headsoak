@@ -6,6 +6,10 @@
       <i class="fa fa-times"></i>
     </span>
 
+    <div class="loading" *ngIf="activeModal === 'loading'">
+      <i class="initial-loader inner fa fa-spin fa-cube"></i>
+    </div>
+
     <login *ngIf="activeModal === 'login'"></login>
 
     <feedback *ngIf="activeModal === 'feedback'"></feedback>

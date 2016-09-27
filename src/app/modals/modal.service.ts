@@ -14,6 +14,10 @@ export class ModalService {
   ) {
   }
 
+  get activeModal(): string {
+    return this.modal ? this.modal.activeModal : undefined;
+  }
+
   get isVisible(): boolean {
     return this.modal && this.modal.visible;
   }
@@ -33,6 +37,10 @@ export class ModalService {
 
   login(): void {
     this.activeModal$.next('login');
+  }
+
+  loading(): void {
+    this.activeModal$.next('loading');
   }
 
   alert(message: string): void {

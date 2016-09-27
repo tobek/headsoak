@@ -274,13 +274,16 @@ export class DataService {
   }
 
   initFromData(data) {
+    // In theory we should probably not fire this.initialized$ until all the different services are done, but right now the notes service is the only one that takes any real time (cause it also has to calculate lunr index) so we can just wait for that.
+    this.notes.initialized$.first().subscribe(() => {
+      this.initialized$.next(true);
+    });
+
     // @NOTE that we have to initalize tags service before notes service because notes service needs to look up tag names for indexing tag field in notes.
     // @TODO Passing ourselves to notes/tags services who in turn pass us to note/tag models is kind of a cruddy paradigm, but it's partially a holdover from first version of nutmeg and really it makes MVP rewrite a lot easier right now, instead of figuring out how to properly listen to updates and propagate changes accordingly.
     this.settings.init(data.settings, this);
     this.tags.init(data.tags, this);
     this.notes.init(data.nuts, this);
-
-    this.initialized$.next(true);
 
     this.user.setData(data.user);
 
@@ -371,7 +374,7 @@ export class DataService {
   /** Clears all loaded data. */
   clear(): void {
     this.initialized$.next(false);
-    
+
     this.notes.clear();
     this.tags.clear();
     this.settings.clear();

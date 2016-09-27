@@ -39,9 +39,14 @@ main
   transition: opacity $transition-slow
 
   &.uninitialized
+    pointer-events: none
     opacity: 0
 
-// This guy is hardcoded/inlined into index.html - we'll fade it away now
-.initial-loader
+// This guy is hardcoded/inlined into index.html
+.hide-loader .initial-loader.outer
   opacity: 0
   visibility: hidden
+
+.initial-loader.inner
+  left: auto
+  color: $gray-dark

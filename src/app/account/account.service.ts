@@ -94,8 +94,10 @@ export class AccountService {
 
   /** Firebase is in a logged-in state, whether page loaded that way or user has just logged in. */
   handleLoggedIn(authData) {
-    // @TODO/now This is where loading state would show
-    this.modalService.close(true);
+    if (this.modalService.activeModal === 'login') {
+      this.modalService.loading();
+    }
+    // Otherwise (e.g. they were logged in on page load so we never had to show login modal) let's just leave the non-modal, pre-initialization loader visible until everything is initialized.
 
     this.user.setData({
       uid: authData.uid,
