@@ -40,10 +40,12 @@ export class App {
   mainNavRoutes: Route[];
   menuNavSettingsRoutes: Route[];
 
+  initialized = false;
   @HostBinding('class') hostClass = '';
 
   @ViewChild(HomeComponent) homeComponent: HomeComponent;
 
+  private initializiationSub: Subscription;
   private routerSub: Subscription;
 
   private _logger: Logger = new Logger(this.constructor.name);
@@ -69,6 +71,10 @@ export class App {
       { data: { navSection: 'menu' } }
     );
 
+    this.initializiationSub = this.dataService.initialized$.subscribe((initialized) => {
+      this.initialized = initialized;
+    });
+
     this.routerSub = router.events
       .filter(event => event instanceof NavigationEnd)
       .subscribe(this.setRouteClass.bind(this));
@@ -80,6 +86,7 @@ export class App {
     this.accountService.init();
   }
   ngOnDestroy() {
+    this.initializiationSub.unsubscribe();
     this.routerSub.unsubscribe();
     this._logger.log('App component destroyed!');
   }

@@ -1,6 +1,6 @@
 import {Injectable, EventEmitter, NgZone} from '@angular/core';
 import {Router} from '@angular/router';
-import {Subscription} from 'rxjs';
+import {ReplaySubject, Subscription} from 'rxjs';
 
 const Firebase = require('firebase');
 
@@ -24,6 +24,9 @@ export class DataService {
   NEW_FEATURE_COUNT = 12; // Hard-coded so that it only updates when user actually receives updated code with the features
 
   online: boolean; // @TODO/rewrite connection widget should show if offline
+
+  /** Fired with initialization state when allll the data is initialized, or when everything is unloaded. */
+  initialized$ = new ReplaySubject<boolean>(1);
 
   digest$ = new EventEmitter<DataItem>();
 
@@ -277,6 +280,8 @@ export class DataService {
     this.tags.init(data.tags, this);
     this.notes.init(data.nuts, this);
 
+    this.initialized$.next(true);
+
     this.user.setData(data.user);
 
     // @TODO/rewrite
@@ -365,6 +370,8 @@ export class DataService {
 
   /** Clears all loaded data. */
   clear(): void {
+    this.initialized$.next(false);
+    
     this.notes.clear();
     this.tags.clear();
     this.settings.clear();

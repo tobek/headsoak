@@ -30,7 +30,18 @@ html
   right: 0
   bottom: 0
   left: 0
-    
 
 main
   +outer-container
+
+.app-wrapper
+  opacity: 1
+  transition: opacity $transition-slow
+
+  &.uninitialized
+    opacity: 0
+
+// This guy is hardcoded/inlined into index.html - we'll fade it away now
+.initial-loader
+  opacity: 0
+  visibility: hidden

@@ -34,6 +34,7 @@ export class ModalComponent {
   // @ViewChild(NoteComponent) noteComponent: NoteComponent;
 
   @HostBinding('class.full-height') fullHeight = false;
+  @HostBinding('class.windowed') windowed = true;
   @HostBinding('class.on') visible = false;
   @HostBinding('class.cancellable') cancellable = true;
 
@@ -57,7 +58,10 @@ export class ModalComponent {
     this.modalService.modal = this;
 
     this.modalService.activeModal$.subscribe((activeModal: ModalType) => {
-      this.activeModal = activeModal;
+      // setTimeout or else initial animation doesn't seem to work
+      setTimeout(() => {
+        this.activeModal = activeModal;
+      }, 0);
     });
   }
 
@@ -78,6 +82,7 @@ export class ModalComponent {
 
     this.cancellable = this.UNCANCELLABLE_MODALS.indexOf(modalName) === -1;
     this.fullHeight = this.FULL_HEIGHT_MODALS.indexOf(modalName) !== -1;
+    this.windowed = ! this.fullHeight;
 
     this.visible = !! modalName;
   }

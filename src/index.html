@@ -14,6 +14,35 @@
   <%= webpackConfig.htmlElements.headTags %>
   <% } %>
 
+  <!-- Loading screen styles go here. -->
+  <style>
+    html {
+      overflow: hidden;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-width: 100%;
+      min-height: 100%;
+    }
+    body {
+      background-color: #0e465e;
+      background-image: linear-gradient(201deg, #16697f, #0e465e);
+    }
+    .initial-loader {
+      position: absolute;
+      top: 50vh;
+      left: 50vw;
+      margin: -16px 0 0 -16px;
+      color: white;
+      font-size: 32px !important;
+
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 1.5s, visibility 1.5s;
+    }
+  </style>
+
   <!-- @TODO/rewrite These tags are temprary, include properly or replace later. -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
@@ -21,15 +50,13 @@
   <!-- base url -->
   <base href="<%= webpackConfig.metadata.baseUrl %>">
 
-
 </head>
 
 <body>
 
-  <app>
-    Loading...
-    <!-- @TODO/rewrite -->
-  </app>
+  <i class="initial-loader fa fa-spin fa-cube"></i>
+
+  <app></app>
 
   <!-- Google Analytics -->
   <script>
@@ -44,8 +71,6 @@
   <!-- Webpack Dev Server reload -->
   <script src="/webpack-dev-server.js"></script>
   <% } %>
-
-  <input id="blur-hack" class="mousetrap" type="text" />
 
 </body>
 </html>

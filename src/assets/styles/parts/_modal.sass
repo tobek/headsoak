@@ -6,6 +6,9 @@ modal
   opacity: 0
   transition: visibility $transition-med ease-in, opacity $transition-med ease-in
 
+  .uninitialized + &
+    transition-duration: $transition-slow
+
   &.on
     visibility: visible
     opacity: 1
@@ -34,14 +37,17 @@ modal
     width: 620px
     max-width: 90%
     top: 50%
-    transform: translateY(-35%)
+    transform: translateY(-50%)
     margin: 0 auto
 
-    transition: transform $transition-med ease-in
+  &.windowed
+    .modal-content
+      transform: translateY(-35%)
+      transition: transform $transition-med ease-in
 
-  &.on .modal-content
-    transform: translateY(-50%)
-    transition-timing-function: ease-out
+    &.on .modal-content
+      transform: translateY(-50%)
+      transition-timing-function: ease-out
 
   &.full-height .modal-content
     height: 100%

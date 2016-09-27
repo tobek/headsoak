@@ -1,70 +1,74 @@
 <div id="app-bg" class="default"></div>
 
-<header class="app-header">
-  <div class="inner">
-    <div class="logo">
-      <h1 (click)="logoClick()"><i class="fa fa-circle"></i>nutmeg</h1>
-    </div>
+<input id="blur-hack" class="mousetrap" type="text" />
 
-    <note-query [hidden]="! dataService.user.loggedIn"></note-query>
+<div class="app-wrapper" [class.uninitialized]="! initialized">
+  <header class="app-header">
+    <div class="inner">
+      <div class="logo">
+        <h1 (click)="logoClick()"><i class="fa fa-circle"></i>nutmeg</h1>
+      </div>
 
-    <div class="menu-wrapper">
-      <div class="menu status--{{ dataService.status }}" [hidden]="! dataService.user.loggedIn">
-        <img class="avatar" src="{{ settings.get('profileImageUrl', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7') }}" />
+      <note-query [hidden]="! dataService.user.loggedIn"></note-query>
 
-        <ul class="menu-body">
-          <li class="sync-status">Status: {{ dataService.status }}</li>
+      <div class="menu-wrapper">
+        <div class="menu status--{{ dataService.status }}" [hidden]="! dataService.user.loggedIn">
+          <img class="avatar" src="{{ settings.get('profileImageUrl', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7') }}" />
 
-          <li *ngFor="let route of menuNavSettingsRoutes" [class.active]="router.url === '/settings' + (route.path ? '/' + route.path : '')">
-            <a [routerLink]="['/settings', route.path]">
-              <!-- @TODO/optimization These could be a one time binding -->
-              <i class="fa fa-lg fa-fw fa-{{ route.data.iconSlug }}"></i>
-              {{ route.data.name }}
-            </a>
-          </li>
+          <ul class="menu-body">
+            <li class="sync-status">Status: {{ dataService.status }}</li>
 
-          <li class="unimplemented"><a>
-            <i class="fa fa-lg fa-fw fa-user-secret"></i>
-            Private Mode
-          </a></li>
-          <li (click)="modalService.feedback()"><a>
-            <i class="fa fa-lg fa-fw fa-comment-o"></i>
-            Feedback
-          </a></li>
+            <li *ngFor="let route of menuNavSettingsRoutes" [class.active]="router.url === '/settings' + (route.path ? '/' + route.path : '')">
+              <a [routerLink]="['/settings', route.path]">
+                <!-- @TODO/optimization These could be a one time binding -->
+                <i class="fa fa-lg fa-fw fa-{{ route.data.iconSlug }}"></i>
+                {{ route.data.name }}
+              </a>
+            </li>
 
-          <li (click)="accountService.logout()"><a>
-            <i class="fa fa-lg fa-fw fa-sign-out"></i>
-            Logout
-          </a></li>
-        </ul>
+            <li class="unimplemented"><a>
+              <i class="fa fa-lg fa-fw fa-user-secret"></i>
+              Private Mode
+            </a></li>
+            <li (click)="modalService.feedback()"><a>
+              <i class="fa fa-lg fa-fw fa-comment-o"></i>
+              Feedback
+            </a></li>
+
+            <li (click)="accountService.logout()"><a>
+              <i class="fa fa-lg fa-fw fa-sign-out"></i>
+              Logout
+            </a></li>
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
-</header>
+  </header>
 
-<nav class="app-nav" *ngIf="dataService.user.loggedIn">
-  <a class="new-note" (click)="newNote()">
-    <i class="fa fa-lg fa-pencil-square-o"></i>
-    New Note
-  </a>
+  <nav class="app-nav" *ngIf="dataService.user.loggedIn">
+    <a class="new-note" (click)="newNote()">
+      <i class="fa fa-lg fa-pencil-square-o"></i>
+      New Note
+    </a>
 
-  <ul
-    ><li *ngFor="let route of mainNavRoutes" [class.active]="route.path ? router.url.indexOf('/' + route.path) === 0 : router.url === '/'"
-      ><a class="nav-link" [routerLink]="[route.path]">
-        <!-- @TODO/optimization These could be a one time binding -->
-        <div><i class="fa fa-lg fa-{{ route.data.iconSlug }}"></i></div>
-        {{ route.data.name }}
-      </a
-    ></li
-  ></ul>
-</nav>
+    <ul
+      ><li *ngFor="let route of mainNavRoutes" [class.active]="route.path ? router.url.indexOf('/' + route.path) === 0 : router.url === '/'"
+        ><a class="nav-link" [routerLink]="[route.path]">
+          <!-- @TODO/optimization These could be a one time binding -->
+          <div><i class="fa fa-lg fa-{{ route.data.iconSlug }}"></i></div>
+          {{ route.data.name }}
+        </a
+      ></li
+    ></ul>
+  </nav>
 
-<main [hidden]="! dataService.user.loggedIn">
+  <main [hidden]="! dataService.user.loggedIn">
 
-  <router-outlet></router-outlet>
-  <home [hidden]="router.url !== '/' && router.url !== '/focus' && router.url !== '/browse'"></home>
-  <tag-browser [hidden]="router.url.indexOf('/tags') !== 0"></tag-browser>
+    <router-outlet></router-outlet>
+    <home [hidden]="router.url !== '/' && router.url !== '/focus' && router.url !== '/browse'"></home>
+    <tag-browser [hidden]="router.url.indexOf('/tags') !== 0"></tag-browser>
 
-</main>
+  </main>
+</div>
 
 <modal></modal>
