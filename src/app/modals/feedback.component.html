@@ -1,7 +1,7 @@
 <h3>Feedback</h3>
 
 <form ref-feedbackForm="ngForm" (ngSubmit)="submit()">
-  <!-- @TODO/ece Not sure about placeholder text. -->
+  <!-- @TODO/ece Not sure about placeholder text. Previously was "Bug reports and suggestions are eagerly awaited. You'll hear from me personally." which isn't great either. -->
   <textarea name="feedbackText"
     placeholder="Give us your feedback! We're happy to hear from you whether it's big or small."
     required
@@ -10,7 +10,7 @@
     (keyup.control.Enter)="submit()"
   ></textarea>
 
-  <!-- @TODO/ece In theory it could be anonymous and still allow us to respond... but for now the easiest for us to respond would be by email. So we should maybe make that clear - have email field pre-populated with their email, maybe radio button between "email me at ______" or "i'd rather not hear back" or something. -->
+  <!-- @TODO/ece In theory it could be anonymous and still allow us to respond... but for now the easiest for us to respond would be by email. So we should maybe make that clear - have email field pre-populated with their email, maybe radio button between "email me at ______" or "i'd rather not hear back" or something. ALSO: old version has an optional "name" field (pre-populated if they'd set a display name, otherwise they can put something in there)-->
   <button class="btn btn-primary" type="submit" [disabled]="feedbackSubmitted || isLoading || ! feedbackForm.valid">Make Nutmeg better</button>
 
   <p *ngIf="isError" class="alert alert-danger">Oh hey that didn't work, sorry! Try submitting again.</p>

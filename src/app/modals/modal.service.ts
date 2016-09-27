@@ -23,6 +23,11 @@ export class ModalService {
     this.modal.close();
   }
 
+  alert(message: string): void {
+    this.modal.message = message;
+    this.modal.activeModal = 'alert';
+  }
+
   feedback(): void {
     this.modal.activeModal = 'feedback';
   }

@@ -6,6 +6,7 @@ const Firebase = require('firebase');
 
 import {Logger, utils, sampleData} from './utils/';
 import {ActiveUIsService} from './active-uis.service';
+import {ModalService} from './modals/modal.service';
 import {UserService} from './account/user.service';
 import {Note, NotesService} from './notes/';
 import {Tag, TagsService} from './tags/';
@@ -48,6 +49,7 @@ export class DataService {
     public ngZone: NgZone,
     public router: Router,
     public activeUIs: ActiveUIsService,
+    public modalService: ModalService,
     public user: UserService,
     public notes: NotesService,
     public tags: TagsService,

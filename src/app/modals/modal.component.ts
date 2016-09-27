@@ -9,7 +9,7 @@ import {Logger} from '../utils/logger';
 import {FeedbackComponent} from './feedback.component';
 
 
-type ModalType = null | 'feedback' | 'login';
+type ModalType = null | 'feedback' | 'alert';
 
 @Component({
   selector: 'modal',
@@ -26,6 +26,8 @@ export class ModalComponent {
   @HostBinding('class.on') visible = false;
 
   _activeModal: ModalType;
+
+  message: string;
 
   // private noteUpdatedSub: Subscription;
 
@@ -67,6 +69,8 @@ export class ModalComponent {
     // Can't remove activeModal immediately or it'll disappear while modal is fading, so wait a little.
     setTimeout(() => {
       this.activeModal = null;
+
+      this.message = null;
     }, 1000);
   }
 

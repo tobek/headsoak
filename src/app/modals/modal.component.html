@@ -3,9 +3,16 @@
 <div class="modal-content-container">
   <div class="modal-content">
     <span class="modal-close" (click)="close()">
-        <i class="fa fa-times"></i>
+      <i class="fa fa-times"></i>
     </span>
 
     <feedback *ngIf="activeModal === 'feedback'"></feedback>
+
+    <div *ngIf="activeModal === 'alert'">
+      <!-- @TODO/ece Style of this? Currently only used for progTagCantChangeAlert, but prob will be used elsewhere -->
+      <p>{{ message }}</p>
+
+      <button class="btn" (click)="close()">OK</button>
+    </div>
   </div>
 </div>

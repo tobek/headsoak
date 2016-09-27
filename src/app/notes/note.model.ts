@@ -293,8 +293,8 @@ export class Note {
   }
 
   progTagCantChangeAlert(tag: Tag): void {
-    // @TODO/rewrite See `progTagCantChangeAlert` in old code - prompt should allow user to change this tag's settings
-    alert('The tag "' + tag.name + '" is an algorithmic tag, so it can\'t be added or removed manually.');
+    // @TODO/rewrite See `progTagCantChangeAlert` in old code - prompt should allow user to change this tag's settings, explain smart tags (specifically this *type* of smart tag - with auto application), etc.
+    this.dataService.modalService.alert('The tag "' + tag.name + '" is a smart tag, so it can\'t be added or removed manually.');
   }
 
   showShareSettings() {

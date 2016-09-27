@@ -48,12 +48,7 @@ block content
           p To change the email address associated with your account, please email <a href="mailto:support@nutmeg.io">support@nutmeg.io</a> and we'll get you sorted.
 
         div.feedback(ng-show="m.modal == 'feedback'")
-          h3 feedback 
-          //- if submitFeedback() returns true, clear fields and close modal
-          form(ng-submit="submitFeedback(feedback, name) && ((feedback='') || (name='') || m.closeModal())")
-            textarea(placeholder="Bug reports and suggestions are eagerly awaited. You'll hear from me personally.", ng-model="feedback")
-            input(type="text", placeholder="name (optional)", ng-model="name")
-            input(type="submit", value="submit")
+          //- DONE
 
         div.login(ng-show="m.modal == 'login'")
           //- DONE
@@ -62,6 +57,7 @@ block content
           //- DONE
 
         div.dynamic(ng-show="m.modal == 'dynamic'")
+          //- PARTIALLY DONE
           h3(ng-show="m.dynamic.title") {{ m.dynamic.title }}
 
           div.custom-body(ng-bind-html="m.dynamic.bodyHTML", ng-show="m.dynamic.bodyHTML")
