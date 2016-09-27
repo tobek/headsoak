@@ -10,9 +10,10 @@
     <input name="email" type="email" placeholder="E-mail address" autocomplete="email" required ngControl="email" [(ngModel)]="email">
 
     <input name="password" type="password" placeholder="Password" autocomplete="current-password" required ngControl="password" [(ngModel)]="password">
-    <div class="forgot-pass">
+
+    <aside>
       Forgot your password? <a (click)="forgotPassword()">Reset password</a>
-    </div>
+    </aside>
 
     <button class="btn btn-primary" type="submit" [disabled]="! loginForm.valid">Sign In</button>
     <!-- <p ng-show="u.loading" class="loader"><img src="/img/loader-white.gif"></p> -->
@@ -20,24 +21,26 @@
     <iframe ref-pseudoLoginIframe id="pseudo-login-iframe" src="/pseudo-login.html" style="width:0px; height:0px; border:0px;"></iframe>
   </form>
 
-  <div class="sign-up-cta">
+  <div class="switch-sign-up-in">
     New to Nutmeg?
     <button class="btn btn-secondary create-account-link" (click)="view = 'create-account'">Sign Up</button>
   </div>
 </div>
 
 <div *ngIf="view === 'create-account'">
-  <h3>create an account</h3>
+  <form id="create-account-form" class="sign-up-form" ref-createAccountForm="ngForm" (ngSubmit)="createAccount()">
+    <input name="email" type="email" placeholder="E-mail address" autocomplete="email" required ngControl="email" [(ngModel)]="email">
+    <input name="pass1" type="password" placeholder="Password" autocomplete="new-password" required ngControl="pass1" [(ngModel)]="pass1">
+    <input name="pass2" type="password" placeholder="Repeat password" autocomplete="new-password" required ngControl="pass2" [(ngModel)]="pass2">
 
-  <form id="create-account-form" ref-createAccountForm="ngForm" (ngSubmit)="createAccount()">
-    <input name="email" type="email" placeholder="email" autocomplete="email" required ngControl="email" [(ngModel)]="email">
-    <input name="pass1" type="password" placeholder="password" autocomplete="new-password" required ngControl="pass1" [(ngModel)]="pass1">
-    <input name="pass2" type="password" placeholder="password" autocomplete="new-password" required ngControl="pass2" [(ngModel)]="pass2">
-    <input type="submit" value="go" [disabled]="! createAccountForm.valid">
+    <button class="btn btn-primary" type="submit" [disabled]="! createAccountForm.valid">Sign up</button>
     <!-- <p ng-show="u.loading" class="loader"><img src="/img/loader-white.gif"></p> -->
+
+    <aside>By signing up you agree with our <a href="#@TODO/rewrite">Terms and Conditions</a> and <a href="#@TODO/rewrite">Privacy Policy</a></aside>
   </form>
 
-  <p>
-    <button (click)="view = 'login'">back</button>
-  </p>
+  <div class="switch-sign-up-in">
+    Existing user?
+    <button class="btn btn-secondary create-account-link" (click)="view = 'login'">Sign In</button>
+  </div>
 </div>

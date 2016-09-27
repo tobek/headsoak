@@ -6,7 +6,6 @@
     placeholder="Give us your feedback! We're happy to hear from you whether it's big or small."
     required
     [(ngModel)]="feedbackText"
-    [disabled]="feedbackSubmitted || isLoading"
     (keyup.control.Enter)="submit()"
   ></textarea>
 
