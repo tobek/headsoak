@@ -12,7 +12,7 @@
     <input name="password" type="password" placeholder="Password" autocomplete="current-password" required ngControl="password" [(ngModel)]="password">
 
     <aside>
-      Forgot your password? <a (click)="forgotPassword()">Reset password</a>
+      Forgot your password? <a (click)="view = 'reset-password'">Reset password</a>
     </aside>
 
     <button class="btn btn-primary" type="submit" [disabled]="! loginForm.valid">Sign In</button>
@@ -42,5 +42,24 @@
   <div class="switch-sign-up-in">
     Existing user?
     <button class="btn btn-secondary create-account-link" (click)="view = 'login'">Sign In</button>
+  </div>
+</div>
+
+<div class="reset-password-form" *ngIf="view === 'reset-password'" [class.is--success]="passwordResetSuccess">
+  <form class="reset-password-form" ref-resetPasswordForm="ngForm" (ngSubmit)="resetPassword()">
+    <!-- @TODO/ece Should we have like "enter your email address and we'll send you a new password" or something? -->
+
+    <input name="email" type="email" placeholder="E-mail address" autocomplete="email" required ngControl="email" [(ngModel)]="email">
+
+    <button class="btn btn-primary" type="submit" [disabled]="! resetPasswordForm.valid || passwordResetSuccess">Reset password</button>
+  </form>
+
+  <aside class="switch-sign-up-in">
+    <a (click)="view = 'login'">&laquo; Back to sign in</a>
+  </aside>
+
+  <div *ngIf="passwordResetSuccess" class="alert alert-success">
+    <!-- @TODO/ece This message -->
+    Password reset email successfully sent to {{ email }}! (Unless there is no account for email {{ email }}, in which case nothing's been sent, but we're not telling you which cause that would be a tiny security hole.) Anyway, please check your email.
   </div>
 </div>

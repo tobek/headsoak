@@ -46,8 +46,10 @@ login
   .btn-primary
     width: 100%
 
-  .sign-up-form .btn-primary
-    margin: 25px 0 10px
+  .sign-up-form,
+  .reset-password-form
+    .btn-primary
+      margin: 25px 0 10px
 
   aside
     opacity: 0.6
@@ -69,4 +71,15 @@ login
     .btn
       margin-left: 20px
 
+
+  .reset-password-form
+    .alert-success
+      opacity: 0
+      visibility: hidden
+      transition: opacity 0.2s, visibility 0.2s
+
+    &.is--success
+      .alert-success
+        opacity: 1
+        visibility: visible
 

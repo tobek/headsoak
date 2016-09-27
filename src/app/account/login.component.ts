@@ -3,6 +3,9 @@ import {Subscription} from 'rxjs';
 
 import {AccountService} from './account.service';
 
+
+type ViewType = 'login' | 'create-account' | 'reset-password';
+
 @Component({
   selector: 'login',
   pipes: [],
@@ -13,7 +16,9 @@ export class LoginComponent {
   password: string = '';
   pass1: string = '';
   pass2: string = '';
-  view: 'login' | 'create-account';
+  _view: ViewType;
+
+  passwordResetSuccess = false;
 
   private loginSub: Subscription;
 
@@ -50,6 +55,16 @@ export class LoginComponent {
     this.loginSub.unsubscribe();
   }
 
+  get view(): ViewType {
+    return this._view;
+  }
+  set view(newView: ViewType) {
+    // Reset any state variables:
+    this.passwordResetSuccess = false;
+
+    this._view = newView;
+  }
+
   resetInputs() {
     this.email = '';
     this.password = '';
@@ -75,11 +90,17 @@ export class LoginComponent {
     loginForm.submit();
   }
 
-  forgotPassword() {
-    var email: string = prompt('Please enter your email:', this.email);
-    if (! email) return false;
+  resetPassword() {
+    if (! this.email) return false;
 
-    this.accountService.passwordReset(email);
+    this.accountService.passwordReset(this.email, (err) => {
+      if (err) {
+        // @TODO/rewrite Handle this better, rightnow accountService just pops up an alert
+        return;
+      }      
+
+      this.passwordResetSuccess = true;
+    });
   }
 
   createAccount() {

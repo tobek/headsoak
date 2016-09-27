@@ -142,7 +142,7 @@ export class AccountService {
     this.modalService.login();
   }
 
-  passwordReset(email: string) {
+  passwordReset(email: string, cb: Function) {
     this.analytics.event('Account', 'password_reset.attempt');
     // $s.m.working = true;
 
@@ -158,6 +158,7 @@ export class AccountService {
           default:
             alert('Sorry, something went wrong when trying to reset your password: ' + (err.message || err.code || err) + '. Please try again later!'); // @TODO include support email here
             this._logger.error('Error resetting password:', err);
+            cb(err);
             return;
         }
       }
@@ -166,7 +167,7 @@ export class AccountService {
         this.analytics.event('Account', 'password_reset.success');
       }
 
-      alert('Password reset email successfully sent to ' + email + '!\n\n(Unless there is no account for email ' + email + ', in which case nothing\'s been sent, but we\'re not telling you which cause that would be a tiny security hole.)\n\nAnyway, please check your email.'); // @TODO this message?
+      cb();
 
       // @TODO: firebase lets you detect if user logged in with temporary token. should do so, and alert user to change password
     });
