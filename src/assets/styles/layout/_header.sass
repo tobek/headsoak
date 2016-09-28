@@ -21,8 +21,8 @@
 
   .menu-wrapper
     position: relative
-    margin-right: -15px // matching padding - want avatar to align with edge, but menu border to go outside
-    padding: 5px 15px
+    margin-right: -10px // matching padding - want avatar to align with edge, but menu border to go outside
+    padding: 5px 10px
 
     border: 1px solid transparent
     border-top-width: 0
@@ -116,7 +116,31 @@
 
   note-query
     flex: 10
-    margin: 0 15px 0 30px
+    margin: 0 5px 0 30px
+
+  .private-mode-indicator
+    +icon-button
+    margin-right: 3px
+    padding-top: 10px // same as paddingin note-query
+    font-size: 24px // same as control icons in note-query
+    color: $error-stroke
+
+    .unlocked
+      display: none
+
+    &:hover
+      .locked
+        display: none
+      .unlocked
+        display: inline-block
+
+    opacity: 0
+    visibility: hidden
+    transition: visibility $transition-fast, opacity $transition-fast
+
+    &.is--private
+      opacity: 1
+      visibility: visible
 
 .app-nav
   +outer-container

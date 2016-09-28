@@ -12,6 +12,15 @@
 
         <note-query [hidden]="! dataService.user.loggedIn"></note-query>
 
+        <div class="private-mode-indicator"
+          title="Private mode is enabled. Click to disable."
+          [class.is--private]="accountService.privateMode"
+          (click)="accountService.disablePrivateMode()"
+        >
+          <i class="fa fa-lock locked"></i>
+          <i class="fa fa-unlock-alt unlocked"></i>
+        </div>
+
         <div class="menu-wrapper">
           <div class="menu status--{{ dataService.status }}" [hidden]="! dataService.user.loggedIn">
             <img class="avatar" src="{{ settings.get('profileImageUrl', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7') }}" />
