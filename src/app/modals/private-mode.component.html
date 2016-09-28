@@ -17,7 +17,7 @@
 
   <button class="btn btn-default enable-button" type="enable" [disabled]="isLoading || ! privateModeForm.valid">Turn private mode on</button>
 
-  <!-- <p *ngIf="isError" class="alert alert-danger">Oh hey that didn't work, sorry! Try submitting again.</p> -->
+  <p *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</p>
 </form>
 
 <button *ngIf="dataService.accountService.privateMode" class="btn btn-default" (click)="disable()">Turn private mode off</button>

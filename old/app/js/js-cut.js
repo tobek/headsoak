@@ -434,75 +434,11 @@ function (
 
   // ==== PRIVACY STUFF ==== //
 
-  $s.p = {
-    privateMode: false,
-
-    togglePrivateMode: function() {
-      if (! $s.p.privateMode) {
-        // it's off: we're turning it on. ask for password
-        $s.m.prompt({
-          message: 'Please enter your login password to view private notes:',
-          passwordInput: true,
-          dontCloseOnOk: true,
-          okCb: function(password) {
-            if (! password) return;
-
-            $s.m.working = true;
-
-            checkPassword(password, function(passwordCorrect) {
-              if (! passwordCorrect) {
-                alert('Incorrect password!');
-              }              
-              else {
-                $s.m.closeModal();
-                $s.p.privateMode = true;
-                $s.q.doQuery(); // re-filter which notes to show
-              }
-              $s.m.working = false;
-              $s.$apply();
-            });
-          }
-        });
-      }
-      else {
-        // private mode was on: we're turning it off.
-        $s.p.privateMode = false;
-        $s.q.doQuery(); // re-filter which notes to show
-      }
-    }
-  };
-  /*
-
-  */
-
-  /** calls cb with true/false if password is correct/incorrect */
-  function checkPassword(password, cb) {
-    if (! password) return cb(false);
-
-    if (! $s.u.user && ! $s.u.user.email) {
-      console.error('user not logged in or there was a problem initializing user info');
-      return cb(false);
-    }
-
-    // HACK: we try to change their firebase password using supplied password. but the password we change it *to* is the same password, so if it's correct, result is nothing happens. if password is incorrect, however, we get an error
-    $s.u.auth.changePassword($s.u.user.email, password, password, function(err) {
-      if (err) return cb(false);
-      else return cb(true);
-    });
-  }
+  // DONE
 
   // ==== QUERY STUFF ==== //
 
-  $s.q = {
-    // DONE except for:
-    focus: function() {
-      angular.element('#query .search-input')[0].focus();
-    },
-  };
-
-  $("#query .search-input").on("keydown", function(e) {
-    // DONE
-  });
+  // DONE
 
 
   // ==== TAG STUFF ==== //
@@ -1130,12 +1066,7 @@ function (
       // PARTIALLY DONE
 
       $s.togglePrivate = function togglePrivate() {
-        $s.nut.private = ! $s.nut.private;
-        $s.n.nutUpdated($s.nut, false, false); // TODO: 3rd param should be true, to update prog tags, in case prog tag checks private status... but i don't want to slow things down with index and prog tag update when you click private icon. when we have web workers, then do full update
-        if (! $s.p.privateMode) {
-          // private mode is off, so we need to filter which notes to show:
-          $s.q.doQuery();
-        }
+        // DONE
       };
 
       $s.activateNut = function() {

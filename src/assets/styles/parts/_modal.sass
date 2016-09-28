@@ -97,10 +97,6 @@ private-mode
   display: block
   padding-bottom: 80px
 
-  .alert
-    position: absolute
-    margin-top: 20px
-
 feedback
   textarea
     height: 200px
@@ -118,15 +114,24 @@ feedback
       font-weight: bold
       letter-spacing: 1.1px
 
+  .alert
+    // @TODO/style This should be tooltip (and alert in private-mode)
+    position: absolute
+    margin-top: 20px
+
 private-mode
+  min-height: 320px // lazy shortsighted way to ensure modal stays same size in different states (private mode on/off)
   .intro
     margin-bottom: 50px
 
   input[type=password]
     width: 100%
     margin-bottom: 15px
-    padding-right: 20px
-    padding-left: 20px
+    padding-right: 15px
+    padding-left: 15px
 
   .enable-button
     float: right
+
+  .alert
+    float: left

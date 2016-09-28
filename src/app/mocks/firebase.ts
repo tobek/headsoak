@@ -31,6 +31,9 @@ export class FirebaseMock {
   resetPassword(accountInfo, cb) {
     cb();
   }
+  changePassword(accountInfo, cb) {
+    cb();
+  }
 
   createUser(creationCreds, cb) {
     cb(null, creationCreds);

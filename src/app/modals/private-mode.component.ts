@@ -19,7 +19,7 @@ export class PrivateModeComponent {
   password = '';
   
   isLoading = false;
-  isError = false;
+  errorMessage = '';
 
   // @HostBinding('class.on') visible = false;
 
@@ -36,27 +36,39 @@ export class PrivateModeComponent {
   ngOnDestroy() {
   }
 
+  // @TODO/privacy Modal should disappear when enabled/disabled, but with a toaster saying what happened?
+
   enable(): void {
-    // @TODO/now Do this
-
-    // if (! this.password) {
-    //   return;
-    // }
-
-    // @TODO/ece Loading state here. Maybe spinner in button? Full overlay of modal?
-
-    // this._logger.log('Submitting feedback:', this.feedbackText);
-
-    // this.isLoading = true;
-
-    if (true) { // success
-      this.dataService.accountService.privateMode = true;
-      this.password = '';
+    if (! this.password) {
+      return;
     }
+
+    this._logger.log('Enabling private mode');
+
+    this.errorMessage = '';
+    // @TODO/ece Loading state here. Maybe spinner in button? Full overlay of modal?
+    this.isLoading = true;
+
+    this.dataService.accountService.checkPassword(this.password, (error) => {
+      this.isLoading = false;
+
+      if (error) {
+        this._logger.log('Failed to enable private mode');
+        this.errorMessage = error;
+        return;
+      }
+
+      this._logger.log('Successfully enabled private mode');
+      this.dataService.accountService.enablePrivateMode();
+      this.password = '';
+    });
+
   }
 
   disable(): void {
-    this.dataService.accountService.privateMode = false;
+    this._logger.log('Disabling private mode');
+    this.errorMessage = '';
+    this.dataService.accountService.disablePrivateMode();
   }
 
 }

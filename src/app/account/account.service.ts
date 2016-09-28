@@ -252,6 +252,37 @@ export class AccountService {
     // });
   }
 
+  /** Calls cb with error message if password is incorrect or with null if password is correct. */
+  checkPassword(password: string, cb: Function): void {
+    if (! password) return cb('Please enter your password.');
+
+    if (! this.user.uid || ! this.user.email) {
+      this._logger.error('User not logged in or there was a problem initializing user info');
+      return cb('Something went wrong, sorry! Give it another shot or try refreshing the page.');
+    }
+
+    // @HACK We try to change their firebase password using supplied password, but the password we change it *to* is the same password, so if it's correct, result is nothing happens. If password is incorrect, however, we get an error.
+    this.ref.changePassword({
+      email: this.user.email,
+      oldPassword: password,
+      newPassword: password
+    }, (err) => {
+      if (err) {
+        this._logger.warn('Password didn\'t check out:', err);
+        
+        if (err.code === 'INVALID_PASSWORD') {
+          return cb('Wrong password');
+        }
+        else {
+          return cb('Something went wrong, sorry! Give it another shot or try refreshing the page.');
+        }
+      }
+      else {
+        return cb();
+      }
+    });
+  }
+
   enablePrivateMode() {
     this.privateMode = true;
     this.dataService.activeUIs.noteQuery.queryUpdated();
