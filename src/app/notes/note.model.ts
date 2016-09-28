@@ -32,6 +32,9 @@ export class Note {
   /** Stores what the note body was before focusing, in order to determine, upon blurring, whether anything has changed. */
   private oldBody: string;
 
+  /** Used to prevent infinite loops when running prog tags.*/
+  private progTagDepth = 0;
+
   private _logger: Logger;
 
   /** Properties that we save to data store */
@@ -250,7 +253,7 @@ export class Note {
   /** Adds tag to note and returns tag, or returns null if no tag added. Also updates the tag as necessary. */
   addTag(tag: Tag, fullUpdate = true, viaProg = false): Tag {
     if (_.includes(this.tags, '' + tag.id)) {
-      return;
+      return null;
     }
 
     this._logger.log('Adding tag', tag);
@@ -382,16 +385,29 @@ export class Note {
 
   runProgTags(): void {
     this._logger.log('Running smart tags');
-
     this._logger.time('Ran smart tags in');
     console.groupCollapsed();
-    // @TODO/prog We can prevent infinite loops here I think! set some depth at beginning and at end and see if we go too deep.
+
+    this.progTagDepth++;
+
+    if (this.progTagDepth > 5) {
+      // Example infinite loop: a poorly programmed "untagged" tag. Adds itself to note with no tags. On full update, runs "untagged" again and sees note now has a tag, so it removes itself. On full update, runs again, adds itself back. Infinite loops could also happen based on how two prog tags interact with each other.
+      while (this.progTagDepth > 0) {
+        console.groupEnd();
+        this.progTagDepth--;
+      }
+      this._logger.error('Recursive depth of 5 exceeded when working out programmatic tags.')
+      throw Error('Recursive depth of 5 exceeded when working out programmatic tags on note ID ' + this.id);
+    }
 
     _.each(this.dataService.tags.tags, (tag) => {
       if (tag && tag.prog) {
+        // @TODO/prog We could probably identify which tags are causing any infinite loops by keeping track of which tags are going back and forth somehow
         tag.runProgOnNote(this);
       }
     });
+
+    this.progTagDepth--;
 
     console.groupEnd();
     this._logger.timeEnd('Ran smart tags in');
