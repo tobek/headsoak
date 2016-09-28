@@ -43,11 +43,13 @@
     Smart Tag
     <span class="current-state">{{ tag.prog ? 'On' : 'Off' }} &raquo;</span>
   </a>
+  <!-- @TODO/tags @TODO/privacy
   <a class="tag-action" [routerLink]="['/tags', tag.id, tag.name, 'privacy']" (click)="$event.stopPropagation()">
     <i class="fa fa-fw fa-lock"></i>
     Private Tag
     <span class="current-state">{{ tag.private ? 'On' : 'Off' }} &raquo;</span>
   </a>
+  -->
   <a class="tag-action" [routerLink]="['/tags', tag.id, tag.name]" (click)="$event.stopPropagation()">
     <i class="fa fa-fw fa-bar-chart"></i>
     Explore more
