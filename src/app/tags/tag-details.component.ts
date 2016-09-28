@@ -4,7 +4,7 @@ import {Subscription} from 'rxjs';
 // import 'rxjs/add/operator/debounceTime';
 
 import {AnalyticsService} from '../analytics.service';
-import {Tag, TagComponent} from './';
+import {Tag, TagComponent, ProgTagControlComponent} from './';
 import {TagsService} from './tags.service'; // Dunno why we can't import from tags/index.ts
 import {Logger} from '../utils/';
 
@@ -13,6 +13,7 @@ import {Logger} from '../utils/';
   pipes: [],
   directives: [
     TagComponent,
+    ProgTagControlComponent,
   ],
   template: require('./tag-details.component.html')
 })

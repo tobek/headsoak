@@ -36,7 +36,7 @@ export class TagsService {
 
     this.initialized$.next(null);
 
-    this._logger.log('got', _.size(this.tags), ' tags');
+    this._logger.log('Got', _.size(this.tags), 'tags');
   }
 
   createTag(tagData: any = {}, isInit = false): Tag {

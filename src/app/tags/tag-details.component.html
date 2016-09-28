@@ -81,7 +81,8 @@
 
   <div class="pane" *ngIf="activePane === 'smartness'">
     <h2 class="card-heading">Smart Tag settings for <span class="tag-name">{{ tag.name }}</span></h2>
-    <p>This tag is <b>{{ tag.prog ? 'smart' : 'dumb' }}</b>. You can't change this right now.</p>
+
+    <prog-tag-control [tag]="tag"></prog-tag-control>
   </div>
 
   <div class="pane" *ngIf="activePane === 'privacy'">

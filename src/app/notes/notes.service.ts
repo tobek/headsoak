@@ -44,13 +44,13 @@ export class NotesService {
   init(notesData: Object, dataService: DataService) {
     this.dataService = dataService;
 
-    this._logger.time('initializing notes and index');
+    this._logger.time('Initializing notes and index');
     _.each(notesData, _.partialRight(this.createNote, true).bind(this));
-    this._logger.timeEnd('initializing notes and index');
+    this._logger.timeEnd('Initializing notes and index');
 
     this.initialized$.next(null);
 
-    this._logger.log('got', _.size(this.notes), 'notes');
+    this._logger.log('Got', _.size(this.notes), 'notes');
   }
 
   createNote(noteObj: any = {}, isInit = false): Note {

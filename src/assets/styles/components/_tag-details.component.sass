@@ -1,21 +1,22 @@
 tag-details
 
   tag
+    cursor: default
     display: block
     width: 100%
-
-  tag
-    cursor: default
-    float: none
     margin: 20px 0 15px
     padding: 0
+    float: none
     background: none !important
     font-size: 24px
 
     .name
       padding-right: 10px
 
-    .tag-state,
+    .tag-state
+      // No need for these since they're all reflected in the menu below
+      display: none
+
     .tag-actions
       color: $gray-dark
 
