@@ -16,6 +16,12 @@ import '@angular/router';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 
+// Ace editor
+import 'brace';
+import 'brace/mode/javascript';
+// import 'brace/theme/monokai';
+
+// The rest
 import 'firebase';
 import 'intl';
 import 'intl/locale-data/jsonp/en';

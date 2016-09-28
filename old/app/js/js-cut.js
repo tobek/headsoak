@@ -154,21 +154,7 @@ function (
         $s.m.modalHuge = true;
 
 
-        $s.m.dynamic.editor = ace.edit('prog-tag-editor-field');
-        $s.m.dynamic.editor.setTheme('ace/theme/dawn');
-        var sesh = $s.m.dynamic.editor.getSession()
-        sesh.setMode('ace/mode/javascript');
-        sesh.setUseWrapMode(true);
-        sesh.setTabSize(2);
-        sesh.setUseSoftTabs(true);
-        sesh.setUseWorker(false);
-
-        $s.m.dynamic.editor.setValue(funcString);
-        $s.m.dynamic.editor.gotoLine(0, 0); // deselect and go to beginning (setValue sometimes selects all and/or puts cursor at end)
-
-        setTimeout(function () {
-          $s.m.dynamic.editor.resize();
-        }, 550); // modal opening animation takes 500ms
+        // DONE (declaring ace editor)
 
       });
     },
