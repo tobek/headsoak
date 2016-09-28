@@ -8,9 +8,10 @@ import {Logger} from '../utils/logger';
 
 import {LoginComponent} from '../account/';
 import {FeedbackComponent} from './feedback.component';
+import {PrivateModeComponent} from './private-mode.component';
 
 
-type ModalType = null | 'loading' | 'login' | 'feedback' | 'alert';
+type ModalType = null | 'loading' | 'login' | 'feedback' | 'privateMode' | 'alert';
 
 @Component({
   selector: 'modal',
@@ -19,6 +20,7 @@ type ModalType = null | 'loading' | 'login' | 'feedback' | 'alert';
   directives: [
     LoginComponent,
     FeedbackComponent,
+    PrivateModeComponent,
   ],
   templateUrl: './modal.component.html'
 })
@@ -51,9 +53,9 @@ export class ModalComponent {
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
-    public modalService: ModalService,
-    public analyticsService: AnalyticsService,
-    public settings: SettingsService
+    private modalService: ModalService,
+    private analyticsService: AnalyticsService,
+    private settings: SettingsService
    ) {}
 
   ngOnInit() {

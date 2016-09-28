@@ -1,0 +1,23 @@
+<h3>Private Mode</h3>
+
+<div class="intro">
+  <p>Turning Private Mode on means that all of the notes you have marked as private will be displayed until you disable private mode.</p>
+
+  <!-- @TODO/ece What do you think about this. -->
+
+  <p>Private mode is currently <b>{{ dataService.accountService.privateMode ? 'ON' : 'OFF' }}</b></p>
+</div>
+
+<form *ngIf="! dataService.accountService.privateMode" ref-privateModeForm="ngForm" (ngSubmit)="enable()">
+  <input type="password" name="password"
+    placeholder="Enter your password here"
+    required
+    [(ngModel)]="password"
+  />
+
+  <button class="btn btn-default enable-button" type="enable" [disabled]="isLoading || ! privateModeForm.valid">Turn private mode on</button>
+
+  <!-- <p *ngIf="isError" class="alert alert-danger">Oh hey that didn't work, sorry! Try submitting again.</p> -->
+</form>
+
+<button *ngIf="dataService.accountService.privateMode" class="btn btn-default" (click)="disable()">Turn private mode off</button>

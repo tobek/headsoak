@@ -113,6 +113,16 @@ export const routes: RouterConfig = [
         },
         component: SettingsComponent
       },
+      {
+        path: 'private-mode',
+        data: {
+          name: 'Private Mode',
+          slug: 'privateMode',
+          // navSection: 'menu', // In the nav menu we activate the modal rather than go to it in settings screen
+          iconSlug: 'user-secret',
+        },
+        component: SettingsComponent
+      },
     ]
   },
 

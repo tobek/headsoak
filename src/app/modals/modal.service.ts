@@ -51,4 +51,7 @@ export class ModalService {
   feedback(): void {
     this.activeModal$.next('feedback');
   }
+  privateMode(): void {
+    this.activeModal$.next('privateMode');
+  }
 }

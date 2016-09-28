@@ -92,10 +92,16 @@ modal
     visibility: visible
 
 
-feedback
+feedback,
+private-mode
   display: block
   padding-bottom: 80px
 
+  .alert
+    position: absolute
+    margin-top: 20px
+
+feedback
   textarea
     height: 200px
     margin-bottom: 20px
@@ -112,6 +118,15 @@ feedback
       font-weight: bold
       letter-spacing: 1.1px
 
-  .alert
-    position: absolute
-    margin-top: 20px
+private-mode
+  .intro
+    margin-bottom: 50px
+
+  input[type=password]
+    width: 100%
+    margin-bottom: 15px
+    padding-right: 20px
+    padding-left: 20px
+
+  .enable-button
+    float: right

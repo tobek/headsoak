@@ -251,4 +251,13 @@ export class AccountService {
     //   large: true
     // });
   }
+
+  enablePrivateMode() {
+    this.privateMode = true;
+    this.dataService.activeUIs.noteQuery.queryUpdated();
+  }
+  disablePrivateMode() {
+    this.privateMode = false;
+    this.dataService.activeUIs.noteQuery.queryUpdated();
+  }
 }

@@ -10,12 +10,14 @@ import {Setting, Shortcut} from './';
 
 import {SettingComponent} from './setting.component';
 import {FeedbackComponent} from '../modals/feedback.component';
+import {PrivateModeComponent} from '../modals/private-mode.component';
 
 @Component({
   selector: 'settings',
   directives: [
     SettingComponent,
     FeedbackComponent,
+    PrivateModeComponent,
   ],
   template: require('./settings.component.html')
 })
@@ -27,6 +29,7 @@ export class SettingsComponent implements OnInit {
     shortcuts: 'Shortcuts',
     account: 'Account',
     feedback: 'Feedback',
+    privateMode: 'Private Mode',
   };
 
   initialized = false;
