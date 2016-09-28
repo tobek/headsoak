@@ -65,8 +65,7 @@ export class NotesService {
     }
 
     // @TODO/rewrite/sharing Temporarily hide shared notes until they're set up again
-    // @TODO/rewrite/private Temporarily hide private notes until they're set up again
-    if (noteObj.sharedBy || noteObj.private) {
+    if (noteObj.sharedBy) {
       return null;
     }
 
@@ -139,8 +138,14 @@ export class NotesService {
 
     this._logger.log('queried "' + query + '" with tags', tags);
 
+    if (_.isEmpty(this.notes)) {
+      return this.noQueryResults();
+    }
+
     // Arrays of note id's:
-    var filteredByTags: string[], filteredByString: string[], filteredByPrivate: string[];
+    var filteredByTags: string[],
+        filteredByString: string[],
+        filteredByPrivate: string[];
 
     // FIRST get the docs filtered by tags
     if (tags && tags.length) {
@@ -165,22 +170,22 @@ export class NotesService {
       }
     }
 
-    // @TODO/rewrite
     // ALSO check private notes
-    // @TODO would probably be faster to filter the inverse and subtract from other lists? because probably few private notes
-    // if (! $s.p.privateMode && $s.n.nuts && ! _.isEmpty($s.n.nuts)) {
-    //   // private mode off, so hide private notes. get array of note IDs that aren't private:
-    //   filteredByPrivate = (_.filter($s.n.nuts, function(nut) { return !nut.private; })
-    //                         .map(function(nut) { return nut.id; }) );
+    if (! this.dataService.accountService.privateMode) {
+      // Private mode off, so hide private notes. Get array of note IDs that aren't private:
+      // @TODO/optimization Would probably be faster to filter the inverse and subtract from other lists? because probably few private notes
+      filteredByPrivate = _.filter(this.notes, note => ! note.private)
+        .map(note => note.id);
 
-    //   if (filteredByPrivate.length === 0) {
-    //     // *every* note is private (and private mode is off), so we're done:
-    //     return $s.q.noQueryResults();
-    //   }
-    //   else if (filteredByPrivate.length === _.keys($s.n.nuts).length) {
-    //     filteredByPrivate = null; // ignore
-    //   }
-    // }
+      if (filteredByPrivate.length === 0) {
+        // *every* note is private (and private mode is off), so we're done:
+        return this.noQueryResults();
+      }
+      else if (filteredByPrivate.length === _.size(this.notes)) {
+        // *none* of the notes are private, so we can ignore this
+        filteredByPrivate = null;
+      }
+    }
 
     var filteredNotes;
     var filterArrays = [];

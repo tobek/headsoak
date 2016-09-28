@@ -14,6 +14,9 @@ import {NotesService} from '../notes/';
 export class AccountService {
   loginState$ = new ReplaySubject<string>(1);
 
+  /** Whether private notes/tags are currently visible. */
+  privateMode = false;
+
   private _logger: Logger = new Logger(this.constructor.name);
   private ref: Firebase;
 
@@ -105,7 +108,7 @@ export class AccountService {
     });
     this.user.loggedIn = true;
 
-    this.dataService.init(this.user.uid);
+    this.dataService.init(this.user.uid, this);
 
     var userRef = this.ref.child('users/' + authData['uid'] + '/user');
 

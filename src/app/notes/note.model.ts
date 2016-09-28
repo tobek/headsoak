@@ -18,6 +18,7 @@ export class Note {
   sharedBy: string;
   sharedBody: string;
   tags: string[]; // Array of tag IDs
+  private: boolean;
 
   /** Currently used to a) hide new/unsaved notes from browser, and b) distinguish a new note with empty body from old note with empty body for the purposes of placeholder text. */
   new = false;

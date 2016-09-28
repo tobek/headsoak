@@ -5,6 +5,8 @@ import {ReplaySubject, Subscription} from 'rxjs';
 const Firebase = require('firebase');
 
 import {Logger, utils, sampleData} from './utils/';
+
+import {AccountService} from './account';
 import {ActiveUIsService} from './active-uis.service';
 import {ModalService} from './modals/modal.service';
 import {UserService} from './account/user.service';
@@ -33,6 +35,8 @@ export class DataService {
   status: string; // 'synced' | 'syncing' | 'unsynced' | 'disconnected'
 
   ref: Firebase | FirebaseMock;
+
+  accountService: AccountService;
 
   /** This stores data that needs to be synced to server. Periodically checked by this.sync() */
   private digest: {
@@ -160,7 +164,9 @@ export class DataService {
     }
   }
 
-  init(uid: string) {
+  init(uid: string, accountService: AccountService) {
+    this.accountService = accountService;
+    
     // Sync to server (if there are any changes) every 5s
     window.setInterval(this.sync.bind(this), 5000);
     // @TODO/rewrite also sync before unload

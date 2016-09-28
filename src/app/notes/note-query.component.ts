@@ -92,7 +92,7 @@ export class NoteQueryComponent {
   initNotes(): void {
     this.sortOpt = _.find(this.notesService.sortOpts, { id: this.settings.get('nutSortBy') });
 
-    this.notes = this.notesService.sortNotes(this.sortOpt);
+    this.notes = this.notesService.getNotes(this.queryText, this.tags, this.sortOpt);
 
     this.activeUIs.noteQuery = this;
 
