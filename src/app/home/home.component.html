@@ -1,11 +1,13 @@
-<note class="open-note note-{{ openNote ? openNote.id : 'none' }}"
-  [note]="openNote"
-  [opened]="true"
-  (noteClosed)="closeNote()"
-></note>
+<div class="fixed-pane-wrapper">
+  <note class="fixed-pane-contents open-note note-{{ openNote ? openNote.id : 'none' }}"
+    [note]="openNote"
+    [opened]="true"
+    (noteClosed)="closeNote()"
+  ></note>
+</div>
 
 <note-browser
-    ref-noteBrowser
-    (noteOpened)="noteOpened($event)"
-    (noteClosed)="closeNote(false)"
+  ref-noteBrowser
+  (noteOpened)="noteOpened($event)"
+  (noteClosed)="closeNote(false)"
 ></note-browser>

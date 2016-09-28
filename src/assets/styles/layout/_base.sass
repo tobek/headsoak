@@ -14,6 +14,7 @@ $susy: ( columns: 12, gutters: 1/3, global-box-sizing: border-box/*, debug: (ima
 
 html
   box-sizing: border-box
+  overflow-y: hidden // `main` is the element that scrolls
 
 *, *:before, *:after
   box-sizing: inherit
@@ -31,8 +32,18 @@ html
   bottom: 0
   left: 0
 
+// This is our main grid container. gutter() and span() etc. should work as normal in here
 main
-  +outer-container
+  position: relative
+  z-index: 1
+
+  height: $full-height
+  overflow-y: scroll
+
+  // This is the container in the app that will scroll, so we'd like to have the scrollbar at the far right. So onstead of grid container with max width and margins on either side and gutter-width padding, here we try to pad it out to the full width of the viewport
+  max-width: 100%
+  padding-right: calc(50vw - #{$screen-large / 2} + #{gutter()} - 15px) // 15px to give room for scrollbar
+  padding-left: calc(50vw - #{$screen-large / 2} + #{gutter()})
 
 .app-wrapper
   opacity: 1
@@ -41,6 +52,19 @@ main
   &.uninitialized
     pointer-events: none
     opacity: 0
+
+// This basically creates a version of the grid container but which is fixed. gutter() and span() etc. should work as normal in here.
+.fixed-pane-wrapper
+  position: fixed
+  width: $screen-large
+  max-width: 100%
+  left: calc(50vw - #{$screen-large / 2})
+  padding: 0 gutter()
+
+  // Otherwise the full width pane wrapper blocks scrolling and stuff - but any elements inside it should work normally
+  pointer-events: none
+  .fixed-pane-contents
+    pointer-events: all
 
 // This guy is hardcoded/inlined into index.html
 .hide-loader .initial-loader.outer

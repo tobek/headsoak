@@ -3,11 +3,11 @@ import {Subject} from 'rxjs/Subject';
 
 @Injectable()
 export class ScrollMonitorService {
-  scroll$: Subject<void>;
+  scroll$ = new Subject<void>();
 
   constructor() {
-    this.scroll$ = new Subject<void>();
-    window.addEventListener('scroll', _.throttle(
+    // Used to listen to `window` but now just <main> scrolls
+    document.querySelector('main').addEventListener('scroll', _.throttle(
       this.onScroll.bind(this),
       100,
       { leading: true, trailing: true }
