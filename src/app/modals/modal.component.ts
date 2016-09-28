@@ -113,6 +113,8 @@ export class ModalComponent {
       return;
     }
 
+    this.modalService.closed$.next(null);
+
     // Start the whole thing fading
     this.visible = false;
 

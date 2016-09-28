@@ -244,10 +244,15 @@ export class AccountService {
     // lastLogin changed!
     this._logger.warn('Nutmeg session started from elsewhere at ' + newUserChild.val() + '!');
 
-    // @TODO We could log time and IP and browser etc. of the login so we can tell them when and where etc.
+    // @TODO/modals Need a way to queue up modals, what happens if this gets hit when another modal is open? Especially could be weird when the close listener to refresh fires too soon.
 
-    // @TODO/ece We used to lock this modal and require they refresh. It gets pretty gnarly if they don't but should we let them? Could pop up a warning if they close modal but then still let them do it.
-    this.modalService.alert(this.sanitizer.bypassSecurityTrustHtml('<p>Hey, it looks like you\'ve logged into Nutmeg from another device or browser window.</p><p>Nutmeg doesn\'t yet support editing from multiple sessions at the same time. Please  <a href="#" onclick="document.location.reload()">refresh this window</a> to load any changes made in other sessions and continue, or carry on at your own risk!</p>'));
+    // @TODO We could log time and IP and browser etc. of the login so we can tell them when and where etc.
+    this.modalService.alert(this.sanitizer.bypassSecurityTrustHtml('<p>Hey, it looks like you\'ve logged into Nutmeg from another device or browser window.</p><p>Nutmeg doesn\'t yet support editing from multiple sessions at the same time. Please  <a href="#" onclick="document.location.reload()">refresh this window</a> to load any changes made in other sessions and continue.</p>'));
+
+    // When this modal is closed, refresh the page
+    this.modalService.closed$.first().subscribe(function() {
+      document.location.reload();
+    });
   }
 
   /** Calls cb with error message if password is incorrect or with null if password is correct. */

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {SafeHtml} from '@angular/platform-browser';
-import {ReplaySubject} from 'rxjs/ReplaySubject';
+import {Subject, ReplaySubject} from 'rxjs';
 
 import {ModalComponent} from './modal.component';
 
@@ -10,6 +10,8 @@ export class ModalService {
 
   /** Emits changes in which modal is active. */
   activeModal$ = new ReplaySubject<string>(1);
+
+  closed$ = new Subject<void>();
 
   constructor(
   ) {
