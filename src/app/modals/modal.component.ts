@@ -1,4 +1,5 @@
 import {Component/*, ViewChild*/, HostBinding} from '@angular/core';
+import {SafeHtml} from '@angular/platform-browser';
 import {Subscription} from 'rxjs';
 
 import {ModalService} from './modal.service';
@@ -44,7 +45,7 @@ export class ModalComponent {
 
   _activeModal: ModalType;
 
-  message: string;
+  message: string | SafeHtml;
 
   private activeModalSub: Subscription;
 

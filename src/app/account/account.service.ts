@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {DomSanitizationService} from '@angular/platform-browser'; // @TODO In latest version of Angular this is called DomSanitizer
 import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 const Firebase = require('firebase');
@@ -21,6 +22,7 @@ export class AccountService {
   private ref: Firebase;
 
   constructor(
+    private sanitizer: DomSanitizationService,
     private notes: NotesService,
     private dataService: DataService,
     private modalService: ModalService,
@@ -242,14 +244,10 @@ export class AccountService {
     // lastLogin changed!
     this._logger.warn('Nutmeg session started from elsewhere at ' + newUserChild.val() + '!');
 
-    // @TODO/rewrite
-    alert('Hey, it looks like you\'ve logged into Nutmeg from another device or browser window.\n\nNutmeg doesn\'t yet support editing from multiple sessions at the same time. Please refresh this window to load any changes made in other sessions and continue.');
-    // $s.m.lockedOut = true; // prevent user from closing the following modal
-    // $s.m.alert({
-    //   bodyHTML: "<p>Hey, it looks like you've logged into Nutmeg from another device or browser window.</p><p>Nutmeg doesn't yet support editing from multiple sessions at the same time. Please <a href='#' onclick='document.location.reload()'>refresh</a> this window to load any changes made in other sessions and continue.</p>",
-    //   ok: false,
-    //   large: true
-    // });
+    // @TODO We could log time and IP and browser etc. of the login so we can tell them when and where etc.
+
+    // @TODO/ece We used to lock this modal and require they refresh. It gets pretty gnarly if they don't but should we let them? Could pop up a warning if they close modal but then still let them do it.
+    this.modalService.alert(this.sanitizer.bypassSecurityTrustHtml('<p>Hey, it looks like you\'ve logged into Nutmeg from another device or browser window.</p><p>Nutmeg doesn\'t yet support editing from multiple sessions at the same time. Please  <a href="#" onclick="document.location.reload()">refresh this window</a> to load any changes made in other sessions and continue, or carry on at your own risk!</p>'));
   }
 
   /** Calls cb with error message if password is incorrect or with null if password is correct. */

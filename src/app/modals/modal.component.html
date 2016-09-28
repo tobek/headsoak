@@ -16,8 +16,8 @@
     <private-mode *ngIf="activeModal === 'privateMode'"></private-mode>
 
     <div *ngIf="activeModal === 'alert'">
-      <!-- @TODO/ece Style of this? Currently only used for progTagCantChangeAlert, but prob will be used elsewhere -->
-      <p>{{ message }}</p>
+      <!-- @TODO/ece Style of this? Currently only used for progTagCantChangeAlert and simultaneous editing warning, but prob will be used elsewhere -->
+      <div class="alert-body" [innerHTML]="message"></div>
 
       <button class="btn" (click)="close()">OK</button>
     </div>

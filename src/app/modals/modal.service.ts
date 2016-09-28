@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {SafeHtml} from '@angular/platform-browser';
 import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 import {ModalComponent} from './modal.component';
@@ -43,7 +44,7 @@ export class ModalService {
     this.activeModal$.next('loading');
   }
 
-  alert(message: string): void {
+  alert(message: string | SafeHtml): void {
     this.modal.message = message;
     this.activeModal$.next('alert');
   }
