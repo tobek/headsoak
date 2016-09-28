@@ -83,7 +83,6 @@ note
     padding: 0 10px
 
     text-align: right
-    color: $gray-dark
     font-size: 20px
 
     &:before
@@ -97,6 +96,8 @@ note
       background-image: linear-gradient(transparent, $card-bg)
 
   .note-action
+    +icon-button
+
     margin-right: 5px
     position: relative
 
@@ -105,6 +106,23 @@ note
 
   .note-action--open
     float: left
+
+  .note-action--private
+    .locked
+      display: none
+
+    &:hover,
+    &.is--active
+      .locked
+        display: inline-block
+      .unlocked
+        display: none
+
+    &.is--active:hover
+      .locked
+        display: none
+      .unlocked
+        display: inline-block
 
 
   note-browser &

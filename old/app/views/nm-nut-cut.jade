@@ -1,10 +1,7 @@
 div(ng-show="nut && (!nut.sharedBy || nut.sharedBody)", ng-click="activateNut()")
   div.nut-header.clearfix
     div.icons
-      //- PARTIALLY DONE
-      a.privacy.widest.tooltip(ng-click="togglePrivate()", ng-attr-data-tooltip="Make this note {{ nut.private ? 'not' : '' }} private", ng-class="nut.private ? 'is-private' : ''")
-        i.fa.fa-lock
-        i.fa.fa-unlock-alt
+      //- DONE
 
     div.tags
       span.tag(ng-repeat="tagId in nut.tags",  ng-click="$event.stopPropagation(); q.toggleTag(tagId, $event)", ng-class="{queried: (q.tags.indexOf(tagId) != -1), 'read-only': t.tags[tagId].readOnly}")

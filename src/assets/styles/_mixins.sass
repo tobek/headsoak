@@ -22,10 +22,16 @@
 
 =icon-button
   cursor: pointer
-  color: $gray-dark
+  color: $icon-color
 
   &:hover
-    color: $link-hover
+    color: $icon-hover
+
+  &.is--active
+    color: $icon-active
+    &:hover
+      color: $icon-active-hover
+
 
 =plain-list
   display: block

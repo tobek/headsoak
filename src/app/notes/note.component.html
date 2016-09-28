@@ -39,9 +39,13 @@
 
   <div class="note-actions">
     <a title="Expand note" class="note-action note-action--open" *ngIf="! opened" (click)="openNote()"><i class="fa fa-pencil-square-o"></i></a>
+
     <a title="Close note" class="note-action" *ngIf="opened && ! note.new" (click)="closeNote()"><i class="fa fa-close"></i></a>
+
     <a title="Share settings" class="note-action" (click)="note.showShareSettings()"><i class="fa fa-users"></i></a>
-    <a title="Make private" class="note-action" (click)="note.togglePrivate()"><i class="fa fa-lock"></i></a>
+
+    <a title="Make this note{{ note.private ? ' not' : '' }} private" class="note-action note-action--private" [class.is--active]="note.private" (click)="note.togglePrivate()"><i class="fa fa-lock locked"></i><i class="fa fa-unlock-alt unlocked"></i></a>
+
     <span *ngIf="! note.new">
       <!-- @TODO/rewrite @TODO/ece Do we want this? Can we fit it? -->
       <!-- <a (click)="newNoteWithSameTags()">NNST</a> -->
