@@ -41,6 +41,7 @@ export class Note {
     'created',
     'modified',
     'fullUpdateRequired',
+    'private',
     'readOnly',
     'share',
     'sharedBy',
@@ -307,7 +308,10 @@ export class Note {
   }
 
   togglePrivate() {
-    alert('not yet!');
+    this.private = ! this.private;
+    this.updated(false, true);
+
+    // @TODO/notifications If you're not in private mode, should show toaster saying "Note made private, so it's currently hidden from view. [enable private mode link] [don't show again link]"
   }
 
   explore() {
