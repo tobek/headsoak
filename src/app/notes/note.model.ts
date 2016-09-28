@@ -181,8 +181,7 @@ export class Note {
 
     this.dataService.notes.updateNoteInIndex(this);
 
-    // @TODO/rewrite/prog
-    // $s.n.runProgTags(nut);
+    this.runProgTags();
 
     delete this.fullUpdateRequired;
 
@@ -210,7 +209,7 @@ export class Note {
 
     if (blurred && (this.fullUpdateRequired || bodyChanged)) {
       // We don't update index/prog tags/etc while typing/focused because it can be slow. If there was any change detected while focused, we have to do that now
-      this._logger.log('Note has changed since focus. Was`' + this.oldBody + '`, now is `' + this.body + '`');
+      this._logger.log('Note has changed since focus. Was `' + this.oldBody + '`, now is `' + this.body + '`');
       
       this.updated(bodyChanged, true);
 
@@ -248,8 +247,12 @@ export class Note {
     return this.addTag(tag);
   }
 
-  /** Adds tag to note and returns tag, or returns null if no tag added. */
+  /** Adds tag to note and returns tag, or returns null if no tag added. Also updates the tag as necessary. */
   addTag(tag: Tag, fullUpdate = true, viaProg = false): Tag {
+    if (_.includes(this.tags, '' + tag.id)) {
+      return;
+    }
+
     this._logger.log('Adding tag', tag);
 
     if (tag.readOnly) {
@@ -262,10 +265,9 @@ export class Note {
       return null;
     }
 
-    if (! _.includes(this.tags, '' + tag.id)) {
-      // Add at the front - this makes tags on notes ordered by most-recently-added, which a) is fine, and b) looks good when you add a new tag. Later order could be smarter.
-      this.tags.unshift('' + tag.id);
-    }
+    // Add at the front - this makes tags on notes ordered by most-recently-added, which a) is fine, and b) looks good when you add a new tag. Later order could be smarter.
+    this.tags.unshift('' + tag.id);
+
     tag.addNoteId(this.id);
 
     this.rebuildNoteSharing();
@@ -279,7 +281,12 @@ export class Note {
     this.removeTag(this.dataService.tags.tags[tagId], fullUpdate);
   }
 
+  /** Removes tag from note. Also updates the tag as necessary. */
   removeTag(tag: Tag, fullUpdate = true, viaProg = false): void {
+    if (! _.includes(this.tags, '' + tag.id)) {
+      return;
+    }
+
     if (tag.prog && ! viaProg) {
       this.progTagCantChangeAlert(tag);
       return;
@@ -297,6 +304,18 @@ export class Note {
   progTagCantChangeAlert(tag: Tag): void {
     // @TODO/rewrite See `progTagCantChangeAlert` in old code - prompt should allow user to change this tag's settings, explain smart tags (specifically this *type* of smart tag - with auto application), etc.
     this.dataService.modalService.alert('The tag "' + tag.name + '" is a smart tag, so it can\'t be added or removed manually.');
+
+    // $s.m.confirm({
+    //   bodyHTML: '<p>"' + tag.name  + '" is an algorithmic tag controlled by the function you entered - it cannot be added or removed manually.</p><p>Would you like to change this tag\'s settings?</p>',
+    //   okText: 'yes',
+    //   okCb: function() {
+    //     // closeModal was just called, so open up new modal in a different tick:
+    //     $timeout(function() {
+    //       $s.t.tagProgSettings(tag);
+    //     }, 50);
+    //   },
+    //   cancelText: 'no'
+    // });
   }
 
   showShareSettings() {
@@ -359,5 +378,22 @@ export class Note {
     this._logger.log('Deleted');
 
     return true;
+  }
+
+  runProgTags(): void {
+    this._logger.log('Running smart tags');
+
+    this._logger.time('Ran smart tags in');
+    console.groupCollapsed();
+    // @TODO/prog We can prevent infinite loops here I think! set some depth at beginning and at end and see if we go too deep.
+
+    _.each(this.dataService.tags.tags, (tag) => {
+      if (tag && tag.prog) {
+        tag.runProgOnNote(this);
+      }
+    });
+
+    console.groupEnd();
+    this._logger.timeEnd('Ran smart tags in');
   }
 }

@@ -2,6 +2,8 @@ import {DataService} from '../';
 
 import {Logger} from '../utils/logger';
 
+import {Note} from '../notes/';
+
 export class Tag {
   id: string;
   name: string;
@@ -17,6 +19,9 @@ export class Tag {
   share: any; // map of recipient (shared-with) user ID to their permissions
   sharedBy: string; // ID of user that shared this tag
   shareTooltip: string; // text to identify sharing status to user (e.g. "you are sharing this with ___" or "___ is sharing this with you")
+
+  /** If this is a programmatic tag, this property caches the function that is run to determine if a note should have this tag. */
+  private classifier: (note: Note) => boolean;
 
   /** Properties that we save to data store */
   private DATA_PROPS = [
@@ -112,14 +117,79 @@ export class Tag {
     return true;
   }
 
+  /** @NOTE This does *not* add ourselves to the note in return. */
   addNoteId(noteId: string): void {
     this._logger.log('Adding note id', noteId);
     this.docs = _.union(this.docs, ['' + noteId]);
     this.updated();
   }
+  /** @NOTE This does *not* remove ourselves from the note in return. */
   removeNoteId(noteId: string): void {
     this._logger.log('Removing note id', noteId);
     this.docs = _.without(this.docs, '' + noteId);
     this.updated();
+  }
+
+  /** See if given note should be tagged by this programmatic tag. */
+  runProgOnNote(note: Note) {
+    if (! this.prog || ! this.progFuncString) {
+      this._logger.warn('Can\'t run prog tag on note - this tag is not programmatic or has no programmatic function string!');
+      return;
+    }
+
+    if (! this.classifier) {
+      this.classifier = this.generateClassifier();
+    }
+
+    if (this.classifier(note) === true) {
+      this._logger.log('User classifier returned true for note ID', note.id);
+      note.addTag(this, true, true);
+    }
+    else {
+      this._logger.log('User classifier returned false for note ID', note.id);
+      note.removeTag(this, true, true);
+    }
+  }
+
+  generateClassifier(): (note: Note) => boolean {
+    var classifierFunc = new Function('note', 'api', this.progFuncString); // this line excites me
+
+    // The function we actually call needs to be wrapped in try/catch and supplied with the API
+    return (note: Note): boolean => {
+      try {
+        // @TODO/prog We're passing in {} as API for now!
+        // Passing in this tag as the this arg so that users can store arbitrary data for processing stuff in the tag if they want to
+        return classifierFunc.call(this, note, {});
+      }
+      catch (err) {
+        this.progTagError(err, note);
+      }
+    }
+  }
+
+  progTagError(err: Error, note: Note) {
+    this._logger.error('Running programmatic tag on note ID', note.id, 'threw error:', err, err.stack, 'Tag prog function string:', this.progFuncString);
+
+    // @TODO/prog
+
+    // // closeModal may have been just called, so open up new modal in a different tick:
+    // $timeout(function() {
+    //   $s.m.confirm({
+    //     bodyHTML: '<p>There was an error when running your function for tag "' + tag.name  + '":</p><pre>  ' + err + '</pre><p>Would you like to change this tag\'s function or revert to normal tag?</p>',
+    //     okText: 'change function',
+    //     okCb: function() {
+    //       // closeModal may have been just called, so...
+    //       $timeout(function() {
+    //         $s.t.tagProgSettings(tag);
+    //       }, 50);
+    //     },
+    //     cancelText: 'revert tag',
+    //     cancelCb: function() {
+    //       tag.prog = false;
+    //       $s.t.tagUpdated(tag);
+    //     },
+    //     large: true,
+    //   });
+    // }, 50);
   }
 }

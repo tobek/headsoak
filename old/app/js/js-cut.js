@@ -354,16 +354,7 @@ function (
     // PARTIALLY DONE
 
     runProgTags: function(nut) {
-      if (nut.readOnly) return; // we can't add tags to it anyway
-
-      console.log('running prog tags for nut ' + nut.id + ':');
-      console.groupCollapsed();
-      _.each($s.t.tags, function(tag) {
-        if (tag && tag.prog) {
-          $s.t.runProgTagOnNut(tag, nut);
-        }
-      });
-      console.groupEnd();
+      // DONE
     },
 
     /**
@@ -522,79 +513,17 @@ function (
       console.groupEnd();
     },
 
-    /** for given programmatic tag and nut, see if nut should have that tag */
     runProgTagOnNut: function(tag, nut, classifier) {
-      if (! classifier) {
-        // when processing all, only need to create classifier once and pass it in, otherwise we make it here
-        classifier = $s.t.progTagGetClassifier(tag);
-      }
-
-      if (classifier(nut) === true) {
-        console.log('user classifier for tag ' + tag.id + ' returned true for nut ' + nut.id);
-        $s.n.addTagIdToNut(tag.id, nut.id, true);
-      }
-      else {
-        console.log('user classifier for tag ' + tag.id + ' returned false for nut ' + nut.id);
-        $s.n.removeTagIdFromNut(tag.id, nut.id);
-      }
+      // DONE
     },
-
-    /** return a function that takes a note and runs it through user's function, handling errors and in-scope variables accessible to user */
     progTagGetClassifier: function(tag) {
-      var classifier = new Function('note', 'getTagNameById', tag.progFuncString); // this line excites me
-
-      // the function we'll actually call:
-      return function(nut) {
-        try {
-          return classifier.apply(tag, [nut, $s.t.getTagNameById]);
-        }
-        catch (err) {
-          $s.t.progTagError(tag, err);
-        }
-      };
+      // DONE
     },
-
     progTagError: function(tag, err) {
-      // closeModal may have been just called, so open up new modal in a different tick:
-      $timeout(function() {
-        $s.m.confirm({
-          bodyHTML: '<p>There was an error when running your function for tag "' + tag.name  + '":</p><pre>  ' + err + '</pre><p>Would you like to change this tag\'s function or revert to normal tag?</p>',
-          okText: 'change function',
-          okCb: function() {
-            // closeModal may have been just called, so...
-            $timeout(function() {
-              $s.t.tagProgSettings(tag);
-            }, 50);
-          },
-          cancelText: 'revert tag',
-          cancelCb: function() {
-            tag.prog = false;
-            $s.t.tagUpdated(tag);
-          },
-          large: true,
-        });
-      }, 50);
+      // DONE
     },
-
-    /** alert user that they can't add/remove this tag, let them change it if they need */
     progTagCantChangeAlert: function(tag) {
-      if (typeof tag === "number" || typeof tag == "string") { // tag id
-        tag = $s.t.tags[tag];
-      }
-      if (!tag) return;
-      if (tag.readOnly) return;
-
-      $s.m.confirm({
-        bodyHTML: '<p>"' + tag.name  + '" is an algorithmic tag controlled by the function you entered - it cannot be added or removed manually.</p><p>Would you like to change this tag\'s settings?</p>',
-        okText: 'yes',
-        okCb: function() {
-          // closeModal was just called, so open up new modal in a different tick:
-          $timeout(function() {
-            $s.t.tagProgSettings(tag);
-          }, 50);
-        },
-        cancelText: 'no'
-      });
+      // DONE
     },
 
     /** tag has a `share` object that maps `uid` to permission ('r' for readonly, 'w' for read/write) */

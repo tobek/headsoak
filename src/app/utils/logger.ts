@@ -1,4 +1,5 @@
-// @TODO/rewrite Only log stuff if in dev mode
+// @TODO/rewrite Hide all but warnings and errors unless in dev mode? 
+// @TODO/analytics Fire analytics events on warnings and errors. Maybe also pass in the class instance to the constructor so that we can log info about the instance?
 export class Logger {
   private _prefix: string;
 
@@ -6,6 +7,7 @@ export class Logger {
     this._prefix = '[' + name + ']';
   }
 
+  /** Essentially debug level, but we don't need FIVE different levels so using the not-annoyingly-blue-in-chrome `log` as our lowest level. */
   log(...args) {
     this._log('log', ...args);
   }
