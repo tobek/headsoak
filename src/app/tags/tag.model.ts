@@ -193,6 +193,8 @@ export class Tag {
 
     // @TODO/prog
 
+    alert('Hey there was an unhandled error running smart tags, leave this page up and show toby please.');
+
     // // closeModal may have been just called, so open up new modal in a different tick:
     // $timeout(function() {
     //   $s.m.confirm({
