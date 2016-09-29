@@ -1,11 +1,29 @@
-<p>This tag is <b>{{ tag.prog ? 'smart' : 'dumb' }}</b>. You can't change this right now.</p>
+<p>This tag is <b>{{ tag.prog ? '' : 'not' }} smart</b>.</p>
 
-<div *ngIf="tag.prog">
-<pre>function(note, api) {</pre>
-<pre ref-editorRef class="code-editor">{{ tag.progFuncString }}</pre>
-<pre>}</pre>
+<button class="btn btn-default"
+  *ngIf="tag.prog"
+  (click)="makeDumb()"
+>Revert to normal tag</button>
 
-<button class="btn btn-primary">Save and run</button>
-<button class="btn btn-default">Cancel</button>
-<button class="btn btn-default" *ngIf="tag.prog">Revert to normal tag</button>
+<button class="btn btn-default"
+  *ngIf="! tag.prog"
+  (click)="makeSmart()"
+>Make smart</button>
+
+<div class="code-container" [class.is--disabled]="! tag.prog">
+  <div class="disabled-cover"></div>
+
+  <pre>function(note, api) {</pre>
+  <pre ref-editorRef class="code-editor">{{ tag.progFuncString }}</pre>
+  <pre>}</pre>
+
+  <button class="btn btn-primary"
+    [disabled]="! changed"
+    (click)="saveAndRun()"
+  >Save and run</button>
+
+  <button class="btn btn-default"
+    [disabled]="! changed"
+    (click)="revertChanges()"
+  >Revert changes</button>
 </div>

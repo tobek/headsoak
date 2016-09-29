@@ -139,23 +139,7 @@ function (
       });
     },
     progTagEditor: function(tag, funcString, opts) {
-      $timeout(function() {
-        $s.m.modal = "dynamic";
-        $s.m.dynamic = {
-          title: 'algorithmic tag: "' + tag.name + '"',
-          progTag: tag,
-          ok: true,
-          okText: 'save and run',
-          cancel: true,
-          okCb: opts.cb,
-          thirdButton: opts.thirdButton,
-          thirdButtonCb: opts.thirdButtonCb,
-        };
-        $s.m.modalHuge = true;
-
-
-        // DONE (declaring ace editor)
-
+        // DONE
       });
     },
   };
@@ -423,82 +407,15 @@ function (
   $s.t = {
     // PARTIALLY DONE
 
-    /** make or unmake tag programmatic */
     tagProgSettings: function(tag) {
-      if (tag.readOnly) return;
-
-      // modal with code editor for user to enter function:
-      $s.m.progTagEditor(tag, $s.t.getTagProgFuncString(tag), {
-        cb: function(funcString) {
-          if (!funcString) return;
-
-          funcString = funcString.replace(PROG_TAG_INFO, '').trim(); // no need to store PROG_TAG_INFO, and we add it back on when we display it anyway
-
-          tag.progFuncString = funcString;
-
-          var cancel;
-
-          if (!tag.prog && tag.docs.length) {
-            // if tag was not programmatic and already had some documents
-            var singular = tag.docs.length === 1;
-            cancel = ! confirm('Warning: you currently have ' + tag.docs.length + ' note' + (singular ? '' : 's') + ' tagged with "' + tag.name + '". ' + (singular ? 'It' : 'They') + ' will be untagged if ' + (singular ? 'it doesn\'t' : 'they don\'t') + ' return true for this function.\n\nAre you sure you wish to continue?');
-          }
-
-          if (cancel) {
-            // modal has just been closed, so reopen it in another tick
-            $timeout(function() {
-              $s.t.tagProgSettings(tag);
-            }, 50);
-            
-            return;
-          }
-
-          tag.prog = true;
-          $s.t.tagUpdated(tag);
-          $s.t.runProgTagOnAllNuts(tag);
-        },
-
-        // if tag is already programmatic, menu lets them undo that:
-        thirdButton: tag.prog ? 'revert to normal tag' : null,
-        thirdButtonCb: tag.prog ? function() {
-          tag.prog = false;
-          $s.t.tagUpdated(tag);
-          $s.m.closeModal();
-        } : null,
-      });
+      // DONE
     },
-
     getTagProgFuncString: function(tag) {
-      var funcString;
-      if (tag.progFuncString) {
-        funcString = tag.progFuncString;
-      }
-      else {
-        var tagNameString = JSON.stringify(tag.name); // handles quotes and other special chars
-        funcString = _.sample(PROG_TAG_EXAMPLES).replace(new RegExp('"TAGNAME"', 'g'), tagNameString);
-      }
-
-      if (funcString.indexOf(PROG_TAG_INFO) === -1) {
-        funcString += '\n' + PROG_TAG_INFO;
-      }
-
-      return funcString;
+      // DONE
     },
-
-    /** for programmatic tag, go through all notes and tag according to function */
     runProgTagOnAllNuts: function(tag) {
-      if (!tag.prog) return;
-
-      var classifier = $s.t.progTagGetClassifier(tag);
-
-      console.log('running prog tag ' + tag.id + ' on all notes:');
-      console.groupCollapsed();
-      _.each($s.n.nuts, function(nut) {
-        $s.t.runProgTagOnNut(tag, nut, classifier);
-      });
-      console.groupEnd();
+      // DONE
     },
-
     runProgTagOnNut: function(tag, nut, classifier) {
       // DONE
     },
@@ -713,50 +630,12 @@ function (
   };
 
   function initData(uid) {
-    console.time('data init');
-    console.log("init: fetching data for user uid "+uid);
-    $s.ref = new Firebase('https://nutmeg.firebaseio.com/users/' + uid);
-
-    $s.ref.once('value', function(data) {
-      if (data.val() === null) {
-        console.log("init: new user - initializing with dummy data");
-        firstInit();
-        $s.s.initBindings();
-        $s.digest.push();
-
-        console.timeEnd('data init');
-        initUI();
-      }
-      else {
-        console.log("init: fetched user data");
-
-        // DONE
-
-      } // end if not new user
-
-    }); // end fetching all user data
-
+    // DONE
   }
 
   /** some remaining stuff (like initializing shared notes) may continue to initialize asynchronously, but call this function when the application is usable */
   function initUI() {
-    console.time('initializing UI');
-
-    $timeout(function() {
-      $s.m.closeModal();
-      $s.u.loading = false; // used for login/createaccount loading spinner
-      $s.u.loggingIn = false;
-
-      $s.u.email = $s.u.password = $s.u.pass1 = $s.u.pass2 = ""; // clear input fields so they're not still shown there when they log out: otherwise, anyone can just hit log in again
-
-      $s.q.doQuery(); // load nutsDisplay and sort
-
-      $(window).on('load resize scroll', _.throttle($s.n.moreNutsCheck, 100));
-
-      console.log("initializing done - we're on!")
-      console.timeEnd('initializing UI');
-    }, 50);
-
+    // DONE
   }
 
   function sharedWithMeInit(shareInfo) {
@@ -980,10 +859,6 @@ function (
     controller: ['$scope', '$element', '$timeout', function($s, $el, $timeout) {
       // PARTIALLY DONE
 
-      $s.togglePrivate = function togglePrivate() {
-        // DONE
-      };
-
       $s.activateNut = function() {
         $el.addClass('active');
         $(window).on('click', $s.maybeDeactivateNut);
@@ -998,12 +873,6 @@ function (
           $s.deactivateNut();
         }
       };
-
-      $s.focus = function() {
-        $timeout(function() {
-          $($el).find("textarea")[0].focus();
-        }, 5);
-      }
     }]
   };
 })
@@ -1014,24 +883,4 @@ function (
 
 // ==== RANDOM GLOBAL UTILITIES ==== //
 
-function defaultFor(arg, val) {
-  return typeof arg !== 'undefined' ? arg : val;
-}
-
-// DONE objFromArray, arrayIntersect, multiArrayIntersect in utils (arrayFromObj unneeded)
-
-/** since jQuery trips up on IDs that have colons (firebase UIDs have colons) this wrapper handles that */
-function safer$(selector) {
-  if (selector.indexOf('#') !== 0) {
-    console.warn('safer$ doesn\'t support selectors that don\'t start with "#", just using jQuery...');
-    return $(selector);
-  }
-  else if (selector.indexOf(' ') === -1) {
-    // it's just the ID, so strip the # and return:
-    return $(document.getElementById(selector.substr(1)));
-  }
-  else {
-    var parent = $(document.getElementById(selector.substring(1, selector.indexOf(' '))));
-    return parent.find(selector.substr(selector.indexOf(' ')+1));
-  }
-}
+// DONE

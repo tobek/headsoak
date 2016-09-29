@@ -20,7 +20,7 @@ export class Note {
   tags: string[]; // Array of tag IDs
   private: boolean;
 
-  /** Currently used to a) hide new/unsaved notes from browser, and b) distinguish a new note with empty body from old note with empty body for the purposes of placeholder text. */
+  /** Currently used to a) hide new/unsaved notes from note browser, and b) distinguish a new note with empty body from old note with empty body for the purposes of placeholder text. As soon as a note has any content or changes at all, it gets saved to data store and is marked as no longer new. */
   new = false;
 
   /** Temporary flag attached to note model as it's passed around, indicating that it's about to be deleted. */
@@ -308,6 +308,7 @@ export class Note {
     // @TODO/rewrite See `progTagCantChangeAlert` in old code - prompt should allow user to change this tag's settings, explain smart tags (specifically this *type* of smart tag - with auto application), etc.
     this.dataService.modalService.alert('The tag "' + tag.name + '" is a smart tag, so it can\'t be added or removed manually.');
 
+    // @TODO/now
     // $s.m.confirm({
     //   bodyHTML: '<p>"' + tag.name  + '" is an algorithmic tag controlled by the function you entered - it cannot be added or removed manually.</p><p>Would you like to change this tag\'s settings?</p>',
     //   okText: 'yes',

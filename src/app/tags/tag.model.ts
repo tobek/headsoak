@@ -12,8 +12,8 @@ export class Tag {
 
   // Optional:
   docs: string[]; // array of note IDs
-  prog: boolean; // whether it's a programmatic tag @TODO/rewrite can't we just use the progFuncString?
-  progFuncString: string; // string representing programmatic tag function to be eval'd
+  prog: boolean; // whether it's a programmatic tag
+  progFuncString: string; // string representing programmatic tag function to be eval'd. This ccould be present even though `prog` is false, saving the function for potential future use.
   readOnly: boolean; // @TODO/old handle other permissions @TODO/rewrite this still needed here?
 
   share: any; // map of recipient (shared-with) user ID to their permissions
@@ -131,9 +131,14 @@ export class Tag {
   }
 
   /** See if given note should be tagged by this programmatic tag. */
-  runProgOnNote(note: Note) {
+  runProgOnNote(note: Note): void {
     if (! this.prog || ! this.progFuncString) {
-      this._logger.warn('Can\'t run prog tag on note - this tag is not programmatic or has no programmatic function string!');
+      this._logger.warn('Can\'t run prog tag on note - this tag is not programmatic or has no programmatic function string!', this);
+      return;
+    }
+
+    if (note.new) {
+      // Unsaved empty note
       return;
     }
 
@@ -149,6 +154,22 @@ export class Tag {
       this._logger.log('User classifier returned false for note ID', note.id);
       note.removeTag(this, true, true);
     }
+  }
+
+  runProgOnAllNotes(): void {
+    if (! this.prog || ! this.progFuncString) {
+      this._logger.warn('Can\'t run prog tag on notes - this tag is not programmatic or has no programmatic function string!', this);
+      return;
+    }
+
+    this._logger.log('Running smart tag on all notes');
+    this._logger.time('Ran smart tag on all notes in');
+    console.groupCollapsed();
+
+    _.each(this.dataService.notes.notes, this.runProgOnNote.bind(this));
+
+    console.groupEnd();
+    this._logger.timeEnd('Ran smart tag on all notes in');
   }
 
   generateClassifier(): (note: Note) => boolean {
