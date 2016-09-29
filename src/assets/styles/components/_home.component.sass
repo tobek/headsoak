@@ -21,7 +21,8 @@ home
         // padding-right: gutter(4) // don't need this since right padding is hard-coded for purposes of positioning body input scrollbar
         margin-bottom: gutter(4)
 
-  .route--browse &
+  .route--browse &,
+  .route--scroll &
     note.open-note
       display: none
 
@@ -29,6 +30,8 @@ home
       +span(12 last)
       display: block
 
+  .route--browse &
+    note-browser
       note
         +span(12 last)
 
@@ -46,6 +49,22 @@ home
       //   +nested(10)
       //   note
       //     +gallery(2 of 10)
+
+  .route--scroll &
+    note-browser
+      note
+        +span(12 last)
+        clear: both
+        margin-bottom: gutter() * 2
+
+        +susy-breakpoint($tablet-small, $susy)
+          +span(10 last)
+
+        +susy-breakpoint($tablet-large, $susy)
+          +span(8 last)
+
+        +susy-breakpoint($screen-small, $susy)
+          +span(6 last)
 
   .route--focus &
     // @TODO/rewrite @TODO/redesign This should be a modal

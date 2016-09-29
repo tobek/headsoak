@@ -31,7 +31,18 @@ export const routes: RouterConfig = [
       name: 'Write',
       slug: 'write',
       navSection: 'main',
-      iconSlug: 'th-large',
+      // iconSlug: 'th-large',
+      iconSlug: 'columns',
+    },
+    component: EmptyComponent
+  },
+  {
+    path: 'scroll',
+    data: {
+      name: 'Scroll',
+      slug: 'scroll',
+      navSection: 'main',
+      iconSlug: 'bars',
     },
     component: EmptyComponent
   },
