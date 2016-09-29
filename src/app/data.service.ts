@@ -217,11 +217,6 @@ export class DataService {
         this.initNewUser();
       }
       else {
-        // @TODO This migration happened Jan 2015. Can safely remove this and related code if all users have lastLogin after than, or if we finish off migration manually.
-        if (! data.user.idsMigrated) {
-          [data.nuts, data.tags] = this.migrateIds(data.nuts, data.tags);
-        }
-
         this.initFromData(data);
       }
     });
@@ -233,7 +228,8 @@ export class DataService {
 
     this.ref.child('user').update({
       email: this.user.email,
-      provider: this.user.provider
+      provider: this.user.provider,
+      idsMigrated2016: true,
     }, (err) => {
       if (err) {
         this._logger.error('Error setting new user info:', err);
@@ -245,7 +241,7 @@ export class DataService {
 
     this.ref.child('featuresSeen').set(this.NEW_FEATURE_COUNT);
 
-    // @TODO/rewrite
+    // @TODO/rewrite Also make sure that IDs in sample data are all strings
 
     // $s.n.nuts = {};
     // $s.n.nutsDisplay = [];
@@ -293,10 +289,6 @@ export class DataService {
 
     this.user.setData(data.user);
 
-    // @TODO/rewrite
-    // $s.s.initBindings(data.shortcuts);
-    // $s.c.loadSettings(data.settings);
-
     // $s.users.fetchShareRecipientNames();
 
     this.handleNewFeatures(data.featuresSeen, () => {
@@ -307,6 +299,8 @@ export class DataService {
       // sharedWithMeInit(snapshot.val().sharedWithMe);
       // initUI();
     });
+
+    this.handleIdMigration();
   }
 
   /** In user data we keep track of count of features seen, and then compare that to value hard-coded here in JS. if there are new features seen, display them to the user and update their count. */
@@ -350,31 +344,40 @@ export class DataService {
     }
   }
 
-  /** the shift from nuts and tags being arrays to being objects means that all keys are now strings, so tag.docs and nut.tags have to be updated */
-  migrateIds(nuts, tags) {
-    _.each(nuts, function(nut) {
-      nut.id = String(nut.id);
-      if (nut.tags && nut.tags.length) {
-        nut.tags = nut.tags.map(String);
-      }
-      // $s.n.nutUpdated(nut, false, false); // @TODO/rewrite
-    });
-    _.each(tags, function(tag) {
+  /**
+   * The shift from notes and tags being arrays to being objects meant that all keys are now strings, so tag.docs and note.tags have to be updated.
+   * @TODO This migration happened Jan 2015. Can safely remove this and related code if all users have lastLogin after than, or if we finish off migration manually. @NOTE Actually it seems like the migration didn't work. Updated September 29 2016 and now using `idsMigrated2016` field to try this again.
+   */
+  handleIdMigration() {
+    if (this.user.idsMigrated2016) {
+      return;
+    }
+
+    this._logger.log('Starting ID migration');
+    this._logger.time('Fixing number IDs jeez');
+    console.groupCollapsed();
+
+    _.each(this.tags.tags, function(tag: Tag) {
       tag.id = String(tag.id);
-      if (tag.docs && tag.docs.length) {
-        tag.docs = tag.docs.map(String);
-      }
-      // $s.t.tagUpdated(tag, false, false); // @TODO/rewrite
+      tag.docs = tag.docs ? _.map(tag.docs, String) : [];
+      tag.updated(false);
     });
+
+    _.each(this.notes.notes, function(note: Note) {
+      note.tags = note.tags ? _.map(note.tags, String) : [];
+      note.id = String(note.id);
+      note.updated(false, false);
+    });
+
+    console.groupEnd();
+    this._logger.timeEnd('Fixing number IDs jeez');
 
     // initNewUser now does this, but for older users:
     this.ref.child('user').update({
       email: this.user.email,
       provider: this.user.provider,
-      idsMigrated: true
+      idsMigrated2016: true
     }, () => {});
-
-    return [nuts, tags];
   }
 
   /** Clears all loaded data. */
