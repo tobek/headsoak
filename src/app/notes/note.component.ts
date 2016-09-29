@@ -112,16 +112,9 @@ export class NoteComponent {
     event.preventDefault();
     event.stopPropagation();
 
-    const addAnotherTag = event.shiftKey;
+    const defaultAddAnother = ! event.shiftKey && ! event.ctrlKey;
 
-    this.completeAddTag(suggestion.value, ! addAnotherTag);
-
-    if (addAnotherTag) {
-      setTimeout(() => {
-        this.addTagSetUpAutocomplete();
-        this.initializeAddTag();
-      }, 100);
-    }
+    this.completeAddTag(suggestion.value, defaultAddAnother);
   }
 
   closeAddTagFieldHandler(event: MouseEvent) {
@@ -171,10 +164,11 @@ export class NoteComponent {
     }, 0);
   }
 
-  completeAddTag(tagText = this.addTagName, focusOnBody = true): void {
-    if (tagText === '') {
-      this.closeAddTagField(focusOnBody);
+  completeAddTag(tagText = this.addTagName, defaultAddAnother = true): void {
+    const addAnother = defaultAddAnother ? this.settings.get('addAnotherTag') : ! this.settings.get('addAnotherTag');
 
+    if (tagText === '') {
+      this.closeAddTagField(true);
       return;
     }
 
@@ -183,7 +177,14 @@ export class NoteComponent {
     if (tagAdded) {
       this.addTagName = '';
 
-      this.closeAddTagField(focusOnBody);
+      this.closeAddTagField(! addAnother);
+    }
+
+    if (addAnother) {
+      setTimeout(() => {
+        this.addTagSetUpAutocomplete();
+        this.initializeAddTag();
+      }, 100);
     }
   }
 

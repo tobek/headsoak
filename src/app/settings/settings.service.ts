@@ -43,6 +43,15 @@ export class SettingsService {
     },
 
     {
+      id: 'addAnotherTag',
+      default: true,
+      name: 'Add another tag by default',
+      description: 'If this setting is enabled, then when you have added a new tag to a note, your cursor will remain in the tag area in order to continue adding tags. Holding ctrl or shift while pressing enter will add the tag and move your cursor to the note text instead.\n\nIf this option is disabled, the behavior is reversed: hold shift or ctrl in order to remain in the add tag area.',
+      type: 'boolean',
+      section: 'settings'
+    },
+
+    {
       id: 'showNoteIds',
       default: false,
       name: 'Show note IDs',
