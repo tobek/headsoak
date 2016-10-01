@@ -49,6 +49,8 @@ export class DataService {
   /** How many separate async callbacks to sync data to data store we're currently waiting on. Using `parallel` from `async` module would be more elegant, but we don't need anything else from that module right now and source code for that function simply keeps a counter of the number of tasks that have completed, so it's the same idea. */
   private syncTasksRemaining = 0;
 
+  private syncInterval;
+
   private _logger = new Logger(this.constructor.name);
   private onlineStateRef: Firebase | FirebaseMock;
 
@@ -168,7 +170,7 @@ export class DataService {
     this.accountService = accountService;
     
     // Sync to server (if there are any changes) every 5s
-    window.setInterval(this.sync.bind(this), 5000);
+    this.syncInterval = window.setInterval(this.sync.bind(this), 5000);
     // @TODO/rewrite also sync before unload
 
     // @TODO in theory this is where, later, we can listen for connection state always and handle online/offline. For now we have an offline mode just when on local
@@ -388,5 +390,7 @@ export class DataService {
     this.tags.clear();
     this.settings.clear();
     this.user.clear();
+
+    clearInterval(this.syncInterval);
   }
 }
