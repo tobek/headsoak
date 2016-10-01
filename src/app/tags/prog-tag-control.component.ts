@@ -66,7 +66,7 @@ export class ProgTagControlComponent {
     sesh.setUseSoftTabs(true);
     sesh.setUseWorker(true); // does syntax validation
 
-    // this.editor.resize(); // doesn't seem necessary @TODO/now Maybe it is, word wrap isn't working when zoomed out?
+    // this.editor.resize(); // doesn't seem necessary
 
     this.editorUnchanged();
   }

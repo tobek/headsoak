@@ -146,7 +146,7 @@ export class NoteQueryComponent {
   }
 
   ensureFocusAndAutocomplete(): void {
-    if (! this.isFocused()F) {
+    if (! this.isFocused()) {
       // Lost focus on the input (user may have clicked on autocomplete suggestion or clicked on a tag to remove it, etc.)
       this.focus(); // this will trigger setUpAutocomplete
     }
