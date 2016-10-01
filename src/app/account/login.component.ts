@@ -37,14 +37,20 @@ export class LoginComponent {
             break;
           case 'logged-out':
             this.resetInputs();
-            this.view = 'login';
+            if (this.accountService.wasLoggedIn) {
+              this.view = 'login';
+            }
+            else {
+              this.view = 'create-account';
+            }
             break;
           case 'error':
             this.password = '';
-            this.view = 'login';
+            // Don't change the view
+            // @TODO/now Confirm this is the right behavior
             break;
           default:
-            this.view = 'login';
+            this.view = 'create-account';
             break;
           }
       });

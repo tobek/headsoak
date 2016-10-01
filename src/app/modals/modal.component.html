@@ -22,4 +22,133 @@
       <button class="btn" (click)="close()">OK</button>
     </div>
   </div>
+
+  <div class="marketing" *ngIf="activeModal === 'login'">
+    <h2 class="intro">
+      Harness your notes.
+      <br>
+      See your mind clearly.
+    </h2>
+
+    <div class="summaries">
+      <div class="how">
+        <h2>
+          SEE HOW
+          <br>
+          <i class="fa fa-angle-down"></i>
+        </h2>
+      </div>
+
+      <div>
+        <div class="summary">
+          <div class="thing">Smart Tags</div>
+        </div>
+
+        <div class="summary">
+          <div class="thing">Explore</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dive dive--smart-tags">
+      <h2>Harness your notes with transparent smartness, not magic.</h2>
+
+      <div class="examples">
+        <div class="example">
+          <h4 class="icon"><i class="fa fa-lg fa-fw fa-eye"></i></h4>
+
+          <div class="text">
+            <h4>Automatic</h4>
+
+            <p>Scan your notes for specific phrases and tag your notes automatically.</p>
+
+            <tag><span class="name">recipe</span></tag>
+            <tag><span class="name">link</span></tag>
+          </div>
+        </div>
+
+        <div class="example">
+          <h4 class="icon"><i class="fa fa-lg fa-fw fa-bicycle"></i></h4>
+
+          <div class="text">
+            <h4>Functional</h4>
+
+            <p>Do things with your notes. Like email them to you.</p>
+
+            <tag><span class="name">to do</span></tag>
+            <tag><span class="name">self destruct</span></tag>
+          </div>
+        </div>
+
+        <div class="example">
+          <h4 class="icon"><i class="fa fa-lg fa-fw fa-object-group"></i></h4>
+
+          <div class="text">
+            <h4>Analytical</h4>
+
+            <p>Analyze notes for specific algorithms and tag the note based on the results.</p>
+
+            <tag><span class="name">sentiment: happy</span></tag>
+            <tag><span class="name">language: italian</span></tag>
+          </div>
+        </div>
+
+        <div class="example">
+          <h4 class="icon"><i class="fa fa-lg fa-fw fa-users"></i></h4>
+
+          <div class="text">
+            <h4>A family</h4>
+
+            <p>Pair up so that whenever a note has one tag, it has the other one too.</p>
+
+            <tag><span class="name">poetry</span></tag>
+            <tag><span class="name">Galway Kinnell</span></tag>
+          </div>
+        </div>
+      </div>
+
+      <h5>Program your own smart tags or explore our library</h5>
+    </div>
+
+    <div class="dive dive--explore">
+      <div class="text">
+        <h2>Explore freely</h2>
+        <p>Get a bird's eye view of all your notes, then dive in.</p>
+      </div>
+
+      <div class="scroller">
+        <i class="fa fa-fighter-jet"></i>
+        <i class="fa fa-paper-plane"></i>
+        <i class="fa fa-space-shuttle"></i>
+        <i class="fa fa-fighter-jet"></i>
+      </div>
+    </div>
+
+    <div class="summaries">
+      <div class="summary--small">
+        Lightweight
+      </div>
+
+      <div class="summary--small">
+        Privacy
+      </div>
+
+      <div class="summary--small">
+        Sharing
+      </div>
+
+      <div class="summary--small">
+        Zero Knowledge encryption
+      </div>
+    </div>
+
+    <h2 class="outro">
+      Questions? <a href="mailto:support@nutmeg.io">Contact us.</a>
+    </h2>
+  </div><!-- end .marketing -->
+
+  <div class="modal-content outro-login" *ngIf="activeModal === 'login'">
+    <login></login>
+  </div>
+
 </div>

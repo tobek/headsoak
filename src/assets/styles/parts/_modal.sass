@@ -29,13 +29,14 @@ modal
 
   .modal-content-container
     +outer-container
+    max-width: $screen-small
     height: 100%
 
   .modal-content
     +card
+    +span(6 last)
     position: relative 
-    width: 620px
-    max-width: 90%
+    // max-width: 90%
     top: 50%
     transform: translateY(-50%)
     margin: 0 auto
