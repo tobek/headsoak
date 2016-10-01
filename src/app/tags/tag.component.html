@@ -18,7 +18,8 @@
   </span>
 </span>
 
-<span class="tag-actions" (click)="$event.stopPropagation()">
+<!-- In enableDropdown mode, only show when hovered, just like tag-actions-dropdown. (We use class toggled by JS in order to add delay and also want to use ngIf for tag-actions-dropdown cause it's a heavy component.) In other modes, we want to show these on regular CSS :hover. -->
+<span class="tag-actions" *ngIf="! enableDropdown || hovered" (click)="$event.stopPropagation()">
   <a title="Remove" class="tag-action--remove" *ngIf="removable" (click)="remove()">
     <i class="fa fa-times"></i>
   </a>

@@ -33,13 +33,23 @@ export class TagComponent {
   @Output() deleted = new EventEmitter<Tag>(); // deleted entirely
 
   @HostListener('mouseover') onMouseover(btn) {
-    this.hovered = true;
+    if (! this.hoveredTimeout) {
+      this.hoveredTimeout = setTimeout(() => {
+        this.hovered = true;
+        this.hoveredTimeout = null;
+      }, 250);
+    }
   }
   @HostListener('mouseleave') onMouseleave(btn) {
+    if (this.hoveredTimeout) {
+      clearTimeout(this.hoveredTimeout);
+      this.hoveredTimeout = null;
+    }
     this.hovered = false;
   }
 
   private hovered = false;
+  private hoveredTimeout;
 
   private _logger = new Logger(this.constructor.name);
 
