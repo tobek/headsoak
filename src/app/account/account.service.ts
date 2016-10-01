@@ -227,7 +227,7 @@ export class AccountService {
       this.analytics.event('Account', 'delete_account.attempt');
 
       // First remove this index.
-      this.ref.root().child('emailToId/' + utils.formatForFirebase(this.user.email)).set(null, (err) {
+      this.ref.root().child('emailToId/' + utils.formatForFirebase(this.user.email)).set(null, (err) => {
         if (err) {
           // @TODO This happens a lot. Account deletion or log out can hit first and then no permission to do it I think? Either need to change Firebase rules or else do these all sequentially. But don't care that much. If user later signs up with same email it'll overwrite the value in /emailToId/, and if not, it can hang out there, it's tiny.
           this._logger.warn('Failed to remove value at `/emailToId/' + utils.formatForFirebase(this.user.email) + '` while deleting user account:', err);
