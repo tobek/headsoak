@@ -22,7 +22,7 @@
         (removed)="note.removeTagId(tagId)"
       ></tag>
 
-      <span class="tag note-id" *ngIf="settings.get('showNoteIds')">{{ note.id }}</span>
+      <span class="note-id" title="Note ID" *ngIf="settings.get('showNoteIds')">{{ note.id }}</span>
     </div>
   </div>
 
