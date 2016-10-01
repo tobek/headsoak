@@ -80,8 +80,8 @@
     <div *ngIf="initialized && section === 'account'">
       <img class="avatar" src="{{ settings.get('profileImageUrl', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7') }}" />
         
-      <!-- @TODO/rewrite This doesn't work obvs, but we can pass the message on. -->
-      <br><br><br><a (click)="loginComponent.deleteAccount()">Delete account</a>
+      <!-- @TODO/rewrite This needs some UI love. -->
+      <br><br><br><button class="btn btn-danger" (click)="deleteAccount()">Delete account</button>
     </div>
   </div>
 </div>

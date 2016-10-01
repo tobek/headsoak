@@ -4,7 +4,7 @@ import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 const Firebase = require('firebase');
 
-import {Logger} from '../utils/logger';
+import {utils, Logger} from '../utils/';
 import {AnalyticsService} from '../analytics.service';
 import {DataService} from '../data.service';
 import {ModalService} from '../modals/modal.service';
@@ -207,35 +207,57 @@ export class AccountService {
 
       this.analytics.event('Account', 'create_account.success');
 
-      this._logger.info('New account created: user id ' + userData.id + ', email ' + userData.email);
+      this._logger.info('New account created with user id', userData.id);
       this.login(email, password);
     });
   }
 
-  deleteAccount(email: string, password: string) {
-    this.analytics.event('Account', 'delete_account.attempt');
-    // $s.u.loading = true; // @TODO/rewrite
-
-    this.ref.removeUser({ email: email, password: password}, (err) => {
+  deleteAccount(email: string, password: string, cb: Function) {
+    this.checkPassword(password, (err) => {
       if (err) {
-        this.analytics.event('Account', 'delete_account.error', err.code);
-        switch (err.code) {
-          case 'INVALID_PASSWORD':
-          case 'INVALID_USER':
-            alert('Wrong password! Reconsidering deleting your account?'); // @TODO friendlier message
-            break;
-          default:
-            alert('Sorry, something went wrong when trying to delete your account: ' + (err.message || err.code || err) + '. Please try again later!'); // @TODO include support email here
-            this._logger.error('Error deleting account:', err);
-        }
-
+        alert(err);
+        cb(err)
         return;
       }
 
-      this.analytics.event('Account', 'delete_account.success');
+      this.analytics.event('Account', 'delete_account.attempt');
 
-      this._logger.info('Successfully deleted account with email', email);
-      this.logout();
+      // First remove this index.
+      this.ref.root().child('emailToId/' + utils.formatForFirebase(this.user.email)).set(null, (err) {
+        if (err) {
+          // @TODO This happens a lot. Account deletion or log out can hit first and then no permission to do it I think? Either need to change Firebase rules or else do these all sequentially. But don't care that much. If user later signs up with same email it'll overwrite the value in /emailToId/, and if not, it can hang out there, it's tiny.
+          this._logger.warn('Failed to remove value at `/emailToId/' + utils.formatForFirebase(this.user.email) + '` while deleting user account:', err);
+        }
+      });
+
+      // Then delete account data
+      this.ref.root().child('users/' + this.user.uid).set(null, (err) => {
+        if (err) {
+          alert('Sorry, something went wrong when trying to delete your account: ' + (err.message || err.code || err) + '. Please try again later!'); // @TODO include support email here
+          this._logger.error('Error deleting account data:', err);
+
+          cb(err);
+          return;
+        }
+
+        // Now delete actual user account
+        this.ref.removeUser({ email: email, password: password}, (err) => {
+          if (err) {
+            this.analytics.event('Account', 'delete_account.error', err.code);
+            alert('Sorry, something went wrong when trying to delete your account: ' + (err.message || err.code || err) + '. Please try again later!'); // @TODO include support email here
+            this._logger.error('Error removing user account after successfully deleting all account data:', err);
+            // @TODO THINGS ARE IN A REAL WEIRD STATE - DELETED USER INFO BUT NOT ACCOUNT. Now they can log in still with same account details (and can't make new account) but they'll have data. Let's act like everything was fine, and we'll have to go in manually and delete account.
+          }
+
+          this.analytics.event('Account', 'delete_account.success');
+
+          this._logger.info('Successfully deleted account with email', email);
+
+          alert('Your account was deleted successfully - thanks for using Nutmeg!'); // @TODO Should give opportunity to leave feedback? We'd need to make modal (in this case) blocking, and to send additional data (that it was before deletion) and to loggout on cancel or successful submit. Maybe leave feedback before finishing account deletion because writing feedback and knowing we want it might change their mind?
+          this.logout();
+          cb();
+        });
+      });
     });
   }
 

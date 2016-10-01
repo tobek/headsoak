@@ -166,4 +166,29 @@ export class SettingsComponent implements OnInit {
     this.syncDebounced();
   }
 
+  deleteAccount(): void {
+    // @TODO/modals Use non-native prompt/alert for these
+    var answer = prompt('Are you really really sure you want to delete the account belonging to ' + this.dataService.user.email + '? All of your data will be deleted. This can\'t be undone.\n\nType "I\'M REALLY REALLY SURE" (yes, all caps) to proceed:');
+
+    if (answer !== 'I\'M REALLY REALLY SURE') {
+      alert('No? Okay, good choice.');
+      return;
+    }
+
+    var password = prompt('Well, it\'s been real!\n\nEnter your password to delete your account. This is it.\n\n(@TODO make this a password prompt)');
+
+    if (! password) {
+      alert('No? Okay, good choice.');
+      return;
+    }
+
+    // if ($s.u.loading) return; // @TODO/rewrite
+
+    this.dataService.accountService.deleteAccount(this.dataService.user.email, password, (err) => {
+      if (err) {
+        // @TODO/rewrite Turn off loading
+      }
+    });
+  }
+
 }
