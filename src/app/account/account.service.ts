@@ -18,6 +18,9 @@ export class AccountService {
   /** Whether private notes/tags are currently visible. */
   privateMode = false;
 
+  /** By default we show sign up screen on first visit. If they're logged in and then they sign out, we should show the login view instead - this is how we keep track. */
+  wasLoggedIn = false;
+
   private _logger: Logger = new Logger(this.constructor.name);
   private ref: Firebase;
 
@@ -131,6 +134,7 @@ export class AccountService {
   /** User explicitly requested to logout. */
   logout() {
     this.analytics.event('Account', 'logout');
+    this.wasLoggedIn = true;
     this.ref.unauth(); // will trigger `handleLoggedOut` via firebase auth listener
   }
 

@@ -1,0 +1,127 @@
+// Styles for the logged-out marketing home page
+
+.marketing
+  position: relative
+  color: $gray-dark
+
+  h2
+    margin-bottom: 30px
+    font-size: 24px
+    font-weight: normal
+    letter-spacing: 1.8px
+    color: $card-bg
+
+    a
+      color: $card-bg
+
+  .intro,
+  .outro
+    +span(6)
+    padding-top: 170px
+    text-align: center
+    line-height: 60px
+    text-shadow: 2px 2px 5px $transparent-gray
+
+  .how
+    +span(6) // @TODO/now should be full width at certain breakpoint
+    position: absolute
+    margin-top: calc(#{gutter() * -3} - 100px); // gutter * 3 is same a summaries margin-top
+    text-align: center
+
+    .fa
+      position: relative
+      top: -5px
+
+
+  .summaries
+    +span(12)
+    margin-top: gutter() * 3
+
+  .summary
+    +card
+    +gallery(6 of 12)
+    padding-top: 25px
+    padding-bottom: 25px
+    text-align: center
+
+    .thing
+      font-size: 48px
+      font-weight: bold
+      letter-spacing: 2px
+      text-transform: uppercase
+
+
+  .summary--small
+    +card
+    +gallery(3 of 12)
+    height: 140px
+    text-align: center
+
+  .dive
+    +card
+    +span(12)
+    margin-top: 60px
+
+    h2
+      color: $gray-dark
+      margin-top: 0
+
+  .dive--smart-tags
+    .examples
+      @extend .clearfix
+
+    .example
+      +gallery(6 of 12)
+      height: 225px
+
+    .icon
+      +span(1 of 6)
+    .text
+      +span(5 of 6 last)
+    
+    h4
+      font-size: 24px
+      font-weight: normal
+      margin: 0 0 25px
+
+    h5
+      margin: 0 0 10px
+      text-align: center
+      font-size: 18px
+
+  .dive--explore
+    position: relative
+    overflow: hidden
+
+    .text
+      +span(6)
+
+    .scroller
+      +span(6 last)
+      position: absolute
+      top: 0
+      right: 0
+      padding: gutter() * 2
+      height: 100%
+      text-align: center
+
+      animation: vert-scroll 10s infinite normal
+
+      @keyframes vert-scroll
+        from
+          transform: translateY(0)
+          animation-timing-function: linear
+
+        to
+          transform: translateY(-255%)
+          animation-timing-function: linear
+
+      .fa
+        display: block
+        margin-bottom: 25%
+        font-size: 72px
+
+.modal-content.outro-login
+  float: right
+  height: auto
+  margin: 50px 0
