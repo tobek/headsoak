@@ -15,11 +15,14 @@
     <feedback *ngIf="activeModal === 'feedback'"></feedback>
     <private-mode *ngIf="activeModal === 'privateMode'"></private-mode>
 
-    <div *ngIf="activeModal === 'alert'">
+    <div class="generic" *ngIf="activeModal === 'generic'">
       <!-- @TODO/ece Style of this? Currently only used for progTagCantChangeAlert and simultaneous editing warning, but prob will be used elsewhere -->
-      <div class="alert-body" [innerHTML]="message"></div>
+      <div class="body" [innerHTML]="config.message"></div>
 
       <button class="btn" (click)="close()">OK</button>
+      <span class="additional-buttons" *ngIf="config.additionalButtons && config.additionalButtons.length">
+        <button class="btn" *ngFor="let button of config.additionalButtons" (click)="close(); button.cb()">{{ button.text }}</button>
+      </span>
     </div>
   </div>
 

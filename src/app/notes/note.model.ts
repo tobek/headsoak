@@ -305,21 +305,20 @@ export class Note {
   }
 
   progTagCantChangeAlert(tag: Tag): void {
-    // @TODO/rewrite See `progTagCantChangeAlert` in old code - prompt should allow user to change this tag's settings, explain smart tags (specifically this *type* of smart tag - with auto application), etc.
-    this.dataService.modalService.alert('The tag "' + tag.name + '" is a smart tag, so it can\'t be added or removed manually.');
-
-    // @TODO/now
-    // $s.m.confirm({
-    //   bodyHTML: '<p>"' + tag.name  + '" is an algorithmic tag controlled by the function you entered - it cannot be added or removed manually.</p><p>Would you like to change this tag\'s settings?</p>',
-    //   okText: 'yes',
-    //   okCb: function() {
-    //     // closeModal was just called, so open up new modal in a different tick:
-    //     $timeout(function() {
-    //       $s.t.tagProgSettings(tag);
-    //     }, 50);
-    //   },
-    //   cancelText: 'no'
-    // });
+    this.dataService.modalService.modal.generic({
+      message: 'The tag "' + tag.name + '" is a smart tag, so it can\'t be added or removed manually.',
+      additionalButtons: [
+        {
+          text: 'Change tag settings',
+          cb: () => {
+            this.dataService.router.navigateByUrl(
+              ['', 'tags', tag.id, tag.name, 'smartness'].join('/')
+            );
+          }
+        }
+      ],
+    });
+    // @TODO/rewrite Maybe should explain smart tags (specifically this *type* of smart tag - with auto application), etc.
   }
 
   showShareSettings() {

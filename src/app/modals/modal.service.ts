@@ -47,8 +47,9 @@ export class ModalService {
   }
 
   alert(message: string | SafeHtml): void {
-    this.modal.message = message;
-    this.activeModal$.next('alert');
+    this.modal.generic({
+      message: message
+    });
   }
 
   feedback(): void {

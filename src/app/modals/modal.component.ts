@@ -12,7 +12,14 @@ import {FeedbackComponent} from './feedback.component';
 import {PrivateModeComponent} from './private-mode.component';
 
 
-type ModalType = null | 'loading' | 'login' | 'feedback' | 'privateMode' | 'alert';
+type ModalType = null | 'loading' | 'login' | 'feedback' | 'privateMode' | 'generic';
+type ModalConfigType = {
+  message?: string | SafeHtml,
+  additionalButtons?: [{
+    text: string,
+    cb: Function,
+  }]
+};
 
 @Component({
   selector: 'modal',
@@ -46,6 +53,8 @@ export class ModalComponent {
   _activeModal: ModalType;
 
   message: string | SafeHtml;
+
+  config: ModalConfigType = {};
 
   private activeModalSub: Subscription;
 
@@ -105,7 +114,7 @@ export class ModalComponent {
 
     this.activeModal = null;
 
-    this.message = null;
+    this.config = {};
   }
 
   close(evenIfUncancellable = false) {
@@ -122,6 +131,11 @@ export class ModalComponent {
     if (! this.closeTimeout) {
       this.closeTimeout = setTimeout(this.clear.bind(this), 1500);
     }
+  }
+
+  generic(config: ModalConfigType): void {
+    this.config = config;
+    this.activeModal = 'generic';
   }
 
 }
