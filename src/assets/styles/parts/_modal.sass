@@ -30,15 +30,34 @@ modal
   .modal-content-container
     +outer-container
     height: 100%
+    max-width: $screen-small
 
   .modal-content
     +card
+    +span(6)
+    float: none
     position: relative 
-    width: 620px
     max-width: 90%
     top: 50%
     transform: translateY(-50%)
     margin: 0 auto
+
+    @media (min-width: $tablet-large)
+      &.is--login,
+      &.is--loading
+        +span(6 last)
+
+    @media (max-width: $tablet-large)
+      +span(9)
+      float: none
+      margin-left: auto
+      margin-right: auto
+
+    @media (max-width: $tablet-small)
+      +span(11)
+      float: none
+      margin-left: auto
+      margin-right: auto
 
     @media (max-height: 700px)
       padding-top: 25px
