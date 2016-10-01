@@ -21,9 +21,9 @@
     <iframe ref-pseudoLoginIframe id="pseudo-login-iframe" src="/pseudo-login.html" style="width:0px; height:0px; border:0px;"></iframe>
   </form>
 
-  <div class="switch-sign-up-in">
+  <div class="switch-sign-up-in" (click)="view = 'create-account'">
     New to Nutmeg?
-    <button class="btn btn-secondary create-account-link" (click)="view = 'create-account'">Sign Up</button>
+    <button class="btn btn-secondary create-account-link">Sign Up</button>
   </div>
 </div>
 
@@ -39,9 +39,9 @@
     <aside>By signing up you agree with our <a href="#@TODO/rewrite">Terms and Conditions</a> and <a href="#@TODO/rewrite">Privacy Policy</a></aside>
   </form>
 
-  <div class="switch-sign-up-in">
+  <div class="switch-sign-up-in" (click)="view = 'login'">
     Existing user?
-    <button class="btn btn-secondary create-account-link" (click)="view = 'login'">Sign In</button>
+    <button class="btn btn-secondary create-account-link">Sign In</button>
   </div>
 </div>
 
