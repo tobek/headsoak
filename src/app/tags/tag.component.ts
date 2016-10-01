@@ -4,7 +4,7 @@ import {AnalyticsService} from '../analytics.service';
 import {Tag} from './tag.model';
 import {TagsService} from './tags.service';
 
-import {utils} from '../utils/';
+import {Logger, utils} from '../utils/';
 
 @Component({
   selector: 'tag',
@@ -19,6 +19,7 @@ export class TagComponent {
   isNewTag = false;
 
   @HostBinding('class.renaming') renaming = false;
+  @HostBinding('hidden') hidden = false;
 
   @ViewChild('tagName') tagNameRef: ElementRef;
   tagNameEl: HTMLInputElement; // Not actually, but contenteditable so it behaves as such
@@ -40,6 +41,8 @@ export class TagComponent {
 
   private hovered = false;
 
+  private _logger = new Logger(this.constructor.name);
+
   constructor(
     private analyticsService: AnalyticsService,
     private tagsService: TagsService
@@ -56,11 +59,16 @@ export class TagComponent {
     this.tagNameEl = this.tagNameRef.nativeElement;
   }
 
+  /** This component is either a) being initialized, or b) being reused for a different tag. */
   tagIdUpdated(newTagId: string): void {
     this.tag = this.tagsService.tags[newTagId];
 
     if (! this.tag) {
-      throw new Error('Can\'t set up TagComponent: no tag found for tag ID ' + newTagId);
+      // throw new Error('Can\'t set up TagComponent: no tag found for tag ID ' + newTagId);
+      this._logger.error('Can\'t set up TagComponent: no tag found for tag ID', newTagId + '. Hiding component.');
+      // @TODO/rewrite @TODO/tags. Check firebase data for all of these and see how pervasive. Permanent fix would be to loop through notes that reference this tag!
+      this.tag = <Tag> {};
+      this.hidden = true;
     }
 
     if (! this.tag.name) {
