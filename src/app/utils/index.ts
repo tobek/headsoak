@@ -21,6 +21,13 @@ export var utils = {
   formatForFirebase: function(s: string): string {
     // just base64 encode it eh
     return btoa(s);
+
+    // @TODO/rewrite The above won't work for encoding unicode. However, Firebase keys *can* contain unicode so we don't have to. All we need is this:
+    // return encodeURIComponent(s).replace(/\./g, '%2E');
+    // and the decode:
+    // return decodeURIComponent(s.replace('%2E', '.'));
+    // They should be called encodeAsFirebaseKey and decodeFirebaseKey
+    // Existing emailToId keys should be changed
   },
 
   /** Finds a key not currently in given object. */
