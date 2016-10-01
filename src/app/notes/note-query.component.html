@@ -3,7 +3,7 @@
     *ngFor="let tag of tags"
     [tagId]="tag.id"
     [removable]="true"
-    (removed)="removeTag(tag)"
+    (removed)="removeTag(tag, true)"
   ></tag>
 </span>
 

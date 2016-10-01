@@ -109,14 +109,20 @@ export class NoteQueryComponent {
   focused(): void {
     this.active();
   }
+  isFocused(): boolean {
+    return document.activeElement === this.textInput.nativeElement;
+  }
   blurred(): void {
-    if (! this.queryText && this.tags.length === 0) {
-      this.inactive();
-    }
+    this.maybeInactive();
   }
 
   active(): void {
     (<HTMLElement> this.elementRef.nativeElement).classList.add('is--active');
+  }
+  maybeInactive(): void {
+    if (! this.queryText && this.tags.length === 0 && ! this.isFocused()) {
+      this.inactive();
+    }
   }
   inactive(): void {
     (<HTMLElement> this.elementRef.nativeElement).classList.remove('is--active');
@@ -140,7 +146,7 @@ export class NoteQueryComponent {
   }
 
   ensureFocusAndAutocomplete(): void {
-    if (document.activeElement !== this.textInput.nativeElement) {
+    if (! this.isFocused()F) {
       // Lost focus on the input (user may have clicked on autocomplete suggestion or clicked on a tag to remove it, etc.)
       this.focus(); // this will trigger setUpAutocomplete
     }
@@ -169,15 +175,24 @@ export class NoteQueryComponent {
     this.queryUpdated();
 
     this.tagsUpdated$.next(this.tags);
+
+    this.active();
   }
 
-  removeTag(tag: Tag): void {
+  removeTag(tag: Tag, thenFocus = false): void {
     let i = this.tags.indexOf(tag);
     if (i !== -1) {
       this.tags.splice(i, 1);
       this.queryUpdated();
 
       this.tagsUpdated$.next(this.tags);
+    }
+
+    if (thenFocus) {
+      this.focus();
+    }
+    else {
+      this.maybeInactive();
     }
   }
 
