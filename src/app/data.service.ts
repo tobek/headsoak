@@ -212,8 +212,8 @@ export class DataService {
       var data = snapshot.val();
       this._logger.log('Got data:', data);
 
-      if (! data) {
-        // Must be a new user - even if existing user deleted everything there would still be object with settings and empty nuts/tags
+      if (! data.user || ! data.user.provider) {
+        // Must be a new user - user object is set up with `provider` when new user is initialized
         this.initNewUser();
       }
       else {

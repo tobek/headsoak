@@ -32,6 +32,10 @@ export class TagsService {
   init(tagsData: Object, dataService: DataService) {
     this.dataService = dataService;
 
+    if (_.isEmpty(tagsData)) {
+      tagsData = {};
+    }
+
     _.each(tagsData, _.partialRight(this.createTag, true).bind(this));
 
     this.initialized$.next(null);

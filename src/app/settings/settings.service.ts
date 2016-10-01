@@ -387,8 +387,13 @@ export class SettingsService {
     private modalService: ModalService
   ) {}
 
+  /** Initialize settings using `settingsData`: existing settings stored for this user in data store. */
   init(settingsData: any, dataService: DataService): void {
     this.dataService = dataService;
+
+    if (_.isEmpty(settingsData)) {
+      settingsData = {};
+    }
 
     _.each(this.settingsSourceData, _.partial(this.initSetting, settingsData).bind(this));
     _.each(this.accountSettingsSourceData, _.partial(this.initSetting, settingsData).bind(this));

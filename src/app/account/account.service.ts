@@ -106,7 +106,8 @@ export class AccountService {
 
     this.user.setData({
       uid: authData.uid,
-      email: authData.provider && authData[authData.provider] && authData[authData.provider].email
+      email: authData.provider && authData[authData.provider] && authData[authData.provider].email,
+      provider: authData.provider,
     });
     this.user.loggedIn = true;
 

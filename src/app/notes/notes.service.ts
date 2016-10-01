@@ -44,6 +44,10 @@ export class NotesService {
   init(notesData: Object, dataService: DataService) {
     this.dataService = dataService;
 
+    if (_.isEmpty(notesData)) {
+      notesData = {};
+    }
+
     this._logger.time('Initializing notes and index');
     _.each(notesData, _.partialRight(this.createNote, true).bind(this));
     this._logger.timeEnd('Initializing notes and index');
