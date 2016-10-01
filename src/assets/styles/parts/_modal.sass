@@ -24,8 +24,11 @@ modal
     left: 0
 
   .modal-backdrop
-    -webkit-backface-visibility: hidden; // Not sure why, but saw this in Vex modal
+    pointer-events: none // Otherwise it eats scrolling when you're on marketing home page
     background: rgba(0, 0, 0, 0.7)
+
+  &.cancellable .modal-backdrop
+    pointer-events: all
 
   .modal-content-container
     +outer-container
