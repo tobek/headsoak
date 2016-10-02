@@ -7,26 +7,26 @@
     </div>
 
     <ul class="menu">
-      <li class="item"><a [routerLink]="['/settings']">
+      <li class="item" [routerLink]="['/settings']" [class.is--active]="section === 'settings'">
         <i class="fa fa-fw fa-lg fa-sliders"></i>
         Settings
-      </a></li>
-      <li class="item"><a [routerLink]="['/settings', 'shortcuts']">
+      </li>
+      <li class="item" [routerLink]="['/settings', 'shortcuts']" [class.is--active]="section === 'account'">
         <i class="fa fa-fw fa-lg fa-fighter-jet"></i>
         Shortcuts
-      </a></li>
-      <li class="item"><a [routerLink]="['/settings', 'account']">
+      </li>
+      <li class="item" [routerLink]="['/settings', 'account']" [class.is--active]="section === 'account'">
         <i class="fa fa-fw fa-lg fa-smile-o"></i>
         Account
-      </a></li>
-      <li class="item"><a [routerLink]="['/settings', 'private-mode']">
+      </li>
+      <li class="item" [routerLink]="['/settings', 'private-mode']" [class.is--active]="section === 'privateMode'">
         <i class="fa fa-fw fa-lg fa-user-secret"></i>
         Private Mode
-      </a></li>
-      <li class="item"><a [routerLink]="['/settings', 'feedback']">
+      </li>
+      <li class="item" [routerLink]="['/settings', 'feedback']" [class.is--active]="section === 'feedback'">
         <i class="fa fa-fw fa-lg fa-comment-o"></i>
         Feedback
-      </a></li>
+      </li>
     </ul>
   </div>
 

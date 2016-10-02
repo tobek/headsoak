@@ -28,16 +28,19 @@
     color: $link-hover
 
 =menu-link
+  +menu-link-base
   cursor: pointer
   width: 100%
   text-decoration: none
-  color: $primary-color
-  background-color: $primary-color-contrast
   transition: color $transition-fast, background-color $transition-fast
 
-  &:hover
+  &:hover,
+  &.is--active
     +menu-link-hover
 
+=menu-link-base
+  color: $primary-color
+  background-color: $primary-color-contrast
 =menu-link-hover
   color: $primary-color-contrast
   background-color: $primary-color

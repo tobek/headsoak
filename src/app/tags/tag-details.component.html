@@ -9,28 +9,28 @@
     ></tag>
 
     <ul class="menu">
-      <li class="item"><a [routerLink]="['/tags', tag.id, tag.name]">
+      <li class="item" [routerLink]="['/tags', tag.id, tag.name]" [class.is--active]="activePane === 'explore'">
         <i class="fa fa-fw fa-lg fa-bar-chart"></i>
         Explore
-      </a></li>
-      <li class="item"><a [routerLink]="['/tags', tag.id, tag.name, 'share']">
+      </li>
+      <li class="item" [routerLink]="['/tags', tag.id, tag.name, 'share']" [class.is--active]="activePane === 'share'">
         <i class="fa fa-fw fa-lg fa-users"></i>
         Share
-      </a></li>
-      <li class="item"><a [routerLink]="['/tags', tag.id, tag.name, 'smartness']">
+      </li>
+      <li class="item" [routerLink]="['/tags', tag.id, tag.name, 'smartness']" [class.is--active]="activePane === 'smartness'">
         <i class="fa fa-fw fa-lg fa-magic"></i>
         Smart tag
-      </a></li>
+      </li>
       <!-- @TODO/tags @TODO/privacy
-      <li class="item"><a [routerLink]="['/tags', tag.id, tag.name, 'privacy']">
+      <li class="item" [routerLink]="['/tags', tag.id, tag.name, 'privacy']" [class.is--active]="activePane === 'privacy'">
         <i class="fa fa-fw fa-lg fa-lock"></i>
         Private tag
-      </a></li>
+      </li>
       -->
-      <li class="item"><a [routerLink]="['/tags', tag.id, tag.name, 'delete']">
+      <li class="item" [routerLink]="['/tags', tag.id, tag.name, 'delete']" [class.is--active]="activePane === 'delete'">
         <i class="fa fa-fw fa-lg fa-trash-o"></i>
         Delete
-      </a></li>
+      </li>
     </ul>
   </div>
 
