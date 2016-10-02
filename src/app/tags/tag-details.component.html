@@ -9,25 +9,25 @@
     ></tag>
 
     <ul class="menu">
-      <li class="item" [routerLink]="['/tags', tag.id, tag.name]" [class.is--active]="activePane === 'explore'">
+      <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" [class.is--active]="activePane === 'explore'">
         <i class="fa fa-fw fa-lg fa-bar-chart"></i>
         Explore
       </li>
-      <li class="item" [routerLink]="['/tags', tag.id, tag.name, 'share']" [class.is--active]="activePane === 'share'">
+      <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'share']" [class.is--active]="activePane === 'share'">
         <i class="fa fa-fw fa-lg fa-users"></i>
         Share
       </li>
-      <li class="item" [routerLink]="['/tags', tag.id, tag.name, 'smartness']" [class.is--active]="activePane === 'smartness'">
+      <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'smartness']" [class.is--active]="activePane === 'smartness'">
         <i class="fa fa-fw fa-lg fa-magic"></i>
         Smart tag
       </li>
       <!-- @TODO/tags @TODO/privacy
-      <li class="item" [routerLink]="['/tags', tag.id, tag.name, 'privacy']" [class.is--active]="activePane === 'privacy'">
+      <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'privacy']" [class.is--active]="activePane === 'privacy'">
         <i class="fa fa-fw fa-lg fa-lock"></i>
         Private tag
       </li>
       -->
-      <li class="item" [routerLink]="['/tags', tag.id, tag.name, 'delete']" [class.is--active]="activePane === 'delete'">
+      <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'delete']" [class.is--active]="activePane === 'delete'">
         <i class="fa fa-fw fa-lg fa-trash-o"></i>
         Delete
       </li>
@@ -52,7 +52,7 @@
 
         <ul class="cooccurring-tags">
           <li *ngFor="let cooccurrence of exploreStats.topCooccurrences">
-            <span class="tag-name" [routerLink]="['/tags', cooccurrence.tag.id, cooccurrence.tag.name]">
+            <span class="tag-name" [routerLink]="['/tags/tag', cooccurrence.tag.id, cooccurrence.tag.name]">
               {{ cooccurrence.tag.name }}
             </span>
             <!-- @TODO/tags Should link these to the search query! -->
@@ -65,7 +65,7 @@
 
         <ul class="cooccurring-tags">
           <li *ngFor="let cooccurrence of exploreStats.bottomCooccurrences">
-            <span class="tag-name" [routerLink]="['/tags', cooccurrence.tag.id, cooccurrence.tag.name]">
+            <span class="tag-name" [routerLink]="['/tags/tag', cooccurrence.tag.id, cooccurrence.tag.name]">
               {{ cooccurrence.tag.name }}
             </span>
             ({{ cooccurrence.numNotes }} time{{ cooccurrence.numNotes !== 1 ? 's' : '' }})

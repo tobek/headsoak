@@ -64,17 +64,38 @@ export const routes: RouterConfig = [
       navSection: 'main',
       iconSlug: 'hashtag',
     },
-    component: EmptyComponent
-  },
+    component: EmptyComponent,
 
-  // @HACK These should be in `children` array of `/tags` path but I can't get it to work.
-  {
-    path: 'tags/:tagId/:tagName',
-    component: EmptyComponent
-  },
-  {
-    path: 'tags/:tagId/:tagName/:section',
-    component: EmptyComponent
+    children: [
+      {
+        path: '',
+        component: EmptyComponent
+      },
+      {
+        path: 'smart-tags',
+        component: EmptyComponent,
+        children: [
+          {
+            path: 'library',
+            component: EmptyComponent,
+          }
+        ]
+      },
+      {
+        path: 'tag/:tagId/:tagName',
+        component: EmptyComponent,
+        children: [
+          {
+            path: '',
+            component: EmptyComponent
+          },
+          {
+            path: ':section',
+            component: EmptyComponent
+          },
+        ]
+      },
+    ]
   },
 
   {

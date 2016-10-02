@@ -24,7 +24,7 @@
 
     <span *ngFor="let tag of (tags | arrayLimit:limit)" class="tag-wrapper">
       <tag class="tag tag-{{ tag.id }}"
-        [routerLink]="['/tags', tag.id, tag.name]"
+        [routerLink]="['/tags/tag', tag.id, tag.name]"
         [tagId]="tag.id"
         [showCount]="true"
         (deleted)="tagDeleted($event)"
@@ -33,7 +33,11 @@
   </div>
 
   <div class="fixed-pane-wrapper">
-    <div class="tag-pane"></div>
+    <div class="tag-pane fixed-pane-contents">
+      <a *ngIf="! showLibrary" [routerLink]="['/tags/smart-tags/library']">Smart tag library &raquo;</a>
+
+      <prog-tag-library *ngIf="showLibrary"></prog-tag-library>
+    </div>
   </div>
 </div>
 

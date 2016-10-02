@@ -37,6 +37,8 @@ export class TagBrowserComponent {
   @ViewChild('queryInput') queryInput: ElementRef;
   @ViewChildren(TagComponent) tagComponents: QueryList<TagComponent>;
 
+  showLibrary = false;
+
   query: string;
   private queryUpdated$: Subject<void> = new Subject<void>();
 
@@ -97,13 +99,25 @@ export class TagBrowserComponent {
   }
 
   routeUpdated(event: NavigationEnd | Router) {
-    // @HACK Should be able to subscribe to just param events via ActivatedRoute to get tag ID from /tags/:tagId... paths but it's not working, maybe because I can't get child routes to work, but anyway here we go:
+    // @HACK Should be able to subscribe to just param events via ActivatedRoute to get tag ID from `/tags/:tagId...` paths the params observer isn't firing - might be because of the EmptyComponents hack or maybe a bug that's fixed in later version, but anyway here we go:
     const pathParts = event.url.substring(1).split('/');
-    if (pathParts[0] === 'tags' && pathParts[1]) {
-      this.activeTag = this.tagsService.tags[pathParts[1]];
+
+    if (pathParts[0] !== 'tags') {
+      return;
+    }
+    
+    if (pathParts[1] === 'tag') {
+      this.activeTag = this.tagsService.tags[pathParts[2]];
     }
     else {
       this.activeTag = null;
+
+      if (event.url.indexOf('smart-tags/library') !== -1) {
+        this.showLibrary = true;
+      }
+      else {
+        this.showLibrary = false;
+      }
     }
   }
 

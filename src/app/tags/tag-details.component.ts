@@ -66,16 +66,16 @@ export class TagDetailsComponent {
   }
 
   routeUpdated(event: NavigationEnd | Router) {
-    // @HACK Should be able to subscribe to just param events via ActivatedRoute to get tag ID from /tags/:tagId/:tagName/:section paths but it's not working, maybe because I can't get child routes to work, but anyway here we go:
+    // @HACK Should be able to subscribe to just param events via ActivatedRoute to get tag ID from `/tags/:tagId...` paths the params observer isn't firing - might be because of the EmptyComponents hack or maybe a bug that's fixed in later version, but anyway here we go:
     const pathParts = event.url.substring(1).split('/');
 
-    // Ensure we're on a /tags/:tagId... route:
-    if (pathParts[0] !== 'tags' || ! pathParts[1]) {
+    // Ensure we're on a /tags/tag/:tagId... route:
+    if (pathParts[0] !== 'tags' || pathParts[1] !== 'tag') {
       return;
     }
 
-    if (pathParts[3]) {
-      this.activePane = pathParts[3];
+    if (pathParts[4]) {
+      this.activePane = pathParts[4];
     }
     else {
       this.activePane = this.DEFAULT_PANE;
