@@ -173,14 +173,13 @@ export class Tag {
   }
 
   generateClassifier(): (note: Note) => boolean {
-    var classifierFunc = new Function('note', 'api', this.progFuncString); // this line excites me
+    var classifierFunc = new Function('note', 'api', '_', this.progFuncString); // this line excites me
 
-    // The function we actually call needs to be wrapped in try/catch and supplied with the API
+    // The function we actually call needs to be wrapped in try/catch and supplied with the API and other stuff
     return (note: Note): boolean => {
       try {
-        // @TODO/prog We're passing in {} as API for now!
-        // Passing in this tag as the this arg so that users can store arbitrary data for processing stuff in the tag if they want to
-        return classifierFunc.call(this, note, {});
+        // Passing in this tag as the this arg
+        return classifierFunc.call(this, note, this.dataService.tags.progTagApi, _);
       }
       catch (err) {
         this.progTagError(err, note);

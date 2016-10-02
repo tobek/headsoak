@@ -12,6 +12,7 @@ import {ModalService} from './modals/modal.service';
 import {AccountService, UserService} from './account/';
 import {NotesService} from './notes/';
 import {TagsService} from './tags/';
+import {ProgTagApiService} from './tags/prog-tag-api.service';
 import {SettingsService} from './settings/';
 import {AutocompleteService, ScrollMonitorService} from './utils/';
 
@@ -27,6 +28,7 @@ export const APP_PROVIDERS = [
   UserService,
   NotesService,
   TagsService,
+  ProgTagApiService,
   SettingsService,
   AutocompleteService,
   ScrollMonitorService,

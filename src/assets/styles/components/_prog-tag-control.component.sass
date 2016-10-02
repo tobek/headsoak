@@ -23,5 +23,27 @@ prog-tag-control
     opacity: 1
     visibility: visible
 
+  .function-wrapper
+    &:first-of-type
+      margin-bottom: -10px
+    &:last-of-type
+      margin-top: -10px
+
   .code-editor
     height: 300px
+
+  .documentation
+    +card
+    margin-top: 50px
+    padding-top: 10px
+    background-color: $primary-color-light
+
+    pre
+      margin-left: 2em
+      padding: 10px
+      background: $primary-color-contrast
+
+    code
+      background: $primary-color-contrast
+      padding: 2px 4px
+      color: $secondary-color
