@@ -7,19 +7,19 @@ import {Injectable} from '@angular/core';
 export class ProgTagLibraryService {
   library = [
     {
-      name: 'Untagged',
+      name: 'untagged',
       description: 'Applies tag to all notes which have no tags',
       code: 'if (note.tags.length === 0) {\n  return true;\n}\nelse if (note.tags.length === 1 && note.tags[0] === this.id) {\n  // note has only one tag and it\'s this one! note that without this check, this smart tag would produce an infinite loop. First an untagged note would be assigned this tag, and then, since the note was updated, it would be checked against smart tags again. This tag would then remove itself, triggering another update where it would be added back, etc.\n  return true;\n}\nelse {\n  return false;\n}'
     },
     {
-      name: 'Has quote',
+      name: 'has quote',
       description: '@TODO',
       code: 'if (! note.body) {\n  return false;\n}\n\nvar lines = note.body.split(\'\n\');\nvar numQuoteLines = 0;\n\n_.each(lines, function(line) {\n  if (line[0] === \'>\') {\n    numQuoteLines++;\n  }\n});\n\nif (numQuoteLines/lines.length >= 0.5) {\n  return true;\n} else {\n  return false;\n}'
     },
     {
-      name: 'Simple text search (tutorial example)',
-      description: 'Applies tag to all notes which contain the tag\'s name',
-      code: 'if (note.body.indexOf(this.name) !== -1) {\n  return true;\n}\nelse {\n  return false;\n}'
+      name: 'nutmeg', // @TODO/prog Mention or show that this is a "tutorial" tag or something. BETTER: Make it customizable for search string
+      description: 'Applies tag to all notes which contain the text "nutmeg"',
+      code: 'if (note.body.toLowerCase().indexOf("nutmeg") !== -1) {\n  return true;\n}\nelse {\n  return false;\n}'
     },
     // {
     //   name: 'List',

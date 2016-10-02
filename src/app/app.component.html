@@ -79,7 +79,7 @@
 
     <router-outlet></router-outlet>
     <home [hidden]="router.url !== '/' && router.url !== '/focus' && router.url !== '/scroll' && router.url !== '/browse'"></home>
-    <tag-browser [hidden]="router.url.indexOf('/tags') !== 0"></tag-browser>
+    <tag-browser [hidden]="router.url.indexOf('/tags') !== 0" class="pane-layout"></tag-browser>
 
   </main>
 </div>

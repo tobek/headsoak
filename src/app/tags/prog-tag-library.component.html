@@ -1,0 +1,10 @@
+<h3 class="pane-heading">Smart Tag Library</h3>
+
+<p>Smart tags BLAH BLAH BLAH</p>
+
+<div class="library">
+  <div class="library-tag" *ngFor="let tag of progTagLibraryService.library">
+    <h4>{{ tag.name }}</h4>
+    {{ tag.description }}
+  </div>
+</div>

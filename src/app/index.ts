@@ -13,6 +13,7 @@ import {AccountService, UserService} from './account/';
 import {NotesService} from './notes/';
 import {TagsService} from './tags/';
 import {ProgTagApiService} from './tags/prog-tag-api.service';
+import {ProgTagLibraryService} from './tags/';
 import {SettingsService} from './settings/';
 import {AutocompleteService, ScrollMonitorService} from './utils/';
 
@@ -29,6 +30,7 @@ export const APP_PROVIDERS = [
   NotesService,
   TagsService,
   ProgTagApiService,
+  ProgTagLibraryService,
   SettingsService,
   AutocompleteService,
   ScrollMonitorService,

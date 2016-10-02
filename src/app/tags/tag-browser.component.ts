@@ -8,7 +8,7 @@ import {SettingsService} from '../settings/settings.service';
 // import {Note} from '../notes/note.model';
 // import {NoteComponent} from '../notes/note.component';
 // import {NotesService} from '../notes/notes.service';
-import {Tag, TagComponent, TagDetailsComponent, TagsService} from './';
+import {Tag, TagComponent, TagDetailsComponent, TagsService, ProgTagLibraryComponent} from './';
 import {Logger/*, ScrollMonitorService, AutocompleteService*/} from '../utils/';
 
 @Component({
@@ -17,6 +17,7 @@ import {Logger/*, ScrollMonitorService, AutocompleteService*/} from '../utils/';
   directives: [
     TagComponent,
     TagDetailsComponent,
+    ProgTagLibraryComponent,
   ],
   template: require('./tag-browser.component.html')
 })
