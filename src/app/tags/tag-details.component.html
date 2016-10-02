@@ -35,7 +35,7 @@
   </div>
 
   <div class="pane" *ngIf="activePane === 'explore'">
-    <h2 class="card-heading">Explore <span class="tag-name">{{ tag.name }}</span></h2>
+    <h3 class="pane-heading">Explore <span class="tag-name">{{ tag.name }}</span></h3>
 
     <div class="note-count-heading">{{ tag.docs.length }} Note{{ tag.docs.length !== 1 ? 's' : '' }}</div>
 
@@ -45,10 +45,10 @@
     </p>
 
     <div *ngIf="exploreComputed">
-      <p *ngIf="! exploreStats.topCooccurrences.length && ! exploreStats.bottomCooccurrences.length">This tag has not been paired with any other tags.</p>
+      <h4 *ngIf="! exploreStats.topCooccurrences.length && ! exploreStats.bottomCooccurrences.length">This tag has not been paired with any other tags.</h4>
 
       <div *ngIf="exploreStats.topCooccurrences.length" class="cooccurrences">
-        Most commonly paired with:
+        <h4>Most commonly paired with:</h4>
 
         <ul class="cooccurring-tags">
           <li *ngFor="let cooccurrence of exploreStats.topCooccurrences">
@@ -61,7 +61,7 @@
       </div>
 
       <div *ngIf="exploreStats.bottomCooccurrences.length" class="cooccurrences">
-        Least commonly paired with:
+        <h4>Least commonly paired with:</h4>
 
         <ul class="cooccurring-tags">
           <li *ngFor="let cooccurrence of exploreStats.bottomCooccurrences">
@@ -75,23 +75,23 @@
   </div>
 
   <div class="pane" *ngIf="activePane === 'share'">
-    <h2 class="card-heading">Manage sharing for <span class="tag-name">{{ tag.name }}</span></h2>
+    <h3 class="pane-heading">Manage sharing for <span class="tag-name">{{ tag.name }}</span></h3>
     <p>This tag is <b>{{ tag.share ? '' : 'not' }} shared</b>. You can't change this right now.</p>
   </div>
 
   <div class="pane" *ngIf="activePane === 'smartness'">
-    <h2 class="card-heading">Smart Tag settings for <span class="tag-name">{{ tag.name }}</span></h2>
+    <h3 class="pane-heading">Smart Tag settings for <span class="tag-name">{{ tag.name }}</span></h3>
 
     <prog-tag-control [tag]="tag"></prog-tag-control>
   </div>
 
   <div class="pane" *ngIf="activePane === 'privacy'">
-    <h2 class="card-heading">Manage privacy for <span class="tag-name">{{ tag.name }}</span></h2>
+    <h3 class="pane-heading">Manage privacy for <span class="tag-name">{{ tag.name }}</span></h3>
     <p>This tag is <b>{{ tag.private ? '' : 'not' }} hidden</b>. You can't change this right now.</p>
   </div>
 
   <div class="pane" *ngIf="activePane === 'delete'">
-    <h2 class="card-heading">Delete <span class="tag-name">{{ tag.name }}</span></h2>
+    <h3 class="pane-heading">Delete <span class="tag-name">{{ tag.name }}</span></h3>
 
     <p *ngIf="tag.docs.length === 0">This tag isn't used on any of your notes, so deleting it isn't really a big deal.</p>
 

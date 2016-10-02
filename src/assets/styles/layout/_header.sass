@@ -89,6 +89,7 @@
         // @TODO/ece Active state for menu item?
 
       &.sync-status
+        +small // @TODO/ece This might be too small
         padding: 0 0 10px
         text-align: center
         font-style: italic
@@ -116,9 +117,9 @@
 
   .private-mode-indicator
     +icon-button
+    +h3 // same as control icons in note-query
     margin-right: 3px
-    padding-top: 10px // same as paddingin note-query
-    font-size: 24px // same as control icons in note-query
+    padding-top: 10px // same as padding in note-query
     color: $error-stroke
 
     .unlocked
@@ -153,9 +154,9 @@
     +plain-list
  
   a
+    +h4
     text-decoration: none
     color: $primary-color-contrast
-    font-size: 16px
     letter-spacing: 1.2px
     text-shadow: 0 1px 4px $shadow-color
 

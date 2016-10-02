@@ -31,7 +31,7 @@
   </div>
 
   <div class="pane">
-    <h1>{{ SECTION_NAME_MAP[section] }}</h1>
+    <h3 class="pane-heading">{{ SECTION_NAME_MAP[section] }}</h3>
 
     <feedback *ngIf="section === 'feedback'"></feedback>
     <private-mode *ngIf="section === 'privateMode'"></private-mode>

@@ -1,6 +1,7 @@
 tag-details
 
   tag
+    +h3
     cursor: default
     display: block
     width: 100%
@@ -8,7 +9,7 @@ tag-details
     padding: 0
     float: none
     background: none !important
-    font-size: 24px
+    font-weight: bold
 
     .name
       padding-right: 10px
@@ -28,17 +29,14 @@ tag-details
     .btn
       margin-top: 5px
 
-  .card-heading
-    +card-heading
-    margin-top: 0
-
+  .pane-heading
     .tag-name
-      font-size: 24px
+      +h3
 
 
   .note-count-heading
-    margin: 35px 0 15px
-    font-size: 48px
+    +h2
+    margin: 35px 0 25px
     font-weight: 600 // @TODO/ece Designs say "semibold" which is 600, but this font doesn't seem to have that and it just rounds up to 700, which is bold
 
   .cooccurrences
@@ -57,7 +55,6 @@ tag-details
   ul.cooccurring-tags
     +plain-list
     padding-left: 15px
-    font-size: 12px
 
     li
       display: block

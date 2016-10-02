@@ -62,7 +62,6 @@ tag
     margin-left: -8px // magic number to align with left edge of tag - we can't do left 0 and position the tag relatively because then we'll run afoul of tag container with overflow hidden
     padding: 10px 15px 10px 10px
     background-color: $tag-bg
-    font-size: 16px
     letter-spacing: 1.2px
     font-weight: normal
 
@@ -76,7 +75,8 @@ tag
 
       .current-state
         float: right
-        padding-top: 3px
-        font-size: 14px
+        // was only needed when main action text was bigger:
+        // padding-top: 3px
+        // font-size: 1rem
         letter-spacing: 1.1px
         text-decoration: underline
