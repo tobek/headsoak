@@ -8,6 +8,7 @@
 
   .overview
     +span(4)
+    position: relative
     padding: 20px
 
   .pane
@@ -19,7 +20,7 @@
     +control-heading
     display: block
     width: 100%
-    color: $gray-dark
+    color: $primary-color
 
     &:hover
       color: $link-hover
@@ -29,6 +30,9 @@
 
   .menu
     +plain-list
+    position: absolute
+    left: 0
+    width: 100%
 
     .item
       display: block
@@ -36,12 +40,9 @@
       a
         // @TODO/ece Active state for these?
         +control-heading
+        +menu-link
         display: inline-block
-        padding: 10px 0
-        color: $gray-dark
-
-      &:hover a
-        color: $link-hover
+        padding: 10px gutter() * 2 // matches +card padding
 
       .fa
         font-size: 1.5em

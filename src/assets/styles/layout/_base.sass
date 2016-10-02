@@ -21,8 +21,6 @@ html
 
 
 #app-bg
-  +app-bg
-
   z-index: -1
   position: fixed
   width: 100%
@@ -31,6 +29,17 @@ html
   right: 0
   bottom: 0
   left: 0
+
+  &,
+  &.default
+    background-color: $app-bg-gradient-bottom
+    background-image: linear-gradient(201deg, $app-bg-gradient-top, $app-bg-gradient-bottom)
+
+  // for background images set by user in settings (@TODO/settings/bg Should be controllabe)
+  background-position: center center
+  background-repeat: no-repeat
+  background-size: cover
+  background-attachment: fixed
 
 // This is our main grid container. gutter() and span() etc. should work as normal in here
 main
@@ -81,4 +90,4 @@ main
 
 .initial-loader.inner
   left: auto
-  color: $gray-dark
+  color: $primary-color

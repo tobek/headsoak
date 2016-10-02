@@ -5,12 +5,12 @@
 
 =card
   padding: 50px gutter() * 2 // @TODO If this mixin is used in any context other than full 12 columns, padding will need to be redeclared passing # of columns its in to gutter()
-  background-color: $card-bg
-  box-shadow: 0 2px 4px 0 $transparent-gray-dark
+  background-color: $primary-color-contrast
+  box-shadow: 0 2px 4px 0 $shadow-color
 
 
 =menu-dropdown
-  box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.25)
+  box-shadow: 2px 2px 2px 0 $shadow-color-light
   // @TODO/ece Show adding this to .menu-wrapper and .menu-body (and removing their borders and right: 0 on body)
 
 =tag-chiclet
@@ -20,9 +20,32 @@
   background-color: $tag-bg
   border: none
 
+=text-link
+  cursor: pointer
+  color: $link-color
+  transition: color $transition-fast
+  &:hover
+    color: $link-hover
+
+=menu-link
+  cursor: pointer
+  width: 100%
+  text-decoration: none
+  color: $primary-color
+  background-color: $primary-color-contrast
+  transition: color $transition-fast, background-color $transition-fast
+
+  &:hover
+    +menu-link-hover
+
+=menu-link-hover
+  color: $primary-color-contrast
+  background-color: $primary-color
+
 =icon-button
   cursor: pointer
   color: $icon-color
+  transition: color $transition-fast
 
   &:hover
     color: $icon-hover

@@ -18,9 +18,6 @@ tag-details
       display: none
 
     .tag-actions
-      color: $gray-dark
-
-    .tag-actions
       display: inline
 
   .pane
@@ -53,7 +50,9 @@ tag-details
 
     .tag-name
       cursor: pointer
-      // @TODO/ece Either these should be full tag chiclets with normal hover state for tags, or it's just the "chiclet-less tag name" style, but still needs hover state
+      // @TODO/ece Either these should be full tag chiclets with normal hover state for tags, or it's just the "chiclet-less tag name" style, but still needs hover state. For now I'll just do:
+      &:hover
+        color: $highlight-color
 
   ul.cooccurring-tags
     +plain-list

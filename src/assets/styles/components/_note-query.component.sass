@@ -20,7 +20,7 @@ note-query
   &:hover,
   &.is--active
     +input-underline
-    color: $gray-dark
+    color: $primary-color
     .text-input
       opacity: 1
   // End active/inactive styles
@@ -67,6 +67,7 @@ note-query
       border: 0
       box-shadow: none
 
+      background: none
       color: inherit
       font-weight: normal
       letter-spacing: 1.1px
@@ -110,22 +111,15 @@ note-query
       padding: 5px
       line-height: 1
       text-decoration: none
-      color: $gray-dark
+      color: $primary-color
 
     .ui-select-choices-row.active .ui-select-choices-row-inner
       // @TODO/ece Active color?
-      background-color: $tag-color
+      background-color: $secondary-color
 
   .control-icon
-    cursor: pointer
+    +icon-button
     position: relative
     top: -2px;
-    color: $gray-dark
     font-size: 24px
-
-    &:hover
-      // @TODO/ece Hover color?
-      color: $tag-color
-
-
 

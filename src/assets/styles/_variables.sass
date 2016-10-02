@@ -1,35 +1,4 @@
-$card-bg: white
-
-$tag-color: #2f907a
-$tag-bg: #f2f2f2
-$tag-bg-hover: #ddd
-
-$logo-color: #50e3c2
-
-$link-hover: coral
-
-$gray-dark: #4a4a4a
-$gray: #989898
-
-$icon-color: $gray-dark
-$icon-hover: $link-hover
-$icon-active: mix($icon-hover, $gray-dark)
-$icon-active-hover: mix($icon-hover, white)
-
-$transparent-gray: rgba($gray-dark, 0.6)
-$transparent-gray-darkest: rgba(0, 0, 0, 0.8)
-$transparent-gray-dark: rgba(0, 0, 0, 0.5)
-$transparent-gray-light: rgba(0, 0, 0, 0.1)
-
-$gray-stroke: $gray
-$input-underline-color: $gray-stroke
-
-// @TODO/ece These colors
-$primary-fill: $logo-color
-$success-stroke: green
-$warning-stroke: yellow
-$error-stroke: red
-$error-fill: red
+@import 'colors'
 
 $full-height: calc(100vh - 110px) // @NOTE 110px is a magic number: the header height
 
@@ -37,18 +6,3 @@ $full-height: calc(100vh - 110px) // @NOTE 110px is a magic number: the header h
 $transition-fast: 0.2s
 $transition-med: 0.5s
 $transition-slow: 1.5s
-
-=input-underline
-  border-bottom: 1px solid $input-underline-color
-
-=app-bg
-  // for background images set by user in settings (@TODO/settings/bg Should be controllabe)
-  background-position: center center
-  background-repeat: no-repeat
-  background-size: cover
-  background-attachment: fixed
-
-  &,
-  &.default
-    background-color: #0e465e
-    background-image: linear-gradient(201deg, #16697f, #0e465e)

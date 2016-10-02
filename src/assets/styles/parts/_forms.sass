@@ -1,3 +1,16 @@
+=input-underline-base
+  border-bottom: 1px solid $input-stroke
+  transition: border-color $transition-fast
+
+=input-underline-active
+  border-bottom-color: $secondary-color
+
+=input-underline
+  +input-underline-base
+  &:focus
+    +input-underline-active
+
+
 input[type=text],
 input[type=email],
 input[type=password]
@@ -8,14 +21,19 @@ input[type=password]
   letter-spacing: 1.2px
 
 textarea,
+  width: 100%
+  padding: 20px
+  border: 1px solid $input-stroke
+
   &,
   &:focus,
   &:active
-    // @TODO/ece @TODO/styles Active/focus state for note? For other textareas like in feedback modal?
-    width: 100%
-    padding: 20px
-    border: 1px solid $gray-stroke
     outline: none
+
+  &:focus,
+  &:active
+    border-color: $secondary-color
+
 
 .btn
   // @TODO/ece Hover and active and disabled states
@@ -36,26 +54,27 @@ textarea,
   text-align: center
   white-space: nowrap
 
-  background: #ffffff
+  background: $primary-color-contrast
   border: 0
   border-radius: 0
   outline: 0
-  box-shadow: 0 1px 2px 0 $transparent-gray-dark
+  box-shadow: 0 1px 2px 0 $shadow-color
 
   &[disabled]
     cursor: default
-    opacity: 0.6
+    opacity: $btn-disabled-opacity
 
-.btn-default
-  height: 40px
-  padding: 11px 20px
+// currently unused
+// .btn-default
+//   height: 40px
+//   padding: 11px 20px
 
 .btn-primary
   height: 44px
   padding: 13px 40px 10px
 
-  background-color: $primary-fill
-  color: white
+  background-color: $secondary-color
+  color: $primary-color-contrast
   font-weight: bold
   text-transform: uppercase
 
@@ -63,10 +82,13 @@ textarea,
   height: 44px
   padding: 13px 40px 10px
 
-  border: 1px solid $primary-fill
-  box-shadow: none
+  background-color: $primary-color-light
+  color: $secondary-color
+  // USED TO BE:
+  // border: 1px solid $secondary-color
+  // box-shadow: none
+  // color: $shadow-border
 
-  color: $transparent-gray
   font-weight: bold
   text-transform: uppercase
 

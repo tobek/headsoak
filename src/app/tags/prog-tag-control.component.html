@@ -1,11 +1,11 @@
 <p>This tag is <b>{{ tag.prog ? '' : 'not' }} smart</b>.</p>
 
-<button class="btn btn-default"
+<button class="btn btn-secondary"
   *ngIf="tag.prog"
   (click)="makeDumb()"
 >Revert to normal tag</button>
 
-<button class="btn btn-default"
+<button class="btn btn-secondary"
   *ngIf="! tag.prog"
   (click)="makeSmart()"
 >Make smart</button>
@@ -22,7 +22,7 @@
     (click)="saveAndRun()"
   >Save and run</button>
 
-  <button class="btn btn-default"
+  <button class="btn btn-secondary"
     [disabled]="! changed"
     (click)="revertChanges()"
   >Revert changes</button>

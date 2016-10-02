@@ -3,7 +3,7 @@
   z-index: 100
   
 .app-header
-  background-color: $card-bg
+  background-color: $primary-color-contrast
 
   .inner
     +outer-container
@@ -30,7 +30,7 @@
     transition: border-color $transition-fast
 
     &:hover
-      border-color: $transparent-gray-light
+      border-color: $shadow-border
 
       .menu-body
         visibility: visible
@@ -44,7 +44,7 @@
     max-width: 40px
     padding: 3px
 
-    border: 1px solid black // @TODO/rewrite @TODO/ece Vary based on sync status
+    border: 1px solid $input-stroke // @TODO/rewrite @TODO/ece Vary based on sync status
     border-radius: 50%
 
     &.status--synced
@@ -77,8 +77,8 @@
     width: 160px
     margin: 0
     padding: 10px 0 15px
-    background-color: $card-bg
-    border: 1px solid $transparent-gray-light
+    background-color: $primary-color-contrast
+    border: 1px solid $shadow-border
     border-top-width: 0
     letter-spacing: 0.5px
 
@@ -99,13 +99,9 @@
           cursor: default
 
       a
+        +menu-link
         display: inline-block
         padding: 2px 10px
-        text-decoration: none
-        color: $gray-dark !important
-
-        &:hover
-          color: $tag-color !important
 
         .fa
           margin-right: 5px;
@@ -158,10 +154,10 @@
  
   a
     text-decoration: none
-    color: $card-bg
+    color: $primary-color-contrast
     font-size: 16px
     letter-spacing: 1.2px
-    text-shadow: 0 1px 4px $transparent-gray-dark
+    text-shadow: 0 1px 4px $shadow-color
 
     &.nav-link
       display: inline-block
@@ -181,6 +177,6 @@
     margin-right: 0
 
   .active a .fa
-    border-color: $card-bg
+    border-color: $primary-color-contrast
   .active a:hover .fa
-    border-color: $link-hover
+    border-color: $highlight-color

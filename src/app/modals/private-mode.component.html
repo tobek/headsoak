@@ -15,9 +15,9 @@
     [(ngModel)]="password"
   />
 
-  <button class="btn btn-default enable-button" type="enable" [disabled]="isLoading || ! privateModeForm.valid">Turn private mode on</button>
+  <button class="btn btn-secondary enable-button" type="enable" [disabled]="isLoading || ! privateModeForm.valid">Turn private mode on</button>
 
   <p *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</p>
 </form>
 
-<button *ngIf="dataService.accountService.privateMode" class="btn btn-default" (click)="disable()">Turn private mode off</button>
+<button *ngIf="dataService.accountService.privateMode" class="btn btn-secondary" (click)="disable()">Turn private mode off</button>

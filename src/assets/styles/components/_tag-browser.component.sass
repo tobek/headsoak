@@ -37,9 +37,10 @@ tag-browser
     &:nth-child(2n+1)
       +span(2 of 4 last)
 
-  tag
+  .tag-list tag
     cursor: pointer
     display: inline-block
 
     &:hover
-      background-color: $tag-bg-hover
+      color: $tag-bg
+      background-color: $tag-color

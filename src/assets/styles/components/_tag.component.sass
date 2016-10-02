@@ -21,6 +21,10 @@ tag
     background-color: $tag-bg
     text-align: right
 
+  .tag-action
+    +icon-button
+    // @TODO/ece On note tags should this remove X be primary or secondary?
+
   .name
     display: inline
 
@@ -28,7 +32,7 @@ tag
       display: inline-block // cursor doesn't display properly (in Chrome at least) on inline contenteditable elements
       cursor: text
       outline: 0
-      border-bottom: 2px solid $input-underline-color
+      border-bottom: 2px solid $input-stroke
       margin-bottom: -2px
 
   &.renaming .tag-actions
@@ -42,8 +46,11 @@ tag
     top: 0
     left: 0
     text-align: center
-    background-color: rgba(255, 255, 255, 0.6)
-    color: black
+    background-color: $white-overlay
+    color: $primary-color
+
+    &:hover
+      color: $primary-color
 
   .tag-actions-dropdown
     // @TODO/bug Dropdown can get hidden off right edgeof the screen (also making horizontal scrollbar appear)
@@ -62,14 +69,10 @@ tag
     .tag-action
       display: block
       padding-bottom: 2px
-      color: $gray-dark
       text-decoration: none
 
       &:last-child
         padding-bottom: 0
-
-      &:hover
-        color: $link-hover
 
       .current-state
         float: right
