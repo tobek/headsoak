@@ -241,6 +241,16 @@ export class Note {
 
     let tag = this.dataService.tags.getTagByName(tagName);
 
+    // Exclude library tags here cause that'll get caught by `tag.prog` check in `addTag()` @TODO/share This logic hasn't been tested since we don't have sharing yet
+    if (tag && tag.readOnly && ! tag.isLibraryTag) {
+      if (! confirm('The tag "' + tag.name + '" is a tag that has been shared with you and is read-only. Do you want to create a new tag in your account with this name and add it to this note?')) {
+        return null;
+      }
+      else {
+        tag = null; // we'll create a new one
+      }
+    }
+
     if (! tag) {
       this._logger.log('Have to create new tag with name:', tagName);
 
@@ -258,11 +268,6 @@ export class Note {
 
     this._logger.log('Adding tag', tag);
 
-    if (tag.readOnly) {
-      if (! confirm('The tag "' + tag.name + '" is a tag that has been shared with you and is read-only. Do you want to create a new tag in your account with this name and add it to this note?')) {
-        return null;
-      }
-    }
     if (tag.prog && ! viaProg) {
       this.progTagCantChangeAlert(tag);
       return null;
@@ -326,7 +331,7 @@ export class Note {
   }
 
   rebuildNoteSharing() {
-    // @TODO/rewrite
+    // @TODO/sharing
   }
 
   togglePrivate() {
