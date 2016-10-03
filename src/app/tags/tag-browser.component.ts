@@ -104,6 +104,8 @@ export class TagBrowserComponent {
     const pathParts = event.url.substring(1).split('/');
 
     if (pathParts[0] !== 'tags') {
+      this.activeTag = null;
+      this.showLibrary = false;
       return;
     }
     

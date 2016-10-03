@@ -1,5 +1,5 @@
 import {Component, ViewChildren, QueryList, OnInit} from '@angular/core';
-// import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
 
 import {Logger} from '../utils/';
@@ -48,7 +48,7 @@ export class SettingsComponent implements OnInit {
   private _logger = new Logger(this.constructor.name);
 
   constructor(
-    // private route: ActivatedRoute,
+    private route: ActivatedRoute,
     private settings: SettingsService,
     private dataService: DataService
   ) {
