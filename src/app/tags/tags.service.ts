@@ -53,7 +53,7 @@ export class TagsService {
   createTag(tagData: any = {}, isInit = false): Tag {
     if (tagData.id) {
       if (this.tags[tagData.id]) {
-        throw new Error('Cannot create a new tag with id "' + tagData.id + '" - already taken!');
+        throw new Error('Cannot create a new tag with id "' + tagData.id + '" - that ID is already taken!');
       }
     }
     else {
@@ -78,6 +78,23 @@ export class TagsService {
     return newTag;
   }
 
+  /** Adds an already existing Tag instance to user's tags. */
+  addTag(tag: Tag): void {
+    if (this.tags[tag.id]) {
+      throw new Error('Cannot add tag with id "' + tag.id + '" - that ID is already taken!');
+    }
+
+    this.tags[tag.id] = tag;
+    tag.created = Date.now();
+
+    if (tag.prog) {
+      tag.runProgOnAllNotes();
+    }
+    
+    tag.updated(); // sync to data store
+  }
+
+  /** Doesn't actually "delete" tag, e.g. remove it from notes. This function simply removes it from list of tags and from tags in data store. */
   removeTag(tag: Tag): void {
     this.dataService.removeData('tag', tag.id);
     delete this.tags[tag.id];

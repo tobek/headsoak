@@ -6,30 +6,34 @@ import {Tag} from './tag.model';
 
 @Injectable()
 export class ProgTagLibraryService {
+  /** @NOTE Changing IDs in source code here could really mess things up for users who are using them. */
   librarySourceData = [
     {
-      id: 'library:untagged',
+      id: 'lib:untagged',
+      isLibraryTag: true,
+      readOnly: true,
       name: 'untagged',
       description: 'Applies tag to all notes which have no tags',
       prog: true,
       progFuncString: 'if (note.tags.length === 0) {\n  return true;\n}\nelse if (note.tags.length === 1 && note.tags[0] === this.id) {\n  // note has only one tag and it\'s this one! note that without this check, this smart tag would produce an infinite loop. First an untagged note would be assigned this tag, and then, since the note was updated, it would be checked against smart tags again. This tag would then remove itself, triggering another update where it would be added back, etc.\n  return true;\n}\nelse {\n  return false;\n}',
-      currentTagId: null
     },
     {
-      id: 'library:has-quote',
+      id: 'lib:has-quote',
+      isLibraryTag: true,
+      readOnly: true,
       name: 'has quote',
       description: '@TODO',
       prog: true,
       progFuncString: 'if (! note.body) {\n  return false;\n}\n\nvar lines = note.body.split(\'\n\');\nvar numQuoteLines = 0;\n\n_.each(lines, function(line) {\n  if (line[0] === \'>\') {\n    numQuoteLines++;\n  }\n});\n\nif (numQuoteLines/lines.length >= 0.5) {\n  return true;\n} else {\n  return false;\n}',
-      currentTagId: null
     },
     {
-      id: 'library:nutmeg',
-      name: 'nutmeg', // @TODO/prog Mention or show that this is a "tutorial" tag or something. BETTER: Make it customizable for search string
+      id: 'lib:nutmeg',
+      isLibraryTag: true,
+      readOnly: true,
+      name: 'mentions nutmeg', // @TODO/prog Mention or show that this is a "tutorial" tag or something. BETTER: Make it customizable for search string
       description: 'Applies tag to all notes which contain the text "nutmeg"',
       prog: true,
       progFuncString: 'if (note.body.toLowerCase().indexOf("nutmeg") !== -1) {\n  return true;\n}\nelse {\n  return false;\n}',
-      currentTagId: null
     },
     // {
     //   name: 'List',
@@ -45,7 +49,29 @@ export class ProgTagLibraryService {
     private tagsService: TagsService
   ) {
     this.library = _.map(this.librarySourceData, (tagData) => {
-      return new Tag(tagData, this.tagsService.dataService);
+      const existingTag = this.tagsService.tags[tagData.id];
+
+      if (existingTag) {
+        // This tag is being used by the user, so let's pick that up in order to get `docs` list etc.
+
+        if (existingTag.progFuncString !== tagData.progFuncString) {
+          // Function has been updated from official sources since user last used it, so let's update.
+          // @TODO/prog Haven't tested this code, though should be pretty straightforward.
+          // @TODO/ece Should we update the user that this has happened? Maybe a toaster notif. I don't know how frequently it would happen. Ditto for name change (but prob not description change) below
+          existingTag.progFuncString = tagData.progFuncString;
+          existingTag.runProgOnAllNotes();
+        }
+        if (existingTag.name !== tagData.name || existingTag.description !== tagData.description) {
+          existingTag.name = tagData.name;
+          existingTag.description = tagData.description;
+          existingTag.updated(false);
+        }
+
+        return existingTag;
+      }
+      else {
+        return new Tag(tagData, this.tagsService.dataService);
+      }
     });
   }
 }

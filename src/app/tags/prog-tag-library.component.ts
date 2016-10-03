@@ -17,6 +17,7 @@ import {Logger} from '../utils/';
   template: require('./prog-tag-library.component.html')
 })
 export class ProgTagLibraryComponent {
+  checked = false;
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
@@ -33,5 +34,20 @@ export class ProgTagLibraryComponent {
   }
 
   ngAfterViewInit() {
+  }
+
+  toggleTag(tag: Tag, event) {
+    event.preventDefault();
+
+    if (! this.tagsService.tags[tag.id]) {
+      this.tagsService.addTag(tag);
+    }
+    else {
+      // Doesn't actually destroy instance, but it removes from all notes, from tag list, and from user data store:
+      tag.delete(true);
+      
+      tag.docs = []; // makes for cleaner update if user adds tag back in this session
+      tag.prog = true; // delete has to make this false
+    }
   }
 }

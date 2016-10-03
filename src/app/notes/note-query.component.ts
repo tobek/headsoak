@@ -255,6 +255,7 @@ export class NoteQueryComponent {
    * Check if the updated note should be added or removed from currently visible notes. If note was deleted we simply remove note from visible notes if necessary.
    * @TODO Make sure to maintain scroll position
    * @TODO Ideally when removing a note, we should show some indicator about how the note is no longer visible due to query (and button to clear query)
+   * @TODO/optimization During `tag.runProgOnAllNotes` (and any other actions that cause mass updates of notes, like tag deletion) this function gets run once for every note that's updated. It's true that we need to check if each note shouldn't/shouldn't be shown, but in this case we should kind of throttle the check: on first call, do this. If second call comes too quickly, wait til calls don't come in for a while and then simply redo the entire query rather than checking each note individually.
    */
   noteUpdated(note: Note) {
     if (note.deleted) {

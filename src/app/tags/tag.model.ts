@@ -5,20 +5,25 @@ import {Logger} from '../utils/logger';
 import {Note} from '../notes/';
 
 export class Tag {
+  /** By convention, IDs for user's own tags are numeric strings. Other tags (previously, shared ones, currently only library tags) have other IDs like `lib:untagged`. */
   id: string;
+
   name: string;
   created: number;
   modified: number;
 
   // Optional:
-  docs: string[]; // array of note IDs
-  prog: boolean; // whether it's a programmatic tag
-  progFuncString: string; // string representing programmatic tag function to be eval'd. This ccould be present even though `prog` is false, saving the function for potential future use.
-  readOnly: boolean; // @TODO/old handle other permissions @TODO/rewrite this still needed here?
+  description: string;
+  docs: string[] = []; // array of note IDs
+  prog = false; // whether it's a programmatic tag
+  progFuncString: string; // string representing programmatic ta@Tg function to be eval'd. This ccould be present even though `prog` is false, saving the function for potential future use.
+  readOnly = false; // @TODO/sharing handle other permissions
 
   share: any; // map of recipient (shared-with) user ID to their permissions
   sharedBy: string; // ID of user that shared this tag
   shareTooltip: string; // text to identify sharing status to user (e.g. "you are sharing this with ___" or "___ is sharing this with you")
+
+  isLibraryTag = false;
 
   /** If this is a programmatic tag, this property caches the function that is run to determine if a note should have this tag. */
   private classifier: (note: Note) => boolean;
@@ -101,7 +106,7 @@ export class Tag {
 
     // this.docs.slice() returns a duplicate of the array which is necessary because note.removeTag will call tag.removeNoteId which will modify the array we're iterating over.
     this.docs.slice().forEach((noteId) => {
-      this.dataService.notes.notes[noteId].removeTag(this);
+      this.dataService.notes.notes[noteId].removeTag(this, true, true);
     });
 
     // @TODO/rewrite/sharing

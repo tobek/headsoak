@@ -261,14 +261,14 @@ export class Note {
   }
 
   /** Adds tag to note and returns tag, or returns null if no tag added. Also updates the tag as necessary. */
-  addTag(tag: Tag, fullUpdate = true, viaProg = false): Tag {
+  addTag(tag: Tag, fullUpdate = true, evenIfProg = false): Tag {
     if (_.includes(this.tags, '' + tag.id)) {
       return null;
     }
 
     this._logger.log('Adding tag', tag);
 
-    if (tag.prog && ! viaProg) {
+    if (tag.prog && ! evenIfProg) {
       this.progTagCantChangeAlert(tag);
       return null;
     }
@@ -285,17 +285,17 @@ export class Note {
     return tag;
   }
 
-  removeTagId(tagId: string, fullUpdate = true): void {
-    this.removeTag(this.dataService.tags.tags[tagId], fullUpdate);
+  removeTagId(tagId: string, fullUpdate = true, evenIfProg = false): void {
+    this.removeTag(this.dataService.tags.tags[tagId], fullUpdate, evenIfProg);
   }
 
   /** Removes tag from note. Also updates the tag as necessary. */
-  removeTag(tag: Tag, fullUpdate = true, viaProg = false): void {
+  removeTag(tag: Tag, fullUpdate = true, evenIfProg = false): void {
     if (! _.includes(this.tags, '' + tag.id)) {
       return;
     }
 
-    if (tag.prog && ! viaProg) {
+    if (tag.prog && ! evenIfProg) {
       this.progTagCantChangeAlert(tag);
       return;
     }

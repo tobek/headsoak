@@ -4,7 +4,13 @@
 
 <div class="library">
   <div class="library-tag" *ngFor="let tag of progTagLibraryService.library">
-    <tag [tag]="tag"></tag>
-    <p>{{ tag.description }}</p>
+    <tag [tag]="tag" [class.is--active]="!! tagsService.tags[tag.id]"></tag>
+
+    <label class="enable">
+      Enabled:
+      <input type="checkbox" [checked]="!! tagsService.tags[tag.id]" (change)="toggleTag(tag, $event)">
+    </label>
+
+    <p class="description">{{ tag.description }}</p>
   </div>
 </div>
