@@ -3,6 +3,13 @@ prog-tag-library
     max-height: 400px
     overflow-y: auto
 
+  tag
+    &.is--active
+      +tag-chiclet-active
+
+    &:hover .tag-actions
+      display: none
+
   .description
     margin-top: 5px
 
