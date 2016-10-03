@@ -9,7 +9,7 @@ export class ProgTagLibraryService {
   /** @NOTE Changing IDs in source code here could really mess things up for users who are using them. */
   librarySourceData = [
     {
-      id: 'lib:untagged',
+      id: 'lib--untagged',
       isLibraryTag: true,
       readOnly: true,
       name: 'untagged',
@@ -18,7 +18,7 @@ export class ProgTagLibraryService {
       progFuncString: 'if (note.tags.length === 0) {\n  return true;\n}\nelse if (note.tags.length === 1 && note.tags[0] === this.id) {\n  // note has only one tag and it\'s this one! note that without this check, this smart tag would produce an infinite loop. First an untagged note would be assigned this tag, and then, since the note was updated, it would be checked against smart tags again. This tag would then remove itself, triggering another update where it would be added back, etc.\n  return true;\n}\nelse {\n  return false;\n}',
     },
     {
-      id: 'lib:has-quote',
+      id: 'lib--has-quote',
       isLibraryTag: true,
       readOnly: true,
       name: 'has quote',
@@ -27,7 +27,7 @@ export class ProgTagLibraryService {
       progFuncString: 'if (! note.body) {\n  return false;\n}\n\nvar lines = note.body.split(\'\n\');\nvar numQuoteLines = 0;\n\n_.each(lines, function(line) {\n  if (line[0] === \'>\') {\n    numQuoteLines++;\n  }\n});\n\nif (numQuoteLines/lines.length >= 0.5) {\n  return true;\n} else {\n  return false;\n}',
     },
     {
-      id: 'lib:nutmeg',
+      id: 'lib--nutmeg',
       isLibraryTag: true,
       readOnly: true,
       name: 'mentions nutmeg', // @TODO/prog Mention or show that this is a "tutorial" tag or something. BETTER: Make it customizable for search string
