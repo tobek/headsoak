@@ -27,6 +27,12 @@
   &:hover
     color: $link-hover
 
+  &.is--disabled
+    cursor: default
+    opacity: $btn-disabled-opacity
+    &:hover
+      color: $link-color
+
 =menu-link
   +menu-link-base
   cursor: pointer
@@ -57,6 +63,12 @@
     color: $icon-active
     &:hover
       color: $icon-active-hover
+
+  &.is--disabled
+    cursor: default
+    opacity: $btn-disabled-opacity
+    &:hover
+      color: $icon-color
 
 
 =plain-list

@@ -25,6 +25,7 @@
   </a>
 
   <a *ngIf="renamable && ! tag.readOnly" title="Rename" class="tag-action tag-action--rename" (click)="renameStart()"><i class="fa fa-pencil"></i></a>
+  <a *ngIf="renamable && tag.isLibraryTag" title="This is a Smart Tag Library tag and so can't be renamed" class="tag-action tag-action--rename is--disabled"><i class="fa fa-pencil"></i></a>
 </span>
 
 <div class="tag-actions-dropdown" *ngIf="enableDropdown && hovered">
