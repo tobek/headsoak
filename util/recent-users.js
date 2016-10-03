@@ -27,20 +27,36 @@ ref.once('value', function(data) {
   console.error('successfully retrieved data');
 
   var users = data.val().users;
+  var totalNotes = 0;
+
+  _.each(users, function(user, uid) {
+    user.uid = uid;
+  });
 
   var sortedUsers = _.sortBy(users, function(user) {
     return user.user && user.user.lastLogin ? -1 * user.user.lastLogin : Infinity;
   });
 
   var table = new Table({
-    head: ['Login date', 'Email', 'Display name', '# notes'],
-    colWidths: [25, 40, 25, 10],
+    head: ['Login date', 'Email', 'Display name', '# notes', 'uid'],
+    colWidths: [24, 30, 15, 10, 20],
   });
 
-  _.take(sortedUsers, 20).forEach(function(user) {
-    var date = new Date(user.user.lastLogin);
-    var dateString = date.toISOString().replace(/\.\d\d\dZ/, '')
-    dateString = dateString.replace('T', ' ');
+  _.take(sortedUsers, 10000).forEach(function(user) {
+  // sortedUsers.forEach(function(user) {
+    if (! user.user) {
+      user.user = {};
+    }
+
+    var dateString;
+    if (user.user.lastLogin) {
+      var date = new Date(user.user.lastLogin);
+      dateString = date.toISOString().replace(/\.\d\d\dZ/, '')
+      dateString = dateString.replace('T', ' ');
+    }
+    else {
+      dateString =  'earlier';
+    }
 
     var numNuts = _.size(
       _.filter(user.nuts, function(nut) {
@@ -48,15 +64,24 @@ ref.once('value', function(data) {
       })
     );
 
+    if (numNuts !== 3) {
+      // New users start with 3 so let's not count them
+      totalNotes += numNuts;
+    }
+
     table.push([
       dateString,
-      user.user.email,
+      user.user.email || '',
       user.user.displayName || '',
       numNuts,
+      user.uid
     ]);
   });
 
   console.log(table.toString());
+
+  console.log('Total users:', _.size(users));
+  console.log('Total notes:', totalNotes, '(excluding 3 starter notes)');
 
   process.exit();
 }, function(err) {
