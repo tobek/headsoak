@@ -1,16 +1,19 @@
-<p>This tag is <b>{{ tag.prog ? '' : 'not' }} smart</b>.</p>
+<p>
+  This tag is <b>{{ tag.prog ? '' : 'not' }} smart</b>.
+  <span *ngIf="tag.isLibraryTag">It comes from the <a [routerLink]="['/tags/smart-tags/library']">smart tag library</a>, so it can't be modified.</span><!-- @TODO/ece Where else should this be reflected? It's uneditable so pencil missing for rename in left pane. should "delete" say "remove"? etc. (btw should we show wand icon up there? i removed cause thought it'd be shown in the menu, but dunno bout that) -->
+</p>
 
 <button class="btn btn-secondary"
-  *ngIf="tag.prog"
+  *ngIf="tag.prog && ! tag.isLibraryTag"
   (click)="makeDumb()"
 >Revert to normal tag</button>
 
 <button class="btn btn-secondary"
-  *ngIf="! tag.prog"
+  *ngIf="! tag.prog && ! tag.isLibraryTag"
   (click)="makeSmart()"
 >Make smart</button>
 
-<div class="code-container" [class.is--disabled]="! tag.prog">
+<div class="code-container" [class.is--disabled]="! tag.prog || tag.isLibraryTag">
   <div class="disabled-cover"></div>
 
   <pre class="function-wrapper">function(note) {</pre>

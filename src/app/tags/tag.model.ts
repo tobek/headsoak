@@ -5,7 +5,7 @@ import {Logger} from '../utils/logger';
 import {Note} from '../notes/';
 
 export class Tag {
-  /** By convention, IDs for user's own tags are numeric strings. Other tags (previously, shared ones, currently only library tags) have other IDs like `lib:untagged`. */
+  /** By convention, IDs for user's own tags are numeric strings. Other tags (previously, shared ones, currently only library tags) have other IDs like `lib--untagged`. */
   id: string;
 
   name: string;
@@ -34,9 +34,11 @@ export class Tag {
     'name',
     'created',
     'modified',
+    'description',
     'docs',
     'prog',
     'progFuncString',
+    'isLibraryTag',
     'readOnly',
     'share',
     'sharedBy',
