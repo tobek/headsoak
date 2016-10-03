@@ -15,7 +15,7 @@
 
       ><tag class="tag-{{ tagId }}"
         *ngFor="let tagId of note.tags"
-        [tagId]="tagId"
+        [tag]="getTagById(tagId)"
         (click)="toggleTag(tagId, $event)"
         [removable]="true"
         [enableDropdown]="true"

@@ -25,7 +25,7 @@
     <span *ngFor="let tag of (tags | arrayLimit:limit)" class="tag-wrapper">
       <tag class="tag tag-{{ tag.id }}"
         [routerLink]="['/tags/tag', tag.id, tag.name]"
-        [tagId]="tag.id"
+        [tag]="tag"
         [showCount]="true"
         (deleted)="tagDeleted($event)"
       ></tag>

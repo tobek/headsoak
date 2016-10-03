@@ -12,8 +12,7 @@ import {Logger, utils} from '../utils/';
   template: require('./tag.component.html')
 })
 export class TagComponent {
-  @Input() tagId: string;
-  tag: Tag;
+  @Input() tag: Tag;
 
   /** If this is a new tag not yet saved to data store but just created for the user to type new tag name into. */
   isNewTag = false;
@@ -58,33 +57,22 @@ export class TagComponent {
     private tagsService: TagsService
   ) {}
 
-  ngOnChanges(changes: {[propName: string]: SimpleChange}) {
-    if (changes['tagId'] && changes['tagId'].currentValue !== changes['tagId'].previousValue) {
-      this.tagIdUpdated(changes['tagId'].currentValue);
-    }
-  }
-
-  /** Called after `ngOnChanges`, so that's where we set up this.tag. */
   ngOnInit() {
-    this.tagNameEl = this.tagNameRef.nativeElement;
-  }
-
-  /** This component is either a) being initialized, or b) being reused for a different tag. */
-  tagIdUpdated(newTagId: string): void {
-    this.tag = this.tagsService.tags[newTagId];
-
     if (! this.tag) {
-      // throw new Error('Can\'t set up TagComponent: no tag found for tag ID ' + newTagId);
-      this._logger.error('Can\'t set up TagComponent: no tag found for tag ID', newTagId + '. Hiding component.');
-      // @TODO/rewrite @TODO/tags. Check firebase data for all of these and see how pervasive. Permanent fix would be to loop through notes that reference this tag!
+      // throw new Error('Can\'t set up TagComponent: value passed as @Input `tag` was falsey.');
+      this._logger.error('Can\'t set up TagComponent: value passed as @Input `tag` was falsey. Hiding component.');
+      // 
       this.tag = <Tag> {};
       this.hidden = true;
+      return;
     }
 
     if (! this.tag.name) {
       this.isNewTag = true;
       this.renamable = false;
     }
+
+    this.tagNameEl = this.tagNameRef.nativeElement;
   }
 
   remove() {

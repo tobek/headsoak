@@ -3,7 +3,7 @@
     <a class="go-back" [routerLink]="['/tags']"><i class="fa fa-long-arrow-left"></i>ALL TAGS</a>
 
     <tag class="tag tag-{{ tag.id }}"
-      [tagId]="tag.id"
+      [tag]="tag"
       [renamable]="true"
       (deleted)="tagDeleted($event)"
     ></tag>

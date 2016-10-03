@@ -7,7 +7,7 @@ import {Note} from '../notes/note.model';
 import {NotesService} from '../notes/notes.service';
 import {TagComponent} from '../tags/';
 
-import {AutocompleteService} from '../utils/';
+import {Logger, AutocompleteService} from '../utils/';
 
 @Component({
   selector: 'note',
@@ -32,6 +32,8 @@ export class NoteComponent {
 
   private boundCloseAddTagFieldHandler = this.closeAddTagFieldHandler.bind(this);
 
+  private _logger = new Logger(this.constructor.name);
+
   constructor(
     public cdrRef: ChangeDetectorRef,
     private activeUIs: ActiveUIsService,
@@ -53,6 +55,18 @@ export class NoteComponent {
 
   closeNote() {
     this.noteClosed.emit(this.note);
+  }
+
+  /** Have had some issue with deleted or non-existent tag IDs showing up on notes, here we can debug it. */
+  getTagById(tagId: string) {
+    const tag = this.notesService.dataService.tags.tags[tagId];
+
+    if (! tag) {
+      this._logger.error('Note ID', this.note.id, 'claims to have tag ID', tagId, 'but no tag found  for that ID.');
+      // @TODO/rewrite @TODO/tags. Check firebase data for all of these and see how pervasive. Permanent fix would be to loop through notes that reference this tag! Once fixed, TagComponent should throw an error rather than try to handle being passed no tag
+    }
+
+    return tag;
   }
 
   toggleTag(tagId: string, event: MouseEvent) {
