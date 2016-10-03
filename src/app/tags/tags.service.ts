@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {ReplaySubject} from 'rxjs/ReplaySubject';
+import {Subject, ReplaySubject} from 'rxjs';
 
 import {Logger, utils} from '../utils/';
 import {DataService} from '../';
@@ -11,6 +11,11 @@ import {ProgTagApiService} from './prog-tag-api.service';
 export class TagsService {
   tags: { [key: string]: Tag } = {}; // id -> Tag instance
   initialized$ = new ReplaySubject<void>(1);
+
+  /** Updates whenever a tag is added to users tags (not added to a given note). */
+  tagCreated$ = new Subject<Tag>();
+  /** Updates whenever a tag is removed from users tags (not removed from a given note). */
+  tagDeleted$ = new Subject<Tag>();
 
   /**
    * id format: `[desiredOrder] + '-' + field + '-' + rev`
@@ -71,6 +76,7 @@ export class TagsService {
     // No need to sync to data store if we're initializing notes from data store. Additionally, if this is a new tag with no name, no need to save yet - we'll save when it gets named.
     if (! isInit && tagData.name) {
       newTag.updated();
+      this.tagCreated$.next(newTag);
     }
 
     // @TODO/rewrite what else?
@@ -92,12 +98,14 @@ export class TagsService {
     }
     
     tag.updated(); // sync to data store
+    this.tagCreated$.next(tag);
   }
 
   /** Doesn't actually "delete" tag, e.g. remove it from notes. This function simply removes it from list of tags and from tags in data store. */
   removeTag(tag: Tag): void {
     this.dataService.removeData('tag', tag.id);
     delete this.tags[tag.id];
+    this.tagDeleted$.next(tag);
   }
 
   getTagByName(name: string): Tag {

@@ -27,7 +27,6 @@
         [routerLink]="['/tags/tag', tag.id, tag.name]"
         [tag]="tag"
         [showCount]="true"
-        (deleted)="tagDeleted($event)"
       ></tag>
     </span>
   </div>
@@ -44,5 +43,4 @@
 <tag-details
   *ngIf="activeTag"
   [tag]="activeTag"
-  (deleted)="tagDeleted($event)"
 ></tag-details>

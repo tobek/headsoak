@@ -40,12 +40,14 @@ export class TagBrowserComponent {
 
   showLibrary = false;
 
-  query: string;
+  query = '';
   private queryUpdated$: Subject<void> = new Subject<void>();
 
   private querySub: Subscription;
   private routerSub: Subscription;
   private tagInitializationSub: Subscription;
+  private tagCreationSub: Subscription;
+  private tagDeletionSub: Subscription;
   // private scrollSub: Subscription;
 
   private _logger: Logger = new Logger(this.constructor.name);
@@ -77,6 +79,9 @@ export class TagBrowserComponent {
         this.tags = this.tagsService.sortTags(this.sortOpt, queriedTags);
       });
 
+    this.tagCreationSub = this.tagsService.tagCreated$.subscribe(this.queryUpdated.bind(this));
+    this.tagDeletionSub = this.tagsService.tagDeleted$.subscribe(this.tagDeleted.bind(this));
+
     // this.scrollMonitor.scroll$.subscribe(this.infiniteScrollCheck.bind(this));
   }
 
@@ -84,6 +89,8 @@ export class TagBrowserComponent {
     this.querySub.unsubscribe();
     this.routerSub.unsubscribe();
     this.tagInitializationSub.unsubscribe();
+    this.tagCreationSub.unsubscribe();
+    this.tagDeletionSub.unsubscribe();
     // this.scrollSub.unsubscribe();
   }
 
