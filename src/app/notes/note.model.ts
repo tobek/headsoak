@@ -317,7 +317,7 @@ export class Note {
           text: 'Change tag settings',
           cb: () => {
             this.dataService.router.navigateByUrl(
-              ['', 'tags', tag.id, tag.name, 'smartness'].join('/')
+              ['', 'tags', 'tag', tag.id, tag.name, 'smartness'].join('/')
             );
           }
         }
