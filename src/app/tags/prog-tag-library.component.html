@@ -4,7 +4,7 @@
 
 <div class="library">
   <div class="library-tag" *ngFor="let tag of progTagLibraryService.library">
-    <h4>{{ tag.name }}</h4>
-    {{ tag.description }}
+    <tag [tag]="tag"></tag>
+    <p>{{ tag.description }}</p>
   </div>
 </div>
