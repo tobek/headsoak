@@ -64,11 +64,22 @@ export class ProgTagControlComponent {
     sesh.setUseWrapMode(true);
     sesh.setTabSize(2);
     sesh.setUseSoftTabs(true);
-    sesh.setUseWorker(true); // does syntax validation
 
     // this.editor.resize(); // doesn't seem necessary
 
     this.editorUnchanged();
+
+    if (this.tag.readOnly) {
+      this.editor.setOptions({
+        readOnly: true,
+        highlightActiveLine: false,
+        highlightGutterLine: false
+      });
+      sesh.setUseWorker(false); // no syntax validation
+    }
+    else {
+      sesh.setUseWorker(true); // does syntax validation
+    }
   }
 
   editorUnchanged(): void {
