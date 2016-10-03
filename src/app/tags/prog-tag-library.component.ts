@@ -45,9 +45,6 @@ export class ProgTagLibraryComponent {
     else {
       // Doesn't actually destroy instance, but it removes from all notes, from tag list, and from user data store:
       tag.delete(true);
-      
-      tag.docs = []; // makes for cleaner update if user adds tag back in this session
-      tag.prog = true; // delete has to make this false
     }
   }
 }

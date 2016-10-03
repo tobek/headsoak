@@ -121,6 +121,12 @@ export class Tag {
 
     this._logger.log('Deleted');
 
+    if (this.isLibraryTag) {
+      // Tag no longer lives in this.tags but is still referenced by prog tag library and could be used again, so:
+      this.docs = []; // makes for cleaner update if user adds tag back in this session
+      this.prog = true; // need this back!
+    }
+
     return true;
   }
 
