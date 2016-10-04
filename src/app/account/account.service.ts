@@ -201,7 +201,7 @@ export class AccountService {
             alert('That\'s an invalid email address!');
             break;
           case 'EMAIL_TAKEN':
-            alert('There\'s already an account with that email! You can go back and reset your password if you\'ve forgotten it.');
+            alert('There\'s already an account with that email! Please sign in.');
             break;
           default:
             alert('Sorry, something went wrong when trying to create your account: ' + (err.message || err.code || err) + '. Please try again later!'); // @TODO include support email here

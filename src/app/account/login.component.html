@@ -11,6 +11,7 @@
     <input name="email" type="email" placeholder="E-mail address" autocomplete="email" required ngControl="email" [(ngModel)]="email">
     <input name="pass1" type="password" placeholder="Password" autocomplete="new-password" required ngControl="pass1" [(ngModel)]="pass1">
     <!-- <input name="pass2" type="password" placeholder="Repeat password" autocomplete="new-password" required ngControl="pass2" [(ngModel)]="pass2"> -->
+    <!-- @TODO/ece How should we handle user who tries to "sign up" with email/pass of existing account, cause they didn't notice they're on the sign up form? Should we automatically try to log them in? We should log how often this error happens. -->
 
     <button class="btn btn-primary" type="submit">Sign up</button>
     <!-- <p ng-show="u.loading" class="loader"><img src="/img/loader-white.gif"></p> -->

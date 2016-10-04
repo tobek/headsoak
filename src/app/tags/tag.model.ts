@@ -197,7 +197,7 @@ export class Tag {
       this._logger.log('User classifier returned true for note ID', note.id);
       note.addTag(this, true, true);
     }
-    else if (result) {
+    else if (typeof result === 'object') {
       this._logger.log('User classifier returned true for note ID', note.id, 'and noteData', result);
 
       this.noteData[note.id] = result;
