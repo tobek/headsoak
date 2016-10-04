@@ -128,6 +128,7 @@ export class NoteComponent {
 
     const defaultAddAnother = ! event.shiftKey && ! event.ctrlKey;
 
+    // @TODO/now Take advantage of autocomplete changes where we have suggestion.data.tag (and, if not, we can assume new tag)
     this.completeAddTag(suggestion.value, defaultAddAnother);
   }
 

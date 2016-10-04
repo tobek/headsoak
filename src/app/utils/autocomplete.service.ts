@@ -6,6 +6,16 @@ import {Tag, TagsService} from '../tags';
 const jQuery = require('jquery');
 // window['jQuery'] = jQuery;
 
+type SuggestionType = {
+  value: string,
+  score?: number;
+  highlighted?: string,
+  data?: {
+    tag?: Tag,
+    subTag?: string,
+  },
+};
+
 @Injectable()
 export class AutocompleteService {
 
@@ -32,27 +42,41 @@ export class AutocompleteService {
     context: '',
     autocompleteOpts: {}, // should be `any` but can't be found...?
   }) {
-    var lookupArray: string[] = _.filter(this.tagsService.tags, (tag: Tag) => {
+    // While we're iterating through tags creating lookup list, we can build this too:
+    const subTags: SuggestionType[] = [];
+
+    var lookupArray: SuggestionType[] = _.filter(this.tagsService.tags, (tag: Tag) => {
+
       if (context === 'note') {
         if (tag.readOnly) {
           return false; // can't add readOnly tags
         }
 
         // @TODO also hide prog tags here? on the one hand, trying to add a prog tag shows progTagCantChangeAlert, so you might ask "why did you put it in autocomplete in the first place?". on the other hand, if we hide it, users might be like "why isn't this tag showing up?"
-
-        // @TODO/rewrite        
-        // if (nut.tags) {
-        //   // filter out tags that are already on this nut
-        //   if (nut.tags.indexOf(tag.id) !== -1) return false; 
-        // }
       }
 
       if (_.includes(excludeTags, tag) || _.includes(excludeTagIds, tag.id)) {
         return false;
       }
 
+      if (tag.subTagDocs) {
+        _.each(tag.subTagDocs, (docs: string[], subTagName: string) => {
+          subTags.push({
+            value: tag.name + ': ' + subTagName,
+            data: {
+              tag: tag,
+              subTag: subTagName
+            }
+          });
+        });
+      }
+
       return true;
-    }).map((tag: Tag) => tag.name);
+    }).map((tag: Tag) => {
+      return { value: tag.name, data: { tag: tag } };
+    });
+
+    lookupArray = _.concat(lookupArray, subTags);
 
     this._logger.log('Initializing autocomplete with:', lookupArray);
 
@@ -63,9 +87,8 @@ export class AutocompleteService {
       triggerSelectOnValidInput: false,
       allowBubblingOnKeyCodes: [27], // escape key
 
-      customLookup: (query, suggestions) => {
-        // `map` because suggestions is array of {value: "string"} objects
-        var results = fuzzyMatchSort(query, suggestions.map((s) => s.value));
+      customLookup: (query: string, suggestions: SuggestionType[]): SuggestionType[] => {
+        var results = fuzzyMatchSort(query, suggestions);
 
         // On notes, offer option to add new tag with currently-entered query
         if (context === 'note') {
@@ -85,9 +108,9 @@ export class AutocompleteService {
         return results;
       },
 
-      formatResult: (suggestion) => suggestion.highlighted,
+      formatResult: (suggestion: SuggestionType) => suggestion.highlighted,
 
-      onSelect: (suggestion, e) => {
+      onSelect: (suggestion: SuggestionType, e) => {
         if (autocompleteOpts['onSelect']) {
           autocompleteOpts['onSelect'](suggestion, e);
         }

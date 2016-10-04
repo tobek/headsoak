@@ -141,7 +141,15 @@ export class NoteQueryComponent {
 
   tagAutocompleteSelect(suggestion, e): void {
     this.queryText = '';
-    this.addTag(this.tagsService.getTagByName(suggestion.value));
+
+    if (suggestion.data && suggestion.data.tag) {
+      this.addTag(suggestion.data.tag);
+    }
+    else {
+      this._logger.error('Invalid suggestion returned: No data or tag found:', suggestion)
+      throw Error('Invalid suggestion returned: No data or tag found');
+    }
+
     this.ensureFocusAndAutocomplete();
   }
 
