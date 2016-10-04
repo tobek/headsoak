@@ -103,7 +103,9 @@ export class HomeComponent {
     }
 
     if (this.activeUIs.noteQuery) {
-      this.newNote.tags = this.activeUIs.noteQuery.tags.map((tag: Tag) => tag.id);
+      this.newNote.tags = this.activeUIs.noteQuery.tags
+        .filter((tag: Tag) => ! tag.prog && ! tag.readOnly)
+        .map((tag: Tag) => tag.id);
     }
   }
 
