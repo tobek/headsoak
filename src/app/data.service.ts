@@ -97,6 +97,7 @@ export class DataService {
     // This function can get called inside change detection loop, and changing this.status is another change which will trigger another round of detection. This blows up in dev mode, so tell Angular/Zone that we need to check for changes now:
     this.accountService.rootChangeDetector.markForCheck();
     // @TODO There is probably something better to do here. A way to trigger this error if necessary is to update a smart tag library tag to set a different value on noteData for already-tagged notes. Then, re-loading page and having it re-run on app load was causing this problem.
+    // @TODO/refactor Dang seems like it's still happening, similar cause as above: reloading on smart tag library page with a changed smart tag, in this case changing what's tagged and what's note.
   }
 
   removeData(dataType: string, id: string) {

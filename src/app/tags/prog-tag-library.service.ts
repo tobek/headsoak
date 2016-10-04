@@ -24,7 +24,7 @@ export class ProgTagLibraryService {
       isLibraryTag: true,
       readOnly: true,
       name: 'untagged',
-      description: 'Tag to all notes which have no tags',
+      description: 'Tag all notes which have no tags',
       prog: true,
       progFuncString: 'if (note.tags.length === 0) {\n  return true;\n}\nelse if (note.tags.length === 1 && note.tags[0] === this.id) {\n  // note has only one tag and it\'s this one! note that without this check, this smart tag would produce an infinite loop. First an untagged note would be assigned this tag, and then, since the note was updated, it would be checked against smart tags again. This tag would then remove itself, triggering another update where it would be added back, etc.\n  return true;\n}\nelse {\n  return false;\n}',
     },
@@ -33,9 +33,11 @@ export class ProgTagLibraryService {
       isLibraryTag: true,
       readOnly: true,
       name: 'has quote',
-      description: '@TODO',
+      description: 'Tag all notes which contain quotes. This is calculated by looking to see if at least one line in the note follows the Markdown syntax for blockquotes: starting a line with "> ".',
       prog: true,
-      progFuncString: 'if (! note.body) {\n  return false;\n}\n\nvar lines = note.body.split(\'\n\');\nvar numQuoteLines = 0;\n\n_.each(lines, function(line) {\n  if (line[0] === \'>\') {\n    numQuoteLines++;\n  }\n});\n\nif (numQuoteLines/lines.length >= 0.5) {\n  return true;\n} else {\n  return false;\n}',
+      // old version which looks for 50% of lines being a quote:
+      // progFuncString: 'if (! note.body) {\n  return false;\n}\n\nvar lines = note.body.split(\'\\n\');\nvar numQuoteLines = 0;\n\n_.each(lines, function(line) {\n  if (line[0] === \'>\') {\n    numQuoteLines++;\n  }\n});\n\nif (numQuoteLines / lines.length >= 0.5) {\n  return true;\n} else {\n  return false;\n}',
+      progFuncString: 'if (! note.body) {\n  return false;\n}\n\nvar lines = note.body.split(\'\\n\');\nvar foundQuote = false;\n\n_.each(lines, function(line) {\n  if (line[0] === \'>\' && line[1] === \' \') {\n    foundQuote = true;\n    return false;\n  }\n});\n\nreturn foundQuote;',
     },
     {
       id: 'lib--nutmeg',
