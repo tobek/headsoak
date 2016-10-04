@@ -312,7 +312,7 @@ export class Note {
 
     this._logger.log('Removing tag', tag);
 
-    this.tags = _.without(this.tags, '' + tag.id);
+    _.pull(this.tags, '' + tag.id);
     tag.removeNoteId(this.id);
 
     this.rebuildNoteSharing();

@@ -19,21 +19,24 @@ export class Tag {
   created: number;
   modified: number;
 
-  // Optional:
-  description: string;
   docs: string[] = []; // array of note IDs
-  prog = false; // whether it's a programmatic tag
-  progFuncString: string; // string representing programmatic ta@Tg function to be eval'd. This ccould be present even though `prog` is false, saving the function for potential future use.
-  readOnly = false; // @TODO/sharing handle other permissions
 
-  share: any; // map of recipient (shared-with) user ID to their permissions
-  sharedBy: string; // ID of user that shared this tag
-  shareTooltip: string; // text to identify sharing status to user (e.g. "you are sharing this with ___" or "___ is sharing this with you")
+  description?: string;
+  prog?: boolean; // whether it's a programmatic tag
+  progFuncString?: string; // string representing programmatic ta@Tg function to be eval'd. This ccould be present even though `prog` is false, saving the function for potential future use.
+  readOnly?: boolean; // @TODO/sharing handle other permissions
 
-  isLibraryTag = false;
+  share?: any; // map of recipient (shared-with) user ID to their permissions
+  sharedBy?: string; // ID of user that shared this tag
+  shareTooltip?: string; // text to identify sharing status to user (e.g. "you are sharing this with ___" or "___ is sharing this with you")
+
+  isLibraryTag?: boolean;
 
   /** Tag can store specific information on a per-note basis, indexed by note ID. */
   noteData: { [key: string]: NoteDataType } = {};
+
+  /** Tags (currently only prog tags) can have sub tags. This index maps subTag name to list of Note IDs, so that we can both get a list of all possible subtags, and sort easily. */
+  subTagDocs?: { [key: string]: string[] } = {};
 
   /** If this is a programmatic tag, this property caches the function that is run to determine if a note should have this tag. */
   private classifier: (note: Note) => boolean | NoteDataType;
@@ -46,10 +49,13 @@ export class Tag {
     'modified',
     'description',
     'docs',
+
     'prog',
     'progFuncString',
     'isLibraryTag',
     'noteData',
+    'subTagDocs',
+
     'readOnly',
     'share',
     'sharedBy',
@@ -150,8 +156,17 @@ export class Tag {
   /** @NOTE This does *not* remove ourselves from the note in return. */
   removeNoteId(noteId: string): void {
     this._logger.log('Removing note id', noteId);
-    this.docs = _.without(this.docs, '' + noteId);
-    delete this.noteData[noteId];
+    _.pull(this.docs, '' + noteId);
+
+    if (this.noteData[noteId]) {
+      const noteSubTag = this.noteData[noteId].subTag;
+      if (noteSubTag) {
+        _.pull(this.subTagDocs[noteSubTag], noteId);
+      }
+
+      delete this.noteData[noteId];
+    }
+
     this.updated();
   }
 
@@ -187,6 +202,10 @@ export class Tag {
 
       this.noteData[note.id] = result;
 
+      if (result.subTag) {
+        this.subTagDocs[result.subTag] = _.union(this.subTagDocs[result.subTag], [note.id]);
+      }
+
       if (note.hasTag(this)) {
         // No need to add to note but we still have to update tag to save new noteData. @TODO/prog Check if noteData has changed before updating
         this.updated();
@@ -197,6 +216,7 @@ export class Tag {
     }
     else {
       this._logger.log('User classifier returned false for note ID', note.id);
+      // Eventually, this will call `this.removeNoteId` which will handle `noteData` and sub tags
       note.removeTag(this, true, true);
     }
   }
