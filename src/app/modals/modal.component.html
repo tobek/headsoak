@@ -36,25 +36,59 @@
     <div class="summaries">
       <div class="how">
         <h2>
-          SEE HOW
-          <br>
           <i class="fa fa-angle-down"></i>
         </h2>
       </div>
 
       <div>
-        <div class="summary">
+        <div class="summary summary--smart-tags">
           <div class="thing">Smart Tags</div>
+
+          <note class="mockup">
+            <div class="note-wrapper">
+              <div class="header">
+                <div class="tags"
+                  ><span class="tag new-tag"><span class="new-tag-button"><i class="fa fa-plus"></i></span></span
+                  ><tag><span class="name">some tag</span></tag
+                  ><tag><span class="name">another</span></tag
+                  ><tag><span class="name">sentiment: joy</span>
+                    <span class="tag-state"><span class="prog" title="This tag is a smart tag"><i class="fa fa-magic"></i></span></span>
+                  </tag>
+                </div>
+              </div>
+              <textarea class="body-input">This is a cool note with joyful stuff in it. This is a cool note with joyful stuff in it. This is a cool note with joyful stuff in it. This is a cool note with joyful stuff in it. This is a cool note with joyful stuff in it.</textarea>
+            </div>
+          </note>
+
+          <div class="blocker"></div>
         </div>
 
-        <div class="summary">
+        <div class="summary summary--explore">
           <div class="thing">Explore</div>
+
+          <div class="mockup">
+            <tag><span class="name">sentiment: joy</span> <span class="tag-state"><span class="prog" title="This tag is a smart tag"><i class="fa fa-magic"></i></span></span></tag> most commonly paired with:
+            <div class="cooccurrences">
+              <tag><span class="name">nutmeg</span></tag>&nbsp;<span class="count">(142)</span>
+              <tag><span class="name">@robin</span> <span class="tag-state"><span class="share" title="This tag is shared with Robin"><i class="fa fa-users"></i></span></span></tag>&nbsp;<span class="count">(89)</span>
+              <tag><span class="name">another</span></tag>&nbsp;<span class="count">(23)</span>
+              <tag><span class="name">another</span></tag>&nbsp;<span class="count">(19)</span>
+              <tag><span class="name">another</span></tag>&nbsp;<span class="count">(14)</span>
+              <tag><span class="name">another</span></tag>&nbsp;<span class="count">(10)</span>
+              <tag><span class="name">another</span></tag>&nbsp;<span class="count">(9)</span>
+              <tag><span class="name">another</span></tag>&nbsp;<span class="count">(9)</span>
+              <tag><span class="name">another</span></tag>&nbsp;<span class="count">(6)</span>
+              <tag><span class="name">another</span></tag>&nbsp;<span class="count">(5)</span>
+            </div>
+          </div>
+
+          <div class="blocker"></div>
         </div>
       </div>
     </div>
 
     <div class="dive dive--smart-tags">
-      <h2>Harness your notes with transparent smartness, not magic.</h2>
+      <h2>Smart tags: transparent intelligence not magic.</h2>
 
       <div class="examples">
         <div class="example">
@@ -63,10 +97,12 @@
           <div class="text">
             <h3>Automatic</h3>
 
-            <p>Scan your notes for specific phrases and tag your notes automatically.</p>
+            <p>Scan your notes for phrases and patterns and tag them accordingly.</p>
 
-            <tag><span class="name">recipe</span></tag>
-            <tag><span class="name">link</span></tag>
+            <tag><span class="name">recipe</span> <span class="tag-state"><span class="prog" title="This tag is a smart tag"><i class="fa fa-magic"></i></span></span></tag>
+            <tag><span class="name">has link</span> <span class="tag-state"><span class="prog" title="This tag is a smart tag"><i class="fa fa-magic"></i></span></span></tag>
+            <tag><span class="name">quote</span> <span class="tag-state"><span class="prog" title="This tag is a smart tag"><i class="fa fa-magic"></i></span></span></tag>
+            <tag><span class="name">nsfw</span> <span class="tag-state"><span class="prog" title="This tag is a smart tag"><i class="fa fa-magic"></i></span></span></tag>
           </div>
         </div>
 
@@ -74,12 +110,13 @@
           <h4 class="icon"><i class="fa fa-lg fa-fw fa-bicycle"></i></h4>
 
           <div class="text">
-            <h3>Functional</h3>
+            <h3>Practical</h3>
 
-            <p>Do things with your notes. Like email them to you.</p>
+            <p>Put your notes to use.</p>
 
-            <tag><span class="name">to do</span></tag>
-            <tag><span class="name">self destruct</span></tag>
+            <tag><span class="name">to do</span> <span class="tag-state"><span class="prog" title="This tag is a smart tag"><i class="fa fa-magic"></i></span></span></tag>
+            <tag><span class="name">self destruct</span> <span class="tag-state"><span class="prog" title="This tag is a smart tag"><i class="fa fa-magic"></i></span></span></tag>
+            <tag><span class="name">post to blog</span> <span class="tag-state"><span class="prog" title="This tag is a smart tag"><i class="fa fa-magic"></i></span></span></tag>
           </div>
         </div>
 
@@ -87,12 +124,12 @@
           <h4 class="icon"><i class="fa fa-lg fa-fw fa-object-group"></i></h4>
 
           <div class="text">
-            <h3>Analytical</h3>
+            <h3>Insightful</h3>
 
-            <p>Analyze notes for specific algorithms and tag the note based on the results.</p>
+            <p>Employ algorithms to organize and make sense of your notes.</p>
 
-            <tag><span class="name">sentiment: happy</span></tag>
-            <tag><span class="name">language: italian</span></tag>
+            <tag><span class="name">sentiment: joy</span> <span class="tag-state"><span class="prog" title="This tag is a smart tag"><i class="fa fa-magic"></i></span></span></tag>
+            <tag><span class="name">language: italian</span> <span class="tag-state"><span class="prog" title="This tag is a smart tag"><i class="fa fa-magic"></i></span></span></tag>
           </div>
         </div>
 
@@ -104,13 +141,13 @@
 
             <p>Pair up so that whenever a note has one tag, it has the other one too.</p>
 
-            <tag><span class="name">poetry</span></tag>
+            <tag><span class="name">poetry</span> <span class="tag-state"><span class="prog" title="This tag is a smart tag"><i class="fa fa-magic"></i></span></span></tag>
             <tag><span class="name">Galway Kinnell</span></tag>
           </div>
         </div>
       </div>
 
-      <h4 class="followup">Program your own smart tags or explore our library</h4>
+      <h4 class="followup">Control exactly how your notes are tagged and understand the logic behind it. Pick from our smart tag library or configure your own.</h4>
     </div>
 
     <div class="dive dive--explore">
@@ -130,18 +167,22 @@
     <div class="summaries">
       <div class="summary--small">
         <h4>Lightweight</h4>
+        <p>Use anywhere. Write effortlessly. Find information quickly.</p>
       </div>
 
       <div class="summary--small">
-        <h4>Privacy</h4>
+        <h4>Collaborative</h4>
+        <p>Share and simultaneously edit notes. Import and export with ease.</p>
       </div>
 
       <div class="summary--small">
-        <h4>Sharing</h4>
+        <h4>Private</h4>
+        <p>Private Mode <i class="fa fa-user-secret"></i>. Zero-knowledge encryption: only you have the keys to your data.</p>
       </div>
 
       <div class="summary--small">
-        <h4>Zero Knowledge encryption</h4>
+        <h4>Yours</h4>
+        <p>Powerful customization for those who want it. Simplicity for those who don't.</p>
       </div>
     </div>
 

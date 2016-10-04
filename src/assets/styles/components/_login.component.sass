@@ -15,6 +15,7 @@ login
 
   .logo
     h1
+      display: inline-block
       margin-bottom: 0
 
     .fa
@@ -24,6 +25,27 @@ login
     .subheading
       color: $input-stroke
       letter-spacing: 1.2px
+
+      // So that this one can be on top of the other as they cross-fade transition
+      &.subheading--initial
+        position: absolute
+        left: 0
+        width: 100%
+        text-align: center
+
+      transition: opacity $transition-med, visibility $transition-med
+      opacity: 1
+      visibility: visible
+
+      &.is--hidden
+        opacity: 0
+        visibility: hidden
+
+    .superscript
+      +small
+      position: absolute
+      margin-left: 5px
+      color: $highlight-color
 
   input
     display: block

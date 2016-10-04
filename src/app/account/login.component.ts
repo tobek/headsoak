@@ -78,9 +78,11 @@ export class LoginComponent {
     this.pass2 = '';
   }
 
-  login() {
+  login(loginIframe: HTMLIFrameElement) {
     // if ($s.u.loading) return; // @TODO/rewrite
     this.accountService.login(this.email, this.password);
+
+    this.pseudoLogin(loginIframe);
   }
 
   /** Shenanigans needed to get Chrome to offer to remember password. Copies credentials into pseudo-login.html inside iframe and submit it, since Chrome requires actual form submission and page load before it offers to remember. pseudo-login.html is also used as form `action` - `about:blank` and cancelling submission didn't work. */
@@ -112,10 +114,11 @@ export class LoginComponent {
   createAccount() {
     // if ($s.u.loading) return; // @TODO/rewrite
 
-    if (this.pass1 !== this.pass2) {
-      alert('Those passwords don\'t match!');
-      return;
-    }
+    // We've removed double password entry for signup
+    // if (this.pass1 !== this.pass2) {
+    //   alert('Those passwords don\'t match!');
+    //   return;
+    // }
 
     this.accountService.createAccount(this.email, this.pass1);
   }
