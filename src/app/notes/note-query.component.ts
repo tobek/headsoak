@@ -8,7 +8,7 @@ import {AnalyticsService} from '../analytics.service';
 import {SettingsService} from '../settings/settings.service';
 import {Note} from './note.model';
 import {NotesService} from './notes.service';
-import {Tag, TagComponent, TagsService} from '../tags';
+import {Tag, SubTag, TagComponent, TagsService} from '../tags';
 import {Logger, AutocompleteService} from '../utils/';
 
 
@@ -174,7 +174,14 @@ export class NoteQueryComponent {
       && this.textInput.nativeElement.selectionEnd === 0 // otherwise select all + backspace will trigger
       && this.tags.length > 0
     ) {
-      this.removeTag(this.tags[this.tags.length - 1]);
+      const lastTag = this.tags[this.tags.length - 1];
+
+      this.removeTag(lastTag);
+
+      if (lastTag instanceof SubTag) {
+        this.addTag(lastTag.baseTag);
+      }
+
       this.ensureFocusAndAutocomplete(); // reset autocomplete so that newly removed tag is in suggestions again
     }
   }
