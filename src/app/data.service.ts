@@ -160,7 +160,7 @@ export class DataService {
     this.syncTasksRemaining--;
 
     if (err) {
-      alert('Error syncing your notes to the cloud! Some stuff may not have been saved. We\'ll keep trying though. You can email me at toby@nutmeg.io if this keeps happening. Tell me what this error says:\n\n' + JSON.stringify(err));
+      alert('Error syncing your notes to the cloud! Some stuff may not have been saved. We\'ll keep trying though. You can email me at toby@headsoak.com if this keeps happening. Tell me what this error says:\n\n' + JSON.stringify(err));
       this.status = 'disconnected'; // @TODO/rewrite Make sure sync status widget updates
       return;
     }

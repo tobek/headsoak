@@ -43,10 +43,10 @@ export class ProgTagLibraryService {
       id: 'lib--nutmeg',
       isLibraryTag: true,
       readOnly: true,
-      name: 'mentions nutmeg', // @TODO/prog Mention or show that this is a "tutorial" tag or something. BETTER: Make it customizable for search string
-      description: 'Tag all notes which contain the text "nutmeg"',
+      name: 'mentions headsoak', // @TODO/prog Mention or show that this is a "tutorial" tag or something. BETTER: Make it customizable for search string
+      description: 'Tag all notes which contain the text "headsoak"',
       prog: true,
-      progFuncString: 'if (note.body.toLowerCase().indexOf("nutmeg") !== -1) {\n  return true;\n}\nelse {\n  return false;\n}',
+      progFuncString: 'if (note.body.toLowerCase().indexOf("headsoak") !== -1) {\n  return true;\n}\nelse {\n  return false;\n}',
     },
     // {
     //   name: 'List',

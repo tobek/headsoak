@@ -141,7 +141,7 @@ export class SettingsComponent implements OnInit {
     });
 
     if (modlessShortcut) {
-      this.modKeyError = 'Warning: You have entered no global modifier key and your shortcut for "' + modlessShortcut.name + '" is "' + modlessShortcut.value + '".\n\nThis means that whenever you press "' + modlessShortcut.value + '" anywhere in Nutmeg, that shortcut will be run.';
+      this.modKeyError = 'Warning: You have entered no global modifier key and your shortcut for "' + modlessShortcut.name + '" is "' + modlessShortcut.value + '".\n\nThis means that whenever you press "' + modlessShortcut.value + '" anywhere in Headsoak, that shortcut will be run.';
     }
     else {
       this.modKeyError = '';
