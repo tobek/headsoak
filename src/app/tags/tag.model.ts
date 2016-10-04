@@ -4,6 +4,13 @@ import {Logger} from '../utils/logger';
 
 import {Note} from '../notes/';
 
+/** Information this tag generates about a specific note. */
+type NoteDataType = {
+  subTag?: string, // will be displayed after tag name when shown on this note, e.g. for sentiment analysis tag called "sentiment", `val` might be "joy" and be displayed as "sentiment: joy"
+  score?: any, // in addition to `val`, this will be displayed in parentheses after tag name on hover, e.g. `valHover` might be "90% confidence" and show "sentiment: joy (90% confidence)" @TODO/prog Update component and this comment: f no subTag, show score always w ithout hover
+  more?: string, // additional stuff can be displayed in the dropdown (unimplemented)
+};
+
 export class Tag {
   /** By convention, IDs for user's own tags are numeric strings. Other tags (previously, shared ones, currently only library tags) have other IDs like `lib--untagged`. */
   id: string;
@@ -26,14 +33,10 @@ export class Tag {
   isLibraryTag = false;
 
   /** Tag can store specific information on a per-note basis, indexed by note ID. */
-  noteData: { [key: string]: {
-    val?: string, // will be displayed after tag name when shown on this note, e.g. for sentiment analysis tag called "sentiment", `val` might be "joy" and be displayed as "sentiment: joy"
-    valHover?: string, // in addition to `val`, this will be displayed in parentheses after tag name on hover, e.g. `valHover` might be "90% confidence" and show "sentiment: joy (90% confidence)"
-    more?: string, // additional stuff can be displayed in the dropdown (unimplemented)
-  } } = {};
+  noteData: { [key: string]: NoteDataType } = {};
 
   /** If this is a programmatic tag, this property caches the function that is run to determine if a note should have this tag. */
-  private classifier: (note: Note) => boolean;
+  private classifier: (note: Note) => boolean | NoteDataType;
 
   /** Properties that we save to data store */
   private DATA_PROPS = [
@@ -173,9 +176,24 @@ export class Tag {
       this.classifier = this.generateClassifier();
     }
 
-    if (this.classifier(note) === true) {
-      this._logger.log('User classifier returned true for note ID', note.id, 'with note data', this.noteData[note.id]);
+    const result = this.classifier(note);
+
+    if (result === true) {
+      this._logger.log('User classifier returned true for note ID', note.id);
       note.addTag(this, true, true);
+    }
+    else if (result) {
+      this._logger.log('User classifier returned true for note ID', note.id, 'and noteData', result);
+
+      this.noteData[note.id] = result;
+
+      if (note.hasTag(this)) {
+        // No need to add to note but we still have to update tag to save new noteData. @TODO/prog Check if noteData has changed before updating
+        this.updated();
+      }
+      else {
+        note.addTag(this, true, true);
+      }
     }
     else {
       this._logger.log('User classifier returned false for note ID', note.id);

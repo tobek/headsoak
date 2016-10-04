@@ -8,8 +8,8 @@
 >{{ tag.name }}</span
 
 ><span *ngIf="ofNoteId && tag.noteData[ofNoteId]"
-  ><span *ngIf="tag.noteData[ofNoteId].val">: {{ tag.noteData[ofNoteId].val }}</span>
-  <span class="tag-value-hover" *ngIf="tag.noteData[ofNoteId].valHover">({{ tag.noteData[ofNoteId].valHover}})</span>
+  ><span *ngIf="tag.noteData[ofNoteId].subTag">: {{ tag.noteData[ofNoteId].subTag }}</span>
+  <span class="tag-value-hover" *ngIf="tag.noteData[ofNoteId].score">({{ tag.noteData[ofNoteId].score}})</span>
 </span>
 
 <span *ngIf="showCount">({{ tag.docs.length }})</span>

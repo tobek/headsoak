@@ -262,7 +262,7 @@ export class Note {
 
   /** Adds tag to note and returns tag, or returns null if no tag added. Also updates the tag as necessary. */
   addTag(tag: Tag, fullUpdate = true, evenIfProg = false): Tag {
-    if (_.includes(this.tags, '' + tag.id)) {
+    if (this.hasTag(tag)) {
       return null;
     }
 
@@ -289,6 +289,10 @@ export class Note {
     this.updated(this.dataService.settings.get('tagChangesChangeNutModifiedTimestamp'), fullUpdate);
 
     return tag;
+  }
+
+  hasTag(tag: Tag): boolean {
+    return _.includes(this.tags, '' + tag.id);
   }
 
   removeTagId(tagId: string, fullUpdate = true, evenIfProg = false): void {

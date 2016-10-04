@@ -4,6 +4,8 @@ import {TagsService} from './tags.service';
 import {Tag} from './tag.model';
 // import {Note} from '../notes/note.model';
 
+import {Logger} from '../utils/logger';
+
 @Injectable()
 export class ProgTagLibraryService {
   /** @NOTE Changing IDs in source code here could really mess things up for users who are using them. */
@@ -15,7 +17,7 @@ export class ProgTagLibraryService {
       name: 'sentiment',
       description: 'Tag notes that show a markedly positive or negative sentiment. Hover over the tag on a note to see the calculated strength of that note\'s sentiment.',
       prog: true,
-      progFuncString: '// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm\'s `sentiment` module) have been bundled with the app.\nvar sentiment = api.lib.sentiment;\n\nvar score = sentiment(note.body);\nif (score && score.comparative) {\n  score = Math.round(score.comparative * 10000) / 10000;\n}\nelse {\n  score = 0;\n}\n\nvar value;\nif (score >= 0.1) {\n  value = \'positive\';\n}\nelse if (score <= -0.1) {\n  value = \'negative\';\n}\nelse {\n  return false;\n}\n\nthis.noteData[note.id] = {\n  val: value,\n  valHover: score,\n};\n\nreturn true',
+      progFuncString: '// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm\'s `sentiment` module) have been bundled with the app.\nvar sentiment = api.lib.sentiment;\n\nvar score = sentiment(note.body);\nif (score && score.comparative) {\n  score = Math.round(score.comparative * 10000) / 10000;\n}\nelse {\n  score = 0;\n}\n\nvar value;\nif (score >= 0.1) {\n  value = \'positive\';\n}\nelse if (score <= -0.1) {\n  value = \'negative\';\n}\nelse {\n  return false;\n}\n\nreturn {\n  subTag: value,\n  score: score,\n};',
     },
     {
       id: 'lib--untagged',
@@ -54,6 +56,8 @@ export class ProgTagLibraryService {
 
   library: Tag[];
 
+  private _logger: Logger = new Logger(this.constructor.name);
+
   constructor(
     private tagsService: TagsService
   ) {
@@ -67,7 +71,8 @@ export class ProgTagLibraryService {
           // Function has been updated from official sources since user last used it, so let's update.
           // @TODO/prog Haven't tested this code, though should be pretty straightforward.
           // @TODO/ece Should we update the user that this has happened? Maybe a toaster notif. I don't know how frequently it would happen. Ditto for name change (but prob not description change) below
-          existingTag.progFuncString = tagData.progFuncString;
+          this._logger.info('Enabled smart tag library tag"' + existingTag.id + '"source has been updated - re-running it now.');
+          existingTag.updateProgFuncString(tagData.progFuncString);
           existingTag.runProgOnAllNotes();
         }
         if (existingTag.name !== tagData.name || existingTag.description !== tagData.description) {
