@@ -5,7 +5,12 @@
   (keydown.enter)="renameFinish($event)"
   (keydown.esc)="renameCancel()"
   (blur)="renameCancel()"
->{{ tag.name }}</span>
+>{{ tag.name }}</span
+
+><span *ngIf="ofNoteId && tag.noteData[ofNoteId]"
+  ><span *ngIf="tag.noteData[ofNoteId].val">: {{ tag.noteData[ofNoteId].val }}</span>
+  <span class="tag-value-hover" *ngIf="tag.noteData[ofNoteId].valHover">({{ tag.noteData[ofNoteId].valHover}})</span>
+</span>
 
 <span *ngIf="showCount">({{ tag.docs.length }})</span>
 

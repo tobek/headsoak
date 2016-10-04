@@ -30,6 +30,7 @@ import 'lodash';
 import 'lunr';
 import 'mousetrap';
 import 'mousetrap-global-bind';
+import 'sentiment';
 
 if ('production' === ENV) {
   // Production

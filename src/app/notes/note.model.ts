@@ -273,8 +273,14 @@ export class Note {
       return null;
     }
 
-    // Add at the front - this makes tags on notes ordered by most-recently-added, which a) is fine, and b) looks good when you add a new tag. Later order could be smarter.
-    this.tags.unshift('' + tag.id);
+    if (! tag.prog) {
+      // Add at the front - this makes tags on notes ordered by most-recently-added, which a) is fine, and b) looks good when you add a new tag. Later order could be smarter.
+      this.tags.unshift('' + tag.id);
+    }
+    else {
+      // We'll leave prog tags at the back
+      this.tags.push('' + tag.id);
+    }
 
     tag.addNoteId(this.id);
 

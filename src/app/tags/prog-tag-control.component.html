@@ -51,7 +51,14 @@
 name: string;
 created: number; // unix timestamp
 modified: number; // unix timestamp
-docs: string[] | null; // array of note IDs tagged with this tag</pre>
+docs: string[] | null; // array of note IDs tagged with this tag
+
+/** Tag can store specific information on a per-note basis, indexed by note ID. */
+noteData: { [key: string]: {
+  val?: string, // will be displayed after tag name when shown on this note, e.g. for sentiment analysis tag called "sentiment", `val` might be "joy" and be displayed as "sentiment: joy"
+  valHover?: string, // in addition to `val`, this will be displayed in parentheses after tag name on hover, e.g. `valHover` might be "90% confidence" and show "sentiment: joy (90% confidence)"
+  more?: string, // additional stuff can be displayed in the dropdown (unimplemented)
+} };</pre>
 
   <h3><code>note</code></h3>
 

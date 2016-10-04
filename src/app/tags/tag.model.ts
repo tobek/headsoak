@@ -25,6 +25,13 @@ export class Tag {
 
   isLibraryTag = false;
 
+  /** Tag can store specific information on a per-note basis, indexed by note ID. */
+  noteData: { [key: string]: {
+    val?: string, // will be displayed after tag name when shown on this note, e.g. for sentiment analysis tag called "sentiment", `val` might be "joy" and be displayed as "sentiment: joy"
+    valHover?: string, // in addition to `val`, this will be displayed in parentheses after tag name on hover, e.g. `valHover` might be "90% confidence" and show "sentiment: joy (90% confidence)"
+    more?: string, // additional stuff can be displayed in the dropdown (unimplemented)
+  } } = {};
+
   /** If this is a programmatic tag, this property caches the function that is run to determine if a note should have this tag. */
   private classifier: (note: Note) => boolean;
 
@@ -39,6 +46,7 @@ export class Tag {
     'prog',
     'progFuncString',
     'isLibraryTag',
+    'noteData',
     'readOnly',
     'share',
     'sharedBy',
@@ -140,6 +148,7 @@ export class Tag {
   removeNoteId(noteId: string): void {
     this._logger.log('Removing note id', noteId);
     this.docs = _.without(this.docs, '' + noteId);
+    delete this.noteData[noteId];
     this.updated();
   }
 
@@ -165,7 +174,7 @@ export class Tag {
     }
 
     if (this.classifier(note) === true) {
-      this._logger.log('User classifier returned true for note ID', note.id);
+      this._logger.log('User classifier returned true for note ID', note.id, 'with note data', this.noteData[note.id]);
       note.addTag(this, true, true);
     }
     else {
