@@ -11,11 +11,6 @@ import {NotesService} from './notes.service';
 import {Tag, TagComponent, TagsService} from '../tags';
 import {Logger, AutocompleteService} from '../utils/';
 
-// @TODO/prog @TODO/now Unused and probably not ideal, REVISIT
-type TagOrSubtag = Tag | {
-  tag: Tag,
-  subTag: string,
-};
 
 @Component({
   selector: 'note-query',

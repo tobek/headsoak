@@ -61,10 +61,10 @@ export class Tag {
     'sharedBy',
   ];
 
-  private _logger: Logger;
+  protected _logger: Logger;
 
   // @TODO how do we handle duplicate names?
-  constructor(tagData: any, private dataService: DataService) {
+  constructor(tagData: any, public dataService: DataService) {
     if (! tagData.id) {
       throw new Error('Must supply tag with id');
     }

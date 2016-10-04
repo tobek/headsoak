@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 
 import {Logger, fuzzyMatchSort} from './';
-import {Tag, TagsService} from '../tags';
+import {Tag, SubTag, TagsService} from '../tags';
 
 const jQuery = require('jquery');
 // window['jQuery'] = jQuery;
@@ -59,13 +59,13 @@ export class AutocompleteService {
         return false;
       }
 
-      if (tag.subTagDocs) {
+      // These only work in NoteQueryComponent so far (and anyway since subTags currently only are for prog tags, they can't be added to a note context yet)
+      if (context === 'query' && tag.subTagDocs) {
         _.each(tag.subTagDocs, (docs: string[], subTagName: string) => {
           subTags.push({
             value: tag.name + ': ' + subTagName,
             data: {
-              tag: tag,
-              subTag: subTagName
+              tag: new SubTag(subTagName, tag)
             }
           });
         });
