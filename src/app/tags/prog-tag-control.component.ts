@@ -126,7 +126,7 @@ export class ProgTagControlComponent {
   }
 
   saveAndRun(): void {
-    this.tag.progFuncString = this.editor.getValue();
+    this.tag.updateProgFuncString(this.editor.getValue());
     this.editorUnchanged();
 
     if (this.tag.progFuncString) {

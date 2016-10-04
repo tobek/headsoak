@@ -143,6 +143,11 @@ export class Tag {
     this.updated();
   }
 
+  updateProgFuncString(newFuncString: string): void {
+    delete this.classifier; // will be regenerated next time we need it
+    this.progFuncString = newFuncString;
+  }
+
   /** See if given note should be tagged by this programmatic tag. */
   runProgOnNote(note: Note): void {
     if (! this.prog || ! this.progFuncString) {
