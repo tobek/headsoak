@@ -7,7 +7,7 @@
   (blur)="renameCancel()"
 >{{ tag.name }}</span
 
-><span *ngIf="ofNoteId && tag.noteData[ofNoteId]"
+><span *ngIf="ofNoteId && tag.noteData && tag.noteData[ofNoteId]"
   ><span *ngIf="tag.noteData[ofNoteId].subTag">: {{ tag.noteData[ofNoteId].subTag }}</span>
   <span class="tag-value-hover" *ngIf="tag.noteData[ofNoteId].score">({{ tag.noteData[ofNoteId].score}})</span>
 </span>
