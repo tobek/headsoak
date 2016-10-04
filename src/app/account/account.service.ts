@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, ChangeDetectorRef} from '@angular/core';
 import {DomSanitizationService} from '@angular/platform-browser'; // @TODO In latest version of Angular this is called DomSanitizer
 import {ReplaySubject} from 'rxjs/ReplaySubject';
 
@@ -21,6 +21,8 @@ export class AccountService {
   /** By default we show sign up screen on first visit. If they're logged in and then they sign out, we should show the login view instead - this is how we keep track. */
   wasLoggedIn = false;
 
+  rootChangeDetector: ChangeDetectorRef;
+
   private _logger: Logger = new Logger(this.constructor.name);
   private ref: Firebase;
 
@@ -35,7 +37,9 @@ export class AccountService {
     this.ref = new Firebase('https://nutmeg.firebaseio.com/');
   }
 
-  init() {
+  init(rootChangeDetector: ChangeDetectorRef) {
+    this.rootChangeDetector = rootChangeDetector;
+
     // onAuth immediately fires with current auth state, so let's capture that specifically
     var isInitialAuthState = true;
 

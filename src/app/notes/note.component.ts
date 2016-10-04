@@ -1,4 +1,4 @@
-import {Component, EventEmitter, ElementRef, Input, Output, ViewChild, ChangeDetectorRef} from '@angular/core';
+import {Component, EventEmitter, ElementRef, Input, Output, ViewChild/*, ChangeDetectorRef*/} from '@angular/core';
 
 import {ActiveUIsService} from '../active-uis.service';
 import {AnalyticsService} from '../analytics.service';
@@ -35,7 +35,7 @@ export class NoteComponent {
   private _logger = new Logger(this.constructor.name);
 
   constructor(
-    public cdrRef: ChangeDetectorRef,
+    // public cdrRef: ChangeDetectorRef,
     private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
     private autocompleteService: AutocompleteService,

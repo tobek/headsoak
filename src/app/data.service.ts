@@ -1,4 +1,4 @@
-import {Injectable, EventEmitter, NgZone} from '@angular/core';
+import {Injectable, EventEmitter, NgZone, ChangeDetectorRef} from '@angular/core';
 import {Router} from '@angular/router';
 import {ReplaySubject, Subscription} from 'rxjs';
 
@@ -93,6 +93,10 @@ export class DataService {
     this.digest[this.getDataStoreName(update)][update.id] = update;
 
     this.status = 'unsynced';
+
+    // This function can get called inside change detection loop, and changing this.status is another change which will trigger another round of detection. This blows up in dev mode, so tell Angular/Zone that we need to check for changes now:
+    this.accountService.rootChangeDetector.markForCheck();
+    // @TODO There is probably something better to do here. A way to trigger this error if necessary is to update a smart tag library tag to set a different value on noteData for already-tagged notes. Then, re-loading page and having it re-run on app load was causing this problem.
   }
 
   removeData(dataType: string, id: string) {

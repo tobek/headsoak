@@ -1,4 +1,4 @@
-import {Component, ViewChild, ViewEncapsulation, HostBinding} from '@angular/core';
+import {Component, ViewChild, ViewEncapsulation, HostBinding, ChangeDetectorRef} from '@angular/core';
 import {Route, Router, NavigationEnd} from '@angular/router';
 import {Subscription} from 'rxjs';
 
@@ -54,6 +54,7 @@ export class App {
     private activeUIs: ActiveUIsService,
     private modalService: ModalService,
     private router: Router,
+    public changeDetector: ChangeDetectorRef,
     public accountService: AccountService,
     public analyticsService: AnalyticsService,
     public settings: SettingsService,
@@ -81,7 +82,8 @@ export class App {
   ngOnInit() {
     this._logger.log('App component initializing');
 
-    this.accountService.init();
+    // @HACK Passing change detector through the app is annoying but it can't be added to a Service and DataService needs to call it, so...
+    this.accountService.init(this.changeDetector);
   }
   ngOnDestroy() {
     this.initializiationSub.unsubscribe();
