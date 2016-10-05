@@ -17,7 +17,7 @@ export class ProgTagLibraryService {
       name: 'sentiment',
       description: 'Tag notes that show a markedly positive or negative sentiment. Hover over the tag on a note to see the calculated strength of that note\'s sentiment.',
       prog: true,
-      progFuncString: '// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm\'s `sentiment` module) have been bundled with the app.\nvar sentiment = api.lib.sentiment;\n\nvar score = sentiment(note.body);\nif (score && score.comparative) {\n  score = Math.round(score.comparative * 10000) / 10000;\n}\nelse {\n  score = 0;\n}\n\nvar value;\nif (score >= 0.1) {\n  value = \'positive\';\n}\nelse if (score <= -0.1) {\n  value = \'negative\';\n}\nelse {\n  return false;\n}\n\nreturn {\n  subTag: value,\n  score: score,\n};',
+      progFuncString: '// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm\'s `sentiment` module) have been bundled with the app.\nvar sentiment = api.lib.sentiment;\n\nvar score = sentiment(note.body);\nif (score && score.comparative) {\n  score = Math.round(score.comparative * 1000) / 1000;\n}\nelse {\n  score = 0;\n}\n\nvar value;\nif (score >= 0.1) {\n  value = \'positive\';\n}\nelse if (score <= -0.1) {\n  value = \'negative\';\n}\nelse {\n  return false;\n}\n\nreturn {\n  subTag: value,\n  score: score,\n};',
     },
     {
       id: 'lib--untagged',
