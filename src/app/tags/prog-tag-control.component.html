@@ -41,41 +41,6 @@
   <p>If your function returns true for a note, that note is tagged with this tag - otherwise it's not tagged, and is untagged if it previously was tagged.</p>
   <p>This function is run on every note when the tag is updated, and whenever a note is modified  in the future it is retested against all smart tags.</p>
 
-  <h2>Note-specific data: sub-tags and scores</h2>
-
-  <p>A tag such as <code>nsfw</code> doesn't have any special data associate with it: a note either has it or doesn't. Some smart tags, however, may want to attach specific data to a note. For example, a language detection algorithm may mark a note as <code>language: english</code> or <code>language: italian</code>. Instead of returning <code>true</code>, your function may return the following object:</p>
-
-  <pre>{
-    subTag: 'italian'
-}</pre>
-
-  <p>This value would be shown as part of the tag when it's displayed on the note, e.g. <code>language: italian</code>.</p>
-
-  <p>Some smart tags may not have discrete sub-tags but may have a score, which could be any number. For example you might have a <code>word count</code> tag that calculates word counts. For this you can return something like the following:</p>
-
-  <pre>{
-    score: 842
-}</pre>
-
-  <p>The above value would be displayed on the tag as well, e.g. <code>word count: 842</code>.</p>
-
-  <p><code>subTag</code> and <score> can be combined, for instance a sentiment analysis tag might return the strength of the associated sentiment:</score>
-
-  <pre>{
-    subTag: 'joy',
-    score: 0.82
-}</pre>
-
-  <p>The above would be displayed as <code>sentiment: joy</code>, and on hover would show <code>sentiment: joy (0.82)</code>.
-
-  <!-- @TODO/prog Also store "more" or "description" and also multiple subTags -->
-
-  <h2>Sorting and searching within a single smart tag</h2>
-
-  <p><i>(under development)</i></p>
-
-  <p>Searching for a specific <code>subTag</code> (e.g. <code>sentiment: joy</code>) and sorting by <code>score</code>s will be possible.</p>
-
   <h2>Properties in scope</h2>
 
   <h3><code>this</code></h3>
@@ -111,7 +76,48 @@ private: boolean; // whether this note is a private note</pre>
   <h3><code>_</code></h3>
   <p>Lodash is in scope for you convenience. <a href="https://lodash.com/docs/4.16.2" target="_blank">See their docs.</a>
 
+  <h2>Note-specific data: sub-tags and scores</h2>
+
+  <p>A tag such as <code>nsfw</code> doesn't have any special data associated with it: a note either has it or doesn't. Some smart tags, however, may want to attach specific data to a note. For example, a language detection algorithm may mark a note as <code>language: english</code> or <code>language: italian</code>. Instead of returning <code>true</code>, your function may return the following object:</p>
+
+  <pre>{
+    subTag: 'italian'
+}</pre>
+
+  <p>This value would be shown as part of the tag when it's displayed on the note, and users will be able to filter their notes by sub-tags.</p>
+
+  <p>Some smart tags may not have discrete sub-tags but may have a score, which could be any number. For example you might have a <code>word count</code> tag that calculates word counts. For this you can return something like the following:</p>
+
+  <pre>{
+    score: 842
+}</pre>
+
+  <p>The above value would be displayed on the tag as well, e.g. <code>word count: 842</code>.</p>
+
+  <p><code>subTag</code> and <code>score</code> can be combined, for instance a sentiment analysis tag might return the strength of the associated sentiment:</p>
+
+  <pre>{
+    subTag: 'joy',
+    score: 0.82
+}</pre>
+
+  <p>The above would be displayed as <code>sentiment: joy</code>, and on hover would show <code>sentiment: joy (0.82)</code>.
+
+  <!-- @TODO/prog Also store "more" or "description" and also multiple subTags -->
+
+  <h2>Sorting and searching within a single smart tag</h2>
+
+  <p><i>(under development)</i></p>
+
+  <p>Searching for a specific <code>subTag</code> (e.g. <code>sentiment: joy</code>) and sorting by <code>score</code>s will be possible.</p>
+
+  <h2>Using external resources</h2>
+
+  <p><i>(under development)</i></p>
+
+  <p>Smart tags may import external JavaScript libraries and may make JSON API requests.
 
   <h2>Testing, debugging, and error-handling</h2>
+
   <p><i>(under development)</i></p>
 </div>
