@@ -49,7 +49,10 @@ export class NotesService {
     }
 
     this._logger.time('Initializing notes and index');
-    _.each(notesData, _.partialRight(this.createNote, true).bind(this));
+    _.each(
+      _.filter(notesData, note => !! note),
+      _.partialRight(this.createNote, true).bind(this)
+    );
     this._logger.timeEnd('Initializing notes and index');
 
     this.initialized$.next(null);
