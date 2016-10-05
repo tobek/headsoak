@@ -30,7 +30,7 @@
   <textarea class="body-input" tabindex=2
     ref-bodyInput
     *ngIf="! note.sharedBody"
-    placeholder="{{ note.new ? 'Enter a new note' : 'What are you trying to say?' }}"
+    placeholder="{{ note.new ? 'Enter a new note' : 'This note has no text' }}"
     [ngModel]="note.body"
     (ngModelChange)="note.body = $event; note.changed()"
     (focus)="bodyFocused()"
