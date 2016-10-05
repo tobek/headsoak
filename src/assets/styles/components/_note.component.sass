@@ -98,7 +98,7 @@ note
       height: 25px
       left: 0
       top: -20px
-      background-image: linear-gradient(transparent, $primary-color-contrast)
+      background-image: linear-gradient(rgba(255, 255, 255, 0), $primary-color-contrast) // transparent white right than `transparent` keyword cause safari treats `transparent` as transparent black so gradient is ugly
 
   .note-action
     +icon-button
