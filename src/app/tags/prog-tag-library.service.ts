@@ -8,6 +8,8 @@ import {Logger} from '../utils/logger';
 
 @Injectable()
 export class ProgTagLibraryService {
+  private tagsService: TagsService;
+
   /** @NOTE Changing IDs in source code here could really mess things up for users who are using them. */
   librarySourceData = [
     {
@@ -60,9 +62,12 @@ export class ProgTagLibraryService {
 
   private _logger: Logger = new Logger(this.constructor.name);
 
-  constructor(
-    private tagsService: TagsService
-  ) {
+
+  constructor() {}
+
+  init(tagsService: TagsService) {
+    this.tagsService = tagsService;
+
     this.library = _.map(this.librarySourceData, (tagData) => {
       const existingTag = this.tagsService.tags[tagData.id];
 
@@ -89,5 +94,26 @@ export class ProgTagLibraryService {
         return new Tag(tagData, this.tagsService.dataService);
       }
     });
+  }
+
+  toggleTagById(tagId: string) {
+    const tag = _.find(this.library, { id: tagId });
+
+    if (! tag) {
+      throw Error('Smart tag' + tagId + 'not found in the library');
+    }
+
+    this.toggleTag(tag);
+  }
+
+  /** Enables/disables a tag for this user. */
+  toggleTag(tag: Tag) {
+    if (! this.tagsService.tags[tag.id]) {
+      this.tagsService.addTag(tag);
+    }
+    else {
+      // Doesn't actually destroy instance, but it removes from all notes, from tag list, and from user data store:
+      tag.delete(true);
+    }
   }
 }

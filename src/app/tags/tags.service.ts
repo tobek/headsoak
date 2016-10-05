@@ -6,6 +6,7 @@ import {DataService} from '../';
 
 import {Tag} from './tag.model'; // For some reason this breaks with `TypeError: Cannot read property 'getOptional' of undefined` if I do `from './'`, which I think should work
 import {ProgTagApiService} from './prog-tag-api.service';
+import {ProgTagLibraryService} from './prog-tag-library.service';
 
 @Injectable()
 export class TagsService {
@@ -36,6 +37,7 @@ export class TagsService {
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
+    public progTagLibraryService: ProgTagLibraryService,
     public progTagApi: ProgTagApiService
   ) {}
 
@@ -46,9 +48,13 @@ export class TagsService {
       tagsData = {};
     }
 
-    _.each(tagsData, _.partialRight(this.createTag, true).bind(this));
+    _.each(
+      _.filter(tagsData, tag => !! tag),
+      _.partial(this.createTag.bind(this), _, true)
+    );
 
     this.progTagApi.init(this.dataService);
+    this.progTagLibraryService.init(this);
 
     this.initialized$.next(null);
 

@@ -1,7 +1,7 @@
 <p>
   This tag is <b>{{ tag.prog ? '' : 'not' }} smart</b>.
 
-  <span *ngIf="tag.isLibraryTag">It comes from the <a [routerLink]="['/tags/smart-tags/library']">smart tag library</a>, so it can't be modified.</span>
+  <span *ngIf="tag.isLibraryTag">It comes from the <a [routerLink]="['/tags/smart-tags/library']">smart tag library</a>, so it can't be modified. You can <a [routerLink]="['/tags/tag', tag.id, tag.name, 'delete']">delete</a> it though.</span>
 </p>
 
 <button class="btn btn-secondary"

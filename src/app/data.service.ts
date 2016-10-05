@@ -249,14 +249,7 @@ export class DataService {
     this.ref.child('featuresSeen').set(this.NEW_FEATURE_COUNT);
 
 
-    this.initialized$.filter(val => !! val).first().subscribe(() => {
-      _.each(
-        _.filter(this.notes.notes, note => ! note.new),
-        note => note.updated(false, false)
-      );
-
-      _.each(this.tags.tags, tag => tag.updated(false));
-    });
+    this.initialized$.filter(val => !! val).first().subscribe(this.newUserPostInit.bind(this));
 
     this.initFromData({
       nuts: {
@@ -294,6 +287,19 @@ export class DataService {
       },
       settings: {},
     });
+  }
+
+  newUserPostInit() {
+    _.each(
+      _.filter(this.notes.notes, note => ! note.new),
+      note => note.updated(false, false)
+    );
+
+    _.each(this.tags.tags, tag => tag.updated(false));
+
+    // Smart tags that are enabled by default for new users:
+    this.tags.progTagLibraryService.toggleTagById('lib--sentiment');
+    this.tags.progTagLibraryService.toggleTagById('lib--untagged');
   }
 
   initFromData(data) {

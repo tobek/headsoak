@@ -39,12 +39,6 @@ export class ProgTagLibraryComponent {
   toggleTag(tag: Tag, event) {
     event.preventDefault();
 
-    if (! this.tagsService.tags[tag.id]) {
-      this.tagsService.addTag(tag);
-    }
-    else {
-      // Doesn't actually destroy instance, but it removes from all notes, from tag list, and from user data store:
-      tag.delete(true);
-    }
+    this.progTagLibraryService.toggleTag(tag);
   }
 }
