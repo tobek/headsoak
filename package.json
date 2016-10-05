@@ -82,7 +82,7 @@
     "ie-shim": "^0.1.0",
     "intl": "^1.2.4",
     "core-js": "^2.4.0",
-    "firebase": "~2.4.2",
+    "firebase": "^3.4.1",
     "jquery": "^3.1.0",
     "lodash": "~4.9.0",
     "lunr": "^0.7.1",
@@ -97,7 +97,6 @@
   },
   "devDependencies": {
     "@types/core-js": "^0.9.28",
-    "@types/firebase": "^2.4.29",
     "@types/hammerjs": "^2.0.28",
     "@types/jasmine": "^2.2.29",
     "@types/jquery": "^1.10.27",

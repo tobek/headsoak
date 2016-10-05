@@ -17,7 +17,7 @@ import {Setting} from './settings/setting.model';
 import {Shortcut} from './settings/shortcut.model';
 
 // @TODO/rewrite only do in dev mode
-import {FirebaseMock} from './mocks/';
+// import {FirebaseMock} from './mocks/';
 
 declare type DataItem = Note | Tag | Setting | Shortcut;
 
@@ -34,7 +34,8 @@ export class DataService {
 
   status: string; // 'synced' | 'syncing' | 'unsynced' | 'disconnected'
 
-  ref: Firebase | FirebaseMock;
+  // ref: Firebase | FirebaseMock;
+  ref: firebase.database.Reference
 
   accountService: AccountService;
 
@@ -52,7 +53,8 @@ export class DataService {
   private syncInterval;
 
   private _logger = new Logger(this.constructor.name);
-  private onlineStateRef: Firebase | FirebaseMock;
+  // private onlineStateRef: Firebase | FirebaseMock;
+  private onlineStateRef: firebase.database.Reference;
 
   constructor(
     public ngZone: NgZone,
@@ -64,8 +66,6 @@ export class DataService {
     public tags: TagsService,
     public settings: SettingsService
   ) {
-    this.ref = new Firebase('https://nutmeg.firebaseio.com/');
-
     this.digestReset();
     this.digestSub = this.digest$.subscribe(this.dataUpdated.bind(this));
 
@@ -173,6 +173,8 @@ export class DataService {
 
   init(uid: string, accountService: AccountService) {
     this.accountService = accountService;
+
+    this.ref = accountService.ref;
     
     // Sync to server (if there are any changes) every 5s
     this.syncInterval = window.setInterval(this.sync.bind(this), 5000);
@@ -184,7 +186,7 @@ export class DataService {
       onlineStateTimeout = window.setTimeout(this.offlineHandler.bind(this), 5000);
     }
     
-    this.onlineStateRef = this.ref.root().child('.info/connected');
+    this.onlineStateRef = this.ref.root.child('.info/connected');
     this.onlineStateRef.on('value', (snap) => {
       this.online = snap.val();
       this._logger.log('Online:', this.online);
@@ -201,24 +203,26 @@ export class DataService {
   }
 
   offlineHandler() {
-    this._logger.log('Still offline after 5 seconds');
-    this.onlineStateRef.off();
+    alert('OFFLINE, AND OFFLINE MODE IS NOT WORKING');
+    // this._logger.log('Still offline after 5 seconds');
+    // this.onlineStateRef.off();
 
-    // @TODO/rewrite This should be dev only, otherwise should init from localStorage or something
-    // @TODO/rewrite When it's no longer dev only, this.status needs to indicate offline.
-    this._logger.log('OFFLINE, USING SAMPLE DATA:', sampleData);
-    this.initFromData(sampleData);
+    // // @TODO/rewrite This should be dev only, otherwise should init from localStorage or something
+    // // @TODO/rewrite When it's no longer dev only, this.status needs to indicate offline.
+    // this._logger.log('OFFLINE, USING SAMPLE DATA:', sampleData);
+    // this.initFromData(sampleData);
 
-    this.ref = new FirebaseMock;
+    // this.ref = new FirebaseMock;
   }
 
   fetchData(uid: string) {
-    this.ref = this.ref.root().child('users/' + uid);
+    this.ref = this.ref.root.child('users/' + uid);
 
     this.ref.once('value', (snapshot) => {
       var data = snapshot.val();
       this._logger.log('Got data:', data);
 
+      // if (! data.notes || data.notes.length <= 3) {
       if (! data.user || ! data.user.provider) {
         // Must be a new user - user object is set up with `provider` when new user is initialized
         this.initNewUser();
@@ -244,7 +248,7 @@ export class DataService {
       }
     });
 
-    this.ref.root().child('emailToId/' + utils.formatForFirebase(this.user.email)).set(this.user.uid);
+    this.ref.root.child('emailToId/' + utils.formatForFirebase(this.user.email)).set(this.user.uid);
 
     this.ref.child('featuresSeen').set(this.NEW_FEATURE_COUNT);
 
@@ -315,7 +319,7 @@ export class DataService {
     if (featuresSeen < this.NEW_FEATURE_COUNT) {
       this._logger.info('[latestFeatures] There are some new features user hasn\'t seen');
 
-      this.ref.root().child('newFeatures').once('value', (snapshot) => {
+      this.ref.root.child('newFeatures').once('value', (snapshot) => {
         this._logger.log('[latestFeatures] Fetched new feautures list');
 
         var feats = snapshot.val();
