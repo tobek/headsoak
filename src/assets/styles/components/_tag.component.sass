@@ -10,16 +10,23 @@ tag
   &:hover .tag-actions
     display: inline-block
 
+  // Tricky maneuver to make hovered tag when there's a dropdown have a bit that extends out to the right with a remove button
+  // &.dropdown-enabled .tag-actions
+  //   +menu-dropdown
+  //   display: inline-block
+  //   position: absolute
+  //   top: 5px
+  //   padding: 4px 7px 0 0 // Top padding is magic number to vertically align - couldn't get anything else to work easily here
+  //   width: 40px
+  //   height: calc(100% - 4px) // With box-sizing this shouldn't be necessary but seems like it is? Anyway this is visible on long tags where the tag is longer than the dropdown.
+  //   background-color: $tag-bg
+  //   text-align: right
+  // Hide, because any actions can be shown in the dropdown
   &.dropdown-enabled .tag-actions
+    display: none
+
+  &.dropdown-enabled.hovered
     +menu-dropdown
-    display: inline-block
-    position: absolute
-    top: 5px
-    padding: 4px 7px 0 0 // Top padding is magic number to vertically align - couldn't get anything else to work easily here
-    width: 40px
-    height: calc(100% - 4px) // With box-sizing this shouldn't be necessary but seems like it is? Anyway this is visible on long tags where the tag is longer than the dropdown.
-    background-color: $tag-bg
-    text-align: right
 
   .tag-action
     +icon-button

@@ -25,11 +25,17 @@ note
     padding: 0 10px
 
   .tags
-    // @TODO/ece How do we show all tags on a note?
-    +single-line-truncate
+    overflow: hidden
     width: 100%
+    max-height: 40px
+    padding-bottom: 0
+    background-color: white
+    border-bottom: 1px solid transparent
 
-  .new-tag
+    // @TODO/animation Animation looks weird cause either max-height has to be huge or be smaller but scrollable. If scrollable then scroll bar shows during animation. For now doing max-height none and no animatino
+    // transition: max-height $transition-fast, padding $transition-fast, border-color $transition-fast
+
+  .tag-like
     +tag-chiclet
     +tag-face
     cursor: pointer
@@ -55,7 +61,7 @@ note
 
     transition: width $transition-fast, padding $transition-fast
 
-  .new-tag.adding-tag .new-tag-input
+  .adding-tag .new-tag-input
     width: 100px
     padding: 0 2px
 
@@ -66,8 +72,45 @@ note
       font-size: 12px
 
   .note-id
-    +tag-face
-    +tag-chiclet
+    cursor: default
+
+  .expand-tags
+    +icon-button
+    display: none
+    position: absolute
+    top: 0
+    right: 0
+
+    .go-up,
+    .go-down
+      +fadeable
+      +faded-in
+
+    .go-up
+      +faded-out
+      position: absolute
+      top: 7px
+
+  &.has--tag-overflow
+    .tags
+      padding-right: 20px // to make room for .expand-tags
+    .expand-tags
+      display: inline-block
+
+  &.is--expanded
+    .expand-tags
+      .go-down
+        +faded-out
+      .go-up
+        +faded-in
+
+    .tags
+      // overflow-y: auto
+      // max-height: 200px // should be more than enough, and in case not, we can scroll
+      // @TODO/animation Just snapping to this for now, see note on .tags above
+      max-height: none
+      padding-bottom: 10px
+      border-color: $shadow-border
 
   .time
     display: none // @TODO/ece @TODO/rewrite/styles how will we show timestamps? (show with "explore" or info, tooltip, popup)

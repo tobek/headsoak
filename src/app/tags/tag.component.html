@@ -23,9 +23,8 @@
   </span>
 </span>
 
-<!-- In enableDropdown mode, only show when hovered, just like tag-actions-dropdown. (We use class toggled by JS in order to add delay and also want to use ngIf for tag-actions-dropdown cause it's a heavy component.) In other modes, we want to show these on regular CSS :hover. -->
-<span class="tag-actions" *ngIf="! enableDropdown || hovered" (click)="$event.stopPropagation()">
-  <a title="Remove" class="tag-action tag-action--remove" *ngIf="removable" (click)="remove()">
+<span class="tag-actions" (click)="$event.stopPropagation()">
+  <a title="Remove" class="tag-action tag-action--remove" *ngIf="inlineRemovable" (click)="remove()">
     <i class="fa fa-times"></i>
   </a>
 
@@ -33,7 +32,12 @@
   <a *ngIf="renamable && tag.isLibraryTag" title="This is a Smart Tag Library tag and so can't be renamed" class="tag-action tag-action--rename is--disabled"><i class="fa fa-pencil"></i></a>
 </span>
 
+<!-- We use `hovered` class toggled by JS in order to add delay and also want to use ngIf for tag-actions-dropdown cause it's a heavy component. -->
 <div class="tag-actions-dropdown" *ngIf="enableDropdown && hovered">
+  <a class="tag-action" (click)="remove()">
+    <i class="fa fa-fw fa-times"></i>
+    Remove
+  </a>
   <a class="tag-action">
     <i class="fa fa-fw fa-eye"></i>
     View {{ tag.docs.length }} note{{ tag.docs.length !== 1 ? 's' : '' }}

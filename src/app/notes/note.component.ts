@@ -1,4 +1,4 @@
-import {Component, EventEmitter, ElementRef, Input, Output, ViewChild/*, ChangeDetectorRef*/} from '@angular/core';
+import {Component, EventEmitter, ElementRef, Input, Output, ViewChild, HostBinding/*, ChangeDetectorRef*/} from '@angular/core';
 
 import {ActiveUIsService} from '../active-uis.service';
 import {AnalyticsService} from '../analytics.service';
@@ -30,12 +30,15 @@ export class NoteComponent {
   @ViewChild('bodyInput') bodyInputRef: ElementRef;
   @ViewChild('addTagInput') addTagInputRef: ElementRef;
 
+  @HostBinding('class.is--expanded') isExpanded = false;
+
   private boundCloseAddTagFieldHandler = this.closeAddTagFieldHandler.bind(this);
 
   private _logger = new Logger(this.constructor.name);
 
   constructor(
     // public cdrRef: ChangeDetectorRef,
+    private el: ElementRef,
     private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
     private autocompleteService: AutocompleteService,
@@ -44,6 +47,22 @@ export class NoteComponent {
   ) {}
 
   ngOnInit() {
+  }
+
+  ngAfterViewInit() {
+    if (! this.note) {
+      return;
+    }
+
+    const tagEls = this.el.nativeElement.querySelectorAll('tag');
+    if (tagEls.length > 1 && tagEls[0].offsetTop !== tagEls[tagEls.length - 1].offsetTop) {
+      // If the last tag has a different vertical position than the first tag, they must have broken onto separate lines
+      // Just using DOM function, seems overkill to trigger change detection up entire ancestor tree (if I understand correctly) very each of potentially hundreds of notes. Or maybe that's exactly the point of Angular?
+      this.el.nativeElement.classList.add('has--tag-overflow');
+    }
+    else {
+      this.el.nativeElement.classList.remove('has--tag-overflow');
+    }
   }
 
   ngOnDestroy() {
@@ -59,6 +78,8 @@ export class NoteComponent {
 
   /** Have had some issue with deleted or non-existent tag IDs showing up on notes, here we can debug it. */
   getTagById(tagId: string) {
+    // @TODO/optimization This seems to be getting called a BILLION times (more in dev mode but still in prod) though only seeing it when we hit that error of course. Seems to be cause of change detection starting from app component. Is that necessary?
+
     const tag = this.notesService.dataService.tags.tags[tagId];
 
     if (! tag) {

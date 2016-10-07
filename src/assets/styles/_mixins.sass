@@ -74,6 +74,14 @@
     &:hover
       color: $icon-color
 
+=fadeable
+  transition: opacity $transition-fast, visibility $transition-fast
+=faded-out
+  opacity: 0
+  visibility: hidden
+=faded-in
+  opacity: 1
+  visibility: visible
 
 =plain-list
   display: block

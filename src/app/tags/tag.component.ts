@@ -27,9 +27,11 @@ export class TagComponent {
   tagNameEl: HTMLInputElement; // Not actually, but contenteditable so it behaves as such
 
   @Input() renamable: boolean;
-  @Input() removable: boolean;
+  @Input() inlineRemovable: boolean;
   @Input() showCount: boolean;
   @HostBinding('class.dropdown-enabled') @Input() enableDropdown: boolean;
+
+  @HostBinding('class.hovered') hovered = false;
 
   @Output() removed = new EventEmitter<Tag>(); // removed from given context (e.g. note, search query)
   @Output() deleted = new EventEmitter<Tag>(); // deleted entirely
@@ -50,7 +52,6 @@ export class TagComponent {
     this.hovered = false;
   }
 
-  private hovered = false;
   private hoveredTimeout;
 
   private _logger = new Logger(this.constructor.name);

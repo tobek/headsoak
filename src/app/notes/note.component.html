@@ -1,7 +1,7 @@
 <div class="note-wrapper" *ngIf="note">
   <div class="header">
     <div class="tags"
-      ><span class="tag new-tag"
+      ><span class="tag-like"
         [class.adding-tag]="addingTag"
         (click)="newTagClick()"
         ><input type="text" placeholder="add tag" class="new-tag-input"
@@ -18,12 +18,14 @@
         [tag]="getTagById(tagId)"
         [ofNoteId]="note.id"
         (click)="toggleTag(tagId, $event)"
-        [removable]="true"
         [enableDropdown]="true"
         (removed)="note.removeTagId(tagId)"
       ></tag>
+      <!-- @TODO/ece Should make a call on if clicking on tag name should a) toggle in query, or b) go to tag details. Also, what should cursor be. -->
 
-      <span class="note-id" title="Note ID" *ngIf="settings.get('showNoteIds')">{{ note.id }}</span>
+      <span class="tag-like note-id" title="Note ID" *ngIf="settings.get('showNoteIds')">{{ note.id }}</span>
+
+      <span class="tag-like expand-tags" title="{{ isExpanded ? 'Collapse tags' : 'Show all tags' }} " (click)="isExpanded = ! isExpanded"><i class="fa fa-chevron-up go-up"></i><span class="go-down">&hellip;</span></span>
     </div>
   </div>
 
