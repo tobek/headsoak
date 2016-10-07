@@ -1,4 +1,4 @@
-import {Component, ViewChild, QueryList} from '@angular/core';
+import {Component, ViewChild/*, QueryList*/} from '@angular/core';
 import {Subscription} from 'rxjs';
 
 import {ActiveUIsService} from '../active-uis.service';
@@ -115,12 +115,16 @@ export class HomeComponent {
     if (thenFocus) {
       this.noteComponent.bodyFocus();
     }
+
+    setTimeout(this.noteComponent.checkTagOverflow.bind(this.noteComponent));
   }
 
   closeNote(thenFocus = true): void {
     this.openNote = null;
 
     this.setUpNewNote(thenFocus);
+
+    setTimeout(this.noteComponent.checkTagOverflow.bind(this.noteComponent));
   }
 
   noteUpdated(note: Note): void {

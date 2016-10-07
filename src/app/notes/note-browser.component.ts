@@ -1,4 +1,4 @@
-import {Component, Output, ElementRef, /*ViewChildren, QueryList,*/ EventEmitter} from '@angular/core';
+import {Component, Output, ElementRef, ViewChildren, QueryList, EventEmitter} from '@angular/core';
 import {Router, NavigationEnd} from '@angular/router';
 import {Subscription} from 'rxjs';
 
@@ -21,6 +21,9 @@ import {Logger, ScrollMonitorService} from '../utils/';
 export class NoteBrowserComponent {
   DEFAULT_NOTES_LIMIT: number = 20;
 
+  /** These are the routes on which the note browser is active.  */
+  NOTE_BROWSER_ROUTES = ['/', '/browse', '/scroll'];
+
   el: HTMLElement;
 
   /** The elements in this array reference Note objects from NotesService. @NOTE Since we feed this through the pure ArrayLimitPipe, the pipe won't re-evaluate if this array is mutated, only if this.notes is actually reassigned to a different array (unless we make it an unpure pipe, which is costly). */
@@ -32,9 +35,10 @@ export class NoteBrowserComponent {
   @Output() noteOpened = new EventEmitter<Note>();
   @Output() noteClosed = new EventEmitter<Note>();
 
-  // @ViewChildren(NoteComponent) noteComponents: QueryList<NoteComponent>;
+  @ViewChildren(NoteComponent) noteComponents: QueryList<NoteComponent>;
 
   private querySub: Subscription;
+  private routerSub: Subscription;
   private scrollSub: Subscription;
 
   private _logger: Logger = new Logger(this.constructor.name);
@@ -60,6 +64,7 @@ export class NoteBrowserComponent {
   ngOnDestroy() {
     this.querySub.unsubscribe();
     this.scrollSub.unsubscribe();
+    this.routerSub.unsubscribe();
 
     if (this.activeUIs.noteBrowser === this) {
       this.activeUIs.noteBrowser = null;
@@ -73,10 +78,25 @@ export class NoteBrowserComponent {
       setTimeout(this.infiniteScrollCheck.bind(this), 0);
     });
 
+    this.routerSub = this.router.events
+      .filter(event => event instanceof NavigationEnd)
+      .subscribe(this.routeUpdated.bind(this));
+
     // @TODO/rewrite
     // $timeout($s.n.autosizeAllNuts);
 
     this.activeUIs.noteBrowser = this;
+  }
+
+  routeUpdated(event: NavigationEnd) {
+    if (this.NOTE_BROWSER_ROUTES.indexOf(event.url) !== -1) {
+      // Wait a sec til new section's all sorted out
+      setTimeout(() => {
+        this.noteComponents.forEach((noteComponent) => {
+          noteComponent.checkTagOverflow();
+        });
+      });
+    }
   }
 
   _noteOpened(note: Note): void {
@@ -103,7 +123,7 @@ export class NoteBrowserComponent {
 
   // @TODO/testing infinite scroll e2e both directions
   infiniteScrollCheck(): void {
-    if (['/', '/browse', '/scroll'].indexOf(this.router.url) === -1) {
+    if (this.NOTE_BROWSER_ROUTES.indexOf(this.router.url) === -1) {
       return;
     }
 

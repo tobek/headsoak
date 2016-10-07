@@ -50,6 +50,13 @@ export class NoteComponent {
   }
 
   ngAfterViewInit() {
+    this.checkTagOverflow();
+  }
+
+  ngOnDestroy() {
+  }
+
+  checkTagOverflow(): void {
     if (! this.note) {
       return;
     }
@@ -62,10 +69,8 @@ export class NoteComponent {
     }
     else {
       this.el.nativeElement.classList.remove('has--tag-overflow');
+      this.isExpanded = false;
     }
-  }
-
-  ngOnDestroy() {
   }
 
   openNote() {
@@ -215,6 +220,8 @@ export class NoteComponent {
       this.addTagName = '';
 
       this.closeAddTagField(! addAnother);
+
+      this.checkTagOverflow();
     }
 
     if (addAnother) {
@@ -223,6 +230,12 @@ export class NoteComponent {
         this.initializeAddTag();
       }, 100);
     }
+  }
+
+  removeTag(tagId: string): void {
+    this.note.removeTagId(tagId);
+
+    setTimeout(this.checkTagOverflow.bind(this), 0);
   }
 
   delete(eventOrNoConfirm?: MouseEvent | boolean) {

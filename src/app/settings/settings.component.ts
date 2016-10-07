@@ -1,4 +1,4 @@
-import {Component, ViewChildren, QueryList, OnInit} from '@angular/core';
+import {Component, ViewChildren/*, QueryList*/, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
 
@@ -34,7 +34,7 @@ export class SettingsComponent implements OnInit {
 
   initialized = false;
 
-  @ViewChildren(SettingComponent) settingComponents: QueryList<SettingComponent>;
+  // @ViewChildren(SettingComponent) settingComponents: QueryList<SettingComponent>;
 
   private syncDebounced = _.debounce(this.dataService.sync.bind(this.dataService), 1000);
   private checkEmptyModKeyDebounced = _.debounce(this.checkEmptyModKey.bind(this), 1000);
