@@ -54,7 +54,6 @@ export class NoteBrowserComponent {
   ngOnInit() {
     this.activeUIs.noteQuery$.first().subscribe(this.init.bind(this));
 
-
     this.scrollSub = this.scrollMonitor.scroll$.subscribe(this.infiniteScrollCheck.bind(this));
   }
 
@@ -82,7 +81,7 @@ export class NoteBrowserComponent {
 
   _noteOpened(note: Note): void {
     // @TODO If we have to do this again (we do something very similar in Shortcut model) we should wrap a service around the Router and have a `routeThenDo` function.
-    if (this.router.url === '/browse') {
+    if (this.router.url !== '/') {
       this.router.events
         .filter(event => event instanceof NavigationEnd)
         .first().subscribe((event) => {
@@ -104,7 +103,7 @@ export class NoteBrowserComponent {
 
   // @TODO/testing infinite scroll e2e both directions
   infiniteScrollCheck(): void {
-    if (this.router.url !== '/' && this.router.url !== '/browse') {
+    if (['/', '/browse', '/scroll'].indexOf(this.router.url) === -1) {
       return;
     }
 

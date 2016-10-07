@@ -53,18 +53,19 @@ home
   .route--scroll &
     note-browser
       note
-        +span(12 last)
-        clear: both
+        width: span(12)
         margin-bottom: gutter() * 2
+        margin-left: auto
+        margin-right: auto
 
         +susy-breakpoint($tablet-small, $susy)
-          +span(10 last)
+          width: span(10)
 
         +susy-breakpoint($tablet-large, $susy)
-          +span(8 last)
+          width: span(8)
 
         +susy-breakpoint($screen-small, $susy)
-          +span(6 last)
+          width: span(7)
 
   .route--focus &
     // @TODO/rewrite @TODO/redesign This should be a modal
