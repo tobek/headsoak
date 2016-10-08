@@ -22,6 +22,7 @@ import 'brace/mode/javascript';
 // import 'brace/theme/monokai';
 
 // The rest
+import 'd3';
 import 'firebase';
 import 'intl';
 import 'intl/locale-data/jsonp/en';

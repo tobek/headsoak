@@ -33,7 +33,9 @@
 
   <div class="fixed-pane-wrapper">
     <div class="tag-pane fixed-pane-contents">
-      <a *ngIf="! showLibrary" [routerLink]="['/tags/smart-tags/library']">Smart tag library &raquo;</a>
+      <tag-visualization *ngIf="visualizationActive"></tag-visualization>
+
+      <h4><a *ngIf="! showLibrary" [routerLink]="['/tags/smart-tags/library']">Smart tag library &raquo;</a></h4>
 
       <prog-tag-library *ngIf="showLibrary"></prog-tag-library>
     </div>

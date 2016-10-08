@@ -8,7 +8,7 @@ import {SettingsService} from '../settings/settings.service';
 // import {Note} from '../notes/note.model';
 // import {NoteComponent} from '../notes/note.component';
 // import {NotesService} from '../notes/notes.service';
-import {Tag, TagComponent, TagDetailsComponent, TagsService, ProgTagLibraryComponent} from './';
+import {Tag, TagComponent, TagDetailsComponent, TagsService, TagVisualizationComponent, ProgTagLibraryComponent} from './';
 import {Logger/*, ScrollMonitorService, AutocompleteService*/} from '../utils/';
 
 @Component({
@@ -17,6 +17,7 @@ import {Logger/*, ScrollMonitorService, AutocompleteService*/} from '../utils/';
   directives: [
     TagComponent,
     TagDetailsComponent,
+    TagVisualizationComponent,
     ProgTagLibraryComponent,
   ],
   template: require('./tag-browser.component.html')
@@ -34,6 +35,8 @@ export class TagBrowserComponent {
 
   /** How tags in this list component are sorted on init. */
   sortOpt: Object = this.tagsService.sortOpts[0];
+
+  visualizationActive = false;
 
   @ViewChild('queryInput') queryInput: ElementRef;
   @ViewChildren(TagComponent) tagComponents: QueryList<TagComponent>;
@@ -113,8 +116,11 @@ export class TagBrowserComponent {
     if (pathParts[0] !== 'tags') {
       this.activeTag = null;
       this.showLibrary = false;
+      this.visualizationActive = false;
       return;
     }
+
+    this.visualizationActive = true;
     
     if (pathParts[1] === 'tag') {
       this.activeTag = this.tagsService.tags[pathParts[2]];
