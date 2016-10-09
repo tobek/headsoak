@@ -27,8 +27,8 @@ type TagLink = {
 export class TagVisualizationComponent {
   tagLinks: TagLink[];
 
-  /** Maps from tag ID to # of cooccurrences. @NOTE Currently only used if `this.isCrowded`. */
-  pairCount: { [key: string]: number } = {};
+  /** Maps from tag ID to # of cooccurrences. @NOTE Currently only used if `this.isCrowded`. @NOTE Now not used at all */
+  // pairCount: { [key: string]: number } = {};
 
   isCrowded = false;
 
@@ -55,6 +55,8 @@ export class TagVisualizationComponent {
   }
 
   computeLinks(): TagLink[] {
+    this._logger.time('Computed all tag links');
+
     this.isCrowded = _.size(this.tagsService.tags) > 100;
 
     const tagLinkIndex = {};
@@ -85,20 +87,21 @@ export class TagVisualizationComponent {
           }
 
           // Currently we only used this if crowded, so waste to compute otherwise
-          if (this.isCrowded) {
-            if (! this.pairCount[validTags[i]]) {
-              this.pairCount[validTags[i]] = 1;
-            }
-            else {
-              this.pairCount[validTags[i]]++;
-            }
-            if (! this.pairCount[validTags[j]]) {
-              this.pairCount[validTags[j]] = 1;
-            }
-            else {
-              this.pairCount[validTags[j]]++;
-            }
-          }
+          // now note used at all
+          // if (this.isCrowded) {
+          //   if (! this.pairCount[validTags[i].id]) {
+          //     this.pairCount[validTags[i].id] = 1;
+          //   }
+          //   else {
+          //     this.pairCount[validTags[i].id]++;
+          //   }
+          //   if (! this.pairCount[validTags[j].id]) {
+          //     this.pairCount[validTags[j].id] = 1;
+          //   }
+          //   else {
+          //     this.pairCount[validTags[j].id]++;
+          //   }
+          // }
         }
       }
     });
@@ -112,10 +115,13 @@ export class TagVisualizationComponent {
       };
     });
 
+    this._logger.timeEnd('Computed all tag links');
     return this.tagLinks;
   }
 
   initGraph(graph) {
+    this._logger.time('Initialized D3 graph');
+
     const svgEl = document.querySelector('#tag-graph');
     const svg = d3.select(svgEl),
         width = +getComputedStyle(svgEl).width.replace('px', ''),
@@ -200,9 +206,11 @@ export class TagVisualizationComponent {
     simulation.on('tick', ticked);
 
     if (this.isCrowded) {
-      // Fade (until hover) tags which are only used once - unless it has no connections (cause those float to the outside so plenty of room for text)
+      // Fade (until hover) certain tags to make it less crowded
+      // (Used to not fade ones with no pairs, cause those float to the outside so plenty of room for text. But that's a bit confusing looking.)
       text.attr('class', (d) => {
-        if (d.docs.length <= 1 && this.pairCount[d.id]) {
+        // if (d.docs.length <= 1 && this.pairCount[d.id]) {
+        if (d.docs.length <= 1) {
           return 'is--faded';
         }
         else {
@@ -257,5 +265,7 @@ export class TagVisualizationComponent {
     function calcRadius(d) {
       return Math.sqrt(d.docs.length) * 3 || 3;
     }
+
+    this._logger.timeEnd('Initialized D3 graph');
   }
 }
