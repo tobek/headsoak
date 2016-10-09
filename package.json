@@ -98,6 +98,8 @@
   },
   "devDependencies": {
     "@types/core-js": "^0.9.28",
+    "@types/d3-force": "^1.0.5",
+    "@types/d3-selection": "^1.0.5",
     "@types/firebase": "^2.4.29",
     "@types/hammerjs": "^2.0.28",
     "@types/jasmine": "^2.2.29",

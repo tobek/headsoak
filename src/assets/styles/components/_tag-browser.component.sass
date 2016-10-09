@@ -47,17 +47,36 @@ tag-browser
 
   #tag-graph
     width: 100%
-    height: 500px
+    height: 550px
 
     .link
       stroke: #999
-      stroke-opacity: 0.6
+      stroke-opacity: 0.5
 
     .node
       circle
-        stroke: #fff
-        stroke-width: 1.5px
+        // stroke: #fff
+        // stroke-width: 1.5px
+        fill: $secondary-color
+        &.is--prog
+          fill: $primary-color-light
+          stroke: $secondary-color
+          stroke-width: 1px
+
+      &:hover circle
+        fill: $highlight-color
+
       text
         +small
         cursor: default
         user-select: none
+
+        &.is--faded
+          transition: opacity $transition-fast
+          opacity: 0.1
+
+      &:hover text
+        font-weight: bold
+        
+        &.is--faded
+          opacity: 1
