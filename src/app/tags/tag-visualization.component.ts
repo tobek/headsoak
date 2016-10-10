@@ -33,6 +33,11 @@ type TagNode = {
 export class TagVisualizationComponent {
   tagLinks: TagLink[];
 
+  /** D3 selection of svg element we use for visualization. */
+  svg;
+  /** D3 force simulation. */
+  simulation;
+
   /** Maps from tag ID to # of cooccurrences. @NOTE Currently only used if `this.isCrowded`. @NOTE Now not used at all */
   // pairCount: { [key: string]: number } = {};
 
@@ -50,15 +55,21 @@ export class TagVisualizationComponent {
   }
 
   ngOnDestroy() {
+    this.svg.selectAll('*').remove();
+    this.simulation.stop();
+    delete this.svg;
+    delete this.simulation;
   }
 
   ngAfterViewInit() {
-    this.initGraph({
-      // nodes: _.values(this.tagsService.tags),
-      nodes: this.computeNodes(),
-      links: this.computeLinks(),
-    });
-    // this.initGraph(graph3);
+    setTimeout(() => {
+      this.initGraph({
+        // nodes: _.values(this.tagsService.tags),
+        nodes: this.computeNodes(),
+        links: this.computeLinks(),
+      });
+      // this.initGraph(graph3);
+    }, 0);
   }
 
   computeNodes(): TagNode[] {
@@ -176,13 +187,14 @@ export class TagVisualizationComponent {
     this._logger.time('Initialized D3 graph');
 
     const svgEl = document.querySelector('#tag-graph');
-    const svg = d3.select(svgEl),
-        width = +getComputedStyle(svgEl).width.replace('px', ''),
-        height = +getComputedStyle(svgEl).height.replace('px', '');
+    this.svg = d3.select(svgEl);
+
+    const width = +getComputedStyle(svgEl).width.replace('px', '');
+    const height = +getComputedStyle(svgEl).height.replace('px', '');
 
     // var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-    var simulation = d3.forceSimulation()
+    this.simulation = d3.forceSimulation()
       .force('center', d3.forceCenter(width / 2, height / 2))
       .force('charge', d3.forceManyBody()
         .strength(function(d) {
@@ -202,15 +214,15 @@ export class TagVisualizationComponent {
         })
       );
 
-    simulation
+    this.simulation
       .nodes(graph.nodes);
     
-    simulation
+    this.simulation
       .force('link')
       .links(graph.links);
 
 
-    var link = svg.selectAll('.link')
+    var link = this.svg.selectAll('.link')
         .data(graph.links)
       .enter().append('line')
         .attr('class', 'link')
@@ -220,14 +232,14 @@ export class TagVisualizationComponent {
           return d.weight;
         });
 
-    var node = svg.selectAll('.node')
+    var node = this.svg.selectAll('.node')
         .data(graph.nodes)
       .enter().append('g')
         .attr('class', 'node')
         .call(d3.drag()
-          .on('start', dragstarted)
-          .on('drag', dragged)
-          .on('end', dragended));
+          .on('start', dragstarted.bind(this))
+          .on('drag', dragged.bind(this))
+          .on('end', dragended.bind(this)));
 
     node.append('circle')
       .attr('r', function(d) {
@@ -256,7 +268,7 @@ export class TagVisualizationComponent {
       .attr('dy', '.35em')
       .text(function(d) { return d.name });
 
-    simulation.on('tick', ticked);
+    this.simulation.on('tick', ticked);
 
     if (this.isCrowded) {
       // Fade (until hover) certain tags to make it less crowded
@@ -292,19 +304,19 @@ export class TagVisualizationComponent {
       //   .attr('cy', function(d) { return d.y; });
     }
 
-    function dragstarted(d) {
-      if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+    function dragstarted (d) {
+      if (!d3.event.active) this.simulation.alphaTarget(0.3).restart();
       d.fx = d.x;
       d.fy = d.y;
     }
 
-    function dragged(d) {
+    function dragged (d) {
       d.fx = d3.event.x;
       d.fy = d3.event.y;
     }
 
-    function dragended(d) {
-      if (!d3.event.active) simulation.alphaTarget(0);
+    function dragended (d) {
+      if (!d3.event.active) this.simulation.alphaTarget(0);
       d.fx = null;
       d.fy = null;
     }
