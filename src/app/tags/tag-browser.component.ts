@@ -36,12 +36,10 @@ export class TagBrowserComponent {
   /** How tags in this list component are sorted on init. */
   sortOpt: Object = this.tagsService.sortOpts[0];
 
-  visualizationActive = false;
+  activePane: 'viz' | 'library';
 
   @ViewChild('queryInput') queryInput: ElementRef;
   @ViewChildren(TagComponent) tagComponents: QueryList<TagComponent>;
-
-  showLibrary = false;
 
   query = '';
   private queryUpdated$: Subject<void> = new Subject<void>();
@@ -115,8 +113,7 @@ export class TagBrowserComponent {
 
     if (pathParts[0] !== 'tags') {
       this.activeTag = null;
-      this.showLibrary = false;
-      this.visualizationActive = false;
+      this.activePane = null;
       return;
     }
 
@@ -124,15 +121,16 @@ export class TagBrowserComponent {
     
     if (pathParts[1] === 'tag') {
       this.activeTag = this.tagsService.tags[pathParts[2]];
+      this.activePane = null;
     }
     else {
       this.activeTag = null;
 
       if (event.url.indexOf('smart-tags/library') !== -1) {
-        this.showLibrary = true;
+        this.activePane = 'library';
       }
       else {
-        this.showLibrary = false;
+        this.activePane = 'viz';
       }
     }
   }

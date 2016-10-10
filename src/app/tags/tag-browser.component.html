@@ -1,9 +1,21 @@
 <!-- `[hidden]` not `*ngIf` because it's wasteful/slow to re-initialize the tag browser view every time you go out of details. -->
 <div [hidden]="activeTag">
-  <div class="tag-list">
+  <div class="overview tag-list">
+    <ul class="menu menu--tag-home">
+      <li class="item" [routerLink]="['/tags']" [class.is--active]="activePane === 'viz'">
+        <i class="fa fa-fw fa-lg fa-connectdevelop"></i>
+        Explore your tags
+        <!-- @TODO/ece Capitalzation of side menu. We have "Private Mode" in settings, but "Smart tag" in tag details. -->
+      </li>
+      <li class="item" [routerLink]="['/tags/smart-tags/library']" [class.is--active]="activePane === 'library'">
+        <i class="fa fa-fw fa-lg fa-book"></i>
+        Smart Tag Library
+      </li>
+    </ul>
+
     <div class="tag-query">
       <div class="search-bar">
-        <input class="text-input" tabindex=1 type="text" placeholder="Search tags"
+        <input class="text-input" tabindex=1 type="text" placeholder="Search your tags"
           ref-queryInput [(ngModel)]="query"
           (ngModelChange)="queryUpdated()"
         >
@@ -33,11 +45,9 @@
 
   <div class="fixed-pane-wrapper">
     <div class="tag-pane fixed-pane-contents">
-      <tag-visualization *ngIf="visualizationActive"></tag-visualization>
+      <tag-visualization *ngIf="activePane === 'viz'"></tag-visualization>
 
-      <h4><a *ngIf="! showLibrary" [routerLink]="['/tags/smart-tags/library']">Smart tag library &raquo;</a></h4>
-
-      <prog-tag-library *ngIf="showLibrary"></prog-tag-library>
+      <prog-tag-library *ngIf="activePane === 'library'"></prog-tag-library>
     </div>
   </div>
 </div>

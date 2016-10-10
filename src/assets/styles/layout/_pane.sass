@@ -1,5 +1,7 @@
 // Used for split pane layout with overview/menu on left, and selected pane on right - e.g. used for tag browser/details and for settings
 
+$pane-overview-padding: 20px
+
 .pane-layout
   .overview,
   .pane
@@ -9,7 +11,7 @@
   .overview
     +span(4)
     position: relative
-    padding: 20px
+    padding: $pane-overview-padding
 
   .pane
     +span(8 last)
@@ -34,9 +36,8 @@
 
   .menu
     +plain-list
-    position: absolute
-    left: 0
-    width: 100%
+    width: calc(100% + #{$pane-overview-padding * 2})
+    margin-left: -1 * $pane-overview-padding
 
     .item
       +control-heading
