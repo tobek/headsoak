@@ -195,7 +195,7 @@ export class TagVisualizationComponent {
     // var color = d3.scaleOrdinal(d3.schemeCategory20);
 
     this.simulation = d3.forceSimulation()
-      .force('center', d3.forceCenter(width / 2, height / 2))
+      .force('center', d3.forceCenter(width * 0.5, height * 0.4)) // 0.4 * height to shift center up a little bit to make room for description at bottom
       .force('charge', d3.forceManyBody()
         .strength(function(d) {
           // default is -30
@@ -204,7 +204,6 @@ export class TagVisualizationComponent {
         })
         .distanceMax(100)
       )
-      // .force('link', d3.forceLink());
       .force('link', d3.forceLink()
         .id(function(d) { return d.id; })
         .strength(0.5)
@@ -227,9 +226,8 @@ export class TagVisualizationComponent {
       .enter().append('line')
         .attr('class', 'link')
         .attr('stroke-width', function(d) {
-          // return Math.sqrt(d.weight);
-          // # co-occurrences isn't that crazy so don't need to sqrt it
-          return d.weight;
+          // We do want to slow down massive increases using sqrt, but we also don't want 2 cooccurrences to be indistinguishable from 1, so double it. But we want to start at 1px, so subtract 1:
+          return Math.sqrt(d.weight) * 2 - 1;
         });
 
     var node = this.svg.selectAll('.node')
