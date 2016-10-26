@@ -273,6 +273,14 @@ export class AccountService {
     });
   }
 
+  changePassword(oldPassword: string, newPassword: string, cb: (error: any) => void): void {
+    this.ref.changePassword({
+      email: this.user.email,
+      oldPassword: oldPassword,
+      newPassword: newPassword,
+    }, cb);
+  }
+
   deleteAccount(email: string, password: string, cb: Function) {
     this.checkPassword(password, (err) => {
       if (err) {

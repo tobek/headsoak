@@ -154,15 +154,7 @@ function (
   });
 
   $s.digest = {
-    reset: function() {
-      // DONE
-    },
-    push: function() {
-      // DONE
-    },
-    pushCB: function(err) {
-      // DONE
-    }
+    // DONE
   };
 
   // user authentication
@@ -182,47 +174,7 @@ function (
     },
 
     changePassword: function() {
-      if (!$s.u.password) {
-        alert("You didn't enter your current password!");
-        return;
-      }
-      else if ($s.u.newPass1 !== $s.u.newPass2) {
-        alert("New passwords don't match!");
-        return;
-      }
-      else if (!$s.u.newPass1) {
-        alert("You didn't enter a new password!");
-        return;
-      }
-      else if ($s.u.newPass1 === $s.u.password) {
-        alert("New password is the same as your current password!");
-        return;
-      }
-
-      $s.m.working = true;
-
-      $s.u.auth.changePassword($s.u.user.email, $s.u.password, $s.u.newPass1, function(err) {
-        if (err) {
-          if (err.code == 'INVALID_PASSWORD') {
-            alert('Incorrect current password');
-            $s.u.password = '';
-          }
-          else {
-            alert('Failed to change password: ' + err.code);
-          }
-        }
-        else {
-          alert ('Password changed successfully!');
-          $s.u.password = $s.u.newPass1 = $s.u.newPass2 = '';
-
-          $s.u.pseudoLogin($s.u.user.email, password);
-        }
-
-        $s.m.working = false;
-        $s.$apply();
-      });
-
-      return false;
+      // DONE
     },
 
     /** UI function to change display name */

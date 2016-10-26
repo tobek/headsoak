@@ -5,6 +5,7 @@ import {Subscription} from 'rxjs';
 import {Logger} from '../utils/';
 
 import {DataService} from '../data.service';
+import {ModalService} from '../modals/modal.service';
 import {SettingsService} from './settings.service';
 import {Setting, Shortcut} from './';
 
@@ -36,6 +37,9 @@ export class SettingsComponent implements OnInit {
 
   // @ViewChildren(SettingComponent) settingComponents: QueryList<SettingComponent>;
 
+  private oldPass: string = '';
+  private newPass: string = '';
+
   private syncDebounced = _.debounce(this.dataService.sync.bind(this.dataService), 1000);
   private checkEmptyModKeyDebounced = _.debounce(this.checkEmptyModKey.bind(this), 1000);
 
@@ -49,6 +53,7 @@ export class SettingsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private modalService: ModalService,
     private settings: SettingsService,
     private dataService: DataService
   ) {
@@ -164,6 +169,35 @@ export class SettingsComponent implements OnInit {
     this.modKeyError = '';
 
     this.syncDebounced();
+  }
+
+  changePassword(): void {
+    if (! this.newPass.trim()) {
+      // @TODO/account Should have some password requirements? Like min length, and not "password" or "12345" or other number sequence or all spaces?
+      return;
+    }
+
+    // @TODO/now Loading indicator
+    this.dataService.accountService.changePassword(this.oldPass, this.newPass, (err) => {
+      if (err) {
+        this._logger.warn('Failed to change password:', err);
+
+        // @TODO/notifications @TODO/tooltips
+        if (err.code === 'INVALID_PASSWORD') {
+          this.modalService.alert('Failed to change password: the current password you entered is incorrect!');
+        }
+        else {
+          this.modalService.alert('Failed to change password, something went wrong, sorry! ' + (err.message || err.code || err));
+        }
+        return;
+      }
+
+      this.oldPass = '';
+      this.newPass = '';
+
+      // @TODO/notifications @TODO/tooltips
+      this.modalService.alert('Password successfully changed.')
+    });
   }
 
   deleteAccount(): void {

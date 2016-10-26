@@ -35,7 +35,15 @@ export class FirebaseMock {
     cb();
   }
   changePassword(accountInfo, cb) {
-    cb();
+    if (accountInfo.oldPassword === this.PASSWORD) {
+      cb();
+    }
+    else {
+      cb({
+        code: 'INVALID_PASSWORD',
+        message: 'Wrong credentials, but this is a mock Firebase instance - try password "abc".'
+      })
+    }
   }
 
   createUser(creationCreds, cb) {

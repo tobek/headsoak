@@ -34,15 +34,7 @@ block content
             input(type="submit", value="{{ u.displayNameSet ? 'change name' : 'set name' }}")
 
           h4 change password
-          form(ng-submit="u.changePassword()")
-            input(type="password", placeholder="current password", autocomplete="off", ng-model="u.password")
-            br
-            input(type="password", placeholder="new password", autocomplete="new-password", ng-model="u.newPass1")
-            br
-            input(type="password", placeholder="repeat new password", autocomplete="new-password", ng-model="u.newPass2")
-            br
-            input(type="submit", value="change password")
-            br
+            //- DONE
 
           h4 change email
           p To change the email address associated with your account, please email <a href="mailto:support@nutmeg.io">support@nutmeg.io</a> and we'll get you sorted.
