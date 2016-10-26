@@ -16,16 +16,13 @@ import {SettingsService} from './settings/settings.service';
 import {Setting} from './settings/setting.model';
 import {Shortcut} from './settings/shortcut.model';
 
-// @TODO/rewrite only do in dev mode
-import {FirebaseMock} from './mocks/';
-
 declare type DataItem = Note | Tag | Setting | Shortcut;
 
 @Injectable()
 export class DataService {
   NEW_FEATURE_COUNT = 12; // Hard-coded so that it only updates when user actually receives updated code with the features
 
-  online: boolean; // @TODO/rewrite connection widget should show if offline
+  // online: boolean; // @TODO/rewrite connection widget should show if offline
 
   /** Fired with initialization state when allll the data is initialized, or when everything is unloaded. */
   initialized$ = new ReplaySubject<boolean>(1);
@@ -34,7 +31,7 @@ export class DataService {
 
   status: string; // 'synced' | 'syncing' | 'unsynced' | 'disconnected'
 
-  ref: Firebase | FirebaseMock;
+  ref: Firebase;
 
   accountService: AccountService;
 
@@ -52,7 +49,6 @@ export class DataService {
   private syncInterval;
 
   private _logger = new Logger(this.constructor.name);
-  private onlineStateRef: Firebase | FirebaseMock;
 
   constructor(
     public ngZone: NgZone,
@@ -178,41 +174,16 @@ export class DataService {
     this.syncInterval = window.setInterval(this.sync.bind(this), 5000);
     // @TODO/rewrite also sync before unload
 
-    // @TODO in theory this is where, later, we can listen for connection state always and handle online/offline. For now we have an offline mode just when on local
-    let onlineStateTimeout;
-    if (document.location.href.indexOf('localhost') !== -1){
-      onlineStateTimeout = window.setTimeout(this.offlineHandler.bind(this), 5000);
-    }
-    
-    this.onlineStateRef = this.ref.root().child('.info/connected');
-    this.onlineStateRef.on('value', (snap) => {
-      this.online = snap.val();
-      this._logger.log('Online:', this.online);
-
-      if (this.online) {
-        if (onlineStateTimeout) {
-          window.clearTimeout(onlineStateTimeout);
-        }
-
-        this.onlineStateRef.off();
-        this.fetchData(uid);
-      }
-    });
-  }
-
-  offlineHandler() {
-    this._logger.log('Still offline after 5 seconds');
-    this.onlineStateRef.off();
-
-    // @TODO/rewrite This should be dev only, otherwise should init from localStorage or something
-    // @TODO/rewrite When it's no longer dev only, this.status needs to indicate offline.
-    this._logger.log('OFFLINE, USING SAMPLE DATA:', sampleData);
-    this.initFromData(sampleData);
-
-    this.ref = new FirebaseMock;
+    this.fetchData(uid);
   }
 
   fetchData(uid: string) {
+    if (uid === 'OFFLINE') {
+      this._logger.log('OFFLINE, USING SAMPLE DATA:', sampleData);
+      this.initFromData(sampleData);
+      return;
+    }
+    
     this.ref = this.ref.root().child('users/' + uid);
 
     this.ref.once('value', (snapshot) => {

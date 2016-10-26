@@ -11,8 +11,13 @@ import {ModalService} from '../modals/modal.service';
 import {UserService} from './user.service';
 import {NotesService} from '../notes/';
 
+// @TODO/rewrite only do in dev mode
+import {FirebaseMock} from '../mocks/';
+
 @Injectable()
 export class AccountService {
+  FORCE_OFFLINE = true; // @TODO/now Just for dev - goes straight to offline and logs in
+
   loginState$ = new ReplaySubject<string>(1);
 
   /** Whether private notes/tags are currently visible. */
@@ -26,6 +31,8 @@ export class AccountService {
   private _logger: Logger = new Logger(this.constructor.name);
   private ref: Firebase;
 
+  private onlineStateRef: Firebase;
+
   constructor(
     private sanitizer: DomSanitizationService,
     private notes: NotesService,
@@ -37,9 +44,40 @@ export class AccountService {
     this.ref = new Firebase('https://nutmeg.firebaseio.com/');
   }
 
-  init(rootChangeDetector: ChangeDetectorRef) {
+  init(rootChangeDetector: ChangeDetectorRef): void {
     this.rootChangeDetector = rootChangeDetector;
 
+    if (this.FORCE_OFFLINE) {
+      this.handleLoggedOut();
+
+      setTimeout(() => {
+        this.offlineHandler();
+        this.ref.authWithPassword({ email: 'email@example.com', password: 'abc' });
+      }, 0);
+
+      return;
+    }
+
+    this.setUpAuthHandlers();
+
+    // @TODO in theory this is where, later, we can listen for connection state always and handle online/offline. For now we have an offline mode just when on local
+    if (document.location.href.indexOf('localhost:3000') !== -1){
+      const onlineStateTimeout = window.setTimeout(this.offlineHandler.bind(this), 5000);
+      
+      this.onlineStateRef = this.ref.root().child('.info/connected');
+      this.onlineStateRef.on('value', (snap) => {
+        const online = snap.val();
+        this._logger.log('Online state callback fired with:', online ? 'online' : 'offline');
+
+        if (online) {
+          window.clearTimeout(onlineStateTimeout);
+          this.onlineStateRef.off();
+        }
+      });
+    }
+  }
+
+  setUpAuthHandlers(): void {
     // onAuth immediately fires with current auth state, so let's capture that specifically
     var isInitialAuthState = true;
 
@@ -62,6 +100,21 @@ export class AccountService {
         this.handleLoggedOut();
       }
     });
+  }
+
+  offlineHandler(): void {
+    this._logger.log('Still offline after 5 seconds');
+
+    if (this.onlineStateRef) {
+      this.onlineStateRef.off();
+    }
+
+    // @TODO/rewrite This should be dev only, otherwise should init from localStorage or something
+    // @TODO/rewrite When it's no longer dev only, this.dataService.status needs to indicate offline.
+
+    this.ref = <any>(new FirebaseMock());
+    this.dataService.ref = <any>(new FirebaseMock());
+    this.setUpAuthHandlers(); // need to set up again on new this.ref
   }
 
   /** User has initiated login attempt. */

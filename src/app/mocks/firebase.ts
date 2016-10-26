@@ -5,22 +5,25 @@ export class FirebaseMock {
   EMAIL: string = 'email@example.com';
   PASSWORD: string = 'abc';
 
-  onAuth(cb) {
+  onAuth(cb): void {
     this.authCb = cb;
     this.authCb(null); // mock always has initial auth state as logged out
   }
 
-  authWithPassword(creds, cb) {
+  authWithPassword(creds, cb = function(err?) {}) {
     if (creds.email === this.EMAIL && creds.password === this.PASSWORD) {
       this.authCb({
-        uid: 'some-uid',
+        uid: 'OFFLINE',
         provider: 'password',
         password: { email: this.EMAIL }
       });
       cb();
     }
     else {
-      cb({ code: 'INVALID_USER' });
+      cb({
+        code: 'INVALID_USER',
+        message: 'Wrong credentials, but this is a mock Firebase instance - try email/pass email@example.com/abc.'
+      });
     }
   }
 

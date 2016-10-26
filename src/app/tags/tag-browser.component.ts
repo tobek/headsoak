@@ -116,8 +116,6 @@ export class TagBrowserComponent {
       this.activePane = null;
       return;
     }
-
-    this.visualizationActive = true;
     
     if (pathParts[1] === 'tag') {
       this.activeTag = this.tagsService.tags[pathParts[2]];
