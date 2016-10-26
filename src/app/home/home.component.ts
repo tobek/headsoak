@@ -138,6 +138,11 @@ export class HomeComponent {
       // We have a note open that is not new - it has changes/content
       this.closeNote(); // will set up a new note
     }
+    else if (this.openNote.new && this.openNote.body) {
+      // We have a note open that has yet to be saved. Blur it (which will save, set oldBody, etc.), then close it, ready for a truly new note.
+      this.openNote.blurred();
+      this.closeNote();
+    }
 
     // Now we have an untouched new note open
     if (thenFocus) {
