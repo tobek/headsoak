@@ -21,6 +21,7 @@
 
       <div *ngIf="config.prompt" class="prompt">
         <input
+          ref-promptInput
           type="{{ config.promptInputType || 'text' }}"
           autocomplete="off"
           required

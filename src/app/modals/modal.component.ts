@@ -1,4 +1,4 @@
-import {Component/*, ViewChild*/, HostBinding} from '@angular/core';
+import {Component, ViewChild, ElementRef, HostBinding} from '@angular/core';
 import {SafeHtml} from '@angular/platform-browser';
 import {Subscription} from 'rxjs';
 
@@ -65,7 +65,8 @@ export class ModalComponent {
 
   config: ModalConfigType = {};
 
-  private promptValue = '';
+  @ViewChild('promptInput') promptInput: ElementRef;
+  promptValue = '';
 
   private activeModalSub: Subscription;
 
@@ -161,6 +162,12 @@ export class ModalComponent {
   generic(config: ModalConfigType): void {
     this.config = config;
     this.activeModal = 'generic';
+
+    if (config.prompt) {
+      setTimeout(() => {
+        this.promptInput.nativeElement.focus();
+      }, 100);
+    }
   }
 
 }

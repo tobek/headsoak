@@ -1,4 +1,4 @@
-import {Component/*, HostBinding*/} from '@angular/core';
+import {Component, ViewChild, ElementRef/*, HostBinding*/} from '@angular/core';
 
 import {AnalyticsService} from '../analytics.service';
 import {DataService} from '../data.service';
@@ -21,6 +21,8 @@ export class PrivateModeComponent {
   isLoading = false;
   errorMessage = '';
 
+  @ViewChild('passwordInput') passwordInput: ElementRef;
+
   // @HostBinding('class.on') visible = false;
 
   private _logger: Logger = new Logger(this.constructor.name);
@@ -31,6 +33,12 @@ export class PrivateModeComponent {
    ) {}
 
   ngOnInit() {
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.passwordInput.nativeElement.focus();
+    }, 100);
   }
 
   ngOnDestroy() {
@@ -59,6 +67,7 @@ export class PrivateModeComponent {
       }
 
       this._logger.log('Successfully enabled private mode');
+      // @TODO/toaster Show toaster and then close modal (if we're in a modal)
       this.dataService.accountService.enablePrivateMode();
       this.password = '';
     });
