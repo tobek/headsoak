@@ -52,6 +52,21 @@ export class ModalService {
     });
   }
 
+  prompt(
+    message: string | SafeHtml,
+    cb: (result: string) => boolean,
+    opts // @TODO/refactor This should be of type ModalConfigType from ModalComponent
+  ): void {
+    const config = _.defaults({
+      message: message,
+      prompt: true,
+      cancelButton: true,
+      okCb: cb,
+    }, opts);
+
+    this.modal.generic(config);
+  }
+
   feedback(): void {
     this.activeModal$.next('feedback');
   }

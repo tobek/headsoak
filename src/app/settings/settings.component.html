@@ -75,7 +75,6 @@
           <td>Email</td>
           <td>
             <form ref-changeEmailForm="ngForm" (ngSubmit)="changeEmail()">
-              <!-- @TODO/now check if autocomplete should be "off" or "none" or something -->
               <input type="email" name="email" placeholder="Your email" required [(ngModel)]="emailAddress"><br>
               <button class="btn btn-default" type="submit" [disabled]="! emailAddress.trim() || emailAddress === dataService.user.email">Change email</button>
             </form>
@@ -86,7 +85,6 @@
           <td>Change password</td>
           <td>
             <form ref-changePasswordForm="ngForm" (ngSubmit)="changePassword()">
-              <!-- @TODO/now check if autocomplete should be "off" or "none" or something -->
               <input type="password" name="current-password" placeholder="Current password" required autocomplete="off" [(ngModel)]="oldPass"><br>
               <input type="password" name="new-password" placeholder="New password" required autocomplete="new-password" [(ngModel)]="newPass"><br>
               <button class="btn btn-default" type="submit">Change password</button>

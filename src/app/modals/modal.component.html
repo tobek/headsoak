@@ -19,7 +19,20 @@
       <!-- @TODO/ece Style of this? Currently only used for progTagCantChangeAlert and simultaneous editing warning, but prob will be used elsewhere -->
       <div class="body" [innerHTML]="config.message"></div>
 
-      <button class="btn" (click)="close()">OK</button>
+      <div *ngIf="config.prompt" class="prompt">
+        <input
+          type="{{ config.promptInputType || 'text' }}"
+          autocomplete="off"
+          required
+          placeholder="{{ config.promptPlaceholder || '' }}"
+          [(ngModel)]="promptValue"
+          (keyup.enter)="ok()"
+        />
+      </div>
+
+      <button class="btn" (click)="ok()">{{ config.okButtonText || 'OK' }}</button>
+      <button *ngIf="config.cancelButton" class="btn" (click)="close()">Cancel</button>
+
       <span class="additional-buttons" *ngIf="config.additionalButtons && config.additionalButtons.length">
         <button class="btn" *ngFor="let button of config.additionalButtons" (click)="close(); button.cb()">{{ button.text }}</button>
       </span>

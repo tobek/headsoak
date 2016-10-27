@@ -14,10 +14,19 @@ import {PrivateModeComponent} from './private-mode.component';
 
 type ModalType = null | 'loading' | 'login' | 'feedback' | 'privateMode' | 'generic';
 type ModalConfigType = {
+  okCb?: (result?: any) => boolean, // Called when OK is pressed (or enter in prompt), just before modal is closed. If it's a prompt and not cancelled, prompt contents is passed in, otherwise falsey value passed. Return explicit false to prevent modal from being closed.
+
   message?: string | SafeHtml,
+  okButtonText?: string,
+  cancelButton?: boolean, // whether to show or not
+
+  prompt?: boolean,
+  promptPlaceholder?: string,
+  promptInputType?: string,
+
   additionalButtons?: [{
     text: string,
-    cb: Function,
+    cb: Function, // called when button is pressed (modal is closed first)
   }]
 };
 
@@ -55,6 +64,8 @@ export class ModalComponent {
   message: string | SafeHtml;
 
   config: ModalConfigType = {};
+
+  private promptValue = '';
 
   private activeModalSub: Subscription;
 
@@ -115,6 +126,20 @@ export class ModalComponent {
     this.activeModal = null;
 
     this.config = {};
+
+    this.promptValue = '';
+  }
+
+  ok() {
+    if (this.config.okCb) {
+      const close = this.config.okCb(this.promptValue);
+      if (close === false) {
+        return;
+      }
+      else {
+        this.close();
+      }
+    }
   }
 
   close(evenIfUncancellable = false) {

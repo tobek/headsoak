@@ -178,10 +178,7 @@ export class SettingsComponent implements OnInit {
   }
 
   changeEmail(): void {
-    // @TODO/account Should check valid email prob, OR confirm that Firebase does
-
-    this.modalService.alert('should change to ' + this.emailAddress);
-    this.dataService.user.email = this.emailAddress;
+    this.dataService.accountService.changeEmail(this.emailAddress);
   }
 
   changePassword(): void {

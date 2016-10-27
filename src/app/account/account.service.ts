@@ -273,6 +273,58 @@ export class AccountService {
     });
   }
 
+  changeEmail(newEmail: string): void {
+    // @TODO/account Should check valid email, OR confirm that Firebase does
+
+    this.modalService.prompt(
+      'Please enter your password in order to change your email address:',
+      (password) => {
+        if (! password) {
+          return false;
+        }
+
+        // @TODO/now Loading indicator (at least disable button)
+        this.ref.changeEmail({
+          oldEmail: this.user.email,
+          newEmail: newEmail,
+          password: password,
+        }, (err) => {
+          // @TODO/now Remove loading indicator
+          this.changeEmailResponseHandler(newEmail, err);
+        });
+
+        return false; // don't close modal, wait for Firebase response so we can keep it open if wrong password
+      },
+      {
+        promptInputType: 'password',
+        promptPlaceholder: 'Password',
+        okButtonText: 'Change email',
+      }
+    );
+  }
+
+  /** Called while modal is still open, so need to explicitly close modal when appropriate. */
+  changeEmailResponseHandler(newEmail: string, err?): void {
+    if (err) {
+      this._logger.warn('Failed to change email:', err);
+
+      if (err.code === 'INVALID_PASSWORD') {
+        // @TODO/tooltips Tooltip over modal input
+        alert('The password you entered is incorrect!');
+        return; // don't close modal
+      }
+
+      // @TODO/notifications @TODO/toaster Should be toaster or alert? Maybe alert, so you don't miss the toaster. Toaster should be not for pretty important things?
+      alert('Failed to change email, something went wrong, sorry! ' + (err.message || err.code || err));
+    }
+
+    // @TODO/toaster
+    alert('nice, changed to ' + newEmail);
+    this.dataService.user.email = newEmail;
+
+    this.modalService.close();
+  }
+
   changePassword(oldPassword: string, newPassword: string, cb: (error: any) => void): void {
     this.ref.changePassword({
       email: this.user.email,
