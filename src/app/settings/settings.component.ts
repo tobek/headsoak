@@ -37,6 +37,7 @@ export class SettingsComponent implements OnInit {
 
   // @ViewChildren(SettingComponent) settingComponents: QueryList<SettingComponent>;
 
+  private emailAddress: string = '';
   private oldPass: string = '';
   private newPass: string = '';
 
@@ -81,7 +82,12 @@ export class SettingsComponent implements OnInit {
 
     this.initialized = true;
 
-    this.checkEmptyModKey();
+    if (this.section === 'shortcuts') {
+      this.checkEmptyModKey();
+    }
+    else if (this.section === 'account') {
+      this.emailAddress = this.dataService.user.email;
+    }
   }
 
   /** Trying to pass args directly from SettingComponent to here - seemingly can't use ES6 splats/parameter magic in template, and had some issues with `this`, so this is where we ended up. */
@@ -137,7 +143,7 @@ export class SettingsComponent implements OnInit {
 
   /** Check if a) no global modKey, and b) at least one shortcut also has no modifier. This makes an aggressive shortcut! So warn the user. */
   checkEmptyModKey() {
-    if (this.section !== 'shortcuts' || this.settings.get('sMod') !== '') {
+    if (this.settings.get('sMod') !== '') {
       return;
     }
 
@@ -169,6 +175,13 @@ export class SettingsComponent implements OnInit {
     this.modKeyError = '';
 
     this.syncDebounced();
+  }
+
+  changeEmail(): void {
+    // @TODO/account Should check valid email prob, OR confirm that Firebase does
+
+    this.modalService.alert('should change to ' + this.emailAddress);
+    this.dataService.user.email = this.emailAddress;
   }
 
   changePassword(): void {

@@ -71,7 +71,18 @@
         ></setting>
 
         <!-- These are specific to account settings and hard to squish into reusable SettingComponent format, so: -->
-        <tr *ngIf="section === 'account'" class="setting">
+        <tr *ngIf="section === 'account'" class="setting setting--account">
+          <td>Email</td>
+          <td>
+            <form ref-changeEmailForm="ngForm" (ngSubmit)="changeEmail()">
+              <!-- @TODO/now check if autocomplete should be "off" or "none" or something -->
+              <input type="email" name="email" placeholder="Your email" required [(ngModel)]="emailAddress"><br>
+              <button class="btn btn-default" type="submit" [disabled]="! emailAddress.trim() || emailAddress === dataService.user.email">Change email</button>
+            </form>
+          </td>
+          <td></td>
+        </tr>
+        <tr *ngIf="section === 'account'" class="setting setting--account">
           <td>Change password</td>
           <td>
             <form ref-changePasswordForm="ngForm" (ngSubmit)="changePassword()">
