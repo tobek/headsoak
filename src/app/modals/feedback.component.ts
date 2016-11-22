@@ -42,8 +42,6 @@ export class FeedbackComponent {
       return;
     }
 
-    // @TODO/ece Loading state here. Maybe spinner in button? Full overlay of modal?
-
     this._logger.log('Submitting feedback:', this.feedbackText);
 
     this.isLoading = true;

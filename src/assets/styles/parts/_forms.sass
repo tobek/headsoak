@@ -44,6 +44,7 @@ textarea,
   touch-action: manipulation
   user-select: none
 
+  position: relative
   display: inline-block
   height: 34px
   padding: 8px 15px
@@ -63,9 +64,35 @@ textarea,
   outline: 0
   box-shadow: 0 1px 2px 0 $shadow-color
 
+  transition: opacity $transition-fast, color $transition-fast
+
   &[disabled]
     cursor: default
     opacity: $btn-disabled-opacity
+
+  &:before
+    content: "\f1b2" // font awesome's cube
+    position: absolute
+    display: inline-block
+    width: 100%
+    left: 0
+    top: 50%
+    margin-top: -10px // half the font size
+
+    font: normal normal normal 20px/1 FontAwesome
+    text-rendering: auto
+    -webkit-font-smoothing: antialiased
+    -moz-osx-font-smoothing: grayscale
+
+    +fadeable
+    +faded-out
+
+  &.is--loading
+    color: transparent
+    &:before
+      +faded-in
+      animation: fa-spin 2s infinite linear
+      color: $primary-color-contrast
 
 // currently unused
 // .btn-default
@@ -94,6 +121,9 @@ textarea,
 
   font-weight: bold
   text-transform: uppercase
+
+  &.is--loading:before
+    color: $secondary-color
 
 .btn-danger
   background-color: $error-fill
