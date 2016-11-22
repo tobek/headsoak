@@ -54,7 +54,7 @@ export class ModalService {
 
   prompt(
     message: string | SafeHtml,
-    cb: (result: string) => boolean,
+    cb: (result: string, showLoadingState?: Function, hideLoadingState?: Function) => boolean,
     opts // @TODO/refactor This should be of type ModalConfigType from ModalComponent
   ): void {
     const config = _.defaults({

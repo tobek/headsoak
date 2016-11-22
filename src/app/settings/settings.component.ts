@@ -40,6 +40,7 @@ export class SettingsComponent implements OnInit {
   private emailAddress: string = '';
   private oldPass: string = '';
   private newPass: string = '';
+  private changeEmailIsLoading = false;
 
   private syncDebounced = _.debounce(this.dataService.sync.bind(this.dataService), 1000);
   private checkEmptyModKeyDebounced = _.debounce(this.checkEmptyModKey.bind(this), 1000);
@@ -178,7 +179,10 @@ export class SettingsComponent implements OnInit {
   }
 
   changeEmail(): void {
-    this.dataService.accountService.changeEmail(this.emailAddress);
+    this.changeEmailIsLoading = true;
+    this.dataService.accountService.changeEmail(this.emailAddress, () => {
+      this.changeEmailIsLoading = false;
+    });
   }
 
   changePassword(): void {

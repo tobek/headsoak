@@ -76,7 +76,10 @@
           <td>
             <form ref-changeEmailForm="ngForm" (ngSubmit)="changeEmail()">
               <input type="email" name="email" placeholder="Your email" required [(ngModel)]="emailAddress"><br>
-              <button class="btn btn-default" type="submit" [disabled]="! emailAddress.trim() || emailAddress === dataService.user.email">Change email</button>
+              <button class="btn btn-default" type="submit"
+                [class.is--loading]="changeEmailIsLoading"
+                [disabled]="! emailAddress.trim() || emailAddress === dataService.user.email || changeEmailIsLoading"
+              >Change email</button>
             </form>
           </td>
           <td></td>

@@ -286,6 +286,18 @@ export class DataService {
     this.tags.init(data.tags, this);
     this.notes.init(data.nuts, this);
 
+    if (data.user.email !== this.user.email) {
+      // User has changed their email and this change isn't reflected in data store yet.
+      data.user.email = this.user.email;
+
+      this.ref.child('user').update({
+        email: this.user.email
+      }, (err) => {
+        if (err) {
+          this._logger.error('Failed to update email in user object!', err);
+        }
+      });
+    }
     this.user.setData(data.user);
 
     // $s.users.fetchShareRecipientNames();

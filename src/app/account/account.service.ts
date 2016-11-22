@@ -173,7 +173,7 @@ export class AccountService {
 
     this.dataService.init(this.user.uid, this);
 
-    var userRef = this.ref.child('users/' + authData['uid'] + '/user');
+    const userRef = this.ref.child('users/' + authData['uid'] + '/user');
 
     userRef.update({
       lastLogin: Date.now()
@@ -273,24 +273,26 @@ export class AccountService {
     });
   }
 
-  changeEmail(newEmail: string): void {
+  changeEmail(newEmail: string, cb: Function): void {
     // @TODO/account Should check valid email, OR confirm that Firebase does
 
     this.modalService.prompt(
       'Please enter your password in order to change your email address:',
-      (password) => {
+      (password, showLoading, hideLoading) => {
         if (! password) {
-          return false;
+          return false; // explicit false indicates that the prompt shouldn't close
         }
 
-        // @TODO/now Loading indicator (at least disable button)
+        showLoading();
+
         this.ref.changeEmail({
           oldEmail: this.user.email,
           newEmail: newEmail,
           password: password,
         }, (err) => {
-          // @TODO/now Remove loading indicator
+          hideLoading();
           this.changeEmailResponseHandler(newEmail, err);
+          cb();
         });
 
         return false; // don't close modal, wait for Firebase response so we can keep it open if wrong password
@@ -299,6 +301,7 @@ export class AccountService {
         promptInputType: 'password',
         promptPlaceholder: 'Password',
         okButtonText: 'Change email',
+        cancelCb: cb,
       }
     );
   }
@@ -318,11 +321,11 @@ export class AccountService {
       alert('Failed to change email, something went wrong, sorry! ' + (err.message || err.code || err));
     }
 
+    // The current logged-in session is tied to old email and continues returning it in provider data upon login (which would mess up a lot of things) until they log out and in again, with no easy workaround, so... force them to log in again
     // @TODO/toaster
-    alert('nice, changed to ' + newEmail);
-    this.dataService.user.email = newEmail;
-
+    alert('Nice, changed to ' + newEmail + '. Please login with your new email address.');
     this.modalService.close();
+    setTimeout(this.logout.bind(this), 10);
   }
 
   changePassword(oldPassword: string, newPassword: string, cb: (error: any) => void): void {

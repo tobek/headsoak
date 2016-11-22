@@ -14,11 +14,12 @@ import {PrivateModeComponent} from './private-mode.component';
 
 type ModalType = null | 'loading' | 'login' | 'feedback' | 'privateMode' | 'generic';
 type ModalConfigType = {
-  okCb?: (result?: any) => boolean, // Called when OK is pressed (or enter in prompt), just before modal is closed. If it's a prompt and not cancelled, prompt contents is passed in, otherwise falsey value passed. Return explicit false to prevent modal from being closed.
+  okCb?: (result?: any, showLoadingState?: Function, hideLoadingState?: Function) => boolean, // Called when OK is pressed (or enter in prompt), just before modal is closed. If it's a prompt and not cancelled, prompt contents is passed in, otherwise falsey value passed. Return explicit false to prevent modal from being closed. Callback is also passed two functions that control loading state of button.
 
   message?: string | SafeHtml,
   okButtonText?: string,
   cancelButton?: boolean, // whether to show or not
+  cancelCb?: () => any,
 
   prompt?: boolean,
   promptPlaceholder?: string,
@@ -64,6 +65,8 @@ export class ModalComponent {
   message: string | SafeHtml;
 
   config: ModalConfigType = {};
+
+  okButtonIsLoading = false;
 
   @ViewChild('promptInput') promptInput: ElementRef;
   promptValue = '';
@@ -131,14 +134,26 @@ export class ModalComponent {
     this.promptValue = '';
   }
 
+  okButtonShowLoading() {
+    this.okButtonIsLoading = true;
+  }
+  okButtonHideLoading() {
+    this.okButtonIsLoading = false;
+  }
   ok() {
     if (this.config.okCb) {
-      const close = this.config.okCb(this.promptValue);
-      if (close === false) {
+      const shouldClose = this.config.okCb(
+        this.promptValue,
+        this.okButtonShowLoading.bind(this),
+        this.okButtonHideLoading.bind(this)
+      );
+      
+      if (shouldClose === false) {
         return;
       }
       else {
-        this.close();
+        delete this.config.cancelCb; // We've successfully called okCb so no need to call cancelCb
+        this.close(true);
       }
     }
   }
@@ -146,6 +161,10 @@ export class ModalComponent {
   close(evenIfUncancellable = false) {
     if (! this.cancellable && ! evenIfUncancellable) {
       return;
+    }
+
+    if (this.config.cancelCb) {
+      this.config.cancelCb();
     }
 
     this.modalService.closed$.next(null);
