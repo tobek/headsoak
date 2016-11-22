@@ -16,7 +16,7 @@ import {FirebaseMock} from '../mocks/';
 
 @Injectable()
 export class AccountService {
-  FORCE_OFFLINE = true; // @TODO/now Just for dev - goes straight to offline and logs in
+  FORCE_OFFLINE = false;
 
   loginState$ = new ReplaySubject<string>(1);
 

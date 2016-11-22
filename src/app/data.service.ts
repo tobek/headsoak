@@ -180,10 +180,11 @@ export class DataService {
   fetchData(uid: string) {
     if (uid === 'OFFLINE') {
       this._logger.log('OFFLINE, USING SAMPLE DATA:', sampleData);
-      this.initFromData(sampleData);
+      // this.initFromData(sampleData);
+      this.initNewUser();
       return;
     }
-    
+
     this.ref = this.ref.root().child('users/' + uid);
 
     this.ref.once('value', (snapshot) => {
