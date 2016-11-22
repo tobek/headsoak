@@ -4,6 +4,8 @@
  * example server invocation:
  *
  *     nohup node /home/ubuntu/nutmeg/watcher.js >> /var/log/nutmeg/watcher.log &
+ *
+ * @TODO There seems to be a slow memory leak here. Horrible hacky fix: schedule a cron to kill this process weekly, using watcher.sh to respawn.
  */
 
 var _ = require('lodash');
