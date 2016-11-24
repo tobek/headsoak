@@ -1,6 +1,7 @@
 // Used for split pane layout with overview/menu on left, and selected pane on right - e.g. used for tag browser/details and for settings
 
 $pane-overview-padding: 20px
+$pane-horizontal-padding: 60px
 
 .pane-layout
   .overview,
@@ -16,7 +17,7 @@ $pane-overview-padding: 20px
   .pane
     +span(8 last)
     position: relative
-    padding: 20px 30px
+    padding: 20px $pane-horizontal-padding // @TODO/now Should get smaller on narrower screens
 
   .pane-heading
     +pane-heading

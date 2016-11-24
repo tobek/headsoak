@@ -2,6 +2,11 @@ tag
   +tag-face
   +tag-chiclet
 
+  &:before
+    content: '#'
+    opacity: 0.33
+    margin-right: 1px
+
   .tag-actions
     // @TODO/ece What's the tag action flow? must include easy toggle and remove from note
     // @TODO/ece Still need a way to view all tags
@@ -73,7 +78,9 @@ tag
     width: 200px
     margin-left: -8px // magic number to align with left edge of tag - we can't do left 0 and position the tag relatively because then we'll run afoul of tag container with overflow hidden
     padding: 10px 15px 10px 10px
-    background-color: $tag-bg
+    background-color: $primary-color-contrast
+    // @TODO/styles Border might be good if we could get left border to align with a left border on the tag, and a top border to be clipped by the tag towards the left, but eh
+    // border: 1px solid $primary-color-light
     letter-spacing: 1.2px
     font-weight: normal
 

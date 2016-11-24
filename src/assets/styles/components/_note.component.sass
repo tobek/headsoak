@@ -8,7 +8,7 @@ note
     height: 232px // Sort of a magic number that gives us 7 lines of text after header and actions in Note Browser
     margin-bottom: gutter()
 
-  padding: 54px 10px 30px gutter() // More magic numbers (correctly vertically positions header and note actions). Also, +card above has gutter-based left/right padding, but we need body input scrollbar to not be flush against body text nor flush against edge of note, which is hard to do with %-based gutters. 10px and 20px right padding (on .body-input) are close enough on all browser widths it seems, especially since right edge of text isn't clear because of non-justified left-alignment.
+  padding: 54px 10px 35px gutter() // More magic numbers (correctly vertically positions header and note actions). Also, +card above has gutter-based left/right padding, but we need body input scrollbar to not be flush against body text nor flush against edge of note, which is hard to do with %-based gutters. 10px and 20px right padding (on .body-input) are close enough on all browser widths it seems, especially since right edge of text isn't clear because of non-justified left-alignment.
 
   .note-wrapper
     height: 100%
@@ -133,15 +133,16 @@ note
     text-align: right
     font-size: 20px
 
-    &:before
-      content: ''
-      display: inline-block
-      position: absolute
-      width: 100%
-      height: 25px
-      left: 0
-      top: -20px
-      background-image: linear-gradient(rgba(255, 255, 255, 0), $primary-color-contrast) // transparent white right than `transparent` keyword cause safari treats `transparent` as transparent black so gradient is ugly
+    // This was a white-fading-to-transparent rectangle above note actions gently obscuring the text. We now have more padding between text and note actions, so not necessary.
+    // &:before
+    //   content: ''
+    //   display: inline-block
+    //   position: absolute
+    //   width: 100%
+    //   height: 25px
+    //   left: 0
+    //   top: -20px
+    //   background-image: linear-gradient(rgba(255, 255, 255, 0), $primary-color-contrast) // transparent white right than `transparent` keyword cause safari treats `transparent` as transparent black so gradient is ugly
 
   .note-action
     +icon-button
