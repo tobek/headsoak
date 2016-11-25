@@ -90,7 +90,11 @@
             <form ref-changePasswordForm="ngForm" (ngSubmit)="changePassword()">
               <input type="password" name="current-password" placeholder="Current password" required autocomplete="off" [(ngModel)]="oldPass"><br>
               <input type="password" name="new-password" placeholder="New password" required autocomplete="new-password" [(ngModel)]="newPass"><br>
-              <button class="btn btn-default" type="submit">Change password</button>
+              <button class="btn btn-default" type="submit"
+                [class.is--loading]="changePasswordIsLoading"
+                [disabled]="! oldPass || ! newPass || changePasswordIsLoading"
+              >Change password</button>
+              <!-- @TODO/ece This page looks a bit weird with all the buttons disabled. Might be better when overall style changed, but maybe we don't disable the button, in which case if they try to submit with, say, nothing in the new password field, either nothing happens or an alert pops up. -->
             </form>
           </td>
           <td></td>

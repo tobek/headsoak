@@ -91,8 +91,6 @@ export class AccountService {
       if (authData) {
         this._logger.info('Log in succeeded', authData);
 
-        // $s.u.loading = true; // while notes are loading @TODO/rewrite
-
         this.handleLoggedIn(authData);
       }
       else {
@@ -119,10 +117,6 @@ export class AccountService {
 
   /** User has initiated login attempt. */
   login(email: string, password: string) {
-    // @TODO/rewrite
-    // $s.u.loading = true;
-    // $s.u.loggingIn = true;
-
     this.analytics.event('Account', 'login.attempt');
 
     this.ref.authWithPassword({
@@ -132,6 +126,7 @@ export class AccountService {
       if (error) {
         this.analytics.event('Account', 'login.error', error.code);
 
+        // @TODO/tooltips Show error in a tooltip over appropriate input
         switch (error.code) {
           case 'INVALID_EMAIL':
           case 'INVALID_PASSWORD':
@@ -142,8 +137,6 @@ export class AccountService {
             this._logger.warn('Login failed: ', error);
             alert('Error logging in: ' + error.message || error.code || JSON.stringify(error));
         }
-
-        // $s.u.loading = false; // so that they get the button back and can try again @TODO/rewrite
 
         this.loginState$.next('error');
         return;
@@ -201,10 +194,7 @@ export class AccountService {
 
     this.dataService.clear();
 
-    // @TODO/rewrite
-    // $s.u.loading = false;
-    // window.clearInterval($s.u.digestInterval);
-    // $s.m.modal = 'login';
+    // window.clearInterval($s.u.digestInterval); // @TODO/rewrite
 
     this.loginState$.next('logged-out');
 
@@ -244,7 +234,6 @@ export class AccountService {
 
   createAccount(email: string, password: string) {
     this.analytics.event('Account', 'create_account.attempt');
-    // $s.u.loading = true; // @TODO/rewrite
 
     this.ref.createUser({ email: email, password: password}, (err, userData) => {
       if (err) {
@@ -261,7 +250,7 @@ export class AccountService {
             this._logger.error('Error creating account:', err);
         }
 
-        // $s.u.loading = false; // @TODO/rewrite
+        this.loginState$.next('error');
 
         return;
       }
@@ -349,7 +338,8 @@ export class AccountService {
       // First remove this index.
       this.ref.root().child('emailToId/' + utils.formatForFirebase(this.user.email)).set(null, (err) => {
         if (err) {
-          // @TODO This happens a lot. Account deletion or log out can hit first and then no permission to do it I think? Either need to change Firebase rules or else do these all sequentially. But don't care that much. If user later signs up with same email it'll overwrite the value in /emailToId/, and if not, it can hang out there, it's tiny.
+          // @TODO This happens a lot. Account deletion or log out can hit first and then no permission to do it I think? Either need to change Firebase rules or else do these all sequentially. But don't care that much. If user later signs up with same email it'll overwrite the value in /emailToId/, and if not, it can hang out there, it's tiny. (Might show up when searching for a user by email?)
+          this.analytics.event('Account', 'delete_account.error_emailtoid', err.code);
           this._logger.warn('Failed to remove value at `/emailToId/' + utils.formatForFirebase(this.user.email) + '` while deleting user account:', err);
         }
       });
@@ -358,6 +348,7 @@ export class AccountService {
       this.ref.root().child('users/' + this.user.uid).set(null, (err) => {
         if (err) {
           alert('Sorry, something went wrong when trying to delete your account: ' + (err.message || err.code || err) + '. Please try again later!'); // @TODO include support email here
+          this.analytics.event('Account', 'delete_account.error_data', err.code);
           this._logger.error('Error deleting account data:', err);
 
           cb(err);
@@ -367,13 +358,14 @@ export class AccountService {
         // Now delete actual user account
         this.ref.removeUser({ email: email, password: password}, (err) => {
           if (err) {
-            this.analytics.event('Account', 'delete_account.error', err.code);
+            this.analytics.event('Account', 'delete_account.error_user', err.code);
             alert('Sorry, something went wrong when trying to delete your account: ' + (err.message || err.code || err) + '. Please try again later!'); // @TODO include support email here
             this._logger.error('Error removing user account after successfully deleting all account data:', err);
             // @TODO THINGS ARE IN A REAL WEIRD STATE - DELETED USER INFO BUT NOT ACCOUNT. Now they can log in still with same account details (and can't make new account) but they'll have data. Let's act like everything was fine, and we'll have to go in manually and delete account.
           }
-
-          this.analytics.event('Account', 'delete_account.success');
+          else {
+            this.analytics.event('Account', 'delete_account.success');
+          }
 
           this._logger.info('Successfully deleted account with email', email);
 

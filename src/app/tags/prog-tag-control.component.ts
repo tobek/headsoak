@@ -23,7 +23,7 @@ export class ProgTagControlComponent {
   /** Whether the programmatic function string has changed since init. */
   changed = false;
 
-  // @TODO/prog We should prob have loading indicator (that also disables buttons and code editor) whenever we run prog on all notes. Since we run in thread though I think interface is blocked anyway? Should make a prog tag with synchronous wait in it to test. If animation continued though we could show it and then run prog stuff in next tick. Obvs if we have web workers or something then we definitely can use.
+  isRunning = false;
 
   /** Holds Ace editor instance */
   private editor;
@@ -130,9 +130,17 @@ export class ProgTagControlComponent {
     this.editorUnchanged();
 
     if (this.tag.progFuncString) {
-      this.tag.runProgOnAllNotes();
+      this.isRunning = true;
+      // @TODO/webworkers @TODO/prog Wait 200ms (length of the transition to button loading state, which would pause while JS is busy) before starting, because running prog tags is synchronous (barring async calls written into them). Not ideal, and timeout can be removed when we're using web workers for running prog tags.
+      setTimeout(() => {
+        this.tag.runProgOnAllNotes();
+        this.isRunning = false;
+        this.tag.updated();
+        // @TODO/prog Should show the results of running it here! Like # of notes it was tagged on. And a success message.
+      }, 200);
     }
-
-    this.tag.updated();
+    else {
+      this.tag.updated();
+    }
   }
 }

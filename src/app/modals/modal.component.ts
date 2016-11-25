@@ -14,7 +14,7 @@ import {PrivateModeComponent} from './private-mode.component';
 
 type ModalType = null | 'loading' | 'login' | 'feedback' | 'privateMode' | 'generic';
 type ModalConfigType = {
-  okCb?: (result?: any, showLoadingState?: Function, hideLoadingState?: Function) => boolean, // Called when OK is pressed (or enter in prompt), just before modal is closed. If it's a prompt and not cancelled, prompt contents is passed in, otherwise falsey value passed. Return explicit false to prevent modal from being closed. Callback is also passed two functions that control loading state of button.
+  okCb?: (result?: any, showLoadingState?: Function, hideLoadingState?: Function) => any, // Called when OK is pressed (or enter in prompt), just before modal is closed. If it's a prompt and not cancelled, prompt contents is passed in, otherwise falsey value passed. Return explicit false to prevent modal from being closed. Callback is also passed two functions that control loading state of button.
 
   message?: string | SafeHtml,
   okButtonText?: string,

@@ -41,6 +41,7 @@ export class SettingsComponent implements OnInit {
   private oldPass: string = '';
   private newPass: string = '';
   private changeEmailIsLoading = false;
+  private changePasswordIsLoading = false;
 
   private syncDebounced = _.debounce(this.dataService.sync.bind(this.dataService), 1000);
   private checkEmptyModKeyDebounced = _.debounce(this.checkEmptyModKey.bind(this), 1000);
@@ -186,13 +187,15 @@ export class SettingsComponent implements OnInit {
   }
 
   changePassword(): void {
-    if (! this.newPass.trim()) {
+    if (! this.oldPass || ! this.newPass.trim()) {
       // @TODO/account Should have some password requirements? Like min length, and not "password" or "12345" or other number sequence or all spaces?
       return;
     }
 
-    // @TODO/now Loading indicator
+    this.changePasswordIsLoading = true;
     this.dataService.accountService.changePassword(this.oldPass, this.newPass, (err) => {
+      this.changePasswordIsLoading = false;
+
       if (err) {
         this._logger.warn('Failed to change password:', err);
 
@@ -209,34 +212,50 @@ export class SettingsComponent implements OnInit {
       this.oldPass = '';
       this.newPass = '';
 
-      // @TODO/notifications @TODO/tooltips
+      // @TODO/notifications @TODO/tooltips @TODO/toaster @TODO/ece Which should this be? The error message will be a tooltip over the button, right? so should the success message be as well?
       this.modalService.alert('Password successfully changed.')
     });
   }
 
   deleteAccount(): void {
-    // @TODO/modals Use non-native prompt/alert for these
+    // @TODO/modals Use non-native prompt when sequential modals is done
     var answer = prompt('Are you really really sure you want to delete the account belonging to ' + this.dataService.user.email + '? All of your data will be deleted. This can\'t be undone.\n\nType "I\'M REALLY REALLY SURE" (yes, all caps) to proceed:');
 
     if (answer !== 'I\'M REALLY REALLY SURE') {
+      // @TODO/modals Use non-native alert for this when sequential modals is implemented. (or toaster or tooltip?)
       alert('No? Okay, good choice.');
       return;
     }
 
-    var password = prompt('Well, it\'s been real!\n\nEnter your password to delete your account. This is it.\n\n(@TODO make this a password prompt)');
+    this.modalService.prompt(
+      'Well, it\'s been real!\n\nEnter your password to delete your account. This is it.',
+      (password, showLoading, hideLoading) => {
+        if (! password) {
+          // @TODO/modals Use non-native alert for this when sequential modals is implemented. (or toaster or tooltip?)
+          alert('No? Okay, good choice.');
+          return;
+        }
 
-    if (! password) {
-      alert('No? Okay, good choice.');
-      return;
-    }
+        showLoading();
 
-    // if ($s.u.loading) return; // @TODO/rewrite
+        this.dataService.accountService.deleteAccount(this.dataService.user.email, password, (err) => {
+          hideLoading();
+          if (err) {
+            // @TODO/modal The errors that this fires are done in native `alert`s - should be passed back to CB maybe and then shown in the modal?
+          }
 
-    this.dataService.accountService.deleteAccount(this.dataService.user.email, password, (err) => {
-      if (err) {
-        // @TODO/rewrite Turn off loading
+          // Deleting account causes logout so no need to close the modal
+        });
+
+        return false; // explicit false to not close prompt until callback fires
+      },
+      {
+        promptInputType: 'password',
+        promptPlaceholder: 'Password',
+        okButtonText: 'Delete my account',
       }
-    });
+    );
+
   }
 
 }

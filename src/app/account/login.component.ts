@@ -20,6 +20,8 @@ export class LoginComponent {
 
   passwordResetSuccess = false;
 
+  private isLoading = false;
+
   private loginSub: Subscription;
 
   constructor(private accountService: AccountService, private zone: NgZone) {
@@ -45,9 +47,7 @@ export class LoginComponent {
             }
             break;
           case 'error':
-            this.password = '';
             // Don't change the view
-            // @TODO/now Confirm this is the right behavior
             break;
           default:
             this.view = 'create-account';
@@ -79,7 +79,12 @@ export class LoginComponent {
   }
 
   login(loginIframe: HTMLIFrameElement) {
-    // if ($s.u.loading) return; // @TODO/rewrite
+    this.isLoading = true;
+    // Have to skip 1 since it's a replay subject and we only care about the next state
+    this.accountService.loginState$.skip(1).first().subscribe(() => {
+      this.isLoading = false;
+    });
+
     this.accountService.login(this.email, this.password);
 
     this.pseudoLogin(loginIframe);
@@ -103,7 +108,7 @@ export class LoginComponent {
 
     this.accountService.passwordReset(this.email, (err) => {
       if (err) {
-        // @TODO/rewrite Handle this better, rightnow accountService just pops up an alert
+        // @TODO/rewrite Handle this better, right now accountService just pops up an alert
         return;
       }      
 
@@ -112,7 +117,11 @@ export class LoginComponent {
   }
 
   createAccount() {
-    // if ($s.u.loading) return; // @TODO/rewrite
+    this.isLoading = true;
+    // Have to skip 1 since it's a replay subject and we only care about the next state
+    this.accountService.loginState$.skip(1).first().subscribe(() => {
+      this.isLoading = false;
+    });
 
     // We've removed double password entry for signup
     // if (this.pass1 !== this.pass2) {

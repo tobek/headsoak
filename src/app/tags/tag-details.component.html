@@ -39,8 +39,8 @@
 
     <div class="note-count-heading">{{ tag.docs.length }} Note{{ tag.docs.length !== 1 ? 's' : '' }}</div>
 
-    <!-- @TODO/tags Betterloading indicator while this is loading. Also check computing this doesn't block stuff. -->
     <p *ngIf="! exploreComputed">
+      <i class="fa fa-spin fa-cube"></i>&nbsp;
       Loading tag stats...
     </p>
 

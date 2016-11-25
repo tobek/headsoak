@@ -13,8 +13,7 @@
     <!-- <input name="pass2" type="password" placeholder="Repeat password" autocomplete="new-password" required ngControl="pass2" [(ngModel)]="pass2"> -->
     <!-- @TODO/ece How should we handle user who tries to "sign up" with email/pass of existing account, cause they didn't notice they're on the sign up form? Should we automatically try to log them in? We should log how often this error happens. -->
 
-    <button class="btn btn-primary" type="submit">Sign up</button>
-    <!-- <p ng-show="u.loading" class="loader"><img src="/img/loader-white.gif"></p> -->
+    <button class="btn btn-primary" type="submit" [class.is--loading]="isLoading" [disabled]="isLoading">Register</button>
 
     <!-- <aside>By signing up you agree with our <a href="#@TODO/rewrite">Terms and Conditions</a> and <a href="#@TODO/rewrite">Privacy Policy</a></aside> -->
     <aside>We're in Beta! Not all features are finalized. Enjoy.</aside>
@@ -36,15 +35,14 @@
       Forgot your password? <a (click)="view = 'reset-password'">Reset password</a>
     </aside>
 
-    <button class="btn btn-primary" type="submit">Sign In</button>
-    <!-- <p ng-show="u.loading" class="loader"><img src="/img/loader-white.gif"></p> -->
+    <button class="btn btn-primary" type="submit" [class.is--loading]="isLoading" [disabled]="isLoading">Sign In</button>
 
     <iframe ref-pseudoLoginIframe id="pseudo-login-iframe" src="/pseudo-login.html" style="width:0px; height:0px; border:0px;"></iframe>
   </form>
 
   <div class="switch-sign-up-in" (click)="view = 'create-account'">
     New to Headsoak?
-    <button class="btn btn-secondary create-account-link">Sign Up</button>
+    <button class="btn btn-secondary create-account-link">Register</button>
   </div>
 </div>
 

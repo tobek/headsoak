@@ -23,12 +23,13 @@
 
   <div *ngIf="! tag.readOnly">
     <button class="btn btn-primary"
-      [disabled]="! changed"
+      [class.is--loading]="isRunning"
+      [disabled]="! changed || isRunning"
       (click)="saveAndRun()"
     >Save and run</button>
 
     <button class="btn btn-secondary"
-      [disabled]="! changed"
+      [disabled]="! changed || isRunning"
       (click)="revertChanges()"
     >Revert changes</button>
   </div>

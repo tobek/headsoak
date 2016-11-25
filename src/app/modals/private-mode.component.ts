@@ -54,7 +54,6 @@ export class PrivateModeComponent {
     this._logger.log('Enabling private mode');
 
     this.errorMessage = '';
-    // @TODO/ece Loading state here. Maybe spinner in button? Full overlay of modal?
     this.isLoading = true;
 
     this.dataService.accountService.checkPassword(this.password, (error) => {
@@ -62,7 +61,7 @@ export class PrivateModeComponent {
 
       if (error) {
         this._logger.log('Failed to enable private mode');
-        this.errorMessage = error;
+        this.errorMessage = error; // @TODO/tooltip Should be error tooltip over button
         return;
       }
 
