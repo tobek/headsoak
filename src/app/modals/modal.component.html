@@ -13,7 +13,7 @@
     <login *ngIf="activeModal === 'login'"></login>
 
     <feedback *ngIf="activeModal === 'feedback'"></feedback>
-    <private-mode *ngIf="activeModal === 'privateMode'"></private-mode>
+    <private-mode *ngIf="activeModal === 'privateMode'" [isModal]="true"></private-mode>
 
     <div class="generic" *ngIf="activeModal === 'generic'">
       <!-- @TODO/ece Style of this? Currently only used for progTagCantChangeAlert and simultaneous editing warning, but prob will be used elsewhere -->

@@ -8,6 +8,7 @@ import {utils, Logger} from '../utils/';
 import {AnalyticsService} from '../analytics.service';
 import {DataService} from '../data.service';
 import {ModalService} from '../modals/modal.service';
+import {ToasterService} from '../toaster.service';
 import {UserService} from './user.service';
 import {NotesService} from '../notes/';
 
@@ -38,6 +39,7 @@ export class AccountService {
     private notes: NotesService,
     private dataService: DataService,
     private modalService: ModalService,
+    private toaster: ToasterService,
     private analytics: AnalyticsService,
     public user: UserService
   ) {
@@ -425,12 +427,20 @@ export class AccountService {
     });
   }
 
+  // @TODO/ece The messaging is maybe switched here. "Private mode on" could be interpreted as privacy features are activated, meaning private notes are now hidden. That's why I'm adding the full text in toaster after title text - however, copy in the private mode modal itself has this same problem. Also, we can consider using warning or error toaster for enabling/disabling/both.
   enablePrivateMode() {
     this.privateMode = true;
     this.dataService.activeUIs.noteQuery.queryUpdated();
+
+    this._logger.log('Enabling private mode');
+    // @TODO/privacy When there are private tags, copy here should be updated.
+    this.toaster.info('Private notes will now be visible.', 'Private mode on');
   }
   disablePrivateMode() {
     this.privateMode = false;
     this.dataService.activeUIs.noteQuery.queryUpdated();
-  }
+
+    this._logger.log('Disabling private mode');
+    this.toaster.info('Private notes will now be hidden', 'Private mode off');
+  }.
 }

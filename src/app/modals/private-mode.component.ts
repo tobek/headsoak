@@ -1,7 +1,8 @@
-import {Component, ViewChild, ElementRef/*, HostBinding*/} from '@angular/core';
+import {Component, ViewChild, Input, ElementRef/*, HostBinding*/} from '@angular/core';
 
 import {AnalyticsService} from '../analytics.service';
 import {DataService} from '../data.service';
+import {ModalService} from './modal.service';
 
 import {Logger} from '../utils/logger';
 
@@ -21,6 +22,8 @@ export class PrivateModeComponent {
   isLoading = false;
   errorMessage = '';
 
+  @Input('isModal') isModal?: boolean;
+
   @ViewChild('passwordInput') passwordInput: ElementRef;
 
   // @HostBinding('class.on') visible = false;
@@ -29,7 +32,8 @@ export class PrivateModeComponent {
 
   constructor(
     public analyticsService: AnalyticsService,
-    public dataService: DataService
+    public dataService: DataService,
+    private modalService: ModalService,
    ) {}
 
   ngOnInit() {
@@ -37,14 +41,14 @@ export class PrivateModeComponent {
 
   ngAfterViewInit() {
     setTimeout(() => {
-      this.passwordInput.nativeElement.focus();
+      if (this.passwordInput) {
+        this.passwordInput.nativeElement.focus();
+      }
     }, 100);
   }
 
   ngOnDestroy() {
   }
-
-  // @TODO/privacy Modal should disappear when enabled/disabled, but with a toaster saying what happened?
 
   enable(): void {
     if (! this.password) {
@@ -65,18 +69,24 @@ export class PrivateModeComponent {
         return;
       }
 
-      this._logger.log('Successfully enabled private mode');
-      // @TODO/toaster Show toaster and then close modal (if we're in a modal)
-      this.dataService.accountService.enablePrivateMode();
+      this.dataService.accountService.enablePrivateMode(); // triggers toaster
       this.password = '';
+
+      if (this.isModal) {
+        // @TODO/polish Here and in disable, can we close modal before switching it on? Cause the form UI updates just as the modal closes and it looks clunky. If we delay turning it on until after modal fades, however, then private notes won't instantly show up.
+        this.modalService.close();
+      }
     });
 
   }
 
   disable(): void {
-    this._logger.log('Disabling private mode');
     this.errorMessage = '';
-    this.dataService.accountService.disablePrivateMode();
+    this.dataService.accountService.disablePrivateMode(); // triggers toaster
+
+    if (this.isModal) {
+      this.modalService.close();
+    }
   }
 
 }
