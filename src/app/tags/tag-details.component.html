@@ -35,6 +35,7 @@
   </div>
 
   <div class="pane" *ngIf="activePane === 'explore'">
+    <!-- @TODO/ece Should there be a hashtag here? (if so, search elsewhere on this page where tag.name is mentioned) -->
     <h3 class="pane-heading">Explore <span class="tag-name">{{ tag.name }}</span></h3>
 
     <div class="note-count-heading">{{ tag.docs.length }} Note{{ tag.docs.length !== 1 ? 's' : '' }}</div>

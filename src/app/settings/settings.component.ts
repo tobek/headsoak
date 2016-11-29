@@ -199,7 +199,7 @@ export class SettingsComponent implements OnInit {
       if (err) {
         this._logger.warn('Failed to change password:', err);
 
-        // @TODO/notifications @TODO/tooltips
+        // @TODO/tooltips
         if (err.code === 'INVALID_PASSWORD') {
           this.modalService.alert('Failed to change password: the current password you entered is incorrect!');
         }

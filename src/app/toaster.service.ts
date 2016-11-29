@@ -44,11 +44,12 @@ export class ToasterService {
       }
       else {
         opts = titleOrOpts;
-        this._toaster[method](text, undefined, opts);
+        // When using text alone let's show it as the bolder "title" - second param
+        this._toaster[method](undefined, text, opts);
       }
     }
     else {
-      this._toaster[method](text);
+      this._toaster[method](undefined, text);
     }
   }
 

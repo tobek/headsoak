@@ -6,6 +6,7 @@ import {Subscription} from 'rxjs';
 import {AnalyticsService} from '../analytics.service';
 import {Tag, TagComponent, ProgTagControlComponent} from './';
 import {TagsService} from './tags.service'; // Dunno why we can't import from tags/index.ts
+import {ToasterService} from '../toaster.service';
 import {Logger} from '../utils/';
 
 @Component({
@@ -38,6 +39,7 @@ export class TagDetailsComponent {
   constructor(
     // private elRef: ElementRef,
     private analyticsService: AnalyticsService,
+    private toaster: ToasterService,
     private tagsService: TagsService,
     private router: Router,
   ) {
@@ -48,9 +50,12 @@ export class TagDetailsComponent {
     if (this.tag.delete(true)) {
       this.deleted.emit(this.tag);
       this.router.navigateByUrl('/tags');
-    }
 
-    // @TODO/notifications Toaster notif (allowing undo, so change copy) should be here.
+      // @TODO/ece Another place where hashtag should maybe be used?
+      // @TODO/ece Warning? Error?
+      // @TODO Should have an undo button here
+      this.toaster.warning('Deleted tag "' + this.tag.name + '"');
+    }
   }
 
   ngOnInit() {
