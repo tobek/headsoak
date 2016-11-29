@@ -26,7 +26,7 @@ You can now load the package in an individual file, e.g. `const lodash = require
 
 If you want the package to be included in `vendor.bundle.js` (as opposed to with application code in `main.bundle.js`) which you probably do, then do `import '<package>'` in `src/vendor.browser.ts`.
 
-If you need some CSS from the package, find it in `node_modules` and then in `styles` array in `src/app/app.component.ts` you can add the file e.g. `require('toastr/build/toastr.min.css')`. (This is kind of a hack, there should be a better way/place to include CSS, probably some webpack loader to ingest and put in `index.html` head tag.)
+If you need some CSS from the package, this is a bit of a hack but what you can do is find it in `node_modules` and then in symlink to it from `src/assets/styles/vendor` (symlink should have the extension `.scss`). (There should be a better way/place to include CSS, probably some webpack loader to ingest and put in `index.html` head tag so we could `require(<css file>)` in `vendor.bundle.js` or something.)
 
 Typing jiggery can go in `src/custom-typings.d.ts`.
 
