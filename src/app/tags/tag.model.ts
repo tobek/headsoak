@@ -279,4 +279,18 @@ export class Tag {
     //   });
     // }, 50);
   }
+
+  /** Navigates to the tag details page for this tag, optionally to a sub-page within it. */
+  goTo(subPage?: 'share' | 'smartness' | 'delete'): void {
+    let path: string;
+
+    if (subPage) {
+      path = ['', 'tags', 'tag', this.id, this.name, subPage].join('/');
+    }
+    else {
+      path = ['', 'tags', 'tag', this.id, this.name].join('/');
+    }
+
+    this.dataService.router.navigateByUrl(path);
+  }
 }

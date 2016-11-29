@@ -326,9 +326,7 @@ export class Note {
         {
           text: 'Change tag settings',
           cb: () => {
-            this.dataService.router.navigateByUrl(
-              ['', 'tags', 'tag', tag.id, tag.name, 'smartness'].join('/')
-            );
+            tag.goTo('smartness');
           }
         }
       ],
