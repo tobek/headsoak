@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 // import {SafeHtml} from '@angular/platform-browser';
 
+/** See https://github.com/CodeSeven/toastr for docs on the Toastr library. */
 @Injectable()
 export class ToasterService {
 
@@ -27,16 +28,40 @@ export class ToasterService {
     }
   }
 
-  success(text: string, title?: string) {
-    this._toaster.success(text, title);
+  toast(method: 'success' | 'info' | 'warning' | 'error', text: string, titleOrOpts?: string | Object, opts?: Object): void {
+    let title;
+
+    if (opts) {
+      // All parameters supplied: text, then title, then opts
+      title = titleOrOpts;
+      this._toaster[method](text, title, opts);
+    }
+    else if (titleOrOpts) {
+      // Two params supplied, either text then title, or text then opts
+      if (typeof titleOrOpts === 'string') {
+        title = titleOrOpts;
+        this._toaster[method](text, title);
+      }
+      else {
+        opts = titleOrOpts;
+        this._toaster[method](text, undefined, opts);
+      }
+    }
+    else {
+      this._toaster[method](text);
+    }
   }
-  info(text: string, title?: string) {
-    this._toaster.info(text, title);
+
+  success(text: string, titleOrOpts?: string | Object, opts?: Object): void {
+    this.toast('success', text, titleOrOpts, opts);
   }
-  warning(text: string, title?: string) {
-    this._toaster.warning(text, title);
+  info(text: string, titleOrOpts?: string | Object, opts?: Object): void {
+    this.toast('info', text, titleOrOpts, opts);
   }
-  error(text: string, title?: string) {
-    this._toaster.error(text, title);
+  warning(text: string, titleOrOpts?: string | Object, opts?: Object): void {
+    this.toast('warning', text, titleOrOpts, opts);
+  }
+  error(text: string, titleOrOpts?: string | Object, opts?: Object): void {
+    this.toast('error', text, titleOrOpts, opts);
   }
 }

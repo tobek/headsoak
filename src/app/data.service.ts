@@ -9,6 +9,7 @@ import {Logger, utils, sampleData} from './utils/';
 import {AccountService} from './account';
 import {ActiveUIsService} from './active-uis.service';
 import {ModalService} from './modals/modal.service';
+import {ToasterService} from './toaster.service';
 import {UserService} from './account/user.service';
 import {Note, NotesService} from './notes/';
 import {Tag, TagsService} from './tags/';
@@ -55,6 +56,7 @@ export class DataService {
     public router: Router,
     public activeUIs: ActiveUIsService,
     public modalService: ModalService,
+    public toaster: ToasterService,
     public user: UserService,
     public notes: NotesService,
     public tags: TagsService,

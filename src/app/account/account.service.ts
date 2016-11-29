@@ -308,12 +308,12 @@ export class AccountService {
         return; // don't close modal
       }
 
-      // @TODO/notifications @TODO/toaster Should be toaster or alert? Maybe alert, so you don't miss the toaster. Toaster should be not for pretty important things?
+      // @TODO/tooltip
       alert('Failed to change email, something went wrong, sorry! ' + (err.message || err.code || err));
     }
 
     // The current logged-in session is tied to old email and continues returning it in provider data upon login (which would mess up a lot of things) until they log out and in again, with no easy workaround, so... force them to log in again
-    // @TODO/toaster
+    // @TODO/modal
     alert('Nice, changed to ' + newEmail + '. Please login with your new email address.');
     this.modalService.close();
     setTimeout(this.logout.bind(this), 10);
@@ -427,7 +427,7 @@ export class AccountService {
     });
   }
 
-  // @TODO/ece The messaging is maybe switched here. "Private mode on" could be interpreted as privacy features are activated, meaning private notes are now hidden. That's why I'm adding the full text in toaster after title text - however, copy in the private mode modal itself has this same problem. Also, we can consider using warning or error toaster for enabling/disabling/both.
+  // @TODO/ece The messaging is maybe switched here. "Private mode on" could be interpreted as privacy features are activated, meaning private notes are now hidden. That's why I'm adding the full text in toaster after title text - however, copy in the private mode modal itself (and toasters when making note private) has this same problem. Also, we can consider using warning or error toaster for enabling/disabling/both.
   enablePrivateMode() {
     this.privateMode = true;
     this.dataService.activeUIs.noteQuery.queryUpdated();

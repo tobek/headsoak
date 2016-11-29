@@ -348,7 +348,20 @@ export class Note {
     this.private = ! this.private;
     this.updated(false, true);
 
-    // @TODO/notifications If you're not in private mode, should show toaster saying "Note made private, so it's currently hidden from view. [enable private mode link] [don't show again link]"
+    if (this.private && ! this.dataService.accountService.privateMode) {
+      this.dataService.toaster.info(
+        'Since you do not currently have private mode enabled, this note will be hidden from view.<br><br>Click to enable private mode.',
+        'Note made private',
+        {
+          preventDuplicates: true,
+          timeOut: 7500,
+          onclick: () => {
+            this.dataService.modalService.privateMode();
+          },
+        }
+      );
+      // @TODO/ece If this is the "open" note then we do *not* hide it. So in that case we should either a) simply not show this message, b) do actually hide the note, and show this message, or c) show a different message (like 'when you close this note it'll be invisible...'')
+    }
   }
 
   explore() {
