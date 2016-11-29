@@ -32,6 +32,7 @@ import 'lunr';
 import 'mousetrap';
 import 'mousetrap-global-bind';
 import 'sentiment';
+import 'toastr';
 
 if ('production' === ENV) {
   // Production

@@ -32,7 +32,10 @@ import {TagBrowserComponent} from './tags/tag-browser.component'; // @NOTE No id
     TagBrowserComponent,
   ],
   encapsulation: ViewEncapsulation.None,
-  styles: [ require('../assets/styles/_main.sass') ],
+  styles: [
+    require('../assets/styles/_main.sass'),
+    require('toastr/build/toastr.min.css')
+  ],
   template: require('./app.component.html')
 })
 export class App {

@@ -17,6 +17,19 @@ Then you're ready:
 
 and then navigate to <http://localhost:3000>
 
+### Installing new dependencies
+
+- `npm install --save <package>`
+- If there are separate typings for this package, install those too, and add them to `tsconfig.json`
+
+You can now load the package in an individual file, e.g. `const lodash = require('lodash')`.
+
+If you want the package to be included in `vendor.bundle.js` (as opposed to with application code in `main.bundle.js`) which you probably do, then do `import '<package>'` in `src/vendor.browser.ts`.
+
+If you need some CSS from the package, find it in `node_modules` and then in `styles` array in `src/app/app.component.ts` you can add the file e.g. `require('toastr/build/toastr.min.css')`. (This is kind of a hack, there should be a better way/place to include CSS, probably some webpack loader to ingest and put in `index.html` head tag.)
+
+Typing jiggery can go in `src/custom-typings.d.ts`.
+
 ### Misc notes
 
 - To avoid type errors between Protractor and jQuery (both of which use `$`), you can comment out the two declarations of `$` from the end of `@types/jquery/index.d.ts`. (As a result, we refer to jQuery by `jQuery` not `$`.)
