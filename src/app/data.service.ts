@@ -25,7 +25,13 @@ export class DataService {
 
   // online: boolean; // @TODO/rewrite connection widget should show if offline
 
-  /** Fired with initialization state when allll the data is initialized, or when everything is unloaded. */
+  /**
+   * Fired with initialization state when allll the data is initialized (true), or when everything is unloaded (false).
+   *
+   * In order to fire an event once everything is initialized - which could be now or in the future - you can do:
+   *
+   *     dataService.initialized$.filter(initialized => !! initialized).first().subscribe(...);
+   */
   initialized$ = new ReplaySubject<boolean>(1);
 
   digest$ = new EventEmitter<DataItem>();

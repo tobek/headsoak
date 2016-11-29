@@ -212,7 +212,7 @@ export class SettingsComponent implements OnInit {
       this.oldPass = '';
       this.newPass = '';
 
-      // @TODO/notifications @TODO/tooltips @TODO/toaster @TODO/ece Which should this be? The error message will be a tooltip over the button, right? so should the success message be as well?
+      // @TODO/tooltips @TODO/ece Green success tooltip over the button (which is where error message would go) or should button state change?
       this.modalService.alert('Password successfully changed.')
     });
   }
@@ -222,7 +222,7 @@ export class SettingsComponent implements OnInit {
     var answer = prompt('Are you really really sure you want to delete the account belonging to ' + this.dataService.user.email + '? All of your data will be deleted. This can\'t be undone.\n\nType "I\'M REALLY REALLY SURE" (yes, all caps) to proceed:');
 
     if (answer !== 'I\'M REALLY REALLY SURE') {
-      // @TODO/modals Use non-native alert for this when sequential modals is implemented. (or toaster or tooltip?)
+      // @TODO/modals Use non-native alert for this when sequential modals is implemented.
       alert('No? Okay, good choice.');
       return;
     }
@@ -231,7 +231,7 @@ export class SettingsComponent implements OnInit {
       'Well, it\'s been real!\n\nEnter your password to delete your account. This is it.',
       (password, showLoading, hideLoading) => {
         if (! password) {
-          // @TODO/modals Use non-native alert for this when sequential modals is implemented. (or toaster or tooltip?)
+          // @TODO/modals Use non-native alert for this when sequential modals is implemented.
           alert('No? Okay, good choice.');
           return;
         }

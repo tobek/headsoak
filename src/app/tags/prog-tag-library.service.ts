@@ -69,30 +69,78 @@ export class ProgTagLibraryService {
     this.tagsService = tagsService;
 
     this.library = _.map(this.librarySourceData, (tagData) => {
-      const existingTag = this.tagsService.tags[tagData.id];
+      const localTag = this.tagsService.tags[tagData.id];
 
-      if (existingTag) {
+      if (localTag) {
         // This tag is being used by the user, so let's pick that up in order to get `docs` list etc.
 
-        if (existingTag.progFuncString !== tagData.progFuncString) {
-          // Function has been updated from official sources since user last used it, so let's update.
-          // @TODO/prog Haven't tested this code, though should be pretty straightforward.
-          // @TODO/ece Should we update the user that this has happened? Maybe a toaster notif. I don't know how frequently it would happen. Ditto for name change (but prob not description change) below
-          this._logger.info('Enabled smart tag library tag"' + existingTag.id + '"source has been updated - re-running it now.');
-          existingTag.updateProgFuncString(tagData.progFuncString);
-          existingTag.runProgOnAllNotes();
-        }
-        if (existingTag.name !== tagData.name || existingTag.description !== tagData.description) {
-          existingTag.name = tagData.name;
-          existingTag.description = tagData.description;
-          existingTag.updated(false);
-        }
+        // While we're at it we may need to update the tag
+        this.maybeUpdateLocalTag(localTag, tagData);
 
-        return existingTag;
+        return localTag;
       }
       else {
         return new Tag(tagData, this.tagsService.dataService);
       }
+    });
+  }
+
+  maybeUpdateLocalTag(localTag: Tag, latestTagData) {
+    let funcUpdated, nameUpdated, oldName;
+
+    if (localTag.progFuncString !== latestTagData.progFuncString) {
+      // Function has been updated from official sources since user last used it, so let's update.
+      this._logger.info('Enabled smart tag library tag "' + localTag.id + '" source has been updated - re-running it now.');
+      localTag.updateProgFuncString(latestTagData.progFuncString);
+      localTag.runProgOnAllNotes();
+      localTag.updated(false);
+
+      funcUpdated = true;
+    }
+
+    if (localTag.name !== latestTagData.name) {
+      oldName = localTag.name;
+      nameUpdated = true;
+
+      localTag.name = latestTagData.name;
+      localTag.updated(false);
+    }
+
+    if (localTag.description !== latestTagData.description) {
+      localTag.description = latestTagData.description;
+      localTag.updated(false);
+    }
+
+    if (! funcUpdated && ! nameUpdated) {
+      return;
+    }
+
+    let message: string;
+    if (funcUpdated && nameUpdated) {
+      message = 'The code for this Smart Tag Library tag has been updated - re-running it on all your notes now.<br><br>Also, it has been renamed to "' + latestTagData.name + '"'; // @TODO/ece See below. Quotes? Bold? Hashtag?
+    }
+    else if (funcUpdated) {
+      message = 'The code for this Smart Tag Library tag has been updated - re-running it on all your notes now.';
+    }
+    else if (nameUpdated) {
+      message = 'This Smart Tag Library tag has been renamed to "' + latestTagData.name + '"';
+    }
+
+    message += '<br><br>Click to view tag details.';
+
+    // If we're not totally initialized yet then the full page loader will be obscuring everything, so don't show until then.
+    this.tagsService.dataService.initialized$.filter(initialized => !! initialized).first().subscribe(() => {
+      this.tagsService.dataService.toaster.info(
+        message,
+        // @TODO/ece Should it have a hashtag? Different color? Certainly the bolding here doesn't do anything since title is already bold (though that could be  changed)
+        'Smart tag <b>' + oldName + '</b> updated',
+        {
+          timeOut: 10000,
+          onclick: () => {
+            localTag.goTo();
+          }
+        }
+      );
     });
   }
 
