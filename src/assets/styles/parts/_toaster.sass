@@ -1,0 +1,49 @@
+// Overrides for Toastr vendor CSS
+
+#toast-container
+  & > div // selector that original library uses
+    opacity: 0.9
+    padding-right: 30px
+    padding-left: 60px
+    width: auto
+    max-width: 400px
+
+  .toast-title
+    +h4
+    margin: 0.5rem 0
+
+  .toast-title + .toast-message
+    margin: 0.75rem 0 0.5rem
+
+  p
+    margin: 0.5rem 0
+    line-height: 1.25rem
+
+  .toast-progress
+    opacity: 0.2
+
+  // Override icons
+  & > .toast // selector that original library uses, and the !important
+    background-image: none !important
+
+    &:before
+        position: fixed
+        font-family: FontAwesome
+        font-size: 24px
+        line-height: 18px
+        float: left
+        color: white
+        padding-right: 0.5em
+        margin: 8px 0 0 -40px
+
+    &.toast-error:before
+        content: "\f071"
+
+    &.toast-warning:before
+        content: "\f06a"
+
+    &.toast-info:before
+        content: "\f05a"
+
+    &.toast-success:before
+        content: "\f058"
