@@ -240,9 +240,10 @@ export class SettingsComponent implements OnInit {
 
         this.dataService.accountService.deleteAccount(this.dataService.user.email, password, (err) => {
           hideLoading();
-          if (err) {
-            // @TODO/modal The errors that this fires are done in native `alert`s - should be passed back to CB maybe and then shown in the modal?
-          }
+          
+          // @TODO/modal The errors that this fires are done in native `alert`s - should be passed back to CB maybe and then shown in the modal?
+          // if (err) {
+          // }
 
           // Deleting account causes logout so no need to close the modal
         });

@@ -333,11 +333,10 @@ export class DataService {
         var feats = snapshot.val();
         feats.splice(0, featuresSeen); // cuts off the ones they've already seen;
 
-        var list = feats.map(function(val) { return '<li>' + val + '</li>'; }).join('');
-
         // $s.u.loading = false; // hide full-page login loading spinner so we can show modal // @TODO/rewrite
 
         // @TODO/rewrite
+        // var list = feats.map(function(val) { return '<li>' + val + '</li>'; }).join('');
         // $s.m.alert({
         //   title: 'Since you\'ve been gone...',
         //   bodyHTML: '<p>In addition to tweaks and fixes, here\'s what\'s new:</p><ul>' + list + '</ul><p>As always, you can send along feedback and bug reports from the menu, which is at the bottom right of the page.</p>',

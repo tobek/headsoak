@@ -470,9 +470,9 @@ export var _autocomplete = null;
             var response,
                 that = this,
                 options = that.options,
-                serviceUrl = options.serviceUrl,
-                params,
-                cacheKey;
+                // serviceUrl = options.serviceUrl, // unused
+                // cacheKey, // unused
+                params;
 
             options.params[options.paramName] = q;
             params = options.ignoreParams ? null : options.params;
