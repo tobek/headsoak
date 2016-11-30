@@ -27,14 +27,16 @@
     background-image: none !important
 
     &:before
-        position: fixed
+        position: absolute
+        float: left
+        top: 50%
+        margin: -9px 0 0 -40px // -9px top to vertically center based on 18px line height
+        padding-right: 0.5em
+        
+        line-height: 18px
         font-family: FontAwesome
         font-size: 24px
-        line-height: 18px
-        float: left
         color: white
-        padding-right: 0.5em
-        margin: 8px 0 0 -40px
 
     &.toast-error:before
         content: "\f071"
