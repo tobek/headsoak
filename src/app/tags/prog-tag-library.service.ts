@@ -117,23 +117,22 @@ export class ProgTagLibraryService {
 
     let message: string;
     if (funcUpdated && nameUpdated) {
-      message = 'The code for this Smart Tag Library tag has been updated - re-running it on all your notes now.<br><br>Also, it has been renamed to "' + latestTagData.name + '"'; // @TODO/ece See below. Quotes? Bold? Hashtag?
+      message = '<p>Re-running tag on all your notes now. Also, it has been renamed to <b>#' + latestTagData.name + '</b>.</p>';
     }
     else if (funcUpdated) {
-      message = 'The code for this Smart Tag Library tag has been updated - re-running it on all your notes now.';
+      message = '<p>The code for this Smart Tag Library tag has been updated - re-running it on all your notes now.</p>';
     }
     else if (nameUpdated) {
-      message = 'This Smart Tag Library tag has been renamed to "' + latestTagData.name + '"';
+      message = '<p>This Smart Tag Library tag has been renamed to <b>#' + latestTagData.name + '</b>.</p>';
     }
 
-    message += '<br><br>Click to view tag details.';
+    message += '<p>Click for tag details.</p>';
 
     // If we're not totally initialized yet then the full page loader will be obscuring everything, so don't show until then.
     this.tagsService.dataService.initialized$.filter(initialized => !! initialized).first().subscribe(() => {
       this.tagsService.dataService.toaster.info(
         message,
-        // @TODO/ece Should it have a hashtag? Different color? Certainly the bolding here doesn't do anything since title is already bold (though that could be  changed)
-        'Smart tag <b>' + oldName + '</b> updated',
+        'Smart tag <b>#' + (oldName || localTag.name) + '</b> updated',
         {
           timeOut: 10000,
           onclick: () => {

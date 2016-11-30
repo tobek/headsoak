@@ -442,5 +442,5 @@ export class AccountService {
 
     this._logger.log('Disabling private mode');
     this.toaster.info('Private notes will now be hidden', 'Private mode off');
-  }.
+  }
 }

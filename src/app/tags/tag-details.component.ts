@@ -51,10 +51,9 @@ export class TagDetailsComponent {
       this.deleted.emit(this.tag);
       this.router.navigateByUrl('/tags');
 
-      // @TODO/ece Another place where hashtag should maybe be used?
       // @TODO/ece Warning? Error?
       // @TODO Should have an undo button here
-      this.toaster.warning('Deleted tag "' + this.tag.name + '"');
+      this.toaster.warning('Deleted tag <b>#' + this.tag.name + '</b>');
     }
   }
 
