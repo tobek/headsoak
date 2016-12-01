@@ -15,7 +15,7 @@
         <note-query [hidden]="! dataService.user.loggedIn"></note-query>
 
         <div class="private-mode-indicator"
-          title="Private mode is enabled. Click to disable."
+          data-tooltip="Private mode is enabled. Click to disable."
           [class.is--private]="accountService.privateMode"
           (click)="accountService.disablePrivateMode()"
         >

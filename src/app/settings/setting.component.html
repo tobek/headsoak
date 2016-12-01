@@ -1,7 +1,7 @@
 <td>
   <label [attr.for]="'setting-' + setting.id">
     {{ setting.name }}
-    <span title="{{ setting.description }}" *ngIf="setting.description">(?)</span>
+    <i class="fa fa-question-circle" [attr.data-tooltip]="setting.description" *ngIf="setting.description"></i>
   </label>
   <div class="notes" *ngIf="setting.postSettingHtml" [innerHTML]="setting.postSettingHtml"></div>
 </td>
