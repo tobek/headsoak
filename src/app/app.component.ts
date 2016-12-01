@@ -4,6 +4,7 @@ import {Subscription} from 'rxjs';
 
 import {ActiveUIsService} from './active-uis.service';
 import {ModalService} from './modals/modal.service';
+import {TooltipService} from './utils/tooltip.service';
 import {AccountService} from './account/account.service';
 import {AnalyticsService} from './analytics.service';
 import {DataService} from './data.service';
@@ -55,6 +56,7 @@ export class App {
   constructor(
     private activeUIs: ActiveUIsService,
     private modalService: ModalService,
+    private tooltipService: TooltipService,
     private router: Router,
     public changeDetector: ChangeDetectorRef,
     public accountService: AccountService,
@@ -86,6 +88,8 @@ export class App {
 
     // @HACK Passing change detector through the app is annoying but it can't be added to a Service and DataService needs to call it, so...
     this.accountService.init(this.changeDetector);
+
+    this.tooltipService.init();
   }
   ngOnDestroy() {
     this.initializiationSub.unsubscribe();

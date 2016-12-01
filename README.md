@@ -30,6 +30,10 @@ If you need some CSS from the package, this is a bit of a hack but what you can 
 
 Typing jiggery can go in `src/custom-typings.d.ts`.
 
+##### Dependencies not in NPM
+
+Standalone JS can be saved to `src/app/vendor`, and then imported in `vendor.browser.ts` by relative path, e.g. `import 'app/vendor/darsain-tooltips.js'`. The module can the be required in app code, e.g. `const Tooltips = require('app/vendor/darsain-tooltips.js')`.
+
 ### Misc notes
 
 - To avoid type errors between Protractor and jQuery (both of which use `$`), you can comment out the two declarations of `$` from the end of `@types/jquery/index.d.ts`. (As a result, we refer to jQuery by `jQuery` not `$`.)

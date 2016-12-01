@@ -16,7 +16,7 @@ import {TagsService} from './tags/';
 import {ProgTagApiService} from './tags/prog-tag-api.service';
 import {ProgTagLibraryService} from './tags/';
 import {SettingsService} from './settings/';
-import {AutocompleteService, ScrollMonitorService} from './utils/';
+import {AutocompleteService, ScrollMonitorService, TooltipService} from './utils/';
 
 export * from './app.routes';
 
@@ -27,6 +27,7 @@ export const APP_PROVIDERS = [
   DataService,
   ModalService,
   ToasterService,
+  TooltipService,
   AccountService,
   UserService,
   NotesService,

@@ -33,6 +33,7 @@ import 'mousetrap';
 import 'mousetrap-global-bind';
 import 'sentiment';
 import 'toastr';
+import 'app/vendor/darsain-tooltips.js';
 
 if ('production' === ENV) {
   // Production
