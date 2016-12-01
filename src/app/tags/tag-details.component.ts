@@ -6,7 +6,7 @@ import {Subscription} from 'rxjs';
 import {AnalyticsService} from '../analytics.service';
 import {Tag, TagComponent, ProgTagControlComponent} from './';
 import {TagsService} from './tags.service'; // Dunno why we can't import from tags/index.ts
-import {ToasterService} from '../toaster.service';
+import {ToasterService} from '../utils/toaster.service'; // Likewise, this breaks if combined with import of Logger below
 import {Logger} from '../utils/';
 
 @Component({

@@ -9,14 +9,13 @@ import {ActiveUIsService} from './active-uis.service';
 import {AnalyticsService} from './analytics.service';
 import {DataService} from './data.service';
 import {ModalService} from './modals/modal.service';
-import {ToasterService} from './toaster.service';
 import {AccountService, UserService} from './account/';
 import {NotesService} from './notes/';
 import {TagsService} from './tags/';
 import {ProgTagApiService} from './tags/prog-tag-api.service';
 import {ProgTagLibraryService} from './tags/';
 import {SettingsService} from './settings/';
-import {AutocompleteService, ScrollMonitorService, TooltipService} from './utils/';
+import {AutocompleteService, ScrollMonitorService, ToasterService, TooltipService} from './utils/';
 
 export * from './app.routes';
 

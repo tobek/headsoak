@@ -4,6 +4,7 @@ export * from './jquery.autocomplete.mod';
 export * from './logger';
 export * from './scroll-monitor.service';
 export * from './sample-data';
+export * from './toaster.service';
 export * from './tooltip.service';
 
 export var utils = {

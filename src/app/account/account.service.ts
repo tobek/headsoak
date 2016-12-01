@@ -4,11 +4,10 @@ import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 const Firebase = require('firebase');
 
-import {utils, Logger} from '../utils/';
+import {utils, Logger, ToasterService} from '../utils/';
 import {AnalyticsService} from '../analytics.service';
 import {DataService} from '../data.service';
 import {ModalService} from '../modals/modal.service';
-import {ToasterService} from '../toaster.service';
 import {UserService} from './user.service';
 import {NotesService} from '../notes/';
 

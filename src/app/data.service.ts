@@ -9,7 +9,7 @@ import {Logger, utils, sampleData} from './utils/';
 import {AccountService} from './account';
 import {ActiveUIsService} from './active-uis.service';
 import {ModalService} from './modals/modal.service';
-import {ToasterService} from './toaster.service';
+import {ToasterService} from './utils/';
 import {UserService} from './account/user.service';
 import {Note, NotesService} from './notes/';
 import {Tag, TagsService} from './tags/';
