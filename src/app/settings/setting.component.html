@@ -6,7 +6,7 @@
   <div class="notes" *ngIf="setting.postSettingHtml" [innerHTML]="setting.postSettingHtml"></div>
 </td>
 <td>
-  <span *ngIf="section === 'shortcuts' && settings.get('sMod')">{{ settings.get('sMod') }}+</span>
+  <span *ngIf="setting.section === 'shortcuts' && settings.get('sMod')">{{ settings.get('sMod') }}+</span>
   <input
     *ngIf="setting.type === 'boolean'"
     type="checkbox"

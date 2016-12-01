@@ -3,7 +3,7 @@ import {Component, Input, Output, EventEmitter, ElementRef, Renderer} from '@ang
 import {Logger} from '../utils/';
 
 import {DataService} from '../data.service';
-import {Setting, Shortcut} from './';
+import {SettingsService, Setting, Shortcut} from './';
 
 @Component({
   selector: 'setting',
@@ -11,6 +11,7 @@ import {Setting, Shortcut} from './';
 })
 export class SettingComponent {
   @Input() setting: Setting;
+  @Input() settings: SettingsService;
   @Output() updated = new EventEmitter<Array<any>>();
 
   private removeHandler: Function;
