@@ -1,3 +1,7 @@
+.tag-like
+  +tag-chiclet
+  +tag-face
+
 tag
   +tag-face
   +tag-chiclet
@@ -32,6 +36,8 @@ tag
 
   &.dropdown-enabled.hovered
     +menu-dropdown
+    background-color: $primary-color-contrast
+    padding-bottom: 0 // slightly hacky attempt to make background of tag chiclet not overlap with background of dropdown
 
   .tag-action
     +icon-button
@@ -76,7 +82,7 @@ tag
     z-index: 1
     position: absolute
     width: 200px
-    margin-left: -8px // magic number to align with left edge of tag - we can't do left 0 and position the tag relatively because then we'll run afoul of tag container with overflow hidden
+    margin-left: -4px // magic number to align with left edge of tag - we can't do left 0 and position the tag relatively because then we'll run afoul of tag container with overflow hidden
     padding: 10px 15px 10px 10px
     background-color: $primary-color-contrast
     // @TODO/styles Border might be good if we could get left border to align with a left border on the tag, and a top border to be clipped by the tag towards the left, but eh
