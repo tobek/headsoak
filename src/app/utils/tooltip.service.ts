@@ -20,8 +20,38 @@ export class TooltipService {
       key: 'tooltip', // `data-tooltip` attribute triggers tooltip
       showOn: 'mouseenter',
       hideOn: 'mouseleave',
-      observe: 1 // enable mutation observer (used only when supported - need to apply tooltips to newly generated elements.)
+      observe: 1 // enable mutation observer (used only when supported - need to apply tooltips to newly generated elements.) @TODO Tooltips library uses dataset which doesn't exist on SVG elements so this library throws an error when mutation observer hits SVG and tries to bind tooltips, see issue https://github.com/darsain/tooltips/issues/14. Apart from ugly error in console, this may prevent tooltips from working, presumably if a tooltip attribute shows up after any SVG element as part of same DOM transformation.
     });
+  }
+
+  /** Destroys and re-creates tooltip associated with an element. This is needed for tooltips whose `data-tooltip` attributes are dynamic - once the tooltip is created, it doesn't update when the attribute updates, so we need to do this. It's kind of a hack. */
+  reloadTooltip(el: HTMLElement) {
+    return this._tips.remove(el).add(el);
+  }
+
+  reloadOnEvent(event: MouseEvent, show = false, timeout = 0) {
+    // When Angular updates the DOM it seems like event.currentTarget gets set to null, but assigning it here let's us continue to reference it.
+    const el = <HTMLElement> event.currentTarget;
+
+    // Wait for DOM to update
+    setTimeout(() => {
+      this.reloadTooltip(el);
+
+      // Check if document contains element cause it may have since been removed in which case tooltip appears at top left of page and won't go away.
+      if (show && document.body.contains(el)) {
+        this._tips.show(el);
+      }
+    }, timeout);
+   }
+
+  reloadOnClick(event: MouseEvent) {
+    // Show tooltip right away cause they just mouse clicked so mouse is still on it
+    this.reloadOnEvent(event, true);
+  }
+
+  reloadOnMouseleave(event: MouseEvent) {
+    // Wait for fade animation before reloading tooltip
+    this.reloadOnEvent(event, false, 500);
   }
 
 }

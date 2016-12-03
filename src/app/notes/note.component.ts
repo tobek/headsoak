@@ -7,7 +7,7 @@ import {Note} from '../notes/note.model';
 import {NotesService} from '../notes/notes.service';
 import {TagComponent} from '../tags/';
 
-import {Logger, AutocompleteService} from '../utils/';
+import {Logger, AutocompleteService, TooltipService} from '../utils/';
 
 @Component({
   selector: 'note',
@@ -42,6 +42,7 @@ export class NoteComponent {
     private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
     private autocompleteService: AutocompleteService,
+    private tooltipService: TooltipService,
     private settings: SettingsService,
     private notesService: NotesService
   ) {}
