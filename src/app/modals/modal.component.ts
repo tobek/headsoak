@@ -8,6 +8,7 @@ import {SettingsService} from '../settings/settings.service';
 import {Logger} from '../utils/logger';
 
 import {LoginComponent} from '../account/';
+import {HomepageComponent} from './homepage.component';
 import {FeedbackComponent} from './feedback.component';
 import {PrivateModeComponent} from './private-mode.component';
 
@@ -37,6 +38,7 @@ type ModalConfigType = {
   providers: [ ],
   directives: [
     LoginComponent,
+    HomepageComponent,
     FeedbackComponent,
     PrivateModeComponent,
   ],
