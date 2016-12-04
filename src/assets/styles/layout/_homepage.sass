@@ -3,6 +3,7 @@
 homepage
   display: block
   position: relative
+  padding: 50px 0
   color: $primary-color
 
   h2
@@ -22,76 +23,35 @@ homepage
     line-height: 60px
     text-shadow: 2px 2px 5px $shadow-color
 
-  .how
-    +span(6) // @TODO/now should be full width at certain breakpoint
-    position: absolute
-    margin-top: calc(#{gutter() * -3} - 100px); // gutter * 3 is same a summaries margin-top
-    text-align: center
+  // .mockup
+  //   overflow: hidden
+  //   height: 135px
+  //   margin-top: 15px
+  //   text-align: left
 
-    // .fa
-    //   position: relative
-    //   top: -5px
+  .note-container
+    +span(8)
 
+  note
+    pointer-events: none
+    height: 300px
 
-  .summaries
+    .body-input
+      height: 1000px
+
+    .new-tag
+      &,
+      .new-tag-button
+        cursor: default !important
+
+      &:hover .fa
+        color: $secondary-color
+
+  .features
     +span(12)
     margin-top: gutter() * 3
 
-  .summary
-    +card
-    +gallery(6 of 12)
-    position: relative
-    padding-top: 25px
-    padding-bottom: 0
-    text-align: center
-
-    .thing
-      +h1
-      letter-spacing: 2px
-      text-transform: uppercase
-
-    .mockup
-      overflow: hidden
-      height: 135px
-      margin-top: 15px
-      text-align: left
-
-    note
-      .body-input
-        height: 1000px
-
-      .new-tag
-        &,
-        .new-tag-button
-          cursor: default !important
-
-        &:hover .fa
-          color: $secondary-color
-
-    &.summary--explore
-      tag
-        margin-right: 0
-
-    .cooccurrences
-      padding-left: 15px
-
-      tag
-        margin-bottom: 2px
-
-      .count
-        margin-right: 10px
-
-    .blocker
-      position: absolute
-      z-index: 1
-      width: 100%
-      height: 40%
-      bottom: 0
-      left: 0
-      background-image: linear-gradient(rgba(255, 255, 255, 0), $primary-color-contrast) // transparent white right than `transparent` keyword cause safari treats `transparent` as transparent black so gradient is ugly
-
-
-  .summary--small
+  .feature
     +card
     +gallery(3 of 12)
     height: 175px
@@ -101,69 +61,6 @@ homepage
       text-align: center
       margin: 0 0 20px
 
-  .dive
-    +card
-    +span(12)
-    margin-top: 60px
-
-    h2
-      color: $primary-color
-      margin-top: 0
-
-  .dive--smart-tags
-    .examples
-      @extend .clearfix
-
-    .example
-      +gallery(6 of 12)
-      height: 200px
-
-    .icon
-      +span(1 of 6)
-      margin-top: 0
-    .text
-      +span(5 of 6 last)
-    
-    h3
-      font-weight: normal
-      margin: 0 0 25px
-
-    .followup
-      margin: 0 0 10px
-      text-align: center
-      line-height: 1.75
-
-  .dive--explore
-    position: relative
-    overflow: hidden
-
-    .text
-      +span(6)
-
-    .scroller
-      +span(6 last)
-      position: absolute
-      top: 0
-      right: 0
-      padding: gutter() * 2
-      height: 100%
-      text-align: center
-
-      animation: vert-scroll 10s infinite normal
-
-      @keyframes vert-scroll
-        from
-          transform: translateY(0)
-          animation-timing-function: linear
-
-        to
-          transform: translateY(-255%)
-          animation-timing-function: linear
-
-      .fa
-        display: block
-        margin-bottom: 25%
-        font-size: 72px
 
 .modal-content.outro-login
   float: right

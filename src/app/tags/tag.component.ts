@@ -15,7 +15,7 @@ export class TagComponent {
   @Input() tag: Tag;
 
   /** Optional, supplied if this tag component is being shown on a specific note. */
-  @Input() ofNoteId: string;
+  @Input() ofNoteId?: string;
 
   /** If this is a new tag not yet saved to data store but just created for the user to type new tag name into. */
   isNewTag = false;
