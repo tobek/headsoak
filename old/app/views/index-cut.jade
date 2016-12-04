@@ -35,41 +35,17 @@ block content
 
           h4 change password
             //- DONE
-
           h4 change email
-          p To change the email address associated with your account, please email <a href="mailto:support@nutmeg.io">support@nutmeg.io</a> and we'll get you sorted.
+            //- DONE
 
         div.feedback(ng-show="m.modal == 'feedback'")
           //- DONE
-
         div.login(ng-show="m.modal == 'login'")
           //- DONE
-
         div.create-account(ng-show="m.modal == 'createaccount'")
           //- DONE
-
         div.dynamic(ng-show="m.modal == 'dynamic'")
-          //- PARTIALLY DONE
-          h3(ng-show="m.dynamic.title") {{ m.dynamic.title }}
-
-          div.custom-body(ng-bind-html="m.dynamic.bodyHTML", ng-show="m.dynamic.bodyHTML")
-          p(ng-show="m.dynamic.message") {{ m.dynamic.message }}
-
-          form(ng-submit="m.acceptModal(m.dynamic.inputVal)")
-            input(type="password", ng-show="m.dynamic.passwordInput", ng-model="m.dynamic.inputVal")
-            input(type="text", ng-show="m.dynamic.textInput", placeholder="{{ m.dynamic.placeholder }}", ng-model="m.dynamic.inputVal")
-            //- slightly byzantine rules for whether ng-submit gets called means that since we have more than one input, a submit button has to be here in order for `enter` in an input field to call ng-submit: https://docs.angularjs.org/api/ng/directive/form#submitting-a-form-and-preventing-the-default-action
-            input(type="submit", ng-hide="true")
-
-          div.prog-tag-editor(ng-show="m.dynamic.progTag")
-            pre function(note) {
-            pre#prog-tag-editor-field
-            pre }
-
-          div.button-holder
-            input.ok-button(type="submit", value="{{ m.dynamic.okText || 'ok' }}", ng-click="m.acceptModal(m.dynamic.inputVal)", ng-show="m.dynamic.ok || m.dynamic.okText")
-            input(type="submit", value="{{ m.dynamic.cancelText || 'cancel' }}", ng-click="m.cancelModal()", ng-show="m.dynamic.cancel || m.dynamic.cancelText")
-            input(type="submit", value="{{ m.dynamic.thirdButton }}", ng-click="m.dynamic.thirdButtonCb()", ng-show="m.dynamic.thirdButton")
+          //- DONE
 
         div.working-overlay(ng-class="{working: m.working}")
           div.inner
@@ -117,20 +93,7 @@ block content
       img#menuimage(src="/img/nutmeg40h.png", alt="nutmeg")
 
     div#query
-      div.inner
-        div.search-bar
-          div.flex-container
-            i.fa.fa-search(ng-click="q.focus()")
-            span.private-mode.chiclet(ng-show="p.privateMode", ng-click="p.togglePrivateMode()")
-              | private mode
-              span.hover-cover
-                i.fa.fa-times
-            span.tags
-              //- DONE
-            //- PARTIALLY DONE
-
-        div.nut-control
-          //- DONE
+      //- DONE
 
     div#main(ng-class="{'hide-tag-browser': !c.config.showTagBrowser}")
       div#nuts

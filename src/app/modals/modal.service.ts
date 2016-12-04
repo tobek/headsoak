@@ -25,17 +25,25 @@ export class ModalService {
     return this.modal && this.modal.visible;
   }
 
-  /** Whether there's an active modal that can be cancelled as opposed to a mandatory thing. Currently all modals are cancellable so just return true. */
+  /** Whether there's an active modal that can be cancelled as opposed to a mandatory thing. */
   get isCancellable(): boolean {
     return this.modal && this.modal.visible && this.modal.cancellable;
   }
 
-  close(evenIfUncancellable?: boolean): void {
-    if (! this.modal) {
+  cancel(evenIfUncancellable?: boolean): void {
+    if (! this.modal || ! this.modal.visible) {
       return;
     }
     
-    this.modal.close(evenIfUncancellable);
+    this.modal.cancel(evenIfUncancellable);
+  }
+
+  close(): void {
+    if (! this.modal || ! this.modal.visible) {
+      return;
+    }
+    
+    this.modal.close();
   }
 
   login(): void {

@@ -100,7 +100,7 @@ export class App {
   appInitialization(isInitialized: boolean): void {
     if (isInitialized) {
       setTimeout(() => {
-        this.modalService.close(true);
+        this.modalService.close();
       }, 0);
     }
 

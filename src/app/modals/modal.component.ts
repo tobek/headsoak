@@ -140,6 +140,8 @@ export class ModalComponent {
   okButtonHideLoading() {
     this.okButtonIsLoading = false;
   }
+
+  /** User has accepted or completed modal. */
   ok() {
     if (this.config.okCb) {
       const shouldClose = this.config.okCb(
@@ -151,14 +153,12 @@ export class ModalComponent {
       if (shouldClose === false) {
         return;
       }
-      else {
-        delete this.config.cancelCb; // We've successfully called okCb so no need to call cancelCb
-        this.close(true);
-      }
     }
+
+    this.close();
   }
 
-  close(evenIfUncancellable = false) {
+  cancel(evenIfUncancellable = false) {
     if (! this.cancellable && ! evenIfUncancellable) {
       return;
     }
@@ -167,6 +167,11 @@ export class ModalComponent {
       this.config.cancelCb();
     }
 
+    this.close();
+  }
+
+
+  close() {
     this.modalService.closed$.next(null);
 
     // Start the whole thing fading
@@ -187,6 +192,7 @@ export class ModalComponent {
         this.promptInput.nativeElement.focus();
       }, 100);
     }
+    // @TODO/modal Should focus on "ok" button if no prompt, so they can accept with enter/space
   }
 
 }

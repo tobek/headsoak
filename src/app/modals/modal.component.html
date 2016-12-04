@@ -1,8 +1,8 @@
-<div class="modal-backdrop" (click)="close()"></div>
+<div class="modal-backdrop" (click)="cancel()"></div>
 
 <div class="modal-content-container">
   <div class="modal-content is--{{ activeModal }}">
-    <span class="modal-close" (click)="close()">
+    <span class="modal-close" (click)="cancel()">
       <i class="fa fa-times"></i>
     </span>
 
@@ -36,7 +36,7 @@
         [disabled]="okButtonIsLoading"
         (click)="ok()"
       >{{ config.okButtonText || 'OK' }}</button>
-      <button *ngIf="config.cancelButton" class="btn btn-default" (click)="close()">Cancel</button>
+      <button *ngIf="config.cancelButton" class="btn btn-default" (click)="cancel()">Cancel</button>
 
       <span class="additional-buttons" *ngIf="config.additionalButtons && config.additionalButtons.length">
         <button class="btn btn-default" *ngFor="let button of config.additionalButtons" (click)="close(); button.cb()">{{ button.text }}</button>
