@@ -38,6 +38,17 @@ export class HomepageComponent {
       const sentPos = new SubTag('positive', sent);
 
       this.tags = [sentPos];
+
+      setTimeout(() => {
+        this.unwrite('This is some', () => {
+          this.tags = [];
+          setTimeout(() => {
+            this.write('This is some really bad, horrible, sad text in a note.', 'This is some'.length, () => {
+              this.tags = [new SubTag('negative', sent)];
+            });
+          }, 1000)
+        })
+      }, 2000);
     });
   }
 
@@ -69,6 +80,32 @@ export class HomepageComponent {
     setTimeout(() => {
       this.write(str, i, cb);
     }, delay);
+  }
+
+  /** Deletes contents in noteBody until it matches given string. */
+  unwrite(str: string, cb?: Function) {
+    const currentString = this.noteBody.nativeElement.value;
+
+    if (currentString.indexOf(str) !== 0) {
+      throw Error('Current string doesn\'t start with given string!');
+    }
+
+    if (currentString === str) {
+      if (cb) {
+        cb();
+      }
+
+      return;
+    }
+
+    // @TODO/now Stop doing this if user focuses elsewhere
+    this.noteBody.nativeElement.focus();
+
+    this.noteBody.nativeElement.value = currentString.substring(0, currentString.length - 1);
+
+    setTimeout(() => {
+      this.unwrite(str, cb);
+    }, 50);
   }
 
 
