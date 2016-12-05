@@ -4,7 +4,7 @@ import {Subscription} from 'rxjs';
 import {AccountService} from './account.service';
 
 
-type ViewType = 'login' | 'create-account' | 'reset-password';
+type ViewType = 'email-signup' | 'login' | 'create-account' | 'reset-password';
 
 @Component({
   selector: 'login',
@@ -19,6 +19,8 @@ export class LoginComponent {
   _view: ViewType;
 
   passwordResetSuccess = false;
+
+  private SENDGRID_DATA_TOKEN = 'GToz%2FEw5QP9JUKCujIHPy3uDXh8mcHwhIymBkDxrMpP5rzzMvgY6EHjUBqPVOkfv%2Fydfh8p7VoOBnGyYPQDgmcy5t%2BiHV%2B7u71%2F0tMVNo%2FU%3D';
 
   private isLoading = false;
 
@@ -43,14 +45,16 @@ export class LoginComponent {
               this.view = 'login';
             }
             else {
-              this.view = 'create-account';
+              // this.view = 'create-account';
+              this.view = 'email-signup';
             }
             break;
           case 'error':
             // Don't change the view
             break;
           default:
-            this.view = 'create-account';
+            // this.view = 'create-account';
+            this.view = 'email-signup';
             break;
           }
       });
@@ -59,6 +63,7 @@ export class LoginComponent {
 
   ngOnDestroy() {
     this.loginSub.unsubscribe();
+    this.clearEmailSignup();
   }
 
   get view(): ViewType {
@@ -69,6 +74,33 @@ export class LoginComponent {
     this.passwordResetSuccess = false;
 
     this._view = newView;
+
+    if (newView === 'email-signup') {
+      setTimeout(this.setUpEmailSignup.bind(this), 50);
+    }
+    else {
+      this.clearEmailSignup();
+    }
+  }
+
+  /** Adapted from sendgrid's legacy newsletter subscribe widget */
+  setUpEmailSignup() {
+    const id = 'sendgrid-subscription-widget-js';
+    const firstScript = document.getElementsByTagName('script')[0];
+    const protocol = /^http:/.test(document.location + '') ? "http" : "https";
+
+    if (! document.getElementById(id)) {
+      const js = document.createElement('script');
+      js.id = id;
+      js.src = protocol + '://s3.amazonaws.com/subscription-cdn/0.2/widget.min.js';
+      firstScript.parentNode.insertBefore(js, firstScript);
+    }
+  }
+  clearEmailSignup() {
+    const script = document.getElementById('sendgrid-subscription-widget-js');
+    if (script) {
+      script.remove();
+    }
   }
 
   resetInputs() {

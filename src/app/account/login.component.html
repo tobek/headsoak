@@ -1,10 +1,25 @@
 <header>
   <div class="logo">
-    <h1 (click)="logoClick()"><i class="fa fa-circle"></i>Headsoak<span class="superscript">beta</span></h1>
-    <div class="subheading subheading--initial" [class.is--hidden]="view !== 'create-account'">augmented note-taking</div>
-    <div class="subheading subheading--general" [class.is--hidden]="view === 'create-account'">see your mind clearly</div>
+    <h1><i class="fa fa-circle"></i>Headsoak<span class="superscript">beta</span></h1>
+    <div class="subheading subheading--initial" [class.is--hidden]="view !== 'login'">see your mind clearly</div>
+    <div class="subheading subheading--general" [class.is--hidden]="view === 'login'">augmented note-taking</div>
   </div>
 </header>
+
+<div *ngIf="view === 'email-signup'">
+  <div class="sendgrid-subscription-widget"
+    [attr.data-token]="SENDGRID_DATA_TOKEN"
+    data-css="false"
+    data-submit-text="Subscribe for Beta Launch"
+  >
+    <label><span>First Name</span><input type="text" name="a" placeholder="First name"></label>
+  </div>
+
+  <div class="switch-sign-up-in" (click)="view = 'login'">
+    Existing user?
+    <button class="btn btn-secondary create-account-link">Sign In</button>
+  </div>
+</div>
 
 <div *ngIf="view === 'create-account'">
   <form id="create-account-form" class="sign-up-form" ref-createAccountForm="ngForm" (ngSubmit)="createAccountForm.valid && createAccount()">
@@ -40,9 +55,15 @@
     <iframe ref-pseudoLoginIframe id="pseudo-login-iframe" src="/pseudo-login.html" style="width:0px; height:0px; border:0px;"></iframe>
   </form>
 
+  <!--
   <div class="switch-sign-up-in" (click)="view = 'create-account'">
     New to Headsoak?
     <button class="btn btn-secondary create-account-link">Register</button>
+  </div>
+  -->
+  <div class="switch-sign-up-in" (click)="view = 'email-signup'">
+    New here?
+    <button class="btn btn-secondary create-account-link">Beta signup</button>
   </div>
 </div>
 

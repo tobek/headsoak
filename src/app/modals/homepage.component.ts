@@ -3,7 +3,7 @@ import {Component, ViewChild, ElementRef/*, HostBinding*/} from '@angular/core';
 import {AnalyticsService} from '../analytics.service';
 import {Logger} from '../utils/logger';
 
-import {LoginComponent} from '../account/';
+// import {LoginComponent} from '../account/';
 import {Tag, SubTag, TagComponent} from '../tags/';
 
 @Component({
@@ -11,7 +11,7 @@ import {Tag, SubTag, TagComponent} from '../tags/';
   pipes: [ ],
   providers: [ ],
   directives: [
-    LoginComponent,
+    // LoginComponent,
     TagComponent,
   ],
   templateUrl: './homepage.component.html'

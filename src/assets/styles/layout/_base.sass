@@ -43,20 +43,22 @@ html
   background-attachment: fixed
 
   // Default background on page load
-  background-image: url('https://s3.amazonaws.com/static.headsoak.com/img/bg/Gustav_Klimt_-_Beech_Grove_I_-_Google_Art_Project-1280x.jpg')
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/0/0f/Hokusai_1760-1849_Ocean_waves.jpg')
+  // @TODO/now Responsive sizing and crop japanese text out
+  // background-image: url('https://s3.amazonaws.com/static.headsoak.com/img/bg/Gustav_Klimt_-_Beech_Grove_I_-_Google_Art_Project-1280x.jpg')
 
-  @media (min-width: $screen-large)
-    background-image: url('https://s3.amazonaws.com/static.headsoak.com/img/bg/Gustav_Klimt_-_Beech_Grove_I_-_Google_Art_Project-1920x.jpg')
+  // @media (min-width: $screen-large)
+  //   background-image: url('https://s3.amazonaws.com/static.headsoak.com/img/bg/Gustav_Klimt_-_Beech_Grove_I_-_Google_Art_Project-1920x.jpg')
 
-  @media (min-width: $screen-huge)
-    background-image: url('https://s3.amazonaws.com/static.headsoak.com/img/bg/Gustav_Klimt_-_Beech_Grove_I_-_Google_Art_Project.jpg')
+  // @media (min-width: $screen-huge)
+  //   background-image: url('https://s3.amazonaws.com/static.headsoak.com/img/bg/Gustav_Klimt_-_Beech_Grove_I_-_Google_Art_Project.jpg')
 
-  // Need to be more generous with retina-ish
-  @media only screen and (min-device-pixel-ratio: 1.3), only screen and (min-resolution: 120dpi)
-    @media (min-width: $tablet-large)
-      background-image: url('https://s3.amazonaws.com/static.headsoak.com/img/bg/Gustav_Klimt_-_Beech_Grove_I_-_Google_Art_Project-1920x.jpg')
-    @media (min-width: $screen-large)
-      background-image: url('https://s3.amazonaws.com/static.headsoak.com/img/bg/Gustav_Klimt_-_Beech_Grove_I_-_Google_Art_Project.jpg')
+  // // Need to be more generous with retina-ish
+  // @media only screen and (min-device-pixel-ratio: 1.3), only screen and (min-resolution: 120dpi)
+  //   @media (min-width: $tablet-large)
+  //     background-image: url('https://s3.amazonaws.com/static.headsoak.com/img/bg/Gustav_Klimt_-_Beech_Grove_I_-_Google_Art_Project-1920x.jpg')
+  //   @media (min-width: $screen-large)
+  //     background-image: url('https://s3.amazonaws.com/static.headsoak.com/img/bg/Gustav_Klimt_-_Beech_Grove_I_-_Google_Art_Project.jpg')
 
 // This is our main grid container. gutter() and span() etc. should work as normal in here
 main

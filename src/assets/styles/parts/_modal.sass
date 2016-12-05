@@ -27,6 +27,10 @@ modal
     pointer-events: none // Otherwise it eats scrolling when you're on marketing home page
     background: $modal-backdrop
 
+  &.full-height .modal-backdrop
+    // background: rgba(0, 0, 0, 0.15)
+    background: none
+
   &.cancellable .modal-backdrop
     pointer-events: all
 

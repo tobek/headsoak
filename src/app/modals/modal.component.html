@@ -1,9 +1,7 @@
 <div class="modal-backdrop" (click)="cancel()"></div>
 
 <div class="modal-content-container">
-  <homepage *ngIf="activeModal === 'login'"></homepage>
-
-  <div class="modal-content is--{{ activeModal }}" *ngIf="activeModal !== 'login'">
+  <div class="modal-content is--{{ activeModal }}">
     <span class="modal-close" (click)="cancel()">
       <i class="fa fa-times"></i>
     </span>
@@ -12,7 +10,7 @@
       <i class="initial-loader inner fa fa-spin fa-cube"></i>
     </div>
 
-    <!-- <login *ngIf="activeModal === 'login'"></login> -->
+    <login *ngIf="activeModal === 'login'"></login>
 
     <feedback *ngIf="activeModal === 'feedback'"></feedback>
     <private-mode *ngIf="activeModal === 'privateMode'" [isModal]="true"></private-mode>
@@ -46,10 +44,18 @@
     </div>
   </div>
 
+  <homepage *ngIf="activeModal === 'login'"></homepage>
+
   <!--
   <div class="modal-content outro-login" *ngIf="activeModal === 'login'">
     <login></login>
   </div>
   -->
 
+</div>
+
+<div class="homepage-outro" *ngIf="activeModal === 'login'">
+  <h2>
+    Questions? Ideas? <a href="mailto:support@headsoak.com">Contact us.</a>
+  </h2>
 </div>

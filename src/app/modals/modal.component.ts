@@ -7,7 +7,7 @@ import {AnalyticsService} from '../analytics.service';
 import {SettingsService} from '../settings/settings.service';
 import {Logger} from '../utils/logger';
 
-// import {LoginComponent} from '../account/';
+import {LoginComponent} from '../account/';
 import {HomepageComponent} from './homepage.component';
 import {FeedbackComponent} from './feedback.component';
 import {PrivateModeComponent} from './private-mode.component';
@@ -37,7 +37,7 @@ type ModalConfigType = {
   pipes: [ ],
   providers: [ ],
   directives: [
-    // LoginComponent,
+    LoginComponent,
     HomepageComponent,
     FeedbackComponent,
     PrivateModeComponent,

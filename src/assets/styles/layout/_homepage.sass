@@ -3,7 +3,6 @@
 homepage
   display: block
   position: relative
-  padding: 50px 0
   color: $primary-color
 
   h2
@@ -15,29 +14,23 @@ homepage
     a
       color: $primary-color-contrast
 
-  .intro,
-  .outro
-    +span(6)
-    padding-top: 170px
-    text-align: center
-    line-height: 60px
-    text-shadow: 2px 2px 5px $shadow-color
-
-  // .mockup
-  //   overflow: hidden
-  //   height: 135px
-  //   margin-top: 15px
-  //   text-align: left
-
   .note-container
-    +span(8)
+    +span(6)
+    margin-top: 10vh // matches login top margin
+    padding: 170px 50px 0 0 // height is size of login header + margin
+
+    @media (max-height: 750px)
+      margin-top:  0
+    @media (max-height: 550px)
+      padding-top: 140px
 
   note
     pointer-events: none
     height: 300px
 
     .body-input
-      height: 1000px
+      padding-left: 29px // magic number to align with first tag
+      padding-right: 30px
 
     .new-tag
       &,
@@ -53,8 +46,9 @@ homepage
 
   .feature
     +card
-    +gallery(3 of 12)
-    height: 175px
+    +gallery(6 of 12)
+    height: 150px
+    margin-bottom: 25px
     padding: 25px gutter()
 
     h4
@@ -62,15 +56,36 @@ homepage
       margin: 0 0 20px
 
 
-.modal-content.outro-login
-  float: right
-  height: auto
-  margin: 50px 0
+.homepage-outro
+  clear: both
+  width: 100%
+  padding-top: 50px
 
-  login
-    .subheading--initial
-      opacity: 0 !important
-      visibility: hidden !important
-    .subheading--general
-      opacity: 1 !important
-      visibility: visible !important
+  h2
+    position: relative
+    margin: 0
+    padding: 25px
+    text-align: center
+    background-color: rgba(0, 0, 0, 0.6)
+    line-height: 60px
+    text-shadow: 2px 2px 5px $shadow-color
+    letter-spacing: 1.8px
+    color: $primary-color-contrast
+
+    a
+      color: $primary-color-contrast
+      &:hover
+        color: $highlight-color
+
+// .modal-content.outro-login
+//   float: right
+//   height: auto
+//   margin: 50px 0
+
+//   login
+//     .subheading--initial
+//       opacity: 0 !important
+//       visibility: hidden !important
+//     .subheading--general
+//       opacity: 1 !important
+//       visibility: visible !important

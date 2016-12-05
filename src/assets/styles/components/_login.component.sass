@@ -47,7 +47,7 @@ login
       +small
       position: absolute
       margin-left: 5px
-      color: $highlight-color
+      color: $secondary-color
 
   input
     display: block
@@ -108,3 +108,22 @@ login
         opacity: 1
         visibility: visible
 
+
+  .sendgrid-subscription-widget
+    .heading
+      margin-top: 40px
+      text-align: center
+      font-size: 1.25em
+
+    label span
+      display: none
+
+    input[type=submit]
+      @extend .btn
+      @extend .btn-primary
+      margin: 25px 0
+
+    label input
+      margin-bottom: 40px
+    label:last-of-type input
+      margin-bottom: 5px
