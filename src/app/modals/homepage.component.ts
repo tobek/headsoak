@@ -3,7 +3,7 @@ import {Component, ViewChild, ElementRef/*, HostBinding*/} from '@angular/core';
 import {AnalyticsService} from '../analytics.service';
 import {Logger} from '../utils/logger';
 
-// import {LoginComponent} from '../account/';
+import {LoginComponent} from '../account/';
 import {Tag, SubTag, TagComponent} from '../tags/';
 
 const jQuery = require('jquery');
@@ -22,7 +22,7 @@ type SceneType = {
   pipes: [ ],
   providers: [ ],
   directives: [
-    // LoginComponent,
+    LoginComponent,
     TagComponent,
   ],
   templateUrl: './homepage.component.html'
@@ -177,7 +177,6 @@ export class HomepageComponent {
 
   ngOnInit() {
     jQuery(window).one('mousedown touchstart', () => {
-      this._logger.log('STOP STEALING!');
       this.stealFocus = false;
     });
   }

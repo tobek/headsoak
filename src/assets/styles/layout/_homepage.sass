@@ -16,17 +16,20 @@ homepage
 
   .note-container
     +span(6)
-    margin-top: 10vh // matches login top margin
-    padding: 170px 50px 0 0 // height is size of login header + margin
+    height: 100vh
+    padding-top: 10vh // matches login top margin
+    padding-right: 50px
 
     @media (max-height: 750px)
-      margin-top:  0
-    @media (max-height: 550px)
-      padding-top: 140px
+      padding-top:  0
 
   note
     pointer-events: none
+    margin-top: 170px // size of login header height/margin
     height: 300px
+
+    @media (max-height: 550px)
+      margin-top: 140px
 
     .body-input
       padding-left: 29px // magic number to align with first tag
@@ -56,6 +59,11 @@ homepage
     text-transform: uppercase
     color: $primary-color-contrast
 
+  @media (max-width: $screen-small)
+    .note-container,
+    .teaser
+      padding-right: 25px
+
   .features
     +span(12)
     margin-top: gutter() * 3
@@ -83,10 +91,9 @@ homepage
   h4
     position: relative
     margin: 0
-    padding: 25px
+    padding: 50px 25px
     text-align: center
     background-color: rgba(0, 0, 0, 0.6)
-    line-height: 60px
     text-shadow: 2px 2px 5px $shadow-color
     letter-spacing: 1.8px
     color: $primary-color-contrast
@@ -108,3 +115,53 @@ homepage
 //     .subheading--general
 //       opacity: 1 !important
 //       visibility: visible !important
+
+
+// Because of fucked up flow/DOM ordering, we need two copies of the <login> component. One we show on mobile, the other on desktop
+
+@media (min-width: $tablet-large)
+  login .signup-text
+    display: none
+  homepage login
+    display: none
+
+@media (max-width: $tablet-large)
+  .modal-content.is--login
+    display: none
+
+  homepage
+    .note-container
+      width: 100%
+      height: auto
+      padding: 0
+
+    note
+      margin: 20px 0 50px
+
+    login
+      +card
+      padding-top: 0
+
+      header
+        margin-bottom: 25px
+
+      .signup-text
+        +h4
+        margin-bottom: 25px
+        text-align: center
+
+      .sendgrid-subscription-widget input[type=submit]
+        padding-left: 0;
+        padding-right: 0;
+
+    .teaser
+      position: static
+      width: 100%
+      margin-top: 25px
+      padding-right: 0
+
+    .feature
+      +gallery(9 of 12)
+      float: none !important
+      margin-left: auto !important
+      margin-right: auto !important
