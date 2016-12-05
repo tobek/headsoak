@@ -6,6 +6,8 @@ import {Logger} from '../utils/logger';
 // import {LoginComponent} from '../account/';
 import {Tag, SubTag, TagComponent} from '../tags/';
 
+const jQuery = require('jquery');
+
 type SceneType = {
   function: string,
   text: string,
@@ -27,6 +29,8 @@ type SceneType = {
 })
 export class HomepageComponent {
   tags: Tag[] = [];
+
+  stealFocus = true;
 
   @ViewChild('noteBody') noteBody: ElementRef;
   @ViewChild('noteTags') noteTags: ElementRef;
@@ -171,6 +175,13 @@ export class HomepageComponent {
     private analyticsService: AnalyticsService
    ) {}
 
+  ngOnInit() {
+    jQuery(window).one('mousedown touchstart', () => {
+      this._logger.log('STOP STEALING!');
+      this.stealFocus = false;
+    });
+  }
+
   ngAfterViewInit() {
     this.play();
   }
@@ -208,8 +219,9 @@ export class HomepageComponent {
       return;
     }
 
-    // @TODO/now Stop doing this if user focuses elsewhere
-    this.noteBody.nativeElement.focus();
+    if (this.stealFocus) {
+      this.noteBody.nativeElement.focus();
+    }
 
     let delay = Math.floor(Math.random() * (50)) + 50;
 
@@ -241,8 +253,9 @@ export class HomepageComponent {
       return;
     }
 
-    // @TODO/now Stop doing this if user focuses elsewhere
-    this.noteBody.nativeElement.focus();
+    if (this.stealFocus) {
+      this.noteBody.nativeElement.focus();
+    }
 
     this.noteBody.nativeElement.value = currentString.substr(0, currentString.length - 1);
 
