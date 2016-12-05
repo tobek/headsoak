@@ -40,6 +40,22 @@ homepage
       &:hover .fa
         color: $secondary-color
 
+  .teaser
+    +span(6)
+    position: absolute
+    top: 100vh
+    margin-top: -75px
+    padding-right: 50px // matches .note-container
+
+    +h3
+    text-align: center
+    line-height: 30px
+    text-shadow: 2px 2px 5px black
+    font-weight: bold
+    letter-spacing: 1.8px
+    text-transform: uppercase
+    color: $primary-color-contrast
+
   .features
     +span(12)
     margin-top: gutter() * 3
