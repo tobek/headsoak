@@ -24,7 +24,6 @@ homepage
       padding-top:  0
 
   note
-    pointer-events: none
     margin-top: 170px // size of login header height/margin
     height: 300px
 
@@ -42,6 +41,9 @@ homepage
 
       &:hover .fa
         color: $secondary-color
+
+    tag:hover .tag-actions
+      display: inline // overrides normal tag style that makes the tag wider on hover here
 
   .teaser
     +span(6)

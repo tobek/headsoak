@@ -243,7 +243,7 @@ export class HomepageComponent {
     }, 500);
   }
 
-  write(str: string, cb?: Function, i = 0, speed = 1, el?: HTMLElement) {
+  write(str: string, cb?: Function, i = 0, speed = 1, el?: HTMLInputElement) {
     if (! el) {
       el = this.noteBody.nativeElement;
     }
