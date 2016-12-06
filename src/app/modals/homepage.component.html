@@ -3,7 +3,7 @@
     <div class="note-wrapper">
       <div class="header">
         <div class="tags"
-          ><span class="tag-like"><span class="new-tag-button"><i class="fa fa-plus"></i></span></span
+          ><span class="tag-like" [class.adding-tag]="addingTag"><input type="text" placeholder="add tag" class ="new-tag-input" ref-noteAddTagInput /><span class="new-tag-button"><i class="fa fa-plus"></i></span></span
           ><tag
             *ngFor="let tag of tags"
             [tag]="tag"

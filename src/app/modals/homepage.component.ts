@@ -13,6 +13,7 @@ type SceneType = {
   text: string,
   addTag?: Tag,
   removeTag?: Tag,
+  manualAddTag?: Tag,
   delay?: number, // delay before next scene in script
   speed?: number, // divisor of delays in writing
 };
@@ -32,8 +33,11 @@ export class HomepageComponent {
 
   stealFocus = true;
 
+  addingTag = false;
+
   @ViewChild('noteBody') noteBody: ElementRef;
   @ViewChild('noteTags') noteTags: ElementRef;
+  @ViewChild('noteAddTagInput') noteAddTagInput: ElementRef;
 
   tagSent = new Tag ({
     id: 'sent',
@@ -76,7 +80,12 @@ export class HomepageComponent {
   script: SceneType[] = [
     {
       function: 'write',
-      text: 'Hello! Headsoak is for taking notes. This is a note.\n\n',
+      text: 'Hello!',
+      delay: 1000,
+    },
+    {
+      function: 'write',
+      text: ' Headsoak is for taking notes. This is a note.\n\n',
       delay: 1000,
     },
     {
@@ -87,7 +96,7 @@ export class HomepageComponent {
     },
     {
       function: 'write',
-      text: ' See that tag? Headsoak is smart and can tag your notes automatically.',
+      text: ' See that tag? Headsoak is smart and can tag notes automatically.',
       delay: 2000,
     },
     {
@@ -109,7 +118,7 @@ export class HomepageComponent {
     },
     {
       function: 'write',
-      text: 'Smart tags can give a note more context.\n\n',
+      text: 'Smart tags can give a note more context. Let\'s see...\n\n',
     },
     {
       function: 'write',
@@ -131,14 +140,14 @@ export class HomepageComponent {
     },
     {
       function: 'write',
-      text: ' in space right now. There are people printing prototypes of human organs, and people printing nanowire tissue that will bond with human flesh and the human electrical system."',
+      text: ' in space right now! There are people printing prototypes of human organs, and people printing nanowire tissue that bonds with human flesh and the human electrical system!"',
       speed: 2,
     },
 
     {
       function: 'write',
       text: '\n\nOf course, you can manually tag notes',
-      addTag: this.tagFut,
+      manualAddTag: this.tagFut,
     },
     {
       function: 'write',
@@ -153,19 +162,23 @@ export class HomepageComponent {
     {
       function: 'write',
       text: ' Share notes with people and collaborate.',
-      addTag: this.tagShare,
+      manualAddTag: this.tagShare,
       delay: 1000
     },
     {
       function: 'write',
       text: ' Automate custom integrations.',
-      addTag: this.tagBlog,
+      manualAddTag: this.tagBlog,
       delay: 1000
     },
 
+    // {
+    //   function: 'write',
+    //   text: '\n\nThen, explore.',
+    // },
     {
       function: 'write',
-      text: '\n\nThen, explore.',
+      text: '\n\nOur public beta is launching soon, sign up to get notified!',
     },
   ];
 
@@ -200,15 +213,43 @@ export class HomepageComponent {
         this.tags = _.without(this.tags, scene.removeTag);
       }
 
-      setTimeout(() => {
-        this.play(i + 1);
-      }, typeof scene.delay === 'undefined' ? 500 : scene.delay);
+      const nextScene = () => {
+        setTimeout(() => {
+          this.play(i + 1);
+        }, typeof scene.delay === 'undefined' ? 500 : scene.delay);
+      };
+
+      if (scene.manualAddTag) {
+        this.manualAddTag(scene.manualAddTag, nextScene);
+      }
+      else {
+        nextScene();
+      }
     }, 0, scene.speed || 1);
   }
 
-  write(str: string, cb?: Function, i = 0, speed = 1) {
-    this.noteBody.nativeElement.value += str.substr(i, 1);
-    this.noteBody.nativeElement.scrollTop = this.noteBody.nativeElement.scrollHeight;
+  manualAddTag(tag: Tag, cb?: Function) {
+    this.noteAddTagInput.nativeElement.value = '';
+    this.addingTag = true;
+
+    setTimeout(() => {
+      this.write(tag.name, () => {
+        setTimeout(() => {
+          this.addingTag = false;
+          this.tags = _.concat([tag], this.tags);
+          cb();
+        }, 500);
+      }, 0, 0.25, this.noteAddTagInput.nativeElement)
+    }, 500);
+  }
+
+  write(str: string, cb?: Function, i = 0, speed = 1, el?: HTMLElement) {
+    if (! el) {
+      el = this.noteBody.nativeElement;
+    }
+
+    el.value += str.substr(i, 1);
+    el.scrollTop = el.scrollHeight;
 
     if (i === str.length - 1) {
       if (cb) {
@@ -219,10 +260,10 @@ export class HomepageComponent {
     }
 
     if (this.stealFocus) {
-      this.noteBody.nativeElement.focus();
+      el.focus();
     }
 
-    let delay = Math.floor(Math.random() * (50)) + 50;
+    let delay = Math.floor(Math.random() * (50)) + 25;
 
     if (str[i - 1] === ',' || str[i - 1] === ':') {
       delay += 150;
@@ -232,7 +273,7 @@ export class HomepageComponent {
     }
 
     setTimeout(() => {
-      this.write(str, cb, i + 1, speed);
+      this.write(str, cb, i + 1, speed, el);
     }, delay / speed);
   }
 
