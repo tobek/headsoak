@@ -99,7 +99,7 @@ export class SettingsService {
         'http://thereitwas.com/images/The Fox is Black - Desktop Wallpaper Project/Adam-Hanson-2560x1440.jpeg',
         'http://thereitwas.com/images/The Fox is Black - Desktop Wallpaper Project/chris-jaurique-2560x1440.jpg',
         'http://thereitwas.com/images/The Fox is Black - Desktop Wallpaper Project/upso-1920x1200.jpg',
-        'https://upload.wikimedia.org/wikipedia/commons/0/0f/Hokusai_1760-1849_Ocean_waves.jpg',
+        'https://s3.amazonaws.com/static.headsoak.com/img/bg/Hokusai_1760-1849_Ocean_waves-huge.jpg',
         'https://upload.wikimedia.org/wikipedia/commons/e/ee/Extermination_of_Evil_Vaisravana.jpg',
         'https://upload.wikimedia.org/wikipedia/commons/a/a6/Rosette%2C_Titles_of_Sha_Jahan.jpg',
         'https://upload.wikimedia.org/wikipedia/commons/8/8a/Darvasa_gas_crater_panorama.jpg',
