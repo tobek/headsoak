@@ -2,14 +2,17 @@
   +tag-chiclet
   +tag-face
 
-tag
+tag,
+.static-tag // elements for which we don't need all the compononent logic
   +tag-face
-  +tag-chiclet
-
+  
   &:before
     content: '#'
     opacity: 0.33
     margin-right: 1px
+
+tag
+  +tag-chiclet
 
   .tag-actions
     // @TODO/ece What's the tag action flow? must include easy toggle and remove from note

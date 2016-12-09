@@ -20,14 +20,12 @@ tag-details
 
   .pane
     // @TODO/style Animate pane visiblity (and entire tag details component really)
-    .tag-name
-      +tag-face
 
     .btn
       margin-top: 5px
 
   .pane-heading
-    .tag-name
+    .static-tag
       +h3
 
 
@@ -43,11 +41,14 @@ tag-details
     &:first-of-type:last-of-type
       +span(6) // otherwise if there's only enough cooccurrences for one, it gets pulled right
 
-    .tag-name
+    .static-tag
       cursor: pointer
       // @TODO/ece Either these should be full tag chiclets with normal hover state for tags, or it's just the "chiclet-less tag name" style, but still needs hover state. For now I'll just do:
       &:hover
         color: $highlight-color
+
+      &:before
+        margin-right: -2px
 
   ul.cooccurring-tags
     +plain-list
