@@ -68,7 +68,7 @@ export class ForceGraphComponent {
     const width = +window.getComputedStyle(svgEl).width.replace('px', '');
     const height = +window.getComputedStyle(svgEl).height.replace('px', '');
 
-    this.isCrowded = _.size(this.graph.nodes) > 100;
+    const isCrowded = this.isCrowded = _.size(this.graph.nodes) > 50;
 
     // var color = d3.scaleOrdinal(d3.schemeCategory20);
 
@@ -87,7 +87,12 @@ export class ForceGraphComponent {
         .strength(0.5)
         .distance(function(d) {
           // default is 30
-          return (calcRadius(d.source) + calcRadius(d.target))*1.5 + 25;
+          if (isCrowded) {
+            return (calcRadius(d.source) + calcRadius(d.target)) * 1.5 + 25;
+          }
+          else {
+            return (calcRadius(d.source) + calcRadius(d.target)) * 1.75 + 50;
+          }
         })
       );
 
@@ -146,7 +151,7 @@ export class ForceGraphComponent {
 
     this.simulation.on('tick', ticked);
 
-    if (this.isCrowded) {
+    if (isCrowded) {
       // Fade (until hover) certain tags to make it less crowded
       // (Used to not fade ones with no pairs, cause those float to the outside so plenty of room for text. But that's a bit confusing looking.)
       text.attr('class', (d) => {
@@ -202,9 +207,16 @@ export class ForceGraphComponent {
       return Math.max(radius, Math.min(bound - radius, pos));
     }
 
-    /** Somewhat normalizes radius based on # of notes a tag is on. This goes from 3px up to 30px for a tag with 100 notes, up to ~100 for a tag with 1000 notes. Could need tweaking but should do for a while! */
+    /** Somewhat normalizes radius based on # of notes a tag is on. Could need tweaking but should do for a while! */
     function calcRadius(d) {
-      return Math.sqrt(d.size) * 3 || 3;
+      if (isCrowded) {
+        // From 3px up to 30px for a tag with 100 notes, up to ~100px for a tag with 1000 notes
+        return Math.sqrt(d.size) * 3 || 3;
+      }
+      else {
+        // 1.5th root - steeper at first so larger radii for tags with fewer notes, but still levels off
+        return Math.pow(d.size, 1/1.5) * 4 || 4;
+      }
     }
 
     this._logger.timeEnd('Initialized D3 graph');
