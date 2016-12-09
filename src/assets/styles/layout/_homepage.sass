@@ -14,7 +14,7 @@ homepage
     a
       color: $primary-color-contrast
 
-  .note-container
+  .demo-container
     +span(6)
     height: 100vh
     padding-top: 10vh // matches login top margin
@@ -22,6 +22,17 @@ homepage
 
     @media (max-height: 750px)
       padding-top:  0
+
+  note,
+  .tag-explore-wrapper
+    transition: opacity $transition-med, visibility $transition-med
+  .tag-explore-wrapper,
+  &.is--tag-explore-stage note
+    opacity: 0
+    visibility: hidden
+  &.is--tag-explore-stage .tag-explore-wrapper
+    opacity: 1
+    visibility: visible
 
   note
     margin-top: 170px // size of login header height/margin
@@ -45,12 +56,26 @@ homepage
     tag:hover .tag-actions
       display: inline // overrides normal tag style that makes the tag wider on hover here
 
+  .tag-explore-wrapper
+    position: relative
+    width: 100%
+
+  .tag-explore
+    position: absolute
+    +card
+    height: 400px
+    max-height: 90vh
+
+    margin-top: 100px
+    @media (max-height: 550px)
+      margin-top: 50px
+
   .teaser
     +span(6)
     position: absolute
     top: 100vh
     margin-top: -75px
-    padding-right: 50px // matches .note-container
+    padding-right: 50px // matches .demo-container
 
     +h3
     text-align: center
@@ -62,7 +87,7 @@ homepage
     color: $primary-color-contrast
 
   @media (max-width: $screen-small)
-    .note-container,
+    .demo-container,
     .teaser
       padding-right: 25px
 
@@ -132,7 +157,7 @@ homepage
     display: none
 
   homepage
-    .note-container
+    .demo-container
       width: 100%
       height: auto
       padding: 0

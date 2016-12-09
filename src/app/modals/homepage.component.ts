@@ -1,4 +1,4 @@
-import {Component, ViewChild, ElementRef/*, HostBinding*/} from '@angular/core';
+import {Component, ViewChild, ElementRef, HostBinding} from '@angular/core';
 
 import {AnalyticsService} from '../analytics.service';
 import {Logger} from '../utils/logger';
@@ -9,8 +9,8 @@ import {Tag, SubTag, TagComponent} from '../tags/';
 const jQuery = require('jquery');
 
 type SceneType = {
-  function: string,
-  text: string,
+  function: Function,
+  text?: string,
   addTag?: Tag,
   removeTag?: Tag,
   manualAddTag?: Tag,
@@ -34,6 +34,8 @@ export class HomepageComponent {
   stealFocus = true;
 
   addingTag = false;
+
+  @HostBinding('class.is--tag-explore-stage') tagExploreStage = false;
 
   @ViewChild('noteBody') noteBody: ElementRef;
   @ViewChild('noteTags') noteTags: ElementRef;
@@ -79,107 +81,112 @@ export class HomepageComponent {
 
   script: SceneType[] = [
     {
-      function: 'write',
+      function: this.write,
       text: 'Hello!',
       delay: 1000,
     },
     {
-      function: 'write',
+      function: this.write,
       text: ' Headsoak is for taking notes. This is a note.\n\n',
       delay: 1000,
     },
     {
-      function: 'write',
+      function: this.write,
       text: 'This is a really fantastic, great, happy note.',
       addTag: this.tagSentPos,
       delay: 1000,
     },
     {
-      function: 'write',
+      function: this.write,
       text: ' See that tag? Headsoak is smart and can tag notes automatically.',
       delay: 2000,
     },
     {
-      function: 'unwrite',
+      function: this.unwrite,
       text: '\n\nThis is ',
       removeTag: this.tagSentPos,
     },
     {
-      function: 'write',
+      function: this.write,
       text: 'actually a very sad note, because the beta is still private =(',
       addTag: this.tagSentNeg,
       delay: 1000,
     },
 
     {
-      function: 'unwrite',
+      function: this.unwrite,
       text: '\n\n',
       removeTag: this.tagSentNeg,
     },
     {
-      function: 'write',
+      function: this.write,
       text: 'Smart tags can give a note more context. Let\'s see...\n\n',
     },
     {
-      function: 'write',
+      function: this.write,
       text: 'Overheard at cafe, guy ',
       addTag: this.tagLocGaia,
       delay: 0
     },
     {
-      function: 'write',
+      function: this.write,
       text: 'trying to convince his friend we\'re in the future:',
       delay: 0
     },
     {
-      function: 'write',
+      function: this.write,
       text: ' "There are six people living',
       addTag: this.tagQuote,
       speed: 2,
       delay: 0
     },
     {
-      function: 'write',
+      function: this.write,
       text: ' in space right now! There are people printing prototypes of human organs, and people printing nanowire tissue that bonds with human flesh and the human electrical system!"',
       speed: 2,
     },
 
     {
-      function: 'write',
+      function: this.write,
       text: '\n\nOf course, you can manually tag notes',
       manualAddTag: this.tagFut,
     },
     {
-      function: 'write',
+      function: this.write,
       text: ' and we\'ll learn from your tagging habits.',
       delay: 2000,
     },
 
     {
-      function: 'write',
+      function: this.write,
       text: '\n\nTags can do some of the work for you.',
     },
     {
-      function: 'write',
-      text: ' Share notes with people and collaborate.',
+      function: this.write,
+      text: '\n\nShare notes with people and collaborate in real time.',
       manualAddTag: this.tagShare,
       delay: 1000
     },
     {
-      function: 'write',
-      text: ' Automate custom integrations.',
+      function: this.write,
+      text: '\n\nAutomate tasks.',
       manualAddTag: this.tagBlog,
       delay: 1000
     },
 
-    // {
-    //   function: 'write',
-    //   text: '\n\nThen, explore.',
-    // },
     {
-      function: 'write',
-      text: '\n\nOur public beta is launching soon, sign up to get notified!',
+      function: this.write,
+      text: '\n\nThen, explore.',
     },
+    {
+      function: () => {
+        this.tagExploreStage = true;
+      }
+    },
+    // {
+    //   function: this.write,
+    //   text: '\n\nOur public beta is launching soon, sign up to get notified!',
+    // },
   ];
 
   private _logger: Logger = new Logger(this.constructor.name);
@@ -202,10 +209,16 @@ export class HomepageComponent {
     const scene = this.script[i];
 
     if (! scene) {
+      // We're done!
       return;
     }
 
-    this[scene.function](scene.text, () => {
+    if (scene.text) {
+      // e.g. we're running this.write or this.unwrite, so supply text as first arg
+      scene.function = _.partial(scene.function, scene.text).bind(this);
+    }
+
+    scene.function(() => {
       if (scene.addTag) {
         this.tags = _.concat([scene.addTag], this.tags);
       }
