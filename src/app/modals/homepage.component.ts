@@ -5,11 +5,12 @@ import {Logger} from '../utils/logger';
 
 import {LoginComponent} from '../account/';
 import {Tag, SubTag, TagComponent} from '../tags/';
+import {ForceGraphComponent, ForceGraph} from '../utils/force-graph.component';
 
 const jQuery = require('jquery');
 
 type SceneType = {
-  function: Function,
+  function: Function, // gets bound to HomepageComponent
   text?: string,
   addTag?: Tag,
   removeTag?: Tag,
@@ -25,6 +26,7 @@ type SceneType = {
   directives: [
     LoginComponent,
     TagComponent,
+    ForceGraphComponent,
   ],
   templateUrl: './homepage.component.html'
 })
@@ -38,46 +40,69 @@ export class HomepageComponent {
   @HostBinding('class.is--tag-explore-stage') tagExploreStage = false;
 
   @ViewChild('noteBody') noteBody: ElementRef;
-  @ViewChild('noteTags') noteTags: ElementRef;
+  // @ViewChild('noteTags') noteTags: ElementRef;
   @ViewChild('noteAddTagInput') noteAddTagInput: ElementRef;
 
-  tagSent = new Tag ({
-    id: 'sent',
-    name: 'sentiment',
-    prog: true,
-  }, null);
+  tagSent = new Tag({ id: 'sent', name: 'sentiment', prog: true }, null);
   tagSentPos = new SubTag('positive', this.tagSent);
   tagSentNeg = new SubTag('negative', this.tagSent);
 
-  tagLoc = new Tag ({
-    id: 'loc',
-    name: 'location',
-    prog: true,
-  }, null);
+  tagLoc = new Tag({ id: 'loc', name: 'location', prog: true }, null);
   tagLocGaia = new SubTag('Gaia Cafe', this.tagLoc);
 
-  tagQuote = new Tag ({
-    id: 'quote',
-    name: 'quote',
-    prog: true,
-  }, null);
+  tagQuote = new Tag({ id: 'quote', name: 'quote', prog: true }, null);
+  tagFut = new Tag({ id: 'fut', name: 'futurism' }, null);
+  tagShare = new Tag({ id: 'share', name: '@napoleon', share: true }, null);
+  tagBlog = new Tag({ id: 'blog', name: 'post to blog', prog: true }, null);
 
-  tagFut = new Tag ({
-    id: 'fut',
-    name: 'futurism',
-  }, null);
-
-  tagShare = new Tag ({
-    id: 'share',
-    name: '@napoleon',
-    share: true,
-  }, null);
-
-  tagBlog = new Tag ({
-    id: 'blog',
-    name: 'post to blog',
-    prog: true,
-  }, null);
+  tagGraph: ForceGraph = {
+    nodes: [
+      { size: 11, id: '1', name: 'futurism' },
+      { size: 3, id: '2', classAttr: 'is--prog', name: 'quote' },
+      { size: 3, id: '3', classAttr: 'is--prog', name: 'link' },
+      { size: 2, id: '4', name: '@Napoleon' },
+      { size: 1, id: '5', name: 'isaac asimov' },
+      { size: 1, id: '6', name: 'technology' },
+      { size: 1, id: '7', name: 'AI' },
+      { size: 1, id: '8', name: 'alphabet' },
+      { size: 1, id: '9', name: 'image recognition' },
+      { size: 1, id: '10', name: 'sleep' },
+      { size: 1, id: '11', name: 'bio-tech' },
+      { size: 1, id: '12', classAttr: 'is--prog', name: 'post to blog' },
+      { size: 1, id: '13', classAttr: 'is--prog', name: 'location: cafe gaia' },
+      { size: 1, id: 'sent:pos', classAttr: 'is--prog', name: 'sentiment: positive' },
+      { size: 2, id: 'sent:neg', classAttr: 'is--prog', name: 'sentiment: negative' },
+    ],
+    links: [
+      { source: 'sent:neg', target: '2', weight: 1 },
+      { source: 'sent:neg', target: '11', weight: 1 },
+      { source: 'sent:neg', target: '10', weight: 1 },
+      { source: 'sent:neg', target: '1', weight: 1 },
+      { source: '4', target: '3', weight: 1 },
+      { source: '4', target: '2', weight: 1 },
+      { source: '4', target: '1', weight: 2 },
+      { source: '3', target: '2', weight: 1 },
+      { source: '3', target: '1', weight: 3 },
+      { source: '2', target: '1', weight: 3 },
+      { source: '5', target: '2', weight: 1 },
+      { source: '5', target: '1', weight: 1 },
+      { source: '6', target: '3', weight: 1 },
+      { source: '7', target: '6', weight: 1 },
+      { source: '7', target: '3', weight: 1 },
+      { source: '7', target: '1', weight: 1 },
+      { source: '9', target: '8', weight: 1 },
+      { source: '9', target: '1', weight: 1 },
+      { source: '8', target: '1', weight: 1 },
+      { source: '11', target: '10', weight: 1 },
+      { source: '11', target: '2', weight: 1 },
+      { source: '11', target: '1', weight: 1 },
+      { source: '10', target: '2', weight: 1 },
+      { source: '10', target: '1', weight: 1 },
+      { source: '12', target: '4', weight: 1 },
+      { source: '12', target: '1', weight: 1 },
+      { source: '13', target: '1', weight: 1 },
+    ],
+  };
 
   script: SceneType[] = [
     {
@@ -179,9 +204,7 @@ export class HomepageComponent {
       text: '\n\nThen, explore.',
     },
     {
-      function: () => {
-        this.tagExploreStage = true;
-      }
+      function: this.setUpTagExplore,
     },
     // {
     //   function: this.write,
@@ -215,10 +238,10 @@ export class HomepageComponent {
 
     if (scene.text) {
       // e.g. we're running this.write or this.unwrite, so supply text as first arg
-      scene.function = _.partial(scene.function, scene.text).bind(this);
+      scene.function = _.partial(scene.function, scene.text);
     }
 
-    scene.function(() => {
+    scene.function.bind(this)(() => {
       if (scene.addTag) {
         this.tags = _.concat([scene.addTag], this.tags);
       }
@@ -315,6 +338,10 @@ export class HomepageComponent {
     setTimeout(() => {
       this.unwrite(str, cb);
     }, 25);
+  }
+
+  setUpTagExplore() {
+    this.tagExploreStage = true;
   }
 
 
