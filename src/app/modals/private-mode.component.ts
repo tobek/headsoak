@@ -4,6 +4,7 @@ import {AnalyticsService} from '../analytics.service';
 import {DataService} from '../data.service';
 import {ModalService} from './modal.service';
 
+import {TooltipService} from '../utils/';
 import {Logger} from '../utils/logger';
 
 
@@ -20,7 +21,6 @@ export class PrivateModeComponent {
   password = '';
   
   isLoading = false;
-  errorMessage = '';
 
   @Input('isModal') isModal?: boolean;
 
@@ -33,6 +33,7 @@ export class PrivateModeComponent {
   constructor(
     public analyticsService: AnalyticsService,
     public dataService: DataService,
+    private tooltipService: TooltipService,
     private modalService: ModalService,
    ) {}
 
@@ -57,15 +58,14 @@ export class PrivateModeComponent {
 
     this._logger.log('Enabling private mode');
 
-    this.errorMessage = '';
     this.isLoading = true;
 
     this.dataService.accountService.checkPassword(this.password, (error) => {
       this.isLoading = false;
 
       if (error) {
-        this._logger.log('Failed to enable private mode');
-        this.errorMessage = error; // @TODO/tooltip Should be error tooltip over button
+        this._logger.warn('Failed to enable private mode');
+        this.tooltipService.justTheTip(error, this.passwordInput.nativeElement, 'error');
         return;
       }
 
@@ -81,7 +81,6 @@ export class PrivateModeComponent {
   }
 
   disable(): void {
-    this.errorMessage = '';
     this.dataService.accountService.disablePrivateMode(); // triggers toaster
 
     if (this.isModal) {

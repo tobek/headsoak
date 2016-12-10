@@ -11,9 +11,14 @@
     margin: 0 1px
 
 .tooltip
-  z-index: 10000
+  z-index: 100000
   max-width: 300px
   background: $primary-color
+
+  // @TODO/tooltips Set color for these
+  // &.error
+  // &.warning
+  // &.success
 
 // @TODO/rewrite check browser compability for this - last I remember it didn't work right in FF.
 [placeholder][contenteditable]:empty:before

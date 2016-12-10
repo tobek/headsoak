@@ -54,4 +54,25 @@ export class TooltipService {
     this.reloadOnEvent(event, false, 500);
   }
 
+  /** Spawns one tooltip with given content on given element. Any user activity on the page (click, touch, keyboard) will make the tooltip disappear. */
+  justTheTip(content: string, el: HTMLElement, typeClass?: string) {
+    const tip = new Tooltips.Tooltip(content, {
+      typeClass: typeClass,
+      place: 'top-right',
+      effectClass: 'fade',
+      auto: true,
+    }).show(el);
+
+    const offFunc = function() {
+      tip.hide();
+      setTimeout(function() {
+        tip.destroy();
+      }, 1000);
+
+      jQuery(window).off('mousedown touchstart keydown', offFunc);
+    }
+
+    jQuery(window).on('mousedown touchstart keydown', offFunc);
+  }
+
 }
