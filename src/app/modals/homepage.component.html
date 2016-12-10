@@ -38,6 +38,8 @@
           ><tag
             *ngFor="let tag of tags"
             [tag]="tag"
+            [class.is--highlighted]="tag.highlight"
+            [class.is--being-removed]="tag.beingRemoved"
           ></tag>
         </div>
       </div>

@@ -53,8 +53,20 @@ homepage
       &:hover .fa
         color: $secondary-color
 
-    tag:hover .tag-actions
-      display: inline // overrides normal tag style that makes the tag wider on hover here
+    tag
+      transition: color $transition-slow, background-color $transition-slow, opacity $transition-slow // when un-highlighted
+      &.is--highlighted
+        transition-duration: $transition-med // when highlighted
+        +tag-chiclet-active
+
+      &.is--being-removed
+        opacity: 0
+        transition-duration: $transition-med
+        &.is--highlighted
+          opacity: 1
+
+      &:hover .tag-actions
+        display: inline // overrides normal tag style that makes the tag wider on hover here
 
   .tag-explore-wrapper
     position: relative

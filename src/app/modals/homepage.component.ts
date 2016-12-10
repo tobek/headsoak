@@ -120,12 +120,12 @@ export class HomepageComponent {
       function: this.write,
       text: 'This is a really fantastic, great, happy note.',
       addTag: this.tagSentPos,
-      delay: 1000,
+      delay: 1500,
     },
     {
       function: this.write,
       text: ' See that tag? Headsoak is smart and can tag notes automatically.',
-      delay: 2000,
+      delay: 1500,
     },
     {
       function: this.unwrite,
@@ -136,13 +136,14 @@ export class HomepageComponent {
       function: this.write,
       text: 'actually a very sad note, because the beta is still private =(',
       addTag: this.tagSentNeg,
-      delay: 1000,
+      delay: 1500,
     },
 
     {
       function: this.unwrite,
       text: '\n\n',
       removeTag: this.tagSentNeg,
+      delay: 1000,
     },
     {
       function: this.write,
@@ -163,13 +164,13 @@ export class HomepageComponent {
       function: this.write,
       text: ' "There are six people living',
       addTag: this.tagQuote,
-      speed: 2,
+      speed: 1.5,
       delay: 0
     },
     {
       function: this.write,
-      text: ' in space right now! There are people printing prototypes of human organs, and people printing nanowire tissue that bonds with human flesh and the human electrical system!"',
-      speed: 2,
+      text: ' in space right now! There are people nanowire tissue that bonds with human flesh and the human electrical system!"',
+      speed: 1.5,
     },
 
     {
@@ -203,6 +204,7 @@ export class HomepageComponent {
     {
       function: this.write,
       text: '\n\nThen, explore your data.',
+      delay: 1000
     },
     {
       function: this.setUpTagExplore,
@@ -244,10 +246,10 @@ export class HomepageComponent {
 
     scene.function.bind(this)(() => {
       if (scene.addTag) {
-        this.tags = _.concat([scene.addTag], this.tags);
+        this.addTag(scene.addTag);
       }
       if (scene.removeTag) {
-        this.tags = _.without(this.tags, scene.removeTag);
+        this.removeTag(scene.removeTag);
       }
 
       const nextScene = () => {
@@ -273,7 +275,7 @@ export class HomepageComponent {
       this.write(tag.name, () => {
         setTimeout(() => {
           this.addingTag = false;
-          this.tags = _.concat([tag], this.tags);
+          this.addTag(tag);
           cb();
         }, 500);
       }, 0, 0.25, this.noteAddTagInput.nativeElement)
@@ -339,6 +341,29 @@ export class HomepageComponent {
     setTimeout(() => {
       this.unwrite(str, cb);
     }, 25);
+  }
+
+  addTag(tag: Tag) {
+    this.tags = _.concat([tag], this.tags);
+
+    // triggers chiclet style then let it fade
+    setTimeout(function() {
+      tag['highlight'] = true;
+    }, 10);
+    setTimeout(function() {
+      tag['highlight'] = false;
+    }, 500);
+  }
+
+  removeTag(tag: Tag) {
+    tag['beingRemoved'] = true;
+    tag['highlight'] = true;
+    setTimeout(function() {
+      tag['highlight'] = false;
+    }, 500);
+    setTimeout(() => {
+      this.tags = _.without(this.tags, tag);
+    }, 1000);
   }
 
   setUpTagExplore() {
