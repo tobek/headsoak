@@ -49,10 +49,9 @@ export class NotesService {
     }
 
     this._logger.time('Initializing notes and index');
-    _.each(
-      _.filter(notesData, note => !! note),
-      _.partial(this.createNote.bind(this), _, true)
-    );
+    _(notesData)
+      .filter((note) => note)
+      .each(this.createNote.bind(this));
     this._logger.timeEnd('Initializing notes and index');
 
     this.initialized$.next(null);
@@ -60,7 +59,7 @@ export class NotesService {
     this._logger.log('Got', _.size(this.notes), 'notes');
   }
 
-  createNote(noteObj: any = {}, isInit = false): Note {
+  createNote(noteObj: any = {}, isInit = true): Note {
     if (noteObj.id) {
       if (this.notes[noteObj.id]) {
         throw new Error('Cannot create a new note with id "' + noteObj.id + '" - already taken!');
@@ -79,12 +78,12 @@ export class NotesService {
     const newNote = new Note(noteObj, this.dataService);
     this.notes[newNote.id] = newNote;
 
-    if (isInit) {
+    if (isInit !== false) {
       // This note exists in data store already, we're just initializing local data on app load. We can assume that stuff that happens on update (upload, run prog tags, etc.) has been done and persisted to data store, and that tag data is synced with tags on notes etc. We just have to add it to the index since build index anew on each app load.
       this.updateNoteInIndex(newNote);
     }
     else {
-      newNote.updated();
+      newNote.updated(); // will upload to data store
 
       newNote.tags.forEach((tagId: string) => {
         this.tagsService.tags[tagId].addNoteId(newNote.id);

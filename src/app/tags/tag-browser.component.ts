@@ -152,7 +152,7 @@ export class TagBrowserComponent {
   }
 
   newTag(): void {
-    const newTag = this.tagsService.createTag();
+    const newTag = this.tagsService.createTag({}, false);
 
     this.tags = _.concat([newTag], this.tags);
 

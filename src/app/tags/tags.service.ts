@@ -48,10 +48,9 @@ export class TagsService {
       tagsData = {};
     }
 
-    _.each(
-      _.filter(tagsData, tag => !! tag),
-      _.partial(this.createTag.bind(this), _, true)
-    );
+    _(tagsData)
+      .filter((tag) => tag)
+      .each(this.createTag.bind(this));
 
     this.progTagApi.init(this.dataService);
     this.progTagLibraryService.init(this);
@@ -61,7 +60,7 @@ export class TagsService {
     this._logger.log('Got', _.size(this.tags), 'tags');
   }
 
-  createTag(tagData: any = {}, isInit = false): Tag {
+  createTag(tagData: any = {}, isInit = true): Tag {
     if (tagData.id) {
       if (this.tags[tagData.id]) {
         throw new Error('Cannot create a new tag with id "' + tagData.id + '" - that ID is already taken!');
@@ -79,8 +78,8 @@ export class TagsService {
     const newTag = new Tag(tagData, this.dataService);
     this.tags[newTag.id] = newTag;
 
-    // No need to sync to data store if we're initializing notes from data store. Additionally, if this is a new tag with no name, no need to save yet - we'll save when it gets named.
-    if (! isInit && tagData.name) {
+    // No need to sync to data store if we're initializing tags from data store. Additionally, if this is a new tag with no name, no need to save yet - we'll save when it gets named.
+    if (isInit === false && tagData.name) {
       newTag.updated();
       this.tagCreated$.next(newTag);
     }

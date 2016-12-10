@@ -8,8 +8,6 @@ import {TagsService} from './tags.service';
 import {ForceGraphComponent, ForceGraph, GraphLink, GraphNode} from '../utils/force-graph.component';
 import {Logger} from '../utils/';
 
-const d3 = require('d3');
-
 @Component({
   selector: 'tag-visualization',
   pipes: [],
@@ -40,11 +38,10 @@ export class TagVisualizationComponent {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['centralTag']) {
-      const previousValue = changes['centralTag'].previousValue;
-      const currentValue = changes['centralTag'].currentValue;
+      // this.centralTag is now a new value
 
-      if (_.isEmpty(previousValue)) {
-        // Newly set so we can just go for it
+      if (_.isEmpty(changes['centralTag'].previousValue)) {
+        // There was no previous value so we can just go for it
         this.setUpGraph();
       }
       else {

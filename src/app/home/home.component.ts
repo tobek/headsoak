@@ -84,7 +84,7 @@ export class HomeComponent {
     if (! this.newNote || ! this.newNote.new){
       // Never made a new note, or made one and it's no longer new (was updated/edited) - either way create a new one:
       this._logger.log('Setting up new unsaved note');
-      this.newNote = this.notesService.createNote({}, true);
+      this.newNote = this.notesService.createNote({});
       this.newNote.new = true;
       this.setUpNewNoteTags();
     }

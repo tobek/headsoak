@@ -254,7 +254,7 @@ export class Note {
     if (! tag) {
       this._logger.log('Have to create new tag with name:', tagName);
 
-      tag = this.dataService.tags.createTag({ name: tagName });
+      tag = this.dataService.tags.createTag({ name: tagName }, false);
     }
 
     return this.addTag(tag);
