@@ -39,6 +39,8 @@
     <h3 class="pane-heading">Explore <span class="static-tag">{{ tag.name }}</span></h3>
 
     <div class="note-count-heading">{{ tag.docs.length }} Note{{ tag.docs.length !== 1 ? 's' : '' }}</div>
+    
+    <tag-visualization [centralTag]="tag"></tag-visualization>
 
     <p *ngIf="! exploreComputed">
       <i class="fa fa-spin fa-cube"></i>&nbsp;

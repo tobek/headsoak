@@ -37,8 +37,6 @@ export class ForceGraphComponent {
   /** D3 force simulation. */
   simulation;
 
-  isCrowded = false;
-
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
@@ -56,7 +54,7 @@ export class ForceGraphComponent {
   }
 
   ngAfterViewInit() {
-    this.initGraph();
+    setTimeout(this.initGraph.bind(this), 0);
   }
 
   initGraph() {
@@ -68,7 +66,13 @@ export class ForceGraphComponent {
     const width = +window.getComputedStyle(svgEl).width.replace('px', '');
     const height = +window.getComputedStyle(svgEl).height.replace('px', '');
 
-    const isCrowded = this.isCrowded = _.size(this.graph.nodes) > 50;
+    const isCrowded = _.size(this.graph.nodes) > 50;
+    const biggestNodeSize: number = _.reduce(this.graph.nodes, (biggest: number, node: GraphNode) => {
+      return Math.max(biggest, node.size);
+    }, 0);
+    const heaviestLinkWeight: number = _.reduce(this.graph.links, (heaviest: number, link: GraphLink) => {
+      return Math.max(heaviest, link.weight);
+    }, 0);
 
     // var color = d3.scaleOrdinal(d3.schemeCategory20);
 
@@ -109,8 +113,13 @@ export class ForceGraphComponent {
       .enter().append('line')
         .attr('class', 'link')
         .attr('stroke-width', function(d) {
-          // We do want to slow down massive increases using sqrt, but we also don't want 2 cooccurrences to be indistinguishable from 1, so double it. But we want to start at 1px, so subtract 1:
-          return Math.sqrt(d.weight) * 2 - 1;
+          // We do want to slow down massive increases using sqrt, but we also don't want 2 cooccurrences to be indistinguishable from 1, so multiply it. But we want to start at 1px, so subtract down to that for weight 1:
+          if (heaviestLinkWeight > 10) {
+            return Math.sqrt(d.weight) * 2 - 1;
+          }
+          else {
+            return Math.sqrt(d.weight) * 3 - 2;
+          }
         });
 
     var node = this.svg.selectAll('.node')
@@ -209,7 +218,7 @@ export class ForceGraphComponent {
 
     /** Somewhat normalizes radius based on # of notes a tag is on. Could need tweaking but should do for a while! */
     function calcRadius(d) {
-      if (isCrowded) {
+      if (biggestNodeSize > 50) {
         // From 3px up to 30px for a tag with 100 notes, up to ~100px for a tag with 1000 notes
         return Math.sqrt(d.size) * 3 || 3;
       }

@@ -1,6 +1,6 @@
-<force-graph [graph]="tagGraph"></force-graph>
+<force-graph *ngIf="tagGraph" [graph]="tagGraph"></force-graph>
 
-<div class="description">
+<div *ngIf="! centralTag" class="description">
   <p>In this graph, each node represents one of your tags, and the size of that node corresponds to the number of notes that tag appears on.</p>
 
   <p>A link between two nodes indicates that those two tags have appeared on the same note together. The more notes that pair of tags share, the thicker the link between them.</p>

@@ -6,6 +6,7 @@ import {Subscription} from 'rxjs';
 import {AnalyticsService} from '../analytics.service';
 import {Tag, TagComponent, ProgTagControlComponent} from './';
 import {TagsService} from './tags.service'; // Dunno why we can't import from tags/index.ts
+import {TagVisualizationComponent} from './tag-visualization.component'; // ditto
 import {ToasterService} from '../utils/toaster.service'; // Likewise, this breaks if combined with import of Logger below
 import {Logger} from '../utils/';
 
@@ -14,6 +15,7 @@ import {Logger} from '../utils/';
   pipes: [],
   directives: [
     TagComponent,
+    TagVisualizationComponent,
     ProgTagControlComponent,
   ],
   template: require('./tag-details.component.html')
@@ -103,7 +105,7 @@ export class TagDetailsComponent {
       return;
     }
 
-    this._logger.time('Calculating explore stats');
+    this._logger.time('Calculated explore stats');
 
     this.exploreStatsReset();
 
@@ -164,7 +166,7 @@ export class TagDetailsComponent {
 
     this.exploreComputed = this.tag.id;
 
-    this._logger.timeEnd('Calculating explore stats');
+    this._logger.timeEnd('Calculated explore stats');
   }
 
 }

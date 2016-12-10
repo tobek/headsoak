@@ -293,4 +293,12 @@ export class Tag {
 
     this.dataService.router.navigateByUrl(path);
   }
+
+  /** Returns array of Note instances that have this tag. */
+  getNotes(): Note[] {
+    return _(this.docs)
+      .map((noteId) => this.dataService.notes.notes[noteId])
+      .filter((note) => note) // remove falsey notes
+      .value();
+  }
 }

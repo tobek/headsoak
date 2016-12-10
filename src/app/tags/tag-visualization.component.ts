@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, Input, SimpleChanges} from '@angular/core';
 
 import {Note} from '../notes/';
 import {Tag} from './';
@@ -20,6 +20,9 @@ const d3 = require('d3');
   template: require('./tag-visualization.component.html')
 })
 export class TagVisualizationComponent {
+  /** If not input, visualize all tags. If input, only show those connected to this tag. */
+  @Input() centralTag?: Tag;
+
   tagGraph: ForceGraph;
 
   /** Maps from tag ID to # of cooccurrences. @NOTE Currently only used if `this.isCrowded`. @NOTE Now not used at all, and `isCrowded` is calculated in ForceGraphComponent */
@@ -35,11 +38,27 @@ export class TagVisualizationComponent {
   ) {
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['centralTag']) {
+      const previousValue = changes['centralTag'].previousValue;
+      const currentValue = changes['centralTag'].currentValue;
+
+      if (_.isEmpty(previousValue)) {
+        // Newly set so we can just go for it
+        this.setUpGraph();
+      }
+      else {
+        // Kind of a hack but not sure how to reset the d3 viz so let's just destroy and recreate whole component
+        this.tagGraph = null // will destroy the component via ngIf
+        setTimeout(this.setUpGraph.bind(this), 0);
+      }
+    }
+  }
+
   ngOnInit() {
-    this.tagGraph = {
-      nodes: this.computeNodes(this.tagsService.tags),
-      links: this.computeLinks(this.tagsService.tags, this.tagsService.dataService.notes.notes),
-    };
+    if (! this.tagGraph) {
+      this.setUpGraph();
+    }
   }
 
   ngOnDestroy() {
@@ -48,13 +67,48 @@ export class TagVisualizationComponent {
   ngAfterViewInit() {
   }
 
-  computeNodes(tags: { [key: string]: Tag }): GraphNode[] {
-    // We use _.flatten because while mapping we sometimes return an array of subtags
-    return _.flatten(_.map(tags, (tag: Tag) => {
+  setUpGraph() {
+    this._logger.time('Computed tags nodes and links');
+
+    let links: GraphLink[];
+    let nodes: GraphNode[];
+
+    // Index of processed Tags which we can prune if we're using centralTag.
+    const nodeIndex: { [key: string]: GraphNode } = this.computeNodes(this.tagsService.tags);
+
+    if (! this.centralTag) {
+      nodes = _.map(nodeIndex, (node) => node); // just turn into an array
+      links = this.computeLinks(this.tagsService.tags, this.tagsService.dataService.notes.notes);
+    }
+    else {
+      const nodeIndexPruned: { [key: string]: GraphNode } = {};
+
+      links = this.computeLinks(
+        this.tagsService.tags,
+        this.centralTag.getNotes(),
+        nodeIndex,
+        nodeIndexPruned
+      );
+
+      nodes = _.map(nodeIndexPruned, (node) => node);
+    }
+
+    this.tagGraph = {
+      nodes: nodes,
+      links: links,
+    };
+
+    this._logger.timeEnd('Computed tags nodes and links');
+  }
+
+  computeNodes(tags: { [key: string]: Tag }): { [key: string]: GraphNode } {
+    const nodeIndex: { [key: string]: GraphNode } = {};
+
+    _(tags).each((tag: Tag) => {
       if (_.size(tag.subTagDocs)) {
-        // Return an array of subtags (molded to fit GraphNode type)
-        return _.map(tag.subTagDocs, (docs, subTagName): GraphNode => {
-          return {
+        // Go through each subtag
+        _.each(tag.subTagDocs, (docs, subTagName) => {
+          nodeIndex[tag.id + ':' + subTagName] = {
             id: tag.id + ':' + subTagName,
             name: tag.name + ': ' + subTagName,
             size: docs.length,
@@ -63,21 +117,26 @@ export class TagVisualizationComponent {
         });
       }
       else {
-        // Just return the tag (molded to fit GraphNode type)
-        return {
+        nodeIndex[tag.id] = {
           id: tag.id,
           name: tag.name,
           size: tag.docs.length,
           classAttr: tag.prog ? 'is--prog': '',
         };
       }
-    }));
+    });
+
+    return nodeIndex;
   }
 
-  computeLinks(tags: { [key: string]: Tag }, notes: { [key: string]: Note }): GraphLink[] {
-    this._logger.time('Computed all tag links');
-
-    const tagLinkIndex = {};
+  /** If nodeIndexAll and nodeIndexToUse are supplied, nodeIndexToUse is populated with those nodes from nodeIndexAll that are found in links. nodeIndexToUse is modified as a side effect. */
+  computeLinks(
+    tags: { [key: string]: Tag },
+    notes: { [key: string]: Note } | Note[],
+    nodeIndexAll?: { [key: string]: GraphNode },
+    nodeIndexToUse?: { [key: string]: GraphNode }
+  ): GraphLink[] {
+    const tagLinkIndex = {}; // maps from string (source tag + sep + target tag) to weight
     const separator = '👻🌚🌀🌱'; // need something unlikely to be in a subtag name
 
     _.each(notes, (note) => {
@@ -103,6 +162,7 @@ export class TagVisualizationComponent {
           let sourceTagId = sourceTag.id;
           let targetTagId = targetTag.id;
 
+          // Modify source/target tag "id"s if it's actually a subtag
           if (_.size(sourceTag.subTagDocs)) {
             _.each(sourceTag.subTagDocs, (docs, sourceTagName) => {
               if (docs.indexOf(note.id) !== -1) {
@@ -118,6 +178,15 @@ export class TagVisualizationComponent {
                 return false;
               }
             });
+          }
+
+          if (nodeIndexAll && nodeIndexToUse) {
+            if (! nodeIndexToUse[sourceTagId]) {
+              nodeIndexToUse[sourceTagId] = nodeIndexAll[sourceTagId];
+            }
+            if (! nodeIndexToUse[targetTagId]) {
+              nodeIndexToUse[targetTagId] = nodeIndexAll[targetTagId];
+            }
           }
 
           const tagLink = sourceTagId + separator + targetTagId;
@@ -158,7 +227,6 @@ export class TagVisualizationComponent {
       };
     });
 
-    this._logger.timeEnd('Computed all tag links');
     return tagLinks;
   }
 }
