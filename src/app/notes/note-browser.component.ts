@@ -9,6 +9,7 @@ import {Note} from './note.model';
 import {NoteComponent} from './note.component';
 import {NotesService} from './notes.service';
 import {Logger, ScrollMonitorService} from '../utils/';
+import {NOTE_BROWSER_ROUTES} from '../app.routes';
 
 @Component({
   selector: 'note-browser',
@@ -20,9 +21,6 @@ import {Logger, ScrollMonitorService} from '../utils/';
 })
 export class NoteBrowserComponent {
   DEFAULT_NOTES_LIMIT: number = 20;
-
-  /** These are the routes on which the note browser is active.  */
-  NOTE_BROWSER_ROUTES = ['/', '/browse', '/scroll'];
 
   el: HTMLElement;
 
@@ -89,7 +87,7 @@ export class NoteBrowserComponent {
   }
 
   routeUpdated(event: NavigationEnd) {
-    if (this.NOTE_BROWSER_ROUTES.indexOf(event.url) !== -1) {
+    if (NOTE_BROWSER_ROUTES.indexOf(event.url) !== -1) {
       // Wait a sec til new section's all sorted out
       setTimeout(() => {
         this.noteComponents.forEach((noteComponent) => {
@@ -123,7 +121,7 @@ export class NoteBrowserComponent {
 
   // @TODO/testing infinite scroll e2e both directions
   infiniteScrollCheck(): void {
-    if (this.NOTE_BROWSER_ROUTES.indexOf(this.router.url) === -1) {
+    if (NOTE_BROWSER_ROUTES.indexOf(this.router.url) === -1) {
       return;
     }
 

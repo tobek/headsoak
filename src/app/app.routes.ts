@@ -13,6 +13,14 @@ class EmptyComponent {
   constructor() {}
 }
 
+/** Routes which contain NoteBrowserComponent. */
+export const NOTE_BROWSER_ROUTES = [
+  '/',
+  '/scroll',
+  '/browse',
+];
+export const DEFAULT_NOTE_ROUTE = '/';
+
 export const routes: RouterConfig = [
   {
     // @TODO/rewrite This should be hidden on mobile

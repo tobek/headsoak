@@ -10,6 +10,7 @@ import {Note} from './note.model';
 import {NotesService} from './notes.service';
 import {Tag, SubTag, TagComponent, TagsService} from '../tags';
 import {Logger, AutocompleteService} from '../utils/';
+import {NOTE_BROWSER_ROUTES, DEFAULT_NOTE_ROUTE} from '../app.routes';
 
 
 @Component({
@@ -22,9 +23,6 @@ import {Logger, AutocompleteService} from '../utils/';
   template: require('./note-query.component.html')
 })
 export class NoteQueryComponent {
-  static SEARCHABLE_ROUTES = ['/', '/browse'];
-  static DEFAULT_ROUTE = '/';
-
   _notes: Array<Note> = [];
 
   ensureCorrectRoute = _.throttle(this._ensureCorrectRoute, 1000);
@@ -310,8 +308,8 @@ export class NoteQueryComponent {
 
 
   private _ensureCorrectRoute() {
-    if (! _.includes(NoteQueryComponent.SEARCHABLE_ROUTES, this.notesService.dataService.router.url)) {
-      this.notesService.dataService.router.navigateByUrl(NoteQueryComponent.DEFAULT_ROUTE);
+    if (! _.includes(NOTE_BROWSER_ROUTES, this.notesService.dataService.router.url)) {
+      this.notesService.dataService.router.navigateByUrl(DEFAULT_NOTE_ROUTE);
     }
   }
 

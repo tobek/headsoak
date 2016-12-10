@@ -216,7 +216,7 @@ export class SettingsService {
           this.activeUIs.home.goToNewNote();
         }
       },
-      routeTo: ['/', '/focus'], // @TODO In theory, if you're on the Browse screen, it could open a new note there
+      routeTo: ['/', '/focus'], // @TODO In theory, if you're on the Browse or Scroll screens, it could open a new note there
       ngZone: true,
       section: 'shortcuts',
     },
@@ -318,14 +318,17 @@ export class SettingsService {
       name: 'Go to first note',
       default: '1',
       fn: () => {
-        // if (this.activeUIs.noteBrowser) {
-        //   this.activeUIs.noteBrowser.noteComponents.first.bodyFocus();
-        // }
         if (this.activeUIs.home) {
+          this._logger.log('active home');
           this.activeUIs.home.noteComponent.bodyFocus();
         }
+        // @TODO/shortcuts This doesn't work cause home component is "active" even when, on /scroll, it's not visible
+        // else if (this.activeUIs.noteBrowser) {
+        //   this._logger.log('active note browser');
+        //   this.activeUIs.noteBrowser.noteComponents.first.bodyFocus();
+        // }
       },
-      routeTo: ['/', '/focus'],
+      routeTo: ['/', /*'/scroll',*/ '/focus'],
       section: 'shortcuts',
     },
     // @TODO/shortcuts Should 2-9 jump to appropriate note on note browser? Should 1 go to "open note", 2 go to first in browser, etc.? Or, 0 could be open note and diff shortcut for clear search, 1 could be first in browser, etc
