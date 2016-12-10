@@ -2,7 +2,31 @@
   <div class="tag-explore-wrapper">
     <div class="tag-explore">
       <div class="heading">Explore <span class="static-tag">futurism</span></div>
+
       <force-graph *ngIf="tagExploreStage" [graph]="tagGraph"></force-graph>
+
+      <!-- component isn't loaded, just using this for CSS -->
+      <tag-details>
+        <div class="note-count-heading">37 Notes</div>
+
+        <div>
+          <div class="cooccurrences">
+            <h4>Most commonly paired with:</h4>
+            <ul class="cooccurring-tags">
+              <li><span class="static-tag">sentiment: positive</span> (9 times)</li>
+              <li><span class="static-tag">link</span> (7 times)</li>
+              <li><span class="static-tag">technology</span> (6 time)</li>
+              <li><span class="static-tag">post to blog</span> (4 times)</li>
+            </ul>
+          </div>
+          <div class="cooccurrences">
+            <h4>Least commonly paired with:</h4>
+            <ul class="cooccurring-tags">
+              <li><span class="static-tag">sleep</span> (1 time)</li>
+            </ul>
+          </div>
+        </div>
+      </tag-details>
     </div>
   </div>
 

@@ -63,8 +63,9 @@ homepage
   .tag-explore
     +card
     position: absolute
+    overflow-y: scroll
     width: 100%
-    height: 400px
+    height: 450px
     max-height: 90vh
     padding-top: 25px
     padding-bottom: 25px
@@ -81,6 +82,13 @@ homepage
       width: 100%
       height: 300px
       margin-top: 15px
+
+    .note-count-heading
+      +h3
+      margin: -10px 0 0
+
+    .cooccurrences .static-tag:before
+      margin-right: 1px
 
   .teaser
     +span(6)
