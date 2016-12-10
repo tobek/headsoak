@@ -19,7 +19,7 @@
     <i class="fa fa-users"></i>
   </span>
   <span class="prog" *ngIf="tag.prog" data-tooltip="This tag is a smart tag">
-    <i class="fa fa-magic"></i>
+    <i class="fa fa-bolt"></i>
   </span>
 </span>
 
@@ -50,7 +50,7 @@
     <span class="current-state">{{ tag.share ? 'On' : 'Off' }} &raquo;</span>
   </a>
   <a class="tag-action" [routerLink]="['/tags/tag', tag.id, tag.name, 'smartness']" (click)="$event.stopPropagation()">
-    <i class="fa fa-fw fa-magic"></i>
+    <i class="fa fa-fw fa-bolt"></i>
     Smart Tag
     <span class="current-state">{{ tag.prog ? 'On' : 'Off' }} &raquo;</span>
   </a>
