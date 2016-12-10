@@ -166,7 +166,7 @@ homepage
 
 // Because of fucked up flow/DOM ordering, we need two copies of the <login> component. One we show on mobile, the other on desktop
 
-@media (min-width: $tablet-large)
+@media (min-width: $tablet-large + 1)
   login .signup-text
     display: none
   homepage login
@@ -184,6 +184,10 @@ homepage
 
     note
       margin: 20px 0 50px
+
+    .tag-explore
+      height: 325px
+      margin-top: 20px
 
     login
       +card

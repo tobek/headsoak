@@ -202,7 +202,7 @@ export class HomepageComponent {
 
     {
       function: this.write,
-      text: '\n\nThen, explore.',
+      text: '\n\nThen, explore your data.',
     },
     {
       function: this.setUpTagExplore,

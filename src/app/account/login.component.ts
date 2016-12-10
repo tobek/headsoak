@@ -89,6 +89,12 @@ export class LoginComponent {
     const firstScript = document.getElementsByTagName('script')[0];
     const protocol = /^http:/.test(document.location + '') ? "http" : "https";
 
+    // Shitty responsiveness hack in JS - change subscribe button text to match extra copy when on mobile
+    const screenWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    if (screenWidth <= 768) {
+      jQuery('.sendgrid-subscription-widget').attr('data-submit-text', 'Subscribe');
+    }
+
     if (! document.getElementById(id)) {
       const js = document.createElement('script');
       js.id = id;
