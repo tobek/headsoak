@@ -91,7 +91,7 @@ export class NoteComponent {
     if (! tag) {
       this._logger.error('Note ID', this.note.id, 'claims to have tag ID', tagId, 'but no tag found for that ID.');
       // @TODO/rewrite @TODO/tags. Check firebase data for all of these and see how pervasive. Permanent fix would be to loop through notes that reference this tag! Once fixed, TagComponent should throw an error rather than try to handle being passed no tag
-      return {};
+      return null;
     }
 
     return tag;
