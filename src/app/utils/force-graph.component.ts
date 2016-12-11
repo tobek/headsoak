@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild, ElementRef} from '@angular/core';
+import {Component, Input, ViewChild, ElementRef, HostBinding} from '@angular/core';
 
 import {Logger} from './';
 
@@ -51,7 +51,7 @@ export class ForceGraphComponent {
 
   biggestNodeSize: number;
   heaviestLinkWeight: number;
-  isCrowded: boolean;
+  @HostBinding('class.is--crowded') isCrowded: boolean;
 
   private _logger: Logger = new Logger(this.constructor.name);
 

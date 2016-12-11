@@ -13,6 +13,10 @@ force-graph
     stroke: #999
     stroke-opacity: 0.5
 
+  &.is--crowded
+    .link
+      stroke-opacity: 0.25
+
   .node
     circle
       // stroke: #fff
@@ -34,14 +38,14 @@ force-graph
       user-select: none
 
       &.is--faded
-        transition: opacity $transition-fast
-        opacity: 0.5
+        transition: fill-opacity $transition-fast
+        fill-opacity: 0.5
 
     &:hover text
       font-weight: bold
 
       &.is--faded
-        opacity: 1
+        fill-opacity: 1
 
 tag-visualization
   display: block
