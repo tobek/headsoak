@@ -87,6 +87,7 @@ export class HomepageComponent {
       { source: '2', target: '1', weight: 5 },
       { source: '5', target: '2', weight: 1 },
       { source: '5', target: '1', weight: 1 },
+      { source: '6', target: '1', weight: 3 },
       { source: '6', target: '3', weight: 1 },
       { source: '7', target: '6', weight: 1 },
       { source: '7', target: '3', weight: 1 },

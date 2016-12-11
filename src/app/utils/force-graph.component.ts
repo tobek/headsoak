@@ -30,7 +30,7 @@ export interface GraphLink {
   weight: number,
 
   // Derived values:
-  width: number,
+  width?: number,
 }
 
 @Component({
@@ -88,16 +88,16 @@ export class ForceGraphComponent {
     const width = +window.getComputedStyle(svgEl).width.replace('px', '');
     const height = +window.getComputedStyle(svgEl).height.replace('px', '');
 
-    const isCrowded = this.isCrowded = _.size(this.graph.nodes) > 50;
+    this.isCrowded = _.size(this.graph.nodes) > 50;
 
-    const biggestNodeSize: number = this.biggestNodeSize = _.reduce(
+    this.biggestNodeSize = _.reduce(
       this.graph.nodes,
       (biggest: number, node: GraphNode) => {
         return Math.max(biggest, node.size);
       }, 0);
 
     const linkCounts = {}; // maps from node id to # of links it's part of
-    const heaviestLinkWeight: number = this.heaviestLinkWeight = _.reduce(
+    this.heaviestLinkWeight = _.reduce(
       this.graph.links,
       (heaviest: number, link: GraphLink) => {
         // While we're at it, build up index that tells us how many connections each node has
@@ -254,8 +254,7 @@ export class ForceGraphComponent {
         return d.classAttr || '';
       });
 
-    const labels = nodes.append('text')
-      // @TODO/visualization The text placement is off, should take name length into account otherwise it doesn't always fit in center. 
+    nodes.append('text')
       .attr('text-anchor', function(d) {
         return d.centeredText ? 'middle' : null
       })
@@ -310,7 +309,7 @@ export class ForceGraphComponent {
     }
     function mouseleft(node: GraphNode) {
       this.nodeHovered = false;
-      
+
       nodes.classed('is--faded', false);
       links.classed('is--faded', false);
     }
