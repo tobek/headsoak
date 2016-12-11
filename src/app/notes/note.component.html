@@ -10,7 +10,7 @@
           (focus)="addTagFocused()"
           (keyup.enter)="closeAddTagField(true)"
           (keydown.esc)="closeAddTagField(true); $event.stopPropagation(); $event.preventDefault()"
-        /><span class="new-tag-button" (click)="newTagIconClick($event)"><i *ngIf="! addingTag" class="fa fa-plus"></i><i *ngIf="addingTag" class="fa fa-check"></i></span
+        /><span class="new-tag-button" data-tooltip="Add a tag" (click)="newTagIconClick($event)"><i *ngIf="! addingTag" class="fa fa-plus"></i><i *ngIf="addingTag" class="fa fa-check"></i></span
       ></span
 
       ><tag class="tag-{{ tagId }}"

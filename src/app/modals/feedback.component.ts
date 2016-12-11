@@ -1,8 +1,9 @@
-import {Component/*, HostBinding*/} from '@angular/core';
+import {Component, ViewChild, ElementRef/*, HostBinding*/} from '@angular/core';
 
 import {AnalyticsService} from '../analytics.service';
 import {DataService} from '../data.service';
 
+import {TooltipService} from '../utils/';
 import {Logger} from '../utils/logger';
 
 
@@ -18,17 +19,18 @@ export class FeedbackComponent {
 
   feedbackText = '';
   
-  feedbackSubmitted = false;
   isLoading = false;
-  isError = false;
+
+  @ViewChild('submitButton') submitButton: ElementRef;
 
   // @HostBinding('class.on') visible = false;
 
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
-    public analyticsService: AnalyticsService,
-    public dataService: DataService
+    private analyticsService: AnalyticsService,
+    private tooltipService: TooltipService,
+    private dataService: DataService
    ) {}
 
   ngOnInit() {
@@ -53,17 +55,28 @@ export class FeedbackComponent {
       name: this.dataService.user.displayName,
       email: this.dataService.user.email
     }, (err) => {
+      debugger;
       this.isLoading = false;
-      this.isError = false;
 
       if (err) {
         this._logger.error('Failed to submit feedback:', err);
-        this.isError = true;
+
+        this.tooltipService.justTheTip(
+          'Sorry, that didn\'t work! Try again please.<br><br>[' + (err.message || err.code || JSON.stringify(err)) + ']',
+          this.submitButton.nativeElement,
+          'error'
+        );
         return;
       }
 
       this._logger.log('Feedback submitted successfully');
-      this.feedbackSubmitted = true;
+
+      this.tooltipService.justTheTip(
+        'Thanks, you\'re the best!',
+        this.submitButton.nativeElement,
+        'success'
+      );
+      this.feedbackText = '';
     });
   }
 

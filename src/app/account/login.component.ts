@@ -1,7 +1,8 @@
-import {Component, NgZone} from '@angular/core';
+import {Component, NgZone, ViewChild, ElementRef} from '@angular/core';
 import {Subscription} from 'rxjs';
 
 import {AccountService} from './account.service';
+import {TooltipService} from '../utils/';
 
 
 type ViewType = 'email-signup' | 'login' | 'create-account' | 'reset-password';
@@ -20,14 +21,20 @@ export class LoginComponent {
 
   passwordResetSuccess = false;
 
+  @ViewChild('signInButton') signInButton: ElementRef;
+  @ViewChild('signUpButton') signUpButton: ElementRef;
+
   private SENDGRID_DATA_TOKEN = 'GToz%2FEw5QP9JUKCujIHPy3uDXh8mcHwhIymBkDxrMpP5rzzMvgY6EHjUBqPVOkfv%2Fydfh8p7VoOBnGyYPQDgmcy5t%2BiHV%2B7u71%2F0tMVNo%2FU%3D';
 
   private isLoading = false;
 
   private loginSub: Subscription;
 
-  constructor(private accountService: AccountService, private zone: NgZone) {
-  }
+  constructor(
+    private accountService: AccountService,
+    private tooltipService: TooltipService,
+    private zone: NgZone
+  ) {}
 
   ngOnInit() {
     // Since accountService.loginState$ is a ReplaySubject, this will fire immediately if there already is a login state, otherwise will wait for initialization and then fire
@@ -123,7 +130,9 @@ export class LoginComponent {
       this.isLoading = false;
     });
 
-    this.accountService.login(this.email, this.password);
+    this.accountService.login(this.email, this.password, (errMessage: string) => {
+      this.tooltipService.justTheTip(errMessage, this.signInButton.nativeElement, 'error');
+    });
 
     this.pseudoLogin(loginIframe);
   }
@@ -167,6 +176,8 @@ export class LoginComponent {
     //   return;
     // }
 
-    this.accountService.createAccount(this.email, this.pass1);
+    this.accountService.createAccount(this.email, this.pass1, (errMessage) => {
+      this.tooltipService.justTheTip(errMessage, this.signUpButton.nativeElement, 'error');
+    });
   }
 }

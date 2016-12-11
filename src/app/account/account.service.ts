@@ -4,7 +4,7 @@ import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 const Firebase = require('firebase');
 
-import {utils, Logger, ToasterService} from '../utils/';
+import {utils, Logger, ToasterService, TooltipService} from '../utils/';
 import {AnalyticsService} from '../analytics.service';
 import {DataService} from '../data.service';
 import {ModalService} from '../modals/modal.service';
@@ -39,6 +39,7 @@ export class AccountService {
     private dataService: DataService,
     private modalService: ModalService,
     private toaster: ToasterService,
+    private tooltipService: TooltipService,
     private analytics: AnalyticsService,
     public user: UserService
   ) {
@@ -117,7 +118,7 @@ export class AccountService {
   }
 
   /** User has initiated login attempt. */
-  login(email: string, password: string) {
+  login(email: string, password: string, errCb: Function) {
     this.analytics.event('Account', 'login.attempt');
 
     this.ref.authWithPassword({
@@ -127,16 +128,15 @@ export class AccountService {
       if (error) {
         this.analytics.event('Account', 'login.error', error.code);
 
-        // @TODO/tooltips Show error in a tooltip over appropriate input
         switch (error.code) {
           case 'INVALID_EMAIL':
           case 'INVALID_PASSWORD':
           case 'INVALID_USER':
-            alert('Incorrect account credentials.'); // @TODO friendlier message
+            errCb('Wrong credentials, please try again.'); // @TODO friendlier message
             break;
           default:
             this._logger.warn('Login failed: ', error);
-            alert('Error logging in: ' + error.message || error.code || JSON.stringify(error));
+            errCb('Error logging in, try again!<br><br>[' + (error.message || error.code || JSON.stringify(error)) + ']');
         }
 
         this.loginState$.next('error');
@@ -216,6 +216,7 @@ export class AccountService {
             // For security purposes this should be indistinguishable from successful password reset
             break;
           default:
+            // @TODO/tooltip @TODO/firebase
             alert('Sorry, something went wrong when trying to reset your password: ' + (err.message || err.code || err) + '. Please try again later!'); // @TODO include support email here
             this._logger.error('Error resetting password:', err);
             cb(err);
@@ -233,7 +234,7 @@ export class AccountService {
     });
   }
 
-  createAccount(email: string, password: string) {
+  createAccount(email: string, password: string, errCb: Function) {
     this.analytics.event('Account', 'create_account.attempt');
 
     this.ref.createUser({ email: email, password: password}, (err, userData) => {
@@ -241,13 +242,13 @@ export class AccountService {
         this.analytics.event('Account', 'create_account.error', err.code);
         switch (err.code) {
           case 'INVALID_EMAIL':
-            alert('That\'s an invalid email address!');
+            errCb('That\'s an invalid email address!');
             break;
           case 'EMAIL_TAKEN':
-            alert('There\'s already an account with that email! Please sign in.');
+            errCb('There\'s already an account with that email! Please sign in.');
             break;
           default:
-            alert('Sorry, something went wrong when trying to create your account: ' + (err.message || err.code || err) + '. Please try again later!'); // @TODO include support email here
+            errCb('Sorry, something went wrong trying to create your account. Please try again!<br><br>[' + (err.message || err.code || err) + ']'); // @TODO include support email here
             this._logger.error('Error creating account:', err);
         }
 
@@ -259,11 +260,11 @@ export class AccountService {
       this.analytics.event('Account', 'create_account.success');
 
       this._logger.info('New account created with user id', userData.id);
-      this.login(email, password);
+      this.login(email, password, errCb);
     });
   }
 
-  changeEmail(newEmail: string, cb: Function): void {
+  changeEmail(newEmail: string, doneCb: Function): void {
     // @TODO/account Should check valid email, OR confirm that Firebase does
 
     this.modalService.prompt(
@@ -282,7 +283,7 @@ export class AccountService {
         }, (err) => {
           hideLoading();
           this.changeEmailResponseHandler(newEmail, err);
-          cb();
+          doneCb();
         });
 
         return false; // don't close modal, wait for Firebase response so we can keep it open if wrong password
@@ -291,7 +292,7 @@ export class AccountService {
         promptInputType: 'password',
         promptPlaceholder: 'Password',
         okButtonText: 'Change email',
-        cancelCb: cb,
+        cancelCb: doneCb,
       }
     );
   }
@@ -302,18 +303,26 @@ export class AccountService {
       this._logger.warn('Failed to change email:', err);
 
       if (err.code === 'INVALID_PASSWORD') {
-        // @TODO/tooltips Tooltip over modal input
-        alert('The password you entered is incorrect!');
-        return; // don't close modal
+        this.tooltipService.justTheTip(
+          'Wrong password!',
+          this.modalService.modal.promptInput.nativeElement,
+          'error'
+        );
+      }
+      else {
+        this.tooltipService.justTheTip(
+          'Sorry, try again!<br><br>[' + (err.message || err.code || err) + ']',
+          this.modalService.modal.okButton.nativeElement,
+          'error'
+        );
       }
 
-      // @TODO/tooltip
-      alert('Failed to change email, something went wrong, sorry! ' + (err.message || err.code || err));
+      return; // don't close modal
     }
 
     // The current logged-in session is tied to old email and continues returning it in provider data upon login (which would mess up a lot of things) until they log out and in again, with no easy workaround, so... force them to log in again
-    // @TODO/modal
-    alert('Nice, changed to ' + newEmail + '. Please login with your new email address.');
+    // @TODO/modal Need blocking modal
+    alert('Your email has been changed to ' + newEmail + '. Please log in with your new email address.');
     this.modalService.close();
     setTimeout(this.logout.bind(this), 10);
   }

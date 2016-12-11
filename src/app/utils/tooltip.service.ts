@@ -56,9 +56,14 @@ export class TooltipService {
 
   /** Spawns one tooltip with given content on given element. Any user activity on the page (click, touch, keyboard) will make the tooltip disappear. */
   justTheTip(content: string, el: HTMLElement, typeClass?: string) {
+    let placement = 'top-right';
+    if (el['type'] === 'submit' || el.nodeName.toLowerCase() === 'button') {
+      placement = 'top';
+    }
+
     const tip = new Tooltips.Tooltip(content, {
       typeClass: typeClass,
-      place: 'top-right',
+      place: placement,
       effectClass: 'fade',
       auto: true,
     }).show(el);
@@ -71,8 +76,15 @@ export class TooltipService {
 
       jQuery(window).off('mousedown touchstart keydown', offFunc);
     }
-
     jQuery(window).on('mousedown touchstart keydown', offFunc);
+
+    // Success tooltips fade away on their own
+    if (typeClass === 'success') {
+      setTimeout(function() {
+        jQuery(tip.element).fadeOut(2000);
+        // We can still leave the event handler above to actually dispose of the tooltip instance
+      }, 5000);
+    }
   }
 
 }

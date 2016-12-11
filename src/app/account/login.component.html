@@ -30,7 +30,11 @@
     <!-- <input name="pass2" type="password" placeholder="Repeat password" autocomplete="new-password" required ngControl="pass2" [(ngModel)]="pass2"> -->
     <!-- @TODO/ece How should we handle user who tries to "sign up" with email/pass of existing account, cause they didn't notice they're on the sign up form? Should we automatically try to log them in? We should log how often this error happens. -->
 
-    <button class="btn btn-primary" type="submit" [class.is--loading]="isLoading" [disabled]="isLoading">Register</button>
+    <button class="btn btn-primary" type="submit"
+      ref-signUpButton
+      [class.is--loading]="isLoading"
+      [disabled]="isLoading"
+    >Register</button>
 
     <!-- <aside>By signing up you agree with our <a href="#@TODO/rewrite">Terms and Conditions</a> and <a href="#@TODO/rewrite">Privacy Policy</a></aside> -->
     <aside>We're in Beta! Not all features are finalized. Enjoy.</aside>
@@ -52,7 +56,11 @@
       Forgot your password? <a (click)="view = 'reset-password'">Reset password</a>
     </aside>
 
-    <button class="btn btn-primary" type="submit" [class.is--loading]="isLoading" [disabled]="isLoading">Sign In</button>
+    <button class="btn btn-primary" type="submit"
+      ref-signInButton 
+      [class.is--loading]="isLoading"
+      [disabled]="isLoading"
+    >Sign In</button>
 
     <iframe ref-pseudoLoginIframe id="pseudo-login-iframe" src="/pseudo-login.html" style="width:0px; height:0px; border:0px;"></iframe>
   </form>
@@ -83,7 +91,7 @@
   </aside>
 
   <div *ngIf="passwordResetSuccess" class="alert alert-success">
-    <!-- @TODO/ece This message -->
+    <!-- @TODO/tooltip @TODO/ece This message -->
     Password reset email successfully sent to {{ email }}! (Unless there is no account for email {{ email }}, in which case nothing's been sent, but we're not telling you which cause that would be a tiny security hole.) Anyway, please check your email.
   </div>
 </div>

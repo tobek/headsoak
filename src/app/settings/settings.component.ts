@@ -1,7 +1,8 @@
-import {Component, ViewChildren/*, QueryList*/, OnInit} from '@angular/core';
+import {Component, ViewChild, ElementRef/*, ViewChildren, QueryList*/} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
 
+import {TooltipService} from '../utils/';
 import {Logger} from '../utils/';
 
 import {DataService} from '../data.service';
@@ -22,7 +23,7 @@ import {PrivateModeComponent} from '../modals/private-mode.component';
   ],
   template: require('./settings.component.html')
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent {
   section: string;
   // Currently supported sections:
   SECTION_NAME_MAP = {
@@ -36,6 +37,9 @@ export class SettingsComponent implements OnInit {
   initialized = false;
 
   // @ViewChildren(SettingComponent) settingComponents: QueryList<SettingComponent>;
+
+  @ViewChild('currentPasswordInput') currentPasswordInput: ElementRef;
+  @ViewChild('changePasswordButton') changePasswordButton: ElementRef;
 
   private emailAddress: string = '';
   private oldPass: string = '';
@@ -58,6 +62,7 @@ export class SettingsComponent implements OnInit {
     private route: ActivatedRoute,
     private modalService: ModalService,
     private settings: SettingsService,
+    private tooltipService: TooltipService,
     private dataService: DataService
   ) {
   }
@@ -199,12 +204,19 @@ export class SettingsComponent implements OnInit {
       if (err) {
         this._logger.warn('Failed to change password:', err);
 
-        // @TODO/tooltips
         if (err.code === 'INVALID_PASSWORD') {
-          this.modalService.alert('Failed to change password: the current password you entered is incorrect!');
+          this.tooltipService.justTheTip(
+            'Wrong password!',
+            this.currentPasswordInput.nativeElement,
+            'error'
+          );
         }
         else {
-          this.modalService.alert('Failed to change password, something went wrong, sorry! ' + (err.message || err.code || err));
+          this.tooltipService.justTheTip(
+            'Something went wrong, sorry!<br><br>[' + (err.message || err.code || err) + ']',
+            this.changePasswordButton.nativeElement,
+            'error'
+          );
         }
         return;
       }
@@ -212,8 +224,11 @@ export class SettingsComponent implements OnInit {
       this.oldPass = '';
       this.newPass = '';
 
-      // @TODO/tooltips @TODO/ece Green success tooltip over the button (which is where error message would go) or should button state change?
-      this.modalService.alert('Password successfully changed.')
+      this.tooltipService.justTheTip(
+        'Password successfully changed',
+        this.changePasswordButton.nativeElement,
+        'success'
+      );
     });
   }
 

@@ -70,6 +70,7 @@ export class ModalComponent {
 
   okButtonIsLoading = false;
 
+  @ViewChild('okButton') okButton: ElementRef;
   @ViewChild('promptInput') promptInput: ElementRef;
   promptValue = '';
 

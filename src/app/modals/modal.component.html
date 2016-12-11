@@ -32,6 +32,7 @@
       </div>
 
       <button class="btn btn-default"
+        ref-okButton
         [class.is--loading]="okButtonIsLoading"
         [disabled]="okButtonIsLoading"
         (click)="ok()"
