@@ -23,6 +23,7 @@ import 'brace/mode/javascript';
 
 // The rest
 import 'd3';
+import 'd3-bboxCollide';
 import 'firebase';
 import 'intl';
 import 'intl/locale-data/jsonp/en';

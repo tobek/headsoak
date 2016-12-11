@@ -83,7 +83,8 @@
     "@angular/router": "3.0.0-beta.2",
 
     "brace": "^0.8.0",
-    "d3": "^4.2.6",
+    "d3": "^4.4.0",
+    "d3-bboxCollide": "^1.0.3",
     "ie-shim": "^0.1.0",
     "intl": "^1.2.4",
     "core-js": "^2.4.0",
@@ -103,8 +104,8 @@
   },
   "devDependencies": {
     "@types/core-js": "^0.9.28",
-    "@types/d3-force": "^1.0.5",
-    "@types/d3-selection": "^1.0.5",
+    "@types/d3-force": "^1.0.6",
+    "@types/d3-selection": "^1.0.6",
     "@types/firebase": "^2.4.29",
     "@types/hammerjs": "^2.0.28",
     "@types/jasmine": "^2.2.29",

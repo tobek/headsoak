@@ -3,6 +3,10 @@ import {Component, Input, ViewChild, ElementRef} from '@angular/core';
 import {Logger} from './';
 
 const d3 = require('d3');
+const bboxCollide = require('d3-bboxCollide').bboxCollide;
+
+/** For non-centered labels, distance between edge of node and its label. */
+const NODE_LABEL_SPACING = 3;
 
 export interface ForceGraph {
   nodes: GraphNode[],
@@ -71,6 +75,7 @@ export class ForceGraphComponent {
 
   initGraph() {
     this._logger.time('Initialized D3 graph');
+    // this.graph.links = []
 
     const svgEl = this.svgRef.nativeElement;
     this.svg = d3.select(svgEl);
@@ -79,14 +84,20 @@ export class ForceGraphComponent {
     const height = +window.getComputedStyle(svgEl).height.replace('px', '');
 
     const isCrowded = this.isCrowded = _.size(this.graph.nodes) > 50;
+
     const biggestNodeSize: number = this.biggestNodeSize = _.reduce(
       this.graph.nodes,
       (biggest: number, node: GraphNode) => {
         return Math.max(biggest, node.size);
       }, 0);
+
+    const linkCounts = {}; // maps from node id to # of links it's part of
     const heaviestLinkWeight: number = this.heaviestLinkWeight = _.reduce(
       this.graph.links,
       (heaviest: number, link: GraphLink) => {
+        // While we're at it, build up index that tells us how many connections each node has
+        linkCounts[link.source] = (linkCounts[link.source] || 0) + 1;
+        linkCounts[link.target] = (linkCounts[link.target] || 0) + 1;
         return Math.max(heaviest, link.weight);
       }, 0);
 
@@ -100,24 +111,75 @@ export class ForceGraphComponent {
       .force('charge', d3.forceManyBody()
         .strength(function(d) {
           // default is -30
-          // return (d.size + 4) * -10;
-          return (d.radius + 1) * -10;
+          return (d.radius + 1) * -5;
         })
-        .distanceMax(100)
+        .distanceMin(function(d) {
+          // Can let collision take care of really close forces
+          return d.radius;
+        })
+        .distanceMax(function(d) {
+          return d.radius * 2;
+        })
       )
       .force('link', d3.forceLink()
         .id(function(d) { return d.id; })
-        .strength(0.5)
-        .distance(function(d) {
-          // default is 30
-          if (isCrowded) {
-            return (d.source.radius + d.target.radius) * 1.5 + 25;
+        // .strength(0.1)
+        .strength(function(link: GraphLink) {
+          // Average # of links the source and target nodes have
+          const avgConnections = (linkCounts[link.source['id']] + linkCounts[link.target['id']]) / 2;
+
+          if (avgConnections <= 4) {
+            // Small cluster, these can stay close - stronger link even closer, from 0 to 0.5
+            return Math.min(Math.sqrt(link.weight), 5) * 0.1;
+          }
+          else if (link.weight > 3) {
+            // Strong link in a big cluster - keep these closeish
+            return 0.1;
           }
           else {
-            return (d.source.radius + d.target.radius) * 1.75 + 50;
+            // Weak link in a big cluster - let these go wherever
+            return 0.001;
           }
+
+          // from 0.05 - 0.5, heavier links are stronger
+          // return Math.min(link.weight, 10) * 0.05;
+
+          // The higher the total number of links between the source and target combined, the lower the strength, so that densely packed nodes have more space to move around.
+          // return 1 / Math.sqrt(linkCounts[link.source['id']] + linkCounts[link.target['id']]);
         })
-      );
+        .distance(function(link: GraphLink) {
+          // default is 30
+
+          // if (isCrowded) {
+          //   return (d.source.radius + d.target.radius) * 1.5 + 25;
+          // }
+          // else {
+          //   return (d.source.radius + d.target.radius) * 1.75 + 50;
+          // }
+
+          // The more connections the most-connected node of this link has, the further the natural distance
+          return 20 + 5 * Math.sqrt(Math.max(linkCounts[link.source['id']] + linkCounts[link.target['id']]));
+        })
+      )
+      .force('collide', bboxCollide(function(node: GraphNode) {
+        // Return an array of top-left and bottom-right coordinates for collision bounding box. Since these are based off of the center of the node, the top and left coordinates should be negative.
+        let x1, y1, x2, y2;
+
+        if (node.centeredText) {
+          x1 = y1 = node.radius * -1 - 2;
+          x2 = y2 = node.radius + 2;
+        }
+        else {
+          x1 = node.radius * -1 - NODE_LABEL_SPACING - 4; // not sure why extra -4 is needed but seems to be
+          x2 = node.radius + NODE_LABEL_SPACING + node.textWidth;
+
+          // All labels are one vertically-centered line of 15px high
+          y1 = -10;
+          y2 = 10;
+        }
+
+        return [[x1, y1], [x2, y2]];
+      }));
 
     this.simulation
       .nodes(this.graph.nodes);
@@ -163,8 +225,8 @@ export class ForceGraphComponent {
       .attr('text-anchor', function(d) {
         return d.centeredText ? 'middle' : null
       })
-      .attr('dx', function(d) {
-        return d.centeredText ? 0 : (3 + d.radius);
+      .attr('dx', (d) => {
+        return d.centeredText ? 0 : (NODE_LABEL_SPACING + d.radius);
       })
       .attr('dy', '.35em')
       .text(function(d) { return d.name });
@@ -188,15 +250,15 @@ export class ForceGraphComponent {
     function ticked() {
       // Set the xy coordinates of the source and target ends of the links (constrained to fit within svg)
       links
-        .attr('x1', function(d) { return constrainPos(d.source.x, width, d.source); })
-        .attr('y1', function(d) { return constrainPos(d.source.y, height, d.source); })
-        .attr('x2', function(d) { return constrainPos(d.target.x, width, d.target); })
-        .attr('y2', function(d) { return constrainPos(d.target.y, height, d.target); });
+        .attr('x1', function(d) { return constrainCoord(d.source, 'x'); })
+        .attr('y1', function(d) { return constrainCoord(d.source, 'y'); })
+        .attr('x2', function(d) { return constrainCoord(d.target, 'x'); })
+        .attr('y2', function(d) { return constrainCoord(d.target, 'y'); });
 
       // Set the xy coordinates of the nodes (constrained to fit within svg)
       nodes.attr('transform', function(d) {
         // return 'translate(' + d.x + ',' + d.y + ')';
-        return 'translate(' + constrainPos(d.x, width, d) + ',' + constrainPos(d.y, height, d) + ')';
+        return 'translate(' + constrainCoord(d, 'x') + ',' + constrainCoord(d, 'y') + ')';
       });
     }
 
@@ -217,8 +279,20 @@ export class ForceGraphComponent {
       d.fy = null;
     }
 
-    function constrainPos(pos, constraint, node: GraphNode) {
-      return Math.max(node.radius, Math.min(constraint - node.radius, pos));
+    /** Given an x or y coordinate of a node, constrain that coordinate between 0 (left/top) and width/height (right/bottom). */
+    function constrainCoord(node: GraphNode, dimension: 'x' | 'y') {
+      const constraint = dimension === 'x' ? width : height;
+
+      // Can't go any closer to left/top than its radius
+      const minCoord = node.radius;
+
+      // Can't go any closer to right/bottom than width/height minus radius - except for x coord on non-centered text node, where we need even more room from right.
+      let maxCoord = constraint - node.radius;
+      if (dimension === 'x' && ! node.centeredText) {
+        maxCoord -= node.textWidth + NODE_LABEL_SPACING + 5; // +5 to account for node.textWidth under-shooting actual width
+      }
+
+      return Math.max(minCoord, Math.min(maxCoord, node[dimension]));
     }
 
     this._logger.timeEnd('Initialized D3 graph');
