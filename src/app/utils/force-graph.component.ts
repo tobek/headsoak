@@ -13,12 +13,19 @@ export interface GraphNode {
   name: string,
   size: number,
   classAttr?: string,
+
+  // Derived values:
+  radius?: number,
+  centeredText?: boolean,
 }
 /** Each link maps from node ID to node ID (in reality they're bidirectional but this is how the data is stored) while weight is the number coocurrences on notes. **/
 export interface GraphLink {
   source: string,
   target: string,
   weight: number,
+
+  // Derived values:
+  width: number,
 }
 
 @Component({
@@ -36,6 +43,10 @@ export class ForceGraphComponent {
   svg;
   /** D3 force simulation. */
   simulation;
+
+  biggestNodeSize: number;
+  heaviestLinkWeight: number;
+  isCrowded: boolean;
 
   private _logger: Logger = new Logger(this.constructor.name);
 
@@ -66,13 +77,20 @@ export class ForceGraphComponent {
     const width = +window.getComputedStyle(svgEl).width.replace('px', '');
     const height = +window.getComputedStyle(svgEl).height.replace('px', '');
 
-    const isCrowded = _.size(this.graph.nodes) > 50;
-    const biggestNodeSize: number = _.reduce(this.graph.nodes, (biggest: number, node: GraphNode) => {
-      return Math.max(biggest, node.size);
-    }, 0);
-    const heaviestLinkWeight: number = _.reduce(this.graph.links, (heaviest: number, link: GraphLink) => {
-      return Math.max(heaviest, link.weight);
-    }, 0);
+    const isCrowded = this.isCrowded = _.size(this.graph.nodes) > 50;
+    const biggestNodeSize: number = this.biggestNodeSize = _.reduce(
+      this.graph.nodes,
+      (biggest: number, node: GraphNode) => {
+        return Math.max(biggest, node.size);
+      }, 0);
+    const heaviestLinkWeight: number = this.heaviestLinkWeight = _.reduce(
+      this.graph.links,
+      (heaviest: number, link: GraphLink) => {
+        return Math.max(heaviest, link.weight);
+      }, 0);
+
+    _.each(this.graph.nodes, this.initializeNode.bind(this));
+    _.each(this.graph.links, this.initializeLink.bind(this));
 
     // var color = d3.scaleOrdinal(d3.schemeCategory20);
 
@@ -82,7 +100,7 @@ export class ForceGraphComponent {
         .strength(function(d) {
           // default is -30
           // return (d.size + 4) * -10;
-          return (calcRadius(d) + 1) * -10;
+          return (d.radius + 1) * -10;
         })
         .distanceMax(100)
       )
@@ -92,10 +110,10 @@ export class ForceGraphComponent {
         .distance(function(d) {
           // default is 30
           if (isCrowded) {
-            return (calcRadius(d.source) + calcRadius(d.target)) * 1.5 + 25;
+            return (d.source.radius + d.target.radius) * 1.5 + 25;
           }
           else {
-            return (calcRadius(d.source) + calcRadius(d.target)) * 1.75 + 50;
+            return (d.source.radius + d.target.radius) * 1.75 + 50;
           }
         })
       );
@@ -108,21 +126,15 @@ export class ForceGraphComponent {
       .links(this.graph.links);
 
 
-    var link = this.svg.selectAll('.link')
+    const links = this.svg.selectAll('.link')
         .data(this.graph.links)
       .enter().append('line')
         .attr('class', 'link')
         .attr('stroke-width', function(d) {
-          // We do want to slow down massive increases using sqrt, but we also don't want 2 cooccurrences to be indistinguishable from 1, so multiply it. But we want to start at 1px, so subtract down to that for weight 1:
-          if (heaviestLinkWeight > 10) {
-            return Math.sqrt(d.weight) * 2 - 1;
-          }
-          else {
-            return Math.sqrt(d.weight) * 3 - 2;
-          }
+          return d.width;
         });
 
-    var node = this.svg.selectAll('.node')
+    const nodes = this.svg.selectAll('.node')
         .data(this.graph.nodes)
       .enter().append('g')
         .attr('class', 'node')
@@ -131,10 +143,10 @@ export class ForceGraphComponent {
           .on('drag', dragged.bind(this))
           .on('end', dragended.bind(this)));
 
-    node.append('circle')
+    nodes.append('circle')
       .attr('r', function(d) {
         // Radius of node is number of notes this tag has, minimum size 3. sqrt to slow it down a bit (otherwise tag with 150 notes is giiigantic)
-        return calcRadius(d);
+        return d.radius;
       })
       // .attr('fill', function(d) {
       //   // Right now our only coloring criteria is if it's programmatic or not
@@ -145,15 +157,13 @@ export class ForceGraphComponent {
         return d.classAttr || '';
       });
 
-    var text = node.append('text')
-      // @TODO/optimization Shouldn't have to keep calling calcRadius
+    const labels = nodes.append('text')
       // @TODO/visualization The text placement is off, should take name length into account otherwise it doesn't always fit in center. 
       .attr('text-anchor', function(d) {
-        return calcRadius(d) > 20 ? 'middle' : null
+        return d.centeredText ? 'middle' : null
       })
       .attr('dx', function(d) {
-        const radius = calcRadius(d);
-        return radius > 20 ? 0 : (3 + radius);
+        return d.centeredText ? 0 : (3 + d.radius);
       })
       .attr('dy', '.35em')
       .text(function(d) { return d.name });
@@ -163,7 +173,7 @@ export class ForceGraphComponent {
     if (isCrowded) {
       // Fade (until hover) certain tags to make it less crowded
       // (Used to not fade ones with no pairs, cause those float to the outside so plenty of room for text. But that's a bit confusing looking.)
-      text.attr('class', (d) => {
+      labels.attr('class', (d) => {
         // if (d.size <= 1 && this.pairCount[d.id]) {
         if (d.size <= 1) {
           return 'is--faded';
@@ -175,23 +185,18 @@ export class ForceGraphComponent {
     }
 
     function ticked() {
-      link
-        // .attr('x1', function(d) { return d.source.x; })
-        // .attr('y1', function(d) { return d.source.y; })
-        // .attr('x2', function(d) { return d.target.x; })
-        // .attr('y2', function(d) { return d.target.y; });
-        .attr('x1', function(d) { return bindPos(d.source.x, width, d.source); })
-        .attr('y1', function(d) { return bindPos(d.source.y, height, d.source); })
-        .attr('x2', function(d) { return bindPos(d.target.x, width, d.target); })
-        .attr('y2', function(d) { return bindPos(d.target.y, height, d.target); });
+      // Set the xy coordinates of the source and target ends of the links (constrained to fit within svg)
+      links
+        .attr('x1', function(d) { return constrainPos(d.source.x, width, d.source); })
+        .attr('y1', function(d) { return constrainPos(d.source.y, height, d.source); })
+        .attr('x2', function(d) { return constrainPos(d.target.x, width, d.target); })
+        .attr('y2', function(d) { return constrainPos(d.target.y, height, d.target); });
 
-      node.attr('transform', function(d) {
+      // Set the xy coordinates of the nodes (constrained to fit within svg)
+      nodes.attr('transform', function(d) {
         // return 'translate(' + d.x + ',' + d.y + ')';
-        return 'translate(' + bindPos(d.x, width, d) + ',' + bindPos(d.y, height, d) + ')';
+        return 'translate(' + constrainPos(d.x, width, d) + ',' + constrainPos(d.y, height, d) + ')';
       });
-      // node
-      //   .attr('cx', function(d) { return d.x; })
-      //   .attr('cy', function(d) { return d.y; });
     }
 
     function dragstarted (d) {
@@ -211,23 +216,38 @@ export class ForceGraphComponent {
       d.fy = null;
     }
 
-    function bindPos(pos, bound, d) {
-      const radius = calcRadius(d);
-      return Math.max(radius, Math.min(bound - radius, pos));
-    }
-
-    /** Somewhat normalizes radius based on # of notes a tag is on. Could need tweaking but should do for a while! */
-    function calcRadius(d) {
-      if (biggestNodeSize > 50) {
-        // From 3px up to 30px for a tag with 100 notes, up to ~100px for a tag with 1000 notes
-        return Math.sqrt(d.size) * 3 || 3;
-      }
-      else {
-        // 1.5th root - steeper at first so larger radii for tags with fewer notes, but still levels off
-        return Math.pow(d.size, 1/1.5) * 4 || 4;
-      }
+    function constrainPos(pos, constraint, node: GraphNode) {
+      return Math.max(node.radius, Math.min(constraint - node.radius, pos));
     }
 
     this._logger.timeEnd('Initialized D3 graph');
+  }
+
+  /** Somewhat normalizes radius based on # of notes a tag is on. Could need tweaking but should do for a while! */
+  nodeRadius(node: GraphNode) {
+    if (this.biggestNodeSize > 50) {
+      // From 3px up to 30px for a tag with 100 notes, up to ~100px for a tag with 1000 notes
+      return Math.sqrt(node.size) * 3 || 3;
+    }
+    else {
+      // 1.5th root - steeper at first so larger radii for tags with fewer notes, but still levels off
+      return Math.pow(node.size, 1/1.5) * 4 || 4;
+    }
+  }
+
+  initializeNode(node: GraphNode) {
+    node.radius = this.nodeRadius(node);
+
+    node.centeredText = node.radius > 20;
+  }
+
+  initializeLink(link: GraphLink) {
+    // We do want to slow down massive increases using sqrt, but we also don't want 2 cooccurrences to be indistinguishable from 1, so multiply it. But we want to start at 1px, so subtract down to that for weight 1:
+    if (this.heaviestLinkWeight > 10) {
+      link.width = Math.sqrt(link.weight) * 2 - 1;
+    }
+    else {
+      link.width = Math.sqrt(link.weight) * 3 - 2;
+    }
   }
 }
