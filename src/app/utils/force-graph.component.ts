@@ -16,6 +16,7 @@ export interface GraphNode {
 
   // Derived values:
   radius?: number,
+  textWidth?: number,
   centeredText?: boolean,
 }
 /** Each link maps from node ID to node ID (in reality they're bidirectional but this is how the data is stored) while weight is the number coocurrences on notes. **/
@@ -238,7 +239,12 @@ export class ForceGraphComponent {
   initializeNode(node: GraphNode) {
     node.radius = this.nodeRadius(node);
 
-    node.centeredText = node.radius > 20;
+    // In current font size we average 5.2px/char. Calculated using the following in console on tag browser page:
+    //   _.mean(_.map(document.querySelectorAll('svg text'), function(node) { return (parseInt(window.getComputedStyle(node).width)/node.innerHTML.length) }))
+    node.textWidth = node.name.length * 5.2;
+
+    // node.centeredText = node.radius > 20;
+    node.centeredText = node.radius * 2 - node.textWidth > 6;
   }
 
   initializeLink(link: GraphLink) {
