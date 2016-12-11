@@ -53,6 +53,11 @@ export class ForceGraphComponent {
   heaviestLinkWeight: number;
   @HostBinding('class.is--crowded') isCrowded: boolean;
 
+  @HostBinding('class.is--node-hovered') nodeHovered: boolean;
+
+  /** Maps from node ID to a map of node ID connections. E.g. nodeConnections['node2']['node10'] === true if node2 is connected to node10. */
+  nodeConnections: { [key: string]: {[key: string]: boolean} } = {};
+
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
@@ -227,9 +232,13 @@ export class ForceGraphComponent {
       .enter().append('g')
         .attr('class', 'node')
         .call(d3.drag()
-          .on('start', dragstarted.bind(this))
+          .on('start', dragStarted.bind(this))
           .on('drag', dragged.bind(this))
-          .on('end', dragended.bind(this)));
+          .on('end', dragEnded.bind(this)));
+
+    nodes
+      .on('mouseenter', mouseentered.bind(this))
+      .on('mouseleave', mouseleft.bind(this))
 
     nodes.append('circle')
       .attr('r', function(d) {
@@ -254,23 +263,15 @@ export class ForceGraphComponent {
         return d.centeredText ? 0 : (NODE_LABEL_SPACING + d.radius);
       })
       .attr('dy', '.35em')
-      .text(function(d) { return d.name });
+      .classed('size1', function(d) {
+        // Fade (until hover) certain tags to make it less crowded
+        // (Used to not fade ones with no pairs, cause those float to the outside so plenty of room for text. But that's a bit confusing looking.)
+        // return d.size <= 1 && this.pairCount[d.id])
+        return d.size <=1;
+      })
+      .text(function(d) { return d.name; });
 
     this.simulation.on('tick', ticked);
-
-    if (isCrowded) {
-      // Fade (until hover) certain tags to make it less crowded
-      // (Used to not fade ones with no pairs, cause those float to the outside so plenty of room for text. But that's a bit confusing looking.)
-      labels.attr('class', (d) => {
-        // if (d.size <= 1 && this.pairCount[d.id]) {
-        if (d.size <= 1) {
-          return 'is--faded';
-        }
-        else {
-          return '';
-        }
-      })
-    }
 
     function ticked() {
       // @NOTE Normally here you would just take the x/y coords tracked internally by D3 and set the appropriate svg attributes to actually arrange the graph. Here we instead constrain D3's values to fit within width/height of svg. *We are actually already constraining to this bound with the `bound` force* - however, both sets of constraints are needed. If we only use the force, then nodes momentarily get pushed off the edge, and sometimes stay there if there are strong enough competing forces. If we only use the constraint here when translating into svg attributes, then we appear to get a hard bound that nodes never cross, but since D3's internal tracking of coordinates is unaffected, some nodes that *seem* to be at the edge are actually outside according to D3 are outside. These nodes then act in unexpected ways: they do not collide with other nodes that appear to overlap, dragging behavior is weird, etc. So we use both sets of constraints.
@@ -289,18 +290,41 @@ export class ForceGraphComponent {
       });
     }
 
-    function dragstarted (d) {
+    const nodeConnections = this.nodeConnections;
+    function mouseentered(hoveredNode: GraphNode) {
+      this.nodeHovered = true;
+
+      nodes.classed('is--faded', function(node: GraphNode) {
+        if (node === hoveredNode || (nodeConnections[node.id] && nodeConnections[node.id][hoveredNode.id])) {
+          return false;
+        }
+        return true;
+      });
+
+      links.classed('is--faded', function(link) {
+        if (link.source === hoveredNode || link.target === hoveredNode) {
+          return false;
+        }
+        return true;
+      });
+    }
+    function mouseleft(node: GraphNode) {
+      this.nodeHovered = false;
+      
+      nodes.classed('is--faded', false);
+      links.classed('is--faded', false);
+    }
+
+    function dragStarted (d) {
       if (!d3.event.active) this.simulation.alphaTarget(0.3).restart();
       d.fx = d.x;
       d.fy = d.y;
     }
-
     function dragged (d) {
       d.fx = d3.event.x;
       d.fy = d3.event.y;
     }
-
-    function dragended (d) {
+    function dragEnded (d) {
       if (!d3.event.active) this.simulation.alphaTarget(0);
       d.fx = null;
       d.fy = null;
@@ -348,6 +372,7 @@ export class ForceGraphComponent {
     node.centeredText = node.radius * 2 - node.textWidth > 6;
   }
 
+  /** Initializes `nodeConnections` as a side effect */
   initializeLink(link: GraphLink) {
     // We do want to slow down massive increases using sqrt, but we also don't want 2 cooccurrences to be indistinguishable from 1, so multiply it. But we want to start at 1px, so subtract down to that for weight 1:
     if (this.heaviestLinkWeight > 10) {
@@ -356,5 +381,15 @@ export class ForceGraphComponent {
     else {
       link.width = Math.sqrt(link.weight) * 3 - 2;
     }
+
+    if (! this.nodeConnections[link.source]) {
+      this.nodeConnections[link.source] = {};
+    }
+    if (! this.nodeConnections[link.target]) {
+      this.nodeConnections[link.target] = {};
+    }
+
+    this.nodeConnections[link.source][link.target] = true;
+    this.nodeConnections[link.target][link.source] = true;
   }
 }

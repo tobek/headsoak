@@ -13,9 +13,8 @@ force-graph
     stroke: #999
     stroke-opacity: 0.5
 
-  &.is--crowded
-    .link
-      stroke-opacity: 0.25
+  &.is--node-hovered .link
+    stroke-opacity: 1
 
   .node
     circle
@@ -32,20 +31,38 @@ force-graph
     &:hover circle
       fill: $highlight-color
 
-    text
-      +small
-      cursor: default
-      user-select: none
+  .node,
+  .link
+    transition: fill-opacity $transition-med, stroke-opacity $transition-med
+
+    &.is--faded
+      fill-opacity: 0.25
+      stroke-opacity: 0.25
+
+  text
+    +small
+    cursor: default
+    user-select: none
+
+  .node:hover text
+    font-weight: bold
+
+  &.is--crowded
+    &.is--node-hovered .link
+      stroke-opacity: 0.75
+
+    .link
+      stroke-opacity: 0.25
 
       &.is--faded
-        transition: fill-opacity $transition-fast
-        fill-opacity: 0.5
+        stroke-opacity: 0.05
 
-    &:hover text
-      font-weight: bold
+    text.size1
+      transition: fill-opacity $transition-fast
+      fill-opacity: 0.5
 
-      &.is--faded
-        fill-opacity: 1
+    .node:hover text.size1
+      fill-opacity: 1
 
 tag-visualization
   display: block
