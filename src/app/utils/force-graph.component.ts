@@ -108,6 +108,31 @@ export class ForceGraphComponent {
 
     this.simulation = d3.forceSimulation()
       .force('center', d3.forceCenter(width * 0.5, height * 0.4)) // 0.4 * height to shift center up a little bit to make room for description at bottom
+      .force('bound', (function() {
+        // Here we make a custom force
+
+        let _nodes;
+
+        const force = function force(alpha) {
+          // This gets run on every tick
+          for (let i = 0, n = _nodes.length, node; i < n; ++i) {
+            node = _nodes[i];
+
+            const constrainedX = constrainCoord(node, 'x');
+            const constrainedY = constrainCoord(node, 'y');
+
+            node.vx += (constrainedX - node.x) * alpha;
+            node.vy += (constrainedY - node.y) * alpha;
+          }
+        }
+
+        // Our custom force gets passed the simulation's nodes to an optional `initialize` attribute
+        force['initialize'] = function(nodes) {
+          _nodes = nodes;
+        }
+
+        return force;
+      })())
       .force('charge', d3.forceManyBody()
         .strength(function(d) {
           // default is -30
@@ -248,6 +273,8 @@ export class ForceGraphComponent {
     }
 
     function ticked() {
+      // @NOTE Normally here you would just take the x/y coords tracked internally by D3 and set the appropriate svg attributes to actually arrange the graph. Here we instead constrain D3's values to fit within width/height of svg. *We are actually already constraining to this bound with the `bound` force* - however, both sets of constraints are needed. If we only use the force, then nodes momentarily get pushed off the edge, and sometimes stay there if there are strong enough competing forces. If we only use the constraint here when translating into svg attributes, then we appear to get a hard bound that nodes never cross, but since D3's internal tracking of coordinates is unaffected, some nodes that *seem* to be at the edge are actually outside according to D3 are outside. These nodes then act in unexpected ways: they do not collide with other nodes that appear to overlap, dragging behavior is weird, etc. So we use both sets of constraints.
+
       // Set the xy coordinates of the source and target ends of the links (constrained to fit within svg)
       links
         .attr('x1', function(d) { return constrainCoord(d.source, 'x'); })
