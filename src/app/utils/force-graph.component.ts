@@ -30,6 +30,7 @@ interface NodeDatum extends GraphNode, SimulationNodeDatum {
   radius: number,
   textWidth: number,
   centeredText: boolean,
+  isFixed?: boolean,
 }
 
 /** Each link maps from node ID to node ID (in reality they're bidirectional but this is how the data is stored) while weight is the number coocurrences on notes. **/
@@ -53,7 +54,10 @@ interface LinkDatum extends SimulationLinkDatum<NodeDatum> {
 })
 export class ForceGraphComponent {
   @Input() graph: ForceGraph;
-  @Input() hoveredTag?: Tag;
+  @Input() highlightedTag?: Tag;
+
+  /** When a tag is currently highlighted and/or hovered, we store the affected node here. */
+  highlightedNodeDatum?: NodeDatum;
 
   @ViewChild('svg') svgRef: ElementRef;
 
@@ -88,8 +92,8 @@ export class ForceGraphComponent {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['hoveredTag']) {
-      this.higlightTag(changes['hoveredTag'].currentValue);
+    if (changes['highlightedTag']) {
+      this.higlightTag(changes['highlightedTag'].currentValue);
     }
   }
 
@@ -394,6 +398,10 @@ export class ForceGraphComponent {
 
   highlightNode(hoveredNode: NodeDatum) {
     this.nodeHovered = true;
+    this.highlightedNodeDatum = hoveredNode;
+
+    hoveredNode.fx = hoveredNode.x;
+    hoveredNode.fy = hoveredNode.y;
 
     this.nodeEls.classed('is--connected', (node: NodeDatum) => {
       if (node === hoveredNode || (this.nodeConnections[node.id] && this.nodeConnections[node.id][hoveredNode.id])) {
@@ -412,6 +420,14 @@ export class ForceGraphComponent {
 
   unHighlightNodes() {
     this.nodeHovered = false;
+
+    if (this.highlightedNodeDatum) {
+      if (! this.highlightedNodeDatum.isFixed) {
+        this.highlightedNodeDatum.fx = this.highlightedNodeDatum.fy = null;
+      }
+
+      this.highlightedNodeDatum = null;
+    }
 
     if (this.nodeEls) { // might not be initialized yet
       this.nodeEls.classed('is--active', false);

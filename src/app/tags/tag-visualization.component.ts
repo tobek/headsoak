@@ -21,7 +21,8 @@ export class TagVisualizationComponent {
   /** If not input, visualize all tags. If input, only show those connected to this tag. */
   @Input() centralTag?: Tag;
 
-  @Input() hoveredTag?: Tag;
+  /** If input, visualization should highlight this tag. */
+  @Input() highlightedTag?: Tag;
 
   tagGraph: ForceGraph;
 

@@ -47,7 +47,7 @@
 
   <div class="fixed-pane-wrapper">
     <div class="tag-pane fixed-pane-contents">
-      <tag-visualization *ngIf="activePane === 'viz'" class="all-tags" [hoveredTag]="hoveredTag"></tag-visualization>
+      <tag-visualization *ngIf="activePane === 'viz'" class="all-tags" [highlightedTag]="hoveredTag"></tag-visualization>
 
       <prog-tag-library *ngIf="activePane === 'library'"></prog-tag-library>
     </div>
