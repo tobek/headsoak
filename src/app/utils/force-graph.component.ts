@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild, ElementRef, HostBinding} from '@angular/core';
+import {Component, Input, ViewChild, ElementRef, HostBinding, SimpleChanges} from '@angular/core';
 
 import {Tag} from '../tags/';
 
@@ -53,6 +53,7 @@ interface LinkDatum extends SimulationLinkDatum<NodeDatum> {
 })
 export class ForceGraphComponent {
   @Input() graph: ForceGraph;
+  @Input() hoveredTag?: Tag;
 
   @ViewChild('svg') svgRef: ElementRef;
 
@@ -84,6 +85,12 @@ export class ForceGraphComponent {
   }
 
   ngOnInit() {
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['hoveredTag']) {
+      this.higlightTag(changes['hoveredTag'].currentValue);
+    }
   }
 
   ngOnDestroy() {
@@ -286,8 +293,8 @@ export class ForceGraphComponent {
           .on('end', dragEnded));
 
     this.nodeEls
-      .on('mouseenter', mouseentered.bind(this))
-      .on('mouseleave', mouseleft.bind(this))
+      .on('mouseenter', this.highlightNode.bind(this))
+      .on('mouseleave', this.unHighlightNodes.bind(this))
       .on('click', nodeClick.bind(this));
 
     this.nodeEls.append('circle')
@@ -334,27 +341,6 @@ export class ForceGraphComponent {
         // return 'translate(' + d.x + ',' + d.y + ')';
         return 'translate(' + constrainCoord(d, 'x') + ',' + constrainCoord(d, 'y') + ')';
       });
-    }
-
-    function mouseentered(hoveredNode: NodeDatum) {
-      this.nodeHovered = true;
-
-      this.nodeEls.classed('is--connected', (node: NodeDatum) => {
-        if (node === hoveredNode || (this.nodeConnections[node.id] && this.nodeConnections[node.id][hoveredNode.id])) {
-          return true;
-        }
-        return false;
-      });
-
-      this.linkEls.classed('is--connected', function(link: LinkDatum) {
-        if (link.source === hoveredNode || link.target === hoveredNode) {
-          return true;
-        }
-        return false;
-      });
-    }
-    function mouseleft(node: NodeDatum) {
-      this.nodeHovered = false;
     }
 
     function nodeClick(node: NodeDatum) {
@@ -404,6 +390,44 @@ export class ForceGraphComponent {
     }
 
     this._logger.timeEnd('Initialized D3 graph');
+  }
+
+  highlightNode(hoveredNode: NodeDatum) {
+    this.nodeHovered = true;
+
+    this.nodeEls.classed('is--connected', (node: NodeDatum) => {
+      if (node === hoveredNode || (this.nodeConnections[node.id] && this.nodeConnections[node.id][hoveredNode.id])) {
+        return true;
+      }
+      return false;
+    });
+
+    this.linkEls.classed('is--connected', function(link: LinkDatum) {
+      if (link.source === hoveredNode || link.target === hoveredNode) {
+        return true;
+      }
+      return false;
+    });
+  }
+
+  unHighlightNodes() {
+    this.nodeHovered = false;
+
+    if (this.nodeEls) { // might not be initialized yet
+      this.nodeEls.classed('is--active', false);
+    }
+  }
+
+  higlightTag(tag: Tag) {
+    if (! tag) {
+      this.unHighlightNodes();
+      return;
+    }
+
+    const nodeEl = this.nodeEls.filter((nodeEl) => nodeEl.id === tag.id)
+
+    nodeEl.classed('is--active', true);
+    this.highlightNode(nodeEl.datum());
   }
 
   /** Somewhat normalizes radius based on # of notes a tag is on. Could need tweaking but should do for a while! */

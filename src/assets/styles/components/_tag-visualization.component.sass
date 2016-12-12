@@ -27,13 +27,15 @@ force-graph
       stroke-width: 1px
       transition: fill $transition-fast, stroke $transition-med, stroke-width $transition-med
 
-    &:hover
+    &:hover,
+    &.is--active
       circle
         fill: $highlight-color
         stroke: $highlight-color
 
     &.is--fixed,
-    &.is--fixed:hover
+    &.is--fixed:hover,
+    &.is--fixed.is--active:hover,
       circle
         // @TODO/visualization @TODO/ece What do you think of this?
         transition: fill $transition-fast, stroke $transition-slow ease-in-out, stroke-width $transition-slow ease-in-out
@@ -42,10 +44,12 @@ force-graph
 
     &.is--prog
       circle,
-      &:hover circle
+      &:hover circle,
+      &.is--active circle
         fill: $primary-color-light
         
-      &:hover circle
+      &:hover circle,
+      &.is--active circle
         stroke: $highlight-color
 
       &.is--fixed circle
@@ -61,7 +65,8 @@ force-graph
   .is--text-centered text
     text-shadow: none
 
-  .node:hover text
+  .node:hover text,
+  .node.is--active text
     font-weight: bold
 
 
@@ -69,7 +74,7 @@ force-graph
   .link,
   text
     transition: fill-opacity $transition-med, stroke-opacity $transition-med
-    
+
   .node,
   text
     stroke-opacity: 1
@@ -109,7 +114,8 @@ force-graph
         fill-opacity: 1 !important
     .link.is--connected
       stroke-opacity: $link-opacity--connected !important
-    .node:hover text
+    .node:hover text,
+    .node.is--active text
       transition: fill-opacity $transition-fast
       fill-opacity: 1 !important
 

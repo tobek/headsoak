@@ -21,6 +21,8 @@ export class TagVisualizationComponent {
   /** If not input, visualize all tags. If input, only show those connected to this tag. */
   @Input() centralTag?: Tag;
 
+  @Input() hoveredTag?: Tag;
+
   tagGraph: ForceGraph;
 
   /** Maps from tag ID to # of cooccurrences. @NOTE Currently only used if `this.isCrowded`. @NOTE Now not used at all, and `isCrowded` is calculated in ForceGraphComponent */

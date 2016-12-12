@@ -1,4 +1,4 @@
-<force-graph *ngIf="tagGraph" [graph]="tagGraph"></force-graph>
+<force-graph *ngIf="tagGraph" [graph]="tagGraph" [hoveredTag]="hoveredTag"></force-graph>
 
 <div *ngIf="! centralTag" class="description">
   <p>In this graph, each node represents one of your tags, and the size of that node corresponds to the number of notes that tag appears on.</p>
