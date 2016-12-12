@@ -148,9 +148,8 @@ export class ForceGraphComponent {
     const centralNodes = _.filter(this.nodeData, { central: true });
     if (centralNodes.length === 1) {
       centralNodes[0].fx = width / 2;
-      // @TODO/visualization @TODO/ece Centered or top?
-      // centralNodes[0].fy = height / 2;
-      centralNodes[0].fy = centralNodes[0].radius + 5;
+      centralNodes[0].fy = height / 2;
+      // centralNodes[0].fy = centralNodes[0].radius + 5;
     }
     else if (centralNodes.length === 2) {
       centralNodes[0].fy = centralNodes[1].fy = height / 2;
