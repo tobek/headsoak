@@ -248,11 +248,22 @@ export class ForceGraphComponent {
     const nodes = this.svg.selectAll('.node')
         .data(this.graph.nodes)
       .enter().append('g')
-        .attr('class', 'node')
+        .attr('class', function(d) {
+          let classes = 'node';
+
+          if (d.classAttr) {
+            classes += ' ' + d.classAttr;
+          }
+          if (d.centeredText) {
+            classes += ' is--text-centered';
+          }
+
+          return classes;
+        })
         .call(d3.drag()
-          .on('start', dragStarted.bind(this))
-          .on('drag', dragged.bind(this))
-          .on('end', dragEnded.bind(this)));
+          .on('start', dragStarted)
+          .on('drag', dragged)
+          .on('end', dragEnded));
 
     nodes
       .on('mouseenter', mouseentered.bind(this))
@@ -262,15 +273,12 @@ export class ForceGraphComponent {
       .attr('r', function(d) {
         // Radius of node is number of notes this tag has, minimum size 3. sqrt to slow it down a bit (otherwise tag with 150 notes is giiigantic)
         return d.radius;
-      })
+      });
       // .attr('fill', function(d) {
       //   // Right now our only coloring criteria is if it's programmatic or not
       //   return color(!! d.prog);
       // });
       // Let's color with CSS:
-      .attr('class', function(d) {
-        return d.classAttr || '';
-      });
 
     nodes.append('text')
       .attr('text-anchor', function(d) {
@@ -329,8 +337,9 @@ export class ForceGraphComponent {
       this.nodeHovered = false;
     }
 
+    const simulation = this.simulation
     function dragStarted (d) {
-      if (!d3.event.active) this.simulation.alphaTarget(0.3).restart();
+      if (! d3.event.active) simulation.alphaTarget(0.3).restart();
       d.fx = d.x;
       d.fy = d.y;
     }
