@@ -339,9 +339,17 @@ export class ForceGraphComponent {
       d.fy = d3.event.y;
     }
     function dragEnded (d) {
-      if (!d3.event.active) this.simulation.alphaTarget(0);
-      d.fx = null;
-      d.fy = null;
+      if (! d3.event.active) simulation.alphaTarget(0);
+
+      if (d.isFixed) {
+        // now unfix it
+        d.fx = null;
+        d.fy = null;
+      }
+        
+      d.isFixed = ! d.isFixed;
+
+      this.classList[d.isFixed ? 'add' : 'remove']('is--fixed');
     }
 
     /** Given an x or y coordinate of a node, constrain that coordinate between 0 (left/top) and width/height (right/bottom). */
