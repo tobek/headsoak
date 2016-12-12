@@ -22,9 +22,10 @@ export interface GraphNode {
   id: string,
   name: string,
   size: number,
-  classAttr?: string,
 
+  classAttr?: string,
   tagInstance?: Tag,
+  central?: boolean,
 }
 interface NodeDatum extends GraphNode, SimulationNodeDatum {
   radius: number,
@@ -128,6 +129,7 @@ export class ForceGraphComponent {
       }, 0);
 
     const linkCounts = {}; // maps from node id to # of links it's part of
+    let mostConnections = 10; // starting at 10 for most connections otherwise graphs with few connections are very tight
     this.heaviestLinkWeight = _.reduce(
       this.graph.links,
       (heaviest: number, link: GraphLink) => {
@@ -135,11 +137,32 @@ export class ForceGraphComponent {
         linkCounts[link.source] = (linkCounts[link.source] || 0) + 1;
         linkCounts[link.target] = (linkCounts[link.target] || 0) + 1;
 
+        mostConnections = Math.max(mostConnections, linkCounts[link.source], linkCounts[link.target]);
+
         return Math.max(heaviest, link.weight);
-      }, 0);
+      }, 5); // starting at 5 for heaviest link weight, otherwise lightly-connected graphs get tight cause of normalization across weights
 
     this.nodeData = _.map(this.graph.nodes, (node) => this.processNode(node));
     this.linkData = _.map(this.graph.links, (link) => this.processLink(link));
+
+    const centralNodes = _.filter(this.nodeData, { central: true });
+    if (centralNodes.length === 1) {
+      centralNodes[0].fx = width / 2;
+      // @TODO/visualization @TODO/ece Centered or top?
+      // centralNodes[0].fy = height / 2;
+      centralNodes[0].fy = centralNodes[0].radius + 5;
+    }
+    else if (centralNodes.length === 2) {
+      centralNodes[0].fy = centralNodes[1].fy = height / 2;
+
+      centralNodes[0].fx = centralNodes[0].radius + 5;
+      centralNodes[1].fx = width - centralNodes[1].radius - 5;
+
+      if (centralNodes[1].centeredText) {
+        centralNodes[1].fx -= centralNodes[1].textWidth;
+      }
+    }
+    // @TODO/visualization Arrange other quantities of central nodes too (as it is, they will have the fixed and central style, but won't actually be fixed)
 
     // var color = d3.scaleOrdinal(d3.schemeCategory20);
 
@@ -187,29 +210,45 @@ export class ForceGraphComponent {
         .id(function(d) { return d.id; })
         // .strength(0.1)
         .strength((link: LinkDatum) => {
-          // if ((link.source.tagInstance && link.source.tagInstance.prog) || (link.target.tagInstance && link.target.tagInstance.prog)) {
-          //   return this.isCrowded ? 0 : 0.001;
-          // }
+          const central = link.source.central || link.target.central;
 
-          // Average # of links the source and target nodes have
-          const avgConnections = (linkCounts[link.source['id']] + linkCounts[link.target['id']]) / 2;
+          const avgConnections = (linkCounts[link.source.id] + linkCounts[link.target.id]) / 2;
+          const minConnections = Math.min(linkCounts[link.source.id], linkCounts[link.target.id]);
 
-          if (avgConnections <= 4) {
-            // Small cluster, these can stay close - stronger link even closer, from 0 to 0.5
-            return Math.min(Math.sqrt(link.weight), 5) * 0.1;
-          }
-          else if (link.weight > 3) {
-            // Strong link in a big cluster - keep these closeish
-            return 0.1;
-          }
-          else {
-            // Weak link in a big cluster - let these go wherever
-            return this.isCrowded ? 0.001 : 0.01;
-          }
-          
+          let baseStrength;
+
+          // baseStrength = 0.1 - 0.095 * avgConnections/mostConnections;
 
           // // The higher the total number of links between the source and target combined, the lower the strength, so that densely packed nodes have more space to move around.
-          // return 0.2 / (linkCounts[link.source['id']] + linkCounts[link.target['id']] - 1);
+          // baseStrength = 0.2 / (linkCounts[link.source.id] + linkCounts[link.target.id] - 1);
+
+          if (central) {
+            if (centralNodes.length > 1) {
+              // Multiple opposing central nodes (e.g. subtags) should definitely pull so you can see how related tags align
+              baseStrength = 0.1;
+            }
+            else {
+              // Let weak links go wherever
+              baseStrength = link.weight > 1 ? 0.1 : 0;
+            }
+          }
+          else {
+            if (minConnections === 1) {
+              // Single node attached to something, stay strong
+              baseStrength = 0.5;
+            }
+            else if (avgConnections <= 4 || link.weight > 3) {
+              // Small cluster, or strong link in a big cluster - these can stay strong
+              baseStrength = 0.1;
+            }
+            else {
+              // Weak link in a big cluster - let these go kind of wherever
+              baseStrength = this.numNodes > 25 ? 0.001 : 0.01;
+            }
+          }
+
+          // Adjust baseStrength +/- 50% based on relative weight
+          return baseStrength * (0.5 + link.weight / this.heaviestLinkWeight);
         })
         .distance((link: LinkDatum) => {
           // default is 30
@@ -221,13 +260,19 @@ export class ForceGraphComponent {
           //   return (d.source.radius + d.target.radius) * 1.75 + 50;
           // }
 
-          // The more connections the least-connected node of this link has, the further the natural distance, e.g. if both nodes are highly connected then they get lots of room
-          let baseDistance = 20 + 5 * Math.sqrt(Math.min(linkCounts[link.source['id']] + linkCounts[link.target['id']]))
+          const minConnections = Math.min(linkCounts[link.source.id], linkCounts[link.target.id]);
+
+          // The more connections the nodes of this link have, the further the natural distance, e.g. if nodes are highly connected then they get lots of room
+          // let baseDistance = 20 + 5 * Math.sqrt(linkCounts[link.source.id] + linkCounts[link.target.id]);
+
+          // normalized across 25-150 - the more connections the looser it is
+          let baseDistance = 25 + 125 * minConnections/mostConnections;
+
+          // heavier links are a little closer:
+          baseDistance -= 25 * link.weight/this.heaviestLinkWeight;
+
 
           if (this.numNodes <= 10) {
-            return baseDistance * 4;
-          }
-          else if (this.numNodes < 30) {
             return baseDistance * 3;
           }
           else if (this.numNodes < 50) {
@@ -264,7 +309,6 @@ export class ForceGraphComponent {
     (this.simulation.force('link') as ForceLink<NodeDatum, LinkDatum>)
       .links(this.linkData);
 
-
     this.linkEls = this.svg.selectAll('.link')
         .data(this.linkData)
       .enter().append('line')
@@ -287,6 +331,9 @@ export class ForceGraphComponent {
           }
           if (d.centeredText) {
             classes += ' is--text-centered';
+          }
+          if (d.central) {
+            classes += ' is--central is--fixed';
           }
 
           return classes;
@@ -430,7 +477,7 @@ export class ForceGraphComponent {
     }
 
     if (this.nodeEls) { // might not be initialized yet
-      this.nodeEls.classed('is--active', false);
+      this.nodeEls.classed('is--highlighted', false);
     }
   }
 
@@ -442,7 +489,7 @@ export class ForceGraphComponent {
 
     const nodeEl = this.nodeEls.filter((nodeEl) => nodeEl.id === tag.id)
 
-    nodeEl.classed('is--active', true);
+    nodeEl.classed('is--highlighted', true);
     this.highlightNode(nodeEl.datum());
   }
 
@@ -469,6 +516,7 @@ export class ForceGraphComponent {
       radius: radius,
       textWidth: textWidth,
       centeredText: radius * 2 - textWidth > 6,
+      isFixed: node.central, // starts off fixed but can be unfixed by dragging
     });
   }
 

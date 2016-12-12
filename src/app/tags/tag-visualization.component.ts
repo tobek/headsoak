@@ -114,6 +114,7 @@ export class TagVisualizationComponent {
             size: docs.length,
             classAttr: tag.prog ? 'is--prog': '',
             tagInstance: tag,
+            central: tag === this.centralTag,
           };
         });
       }
@@ -124,6 +125,7 @@ export class TagVisualizationComponent {
           size: tag.docs.length,
           classAttr: tag.prog ? 'is--prog': '',
           tagInstance: tag,
+          central: tag === this.centralTag,
         };
       }
     });
