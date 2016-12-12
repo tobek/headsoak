@@ -4,6 +4,9 @@ import {Tag} from '../tags/';
 
 import {Logger} from './';
 
+import {Simulation, SimulationLinkDatum, SimulationNodeDatum, ForceLink} from 'd3-force';
+import {Selection} from 'd3-selection';
+
 const d3 = require('d3');
 const bboxCollide = require('d3-bboxCollide').bboxCollide;
 
@@ -23,7 +26,7 @@ export interface GraphNode {
 
   tagInstance?: Tag,
 }
-interface GraphNodeProcessed extends GraphNode {
+interface NodeDatum extends GraphNode, SimulationNodeDatum {
   radius: number,
   textWidth: number,
   centeredText: boolean,
@@ -35,9 +38,9 @@ export interface GraphLink {
   target: string,
   weight: number,
 }
-interface GraphLinkProcessed {
-  source: GraphNode,
-  target: GraphNode,
+interface LinkDatum extends SimulationLinkDatum<NodeDatum> {
+  source: NodeDatum,
+  target: NodeDatum,
   weight: number,
   width: number,
 }
@@ -54,9 +57,15 @@ export class ForceGraphComponent {
   @ViewChild('svg') svgRef: ElementRef;
 
   /** D3 selection of svg element we use for visualization. */
-  svg;
+  svg: Selection<SVGElement, any, null, undefined>;
   /** D3 force simulation. */
-  simulation;
+  simulation: Simulation<NodeDatum, LinkDatum>;
+
+  nodeData: NodeDatum[];
+  linkData: LinkDatum[];
+
+  nodeEls: Selection<any, NodeDatum, SVGElement, any>;
+  linkEls: Selection<any, LinkDatum, SVGElement, any>;
 
   numNodes: number;
   biggestNodeSize: number;
@@ -103,7 +112,7 @@ export class ForceGraphComponent {
 
     this.biggestNodeSize = _.reduce(
       this.graph.nodes,
-      (biggest: number, node: GraphNode) => {
+      (biggest: number, node: NodeDatum) => {
         return Math.max(biggest, node.size);
       }, 0);
 
@@ -114,11 +123,12 @@ export class ForceGraphComponent {
         // While we're at it, build up index that tells us how many connections each node has
         linkCounts[link.source] = (linkCounts[link.source] || 0) + 1;
         linkCounts[link.target] = (linkCounts[link.target] || 0) + 1;
+
         return Math.max(heaviest, link.weight);
       }, 0);
 
-    _.each(this.graph.nodes, this.processNode.bind(this));
-    _.each(this.graph.links, this.processLink.bind(this));
+    this.nodeData = _.map(this.graph.nodes, (node) => this.processNode(node));
+    this.linkData = _.map(this.graph.links, (link) => this.processLink(link));
 
     // var color = d3.scaleOrdinal(d3.schemeCategory20);
 
@@ -165,11 +175,11 @@ export class ForceGraphComponent {
       .force('link', d3.forceLink()
         .id(function(d) { return d.id; })
         // .strength(0.1)
-        .strength((link: GraphLinkProcessed) => {
+        .strength((link: LinkDatum) => {
           // if ((link.source.tagInstance && link.source.tagInstance.prog) || (link.target.tagInstance && link.target.tagInstance.prog)) {
           //   return this.isCrowded ? 0 : 0.001;
           // }
-          
+
           // Average # of links the source and target nodes have
           const avgConnections = (linkCounts[link.source['id']] + linkCounts[link.target['id']]) / 2;
 
@@ -190,7 +200,7 @@ export class ForceGraphComponent {
           // // The higher the total number of links between the source and target combined, the lower the strength, so that densely packed nodes have more space to move around.
           // return 0.2 / (linkCounts[link.source['id']] + linkCounts[link.target['id']] - 1);
         })
-        .distance((link: GraphLink) => {
+        .distance((link: LinkDatum) => {
           // default is 30
 
           // if (isCrowded) {
@@ -217,7 +227,7 @@ export class ForceGraphComponent {
           }
         })
       )
-      .force('collide', bboxCollide(function(node: GraphNodeProcessed) {
+      .force('collide', bboxCollide(function(node: NodeDatum) {
         // Return an array of top-left and bottom-right coordinates for collision bounding box. Since these are based off of the center of the node, the top and left coordinates should be negative.
         let x1, y1, x2, y2;
 
@@ -238,15 +248,14 @@ export class ForceGraphComponent {
       }));
 
     this.simulation
-      .nodes(this.graph.nodes);
-    
-    this.simulation
-      .force('link')
-      .links(this.graph.links);
+      .nodes(this.nodeData);
+
+    (this.simulation.force('link') as ForceLink<NodeDatum, LinkDatum>)
+      .links(this.linkData);
 
 
-    const links = this.svg.selectAll('.link')
-        .data(this.graph.links)
+    this.linkEls = this.svg.selectAll('.link')
+        .data(this.linkData)
       .enter().append('line')
         .attr('class', 'link')
         .classed('size1', function(d) {
@@ -256,8 +265,8 @@ export class ForceGraphComponent {
           return d.width;
         });
 
-    const nodes = this.svg.selectAll('.node')
-        .data(this.graph.nodes)
+    this.nodeEls = this.svg.selectAll('.node')
+        .data(this.nodeData)
       .enter().append('g')
         .attr('class', function(d) {
           let classes = 'node';
@@ -276,12 +285,12 @@ export class ForceGraphComponent {
           .on('drag', dragged)
           .on('end', dragEnded));
 
-    nodes
+    this.nodeEls
       .on('mouseenter', mouseentered.bind(this))
       .on('mouseleave', mouseleft.bind(this))
       .on('click', nodeClick.bind(this));
 
-    nodes.append('circle')
+    this.nodeEls.append('circle')
       .attr('r', function(d) {
         // Radius of node is number of notes this tag has, minimum size 3. sqrt to slow it down a bit (otherwise tag with 150 notes is giiigantic)
         return d.radius;
@@ -292,7 +301,7 @@ export class ForceGraphComponent {
       // });
       // Let's color with CSS:
 
-    nodes.append('text')
+    this.nodeEls.append('text')
       .attr('text-anchor', function(d) {
         return d.centeredText ? 'middle' : null
       })
@@ -308,48 +317,47 @@ export class ForceGraphComponent {
       })
       .text(function(d) { return d.name; });
 
-    this.simulation.on('tick', ticked);
+    this.simulation.on('tick', ticked.bind(this));
 
     function ticked() {
       // @NOTE Normally here you would just take the x/y coords tracked internally by D3 and set the appropriate svg attributes to actually arrange the graph. Here we instead constrain D3's values to fit within width/height of svg. *We are actually already constraining to this bound with the `bound` force* - however, both sets of constraints are needed. If we only use the force, then nodes momentarily get pushed off the edge, and sometimes stay there if there are strong enough competing forces. If we only use the constraint here when translating into svg attributes, then we appear to get a hard bound that nodes never cross, but since D3's internal tracking of coordinates is unaffected, some nodes that *seem* to be at the edge are actually outside according to D3 are outside. These nodes then act in unexpected ways: they do not collide with other nodes that appear to overlap, dragging behavior is weird, etc. So we use both sets of constraints.
 
       // Set the xy coordinates of the source and target ends of the links (constrained to fit within svg)
-      links
+      this.linkEls
         .attr('x1', function(d) { return constrainCoord(d.source, 'x'); })
         .attr('y1', function(d) { return constrainCoord(d.source, 'y'); })
         .attr('x2', function(d) { return constrainCoord(d.target, 'x'); })
         .attr('y2', function(d) { return constrainCoord(d.target, 'y'); });
 
       // Set the xy coordinates of the nodes (constrained to fit within svg)
-      nodes.attr('transform', function(d) {
+      this.nodeEls.attr('transform', function(d) {
         // return 'translate(' + d.x + ',' + d.y + ')';
         return 'translate(' + constrainCoord(d, 'x') + ',' + constrainCoord(d, 'y') + ')';
       });
     }
 
-    const nodeConnections = this.nodeConnections;
-    function mouseentered(hoveredNode: GraphNodeProcessed) {
+    function mouseentered(hoveredNode: NodeDatum) {
       this.nodeHovered = true;
 
-      nodes.classed('is--connected', function(node: GraphNodeProcessed) {
-        if (node === hoveredNode || (nodeConnections[node.id] && nodeConnections[node.id][hoveredNode.id])) {
+      this.nodeEls.classed('is--connected', (node: NodeDatum) => {
+        if (node === hoveredNode || (this.nodeConnections[node.id] && this.nodeConnections[node.id][hoveredNode.id])) {
           return true;
         }
         return false;
       });
 
-      links.classed('is--connected', function(link) {
+      this.linkEls.classed('is--connected', function(link: LinkDatum) {
         if (link.source === hoveredNode || link.target === hoveredNode) {
           return true;
         }
         return false;
       });
     }
-    function mouseleft(node: GraphNodeProcessed) {
+    function mouseleft(node: NodeDatum) {
       this.nodeHovered = false;
     }
 
-    function nodeClick(node: GraphNodeProcessed) {
+    function nodeClick(node: NodeDatum) {
       if (node.tagInstance) {
         node.tagInstance.goTo();
       }
@@ -380,7 +388,7 @@ export class ForceGraphComponent {
     }
 
     /** Given an x or y coordinate of a node, constrain that coordinate between 0 (left/top) and width/height (right/bottom). */
-    function constrainCoord(node: GraphNodeProcessed, dimension: 'x' | 'y') {
+    function constrainCoord(node: NodeDatum, dimension: 'x' | 'y') {
       const constraint = dimension === 'x' ? width : height;
 
       // Can't go any closer to left/top than its radius
@@ -410,25 +418,29 @@ export class ForceGraphComponent {
     }
   }
 
-  /** Converts GraphNode into GraphNodeProcessed */
-  processNode(node: GraphNode) {
-    node['radius'] = this.nodeRadius(node);
+  processNode(node: GraphNode): NodeDatum {
+    const radius = this.nodeRadius(node);
 
     // In current font size we average 5.2px/char. Calculated using the following in console on tag browser page:
     //   _.mean(_.map(document.querySelectorAll('svg text'), function(node) { return (parseInt(window.getComputedStyle(node).width)/node.innerHTML.length) }))
-    node['textWidth'] = node.name.length * 5.2;
+    const textWidth = node.name.length * 5.2;
 
-    node['centeredText'] = node['radius'] * 2 - node['textWidth'] > 6;
+    return _.assign(node, {
+      radius: radius,
+      textWidth: textWidth,
+      centeredText: radius * 2 - textWidth > 6,
+    });
   }
 
-  /** Converts GraphLink into GraphLinkProcessed. Initializes `nodeConnections` as a side effect */
-  processLink(link: GraphLink) {
+  /** Initializes `nodeConnections` as a side effect */
+  processLink(link: GraphLink): LinkDatum {
     // We do want to slow down massive increases using sqrt, but we also don't want 2 cooccurrences to be indistinguishable from 1, so multiply it. But we want to start at 1px, so subtract down to that for weight 1:
+    let width: number;
     if (this.heaviestLinkWeight > 10) {
-      link['width'] = Math.sqrt(link.weight) * 2 - 1;
+      width = Math.sqrt(link.weight) * 2 - 1;
     }
     else {
-      link['width'] = Math.sqrt(link.weight) * 3 - 2;
+      width = Math.sqrt(link.weight) * 3 - 2;
     }
 
     if (! this.nodeConnections[link.source]) {
@@ -440,5 +452,13 @@ export class ForceGraphComponent {
 
     this.nodeConnections[link.source][link.target] = true;
     this.nodeConnections[link.target][link.source] = true;
+
+    return _.assign(link, {
+      // Very ugly double type assertion - source and target are actually ID strings here, but as soon as we feed these into the simulation they'll get reassinged to NodeDatum, so let's assert that here to squeeze return object into LinkDatum type
+      source: link.source as any as NodeDatum,
+      target: link.target as any as NodeDatum,
+
+      width: width,
+    });
   }
 }
