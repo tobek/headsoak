@@ -110,6 +110,7 @@ export class TagVisualizationComponent {
             name: tag.name + ': ' + subTagName,
             size: docs.length,
             classAttr: tag.prog ? 'is--prog': '',
+            tagInstance: tag,
           };
         });
       }
@@ -119,6 +120,7 @@ export class TagVisualizationComponent {
           name: tag.name,
           size: tag.docs.length,
           classAttr: tag.prog ? 'is--prog': '',
+          tagInstance: tag,
         };
       }
     });

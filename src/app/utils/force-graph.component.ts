@@ -1,5 +1,7 @@
 import {Component, Input, ViewChild, ElementRef, HostBinding} from '@angular/core';
 
+import {Tag} from '../tags/';
+
 import {Logger} from './';
 
 const d3 = require('d3');
@@ -17,6 +19,8 @@ export interface GraphNode {
   name: string,
   size: number,
   classAttr?: string,
+
+  tagInstance?: Tag,
 
   // Derived values:
   radius?: number,
@@ -268,6 +272,7 @@ export class ForceGraphComponent {
     nodes
       .on('mouseenter', mouseentered.bind(this))
       .on('mouseleave', mouseleft.bind(this))
+      .on('click', nodeClick.bind(this));
 
     nodes.append('circle')
       .attr('r', function(d) {
@@ -335,6 +340,12 @@ export class ForceGraphComponent {
     }
     function mouseleft(node: GraphNode) {
       this.nodeHovered = false;
+    }
+
+    function nodeClick(node: GraphNode) {
+      if (node.tagInstance) {
+        node.tagInstance.goTo();
+      }
     }
 
     const simulation = this.simulation
