@@ -14,6 +14,7 @@ export interface ForceGraph {
   nodes: GraphNode[],
   links: GraphLink[],
 }
+
 export interface GraphNode {
   id: string,
   name: string,
@@ -21,20 +22,24 @@ export interface GraphNode {
   classAttr?: string,
 
   tagInstance?: Tag,
-
-  // Derived values:
-  radius?: number,
-  textWidth?: number,
-  centeredText?: boolean,
 }
+interface GraphNodeProcessed extends GraphNode {
+  radius: number,
+  textWidth: number,
+  centeredText: boolean,
+}
+
 /** Each link maps from node ID to node ID (in reality they're bidirectional but this is how the data is stored) while weight is the number coocurrences on notes. **/
 export interface GraphLink {
   source: string,
   target: string,
   weight: number,
-
-  // Derived values:
-  width?: number,
+}
+interface GraphLinkProcessed {
+  source: GraphNode,
+  target: GraphNode,
+  weight: number,
+  width: number,
 }
 
 @Component({
@@ -112,8 +117,8 @@ export class ForceGraphComponent {
         return Math.max(heaviest, link.weight);
       }, 0);
 
-    _.each(this.graph.nodes, this.initializeNode.bind(this));
-    _.each(this.graph.links, this.initializeLink.bind(this));
+    _.each(this.graph.nodes, this.processNode.bind(this));
+    _.each(this.graph.links, this.processLink.bind(this));
 
     // var color = d3.scaleOrdinal(d3.schemeCategory20);
 
@@ -160,7 +165,11 @@ export class ForceGraphComponent {
       .force('link', d3.forceLink()
         .id(function(d) { return d.id; })
         // .strength(0.1)
-        .strength((link: GraphLink) => {
+        .strength((link: GraphLinkProcessed) => {
+          // if ((link.source.tagInstance && link.source.tagInstance.prog) || (link.target.tagInstance && link.target.tagInstance.prog)) {
+          //   return this.isCrowded ? 0 : 0.001;
+          // }
+          
           // Average # of links the source and target nodes have
           const avgConnections = (linkCounts[link.source['id']] + linkCounts[link.target['id']]) / 2;
 
@@ -176,12 +185,10 @@ export class ForceGraphComponent {
             // Weak link in a big cluster - let these go wherever
             return this.isCrowded ? 0.001 : 0.01;
           }
+          
 
-          // from 0.05 - 0.5, heavier links are stronger
-          // return Math.min(link.weight, 10) * 0.05;
-
-          // The higher the total number of links between the source and target combined, the lower the strength, so that densely packed nodes have more space to move around.
-          // return 1 / Math.sqrt(linkCounts[link.source['id']] + linkCounts[link.target['id']]);
+          // // The higher the total number of links between the source and target combined, the lower the strength, so that densely packed nodes have more space to move around.
+          // return 0.2 / (linkCounts[link.source['id']] + linkCounts[link.target['id']] - 1);
         })
         .distance((link: GraphLink) => {
           // default is 30
@@ -194,23 +201,23 @@ export class ForceGraphComponent {
           // }
 
           // The more connections the least-connected node of this link has, the further the natural distance, e.g. if both nodes are highly connected then they get lots of room
-          let distance = 20 + 5 * Math.sqrt(Math.min(linkCounts[link.source['id']] + linkCounts[link.target['id']]))
+          let baseDistance = 20 + 5 * Math.sqrt(Math.min(linkCounts[link.source['id']] + linkCounts[link.target['id']]))
 
           if (this.numNodes <= 10) {
-            return distance * 4;
+            return baseDistance * 4;
           }
           else if (this.numNodes < 30) {
-            return distance * 2.5;
+            return baseDistance * 3;
           }
           else if (this.numNodes < 50) {
-            return distance * 1.5;
+            return baseDistance * 2;
           }
           else {
-            return distance;
+            return baseDistance;
           }
         })
       )
-      .force('collide', bboxCollide(function(node: GraphNode) {
+      .force('collide', bboxCollide(function(node: GraphNodeProcessed) {
         // Return an array of top-left and bottom-right coordinates for collision bounding box. Since these are based off of the center of the node, the top and left coordinates should be negative.
         let x1, y1, x2, y2;
 
@@ -321,10 +328,10 @@ export class ForceGraphComponent {
     }
 
     const nodeConnections = this.nodeConnections;
-    function mouseentered(hoveredNode: GraphNode) {
+    function mouseentered(hoveredNode: GraphNodeProcessed) {
       this.nodeHovered = true;
 
-      nodes.classed('is--connected', function(node: GraphNode) {
+      nodes.classed('is--connected', function(node: GraphNodeProcessed) {
         if (node === hoveredNode || (nodeConnections[node.id] && nodeConnections[node.id][hoveredNode.id])) {
           return true;
         }
@@ -338,11 +345,11 @@ export class ForceGraphComponent {
         return false;
       });
     }
-    function mouseleft(node: GraphNode) {
+    function mouseleft(node: GraphNodeProcessed) {
       this.nodeHovered = false;
     }
 
-    function nodeClick(node: GraphNode) {
+    function nodeClick(node: GraphNodeProcessed) {
       if (node.tagInstance) {
         node.tagInstance.goTo();
       }
@@ -373,7 +380,7 @@ export class ForceGraphComponent {
     }
 
     /** Given an x or y coordinate of a node, constrain that coordinate between 0 (left/top) and width/height (right/bottom). */
-    function constrainCoord(node: GraphNode, dimension: 'x' | 'y') {
+    function constrainCoord(node: GraphNodeProcessed, dimension: 'x' | 'y') {
       const constraint = dimension === 'x' ? width : height;
 
       // Can't go any closer to left/top than its radius
@@ -403,25 +410,25 @@ export class ForceGraphComponent {
     }
   }
 
-  initializeNode(node: GraphNode) {
-    node.radius = this.nodeRadius(node);
+  /** Converts GraphNode into GraphNodeProcessed */
+  processNode(node: GraphNode) {
+    node['radius'] = this.nodeRadius(node);
 
     // In current font size we average 5.2px/char. Calculated using the following in console on tag browser page:
     //   _.mean(_.map(document.querySelectorAll('svg text'), function(node) { return (parseInt(window.getComputedStyle(node).width)/node.innerHTML.length) }))
-    node.textWidth = node.name.length * 5.2;
+    node['textWidth'] = node.name.length * 5.2;
 
-    // node.centeredText = node.radius > 20;
-    node.centeredText = node.radius * 2 - node.textWidth > 6;
+    node['centeredText'] = node['radius'] * 2 - node['textWidth'] > 6;
   }
 
-  /** Initializes `nodeConnections` as a side effect */
-  initializeLink(link: GraphLink) {
+  /** Converts GraphLink into GraphLinkProcessed. Initializes `nodeConnections` as a side effect */
+  processLink(link: GraphLink) {
     // We do want to slow down massive increases using sqrt, but we also don't want 2 cooccurrences to be indistinguishable from 1, so multiply it. But we want to start at 1px, so subtract down to that for weight 1:
     if (this.heaviestLinkWeight > 10) {
-      link.width = Math.sqrt(link.weight) * 2 - 1;
+      link['width'] = Math.sqrt(link.weight) * 2 - 1;
     }
     else {
-      link.width = Math.sqrt(link.weight) * 3 - 2;
+      link['width'] = Math.sqrt(link.weight) * 3 - 2;
     }
 
     if (! this.nodeConnections[link.source]) {
