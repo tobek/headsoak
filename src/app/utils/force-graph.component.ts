@@ -427,11 +427,16 @@ export class ForceGraphComponent {
     function constrainCoord(node: NodeDatum, dimension: 'x' | 'y') {
       const constraint = dimension === 'x' ? width : height;
 
+      // In y dimension minimum radius should be 6px to accommodate 12px tall text
+      let radius = dimension === 'y' ? Math.max(node.radius, 6) : node.radius;
+
+      radius += 5; // account for stroke width (which can be up to 5 if it's fixed)
+
       // Can't go any closer to left/top than its radius
-      const minCoord = node.radius;
+      const minCoord = radius;
 
       // Can't go any closer to right/bottom than width/height minus radius - except for x coord on non-centered text node, where we need even more room from right.
-      let maxCoord = constraint - node.radius;
+      let maxCoord = constraint - radius;
       if (dimension === 'x' && ! node.centeredText) {
         maxCoord -= node.textWidth + NODE_LABEL_SPACING + 5; // +5 to account for node.textWidth under-shooting actual width
       }
