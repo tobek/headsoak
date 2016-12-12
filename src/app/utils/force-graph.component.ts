@@ -49,6 +49,7 @@ export class ForceGraphComponent {
   /** D3 force simulation. */
   simulation;
 
+  numNodes: number;
   biggestNodeSize: number;
   heaviestLinkWeight: number;
   @HostBinding('class.is--crowded') isCrowded: boolean;
@@ -88,7 +89,8 @@ export class ForceGraphComponent {
     const width = +window.getComputedStyle(svgEl).width.replace('px', '');
     const height = +window.getComputedStyle(svgEl).height.replace('px', '');
 
-    this.isCrowded = _.size(this.graph.nodes) > 50;
+    this.numNodes = _.size(this.graph.nodes);
+    this.isCrowded = this.numNodes > 50;
 
     this.biggestNodeSize = _.reduce(
       this.graph.nodes,
@@ -154,7 +156,7 @@ export class ForceGraphComponent {
       .force('link', d3.forceLink()
         .id(function(d) { return d.id; })
         // .strength(0.1)
-        .strength(function(link: GraphLink) {
+        .strength((link: GraphLink) => {
           // Average # of links the source and target nodes have
           const avgConnections = (linkCounts[link.source['id']] + linkCounts[link.target['id']]) / 2;
 
@@ -168,7 +170,7 @@ export class ForceGraphComponent {
           }
           else {
             // Weak link in a big cluster - let these go wherever
-            return 0.001;
+            return this.isCrowded ? 0.001 : 0.01;
           }
 
           // from 0.05 - 0.5, heavier links are stronger
@@ -177,7 +179,7 @@ export class ForceGraphComponent {
           // The higher the total number of links between the source and target combined, the lower the strength, so that densely packed nodes have more space to move around.
           // return 1 / Math.sqrt(linkCounts[link.source['id']] + linkCounts[link.target['id']]);
         })
-        .distance(function(link: GraphLink) {
+        .distance((link: GraphLink) => {
           // default is 30
 
           // if (isCrowded) {
@@ -187,8 +189,21 @@ export class ForceGraphComponent {
           //   return (d.source.radius + d.target.radius) * 1.75 + 50;
           // }
 
-          // The more connections the most-connected node of this link has, the further the natural distance
-          return 20 + 5 * Math.sqrt(Math.max(linkCounts[link.source['id']] + linkCounts[link.target['id']]));
+          // The more connections the least-connected node of this link has, the further the natural distance, e.g. if both nodes are highly connected then they get lots of room
+          let distance = 20 + 5 * Math.sqrt(Math.min(linkCounts[link.source['id']] + linkCounts[link.target['id']]))
+
+          if (this.numNodes <= 10) {
+            return distance * 4;
+          }
+          else if (this.numNodes < 30) {
+            return distance * 2.5;
+          }
+          else if (this.numNodes < 50) {
+            return distance * 1.5;
+          }
+          else {
+            return distance;
+          }
         })
       )
       .force('collide', bboxCollide(function(node: GraphNode) {
@@ -223,6 +238,9 @@ export class ForceGraphComponent {
         .data(this.graph.links)
       .enter().append('line')
         .attr('class', 'link')
+        .classed('size1', function(d) {
+          return d.weight <= 1;
+        })
         .attr('stroke-width', function(d) {
           return d.width;
         });
@@ -293,25 +311,22 @@ export class ForceGraphComponent {
     function mouseentered(hoveredNode: GraphNode) {
       this.nodeHovered = true;
 
-      nodes.classed('is--faded', function(node: GraphNode) {
+      nodes.classed('is--connected', function(node: GraphNode) {
         if (node === hoveredNode || (nodeConnections[node.id] && nodeConnections[node.id][hoveredNode.id])) {
-          return false;
+          return true;
         }
-        return true;
+        return false;
       });
 
-      links.classed('is--faded', function(link) {
+      links.classed('is--connected', function(link) {
         if (link.source === hoveredNode || link.target === hoveredNode) {
-          return false;
+          return true;
         }
-        return true;
+        return false;
       });
     }
     function mouseleft(node: GraphNode) {
       this.nodeHovered = false;
-
-      nodes.classed('is--faded', false);
-      links.classed('is--faded', false);
     }
 
     function dragStarted (d) {
@@ -350,7 +365,7 @@ export class ForceGraphComponent {
 
   /** Somewhat normalizes radius based on # of notes a tag is on. Could need tweaking but should do for a while! */
   nodeRadius(node: GraphNode) {
-    if (this.biggestNodeSize > 50) {
+    if (this.biggestNodeSize > 40) {
       // From 3px up to 30px for a tag with 100 notes, up to ~100px for a tag with 1000 notes
       return Math.sqrt(node.size) * 3 || 3;
     }

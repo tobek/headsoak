@@ -1,3 +1,10 @@
+$link-opacity: 0.5 // default link opacity
+$link-opacity--crowded: $link-opacity * 0.5 // links on crowded (force-graph gets .is--crowded) graphs
+$link-opacity--connected: 0.75
+$hover-fade-factor: 0.25 // multiply opacity by this when a node is being hovered (force-graph gets .is--node-hovered) and this element is not connected (not .is--connected)
+$size1-fade-factor: 0.5 // some things (currently: nodes and links of size/weight 1) are faded even more on crowded (force-graph gets .is--crowded) graphs
+
+
 force-graph
   display: block
   position: relative
@@ -11,15 +18,10 @@ force-graph
 
   .link
     stroke: #999
-    stroke-opacity: 0.5
-
-  &.is--node-hovered .link
-    stroke-opacity: 1
+    stroke-opacity: $link-opacity
 
   .node
     circle
-      // stroke: #fff
-      // stroke-width: 1.5px
       fill: $secondary-color
       transition: fill $transition-fast
 
@@ -31,14 +33,6 @@ force-graph
     &:hover circle
       fill: $highlight-color
 
-  .node,
-  .link
-    transition: fill-opacity $transition-med, stroke-opacity $transition-med
-
-    &.is--faded
-      fill-opacity: 0.25
-      stroke-opacity: 0.25
-
   text
     +small
     cursor: default
@@ -47,22 +41,50 @@ force-graph
   .node:hover text
     font-weight: bold
 
-  &.is--crowded
-    &.is--node-hovered .link
-      stroke-opacity: 0.75
+
+  .node,
+  .link,
+  text
+    transition: fill-opacity $transition-med, stroke-opacity $transition-med
+
+  &.is--node-hovered
+    .node,
+    text
+      fill-opacity: $hover-fade-factor
+      stroke-opacity: $hover-fade-factor
 
     .link
-      stroke-opacity: 0.25
+      stroke-opacity: $link-opacity * $hover-fade-factor
 
-      &.is--faded
-        stroke-opacity: 0.05
+  &.is--crowded
+    .link
+      stroke-opacity: $link-opacity--crowded
+      &.size1
+        stroke-opacity: $link-opacity--crowded * $size1-fade-factor
 
     text.size1
-      transition: fill-opacity $transition-fast
-      fill-opacity: 0.5
+      fill-opacity: $size1-fade-factor
 
-    .node:hover text.size1
-      fill-opacity: 1
+  &.is--crowded.is--node-hovered
+    .link
+      stroke-opacity: $link-opacity--crowded * $hover-fade-factor
+
+    text.size1
+      fill-opacity: $size1-fade-factor * $hover-fade-factor
+
+  // Unfaded for connected stuff on hover
+  &.is--node-hovered
+    .node.is--connected
+      fill-opacity: 1 !important
+      stroke-opacity: 1 !important
+      text
+        fill-opacity: 1 !important
+    .link.is--connected
+      stroke-opacity: $link-opacity--connected !important
+    .node:hover text
+      transition: fill-opacity $transition-fast
+      fill-opacity: 1 !important
+
 
 tag-visualization
   display: block
