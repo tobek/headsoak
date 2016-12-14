@@ -1,5 +1,5 @@
 import {Injectable, ChangeDetectorRef} from '@angular/core';
-import {DomSanitizationService} from '@angular/platform-browser'; // @TODO/update In latest version of Angular this is called DomSanitizer
+import {DomSanitizer} from '@angular/platform-browser';
 import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 const Firebase = require('firebase');
@@ -34,7 +34,7 @@ export class AccountService {
   private onlineStateRef: Firebase;
 
   constructor(
-    private sanitizer: DomSanitizationService,
+    private sanitizer: DomSanitizer,
     private notes: NotesService,
     private dataService: DataService,
     private modalService: ModalService,

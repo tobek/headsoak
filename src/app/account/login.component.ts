@@ -9,7 +9,6 @@ type ViewType = 'email-signup' | 'login' | 'create-account' | 'reset-password';
 
 @Component({
   selector: 'login',
-  pipes: [],
   template: require('./login.component.html')
 })
 export class LoginComponent {

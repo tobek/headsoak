@@ -8,15 +8,14 @@ import {TooltipService} from './utils/tooltip.service';
 import {AccountService} from './account/account.service';
 import {AnalyticsService} from './analytics.service';
 import {DataService} from './data.service';
-import {SettingsService} from './settings/';
+import {SettingsService} from './settings/settings.service';
 import {Logger} from './utils/logger';
 
-import {routes} from './';
+import {ROUTES} from './app.routes';
 
-import {ModalComponent} from './modals/modal.component';
-import {HomeComponent} from './home/';
-import {NoteQueryComponent} from './notes/';
-import {TagBrowserComponent} from './tags/tag-browser.component'; // @NOTE No idea why, but adding this to `tags/index.ts` and importing from './tags/' makes angular unable to resolve TagBrowerComponent
+import {HomeComponent} from './home';
+
+import * as _ from 'lodash';
 
 /*
  * App Component
@@ -24,14 +23,7 @@ import {TagBrowserComponent} from './tags/tag-browser.component'; // @NOTE No id
  */
 @Component({
   selector: 'app',
-  pipes: [ ],
   providers: [ ],
-  directives: [
-    ModalComponent,
-    HomeComponent,
-    NoteQueryComponent,
-    TagBrowserComponent,
-  ],
   encapsulation: ViewEncapsulation.None,
   styles: [
     require('../assets/styles/_main.sass'),
@@ -39,7 +31,7 @@ import {TagBrowserComponent} from './tags/tag-browser.component'; // @NOTE No id
   template: require('./app.component.html')
 })
 export class App {
-  routes: Route[] = routes;
+  routes: Route[] = ROUTES;
   mainNavRoutes: Route[];
   menuNavSettingsRoutes: Route[];
 

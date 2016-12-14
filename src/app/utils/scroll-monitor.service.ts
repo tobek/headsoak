@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 
+import * as _ from 'lodash';
+
 @Injectable()
 export class ScrollMonitorService {
   scroll$ = new Subject<void>();

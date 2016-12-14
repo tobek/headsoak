@@ -8,7 +8,6 @@ import {Logger, utils} from '../utils/';
 
 @Component({
   selector: 'tag',
-  pipes: [],
   template: require('./tag.component.html')
 })
 export class TagComponent {

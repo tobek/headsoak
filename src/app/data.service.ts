@@ -1,21 +1,23 @@
-import {Injectable, EventEmitter, NgZone, ChangeDetectorRef} from '@angular/core';
+import {Inject, forwardRef, Injectable, EventEmitter, NgZone, ChangeDetectorRef} from '@angular/core';
 import {Router} from '@angular/router';
 import {ReplaySubject, Subscription} from 'rxjs';
-
-const Firebase = require('firebase');
 
 import {Logger, utils, sampleData} from './utils/';
 
 import {AccountService} from './account';
 import {ActiveUIsService} from './active-uis.service';
 import {ModalService} from './modals/modal.service';
-import {ToasterService} from './utils/';
+import {ToasterService} from './utils/toaster.service';
 import {UserService} from './account/user.service';
 import {Note, NotesService} from './notes/';
-import {Tag, TagsService} from './tags/';
+import {Tag} from './tags/';
+import {TagsService} from './tags/tags.service';
 import {SettingsService} from './settings/settings.service';
 import {Setting} from './settings/setting.model';
 import {Shortcut} from './settings/shortcut.model';
+
+const Firebase = require('firebase');
+import * as _ from 'lodash';
 
 declare type DataItem = Note | Tag | Setting | Shortcut;
 
@@ -66,7 +68,7 @@ export class DataService {
     public user: UserService,
     public notes: NotesService,
     public tags: TagsService,
-    public settings: SettingsService
+    @Inject(forwardRef(() => SettingsService)) public settings: SettingsService
   ) {
     this.ref = new Firebase('https://nutmeg.firebaseio.com/');
 

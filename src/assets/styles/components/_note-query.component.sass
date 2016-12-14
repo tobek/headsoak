@@ -107,15 +107,16 @@ note-query
       > .dropdown-menu
         display: block
 
-    .ui-select-choices-row-inner
-      padding: 5px
-      line-height: 1
-      text-decoration: none
-      color: $primary-color
+    .ui-select-choices .ui-select-choices-row // extra specificity to override their styles
+      .dropdown-item
+        padding: 5px
+        line-height: 1
+        text-decoration: none
+        color: $primary-color
 
-    .ui-select-choices-row.active .ui-select-choices-row-inner
-      // @TODO/ece Active color?
-      background-color: $secondary-color
+      &.active .dropdown-item
+        // @TODO/ece Active color? Should this be the same as other menus?
+        background-color: $secondary-color
 
   .control-icon
     +icon-button

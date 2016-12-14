@@ -7,6 +7,8 @@ import {Logger} from './';
 import {Simulation, SimulationLinkDatum, SimulationNodeDatum, ForceLink} from 'd3-force';
 import {Selection} from 'd3-selection';
 
+import * as _ from 'lodash';
+
 const d3 = require('d3');
 const bboxCollide = require('d3-bboxCollide').bboxCollide;
 
@@ -49,8 +51,6 @@ interface LinkDatum extends SimulationLinkDatum<NodeDatum> {
 
 @Component({
   selector: 'force-graph',
-  pipes: [],
-  directives: [],
   template: require('./force-graph.component.html')
 })
 export class ForceGraphComponent {

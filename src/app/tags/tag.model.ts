@@ -1,8 +1,10 @@
-import {DataService} from '../';
+import {DataService} from '../data.service';
 
 import {Logger} from '../utils/logger';
 
 import {Note} from '../notes/';
+
+import * as _ from 'lodash';
 
 /** Information this tag generates about a specific note. */
 type NoteDataType = {

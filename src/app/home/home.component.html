@@ -1,5 +1,5 @@
 <div class="fixed-pane-wrapper">
-  <note class="fixed-pane-contents open-note note-{{ openNote ? openNote.id : 'none' }}"
+  <note class="note fixed-pane-contents open-note note-{{ openNote ? openNote.id : 'none' }}"
     [note]="openNote"
     [opened]="true"
     (noteClosed)="closeNote()"

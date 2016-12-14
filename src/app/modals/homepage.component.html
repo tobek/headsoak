@@ -5,8 +5,7 @@
 
       <force-graph *ngIf="tagExploreStage" [graph]="tagGraph"></force-graph>
 
-      <!-- component isn't loaded, just using this for CSS -->
-      <tag-details>
+      <div class="tag-details">
         <div class="note-count-heading">37 Notes</div>
 
         <div>
@@ -26,11 +25,11 @@
             </ul>
           </div>
         </div>
-      </tag-details>
+      </div>
     </div>
   </div>
 
-  <note>
+  <div class="note">
     <div class="note-wrapper">
       <div class="header">
         <div class="tags"
@@ -45,7 +44,7 @@
       </div>
       <textarea class="body-input" autocorrect="off" autocapitalize="off" spellcheck="false" ref-noteBody (keydown)="false"></textarea>
     </div>
-  </note>
+  </div>
 
   <!-- only shown on mobile -->
   <login></login>

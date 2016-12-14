@@ -2,19 +2,15 @@ import {Component, Input, SimpleChanges} from '@angular/core';
 
 import {Note} from '../notes/';
 import {Tag} from './';
-import {TagComponent} from './tag.component';
 import {TagsService} from './tags.service';
 
-import {ForceGraphComponent, ForceGraph, GraphLink, GraphNode} from '../utils/force-graph.component';
+import {ForceGraph, GraphLink, GraphNode} from '../utils/force-graph.component';
 import {Logger} from '../utils/';
+
+import * as _ from 'lodash';
 
 @Component({
   selector: 'tag-visualization',
-  pipes: [],
-  directives: [
-    ForceGraphComponent,
-    TagComponent
-  ],
   template: require('./tag-visualization.component.html')
 })
 export class TagVisualizationComponent {

@@ -8,15 +8,12 @@ import {AnalyticsService} from '../analytics.service';
 import {Note} from './note.model';
 import {NoteComponent} from './note.component';
 import {NotesService} from './notes.service';
-import {Logger, ScrollMonitorService} from '../utils/';
+import {Logger} from '../utils/';
+import {ScrollMonitorService} from '../utils/scroll-monitor.service';
 import {NOTE_BROWSER_ROUTES} from '../app.routes';
 
 @Component({
   selector: 'note-browser',
-  pipes: [],
-  directives: [
-    NoteComponent,
-  ],
   template: require('./note-browser.component.html')
 })
 export class NoteBrowserComponent {

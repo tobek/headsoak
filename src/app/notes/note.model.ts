@@ -2,8 +2,10 @@ import {EventEmitter} from '@angular/core';
 
 import {Logger} from '../utils/logger';
 
-import {DataService} from '../';
+import {DataService} from '../data.service';
 import {Tag} from '../tags';
+
+import * as _ from 'lodash';
 
 export class Note {
   id: string;

@@ -1,25 +1,20 @@
-import {Component, ViewChild, ElementRef, Renderer} from '@angular/core';
+import {Inject, forwardRef, Component, ViewChild, ElementRef, Renderer} from '@angular/core';
 import {ReplaySubject, Subject, Subscription} from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
-import {SELECT_DIRECTIVES} from 'ng2-select';
 
 import {ActiveUIsService} from '../active-uis.service';
 import {AnalyticsService} from '../analytics.service';
 import {SettingsService} from '../settings/settings.service';
 import {Note} from './note.model';
 import {NotesService} from './notes.service';
-import {Tag, SubTag, TagComponent, TagsService} from '../tags';
+import {Tag, SubTag, TagsService} from '../tags';
 import {Logger, AutocompleteService} from '../utils/';
 import {NOTE_BROWSER_ROUTES, DEFAULT_NOTE_ROUTE} from '../app.routes';
 
+import * as _ from 'lodash';
 
 @Component({
   selector: 'note-query',
-  pipes: [],
-  directives: [
-    TagComponent,
-    SELECT_DIRECTIVES,
-  ],
   template: require('./note-query.component.html')
 })
 export class NoteQueryComponent {
@@ -49,8 +44,8 @@ export class NoteQueryComponent {
     private renderer: Renderer,
     private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
-    private autocompleteService: AutocompleteService,
-    private settings: SettingsService,
+    @Inject(forwardRef(() => AutocompleteService)) private autocompleteService: AutocompleteService,
+    @Inject(forwardRef(() => SettingsService)) private settings: SettingsService,
     private notesService: NotesService,
     private tagsService: TagsService,
   ) {

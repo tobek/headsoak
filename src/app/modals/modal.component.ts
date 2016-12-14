@@ -7,12 +7,6 @@ import {AnalyticsService} from '../analytics.service';
 import {SettingsService} from '../settings/settings.service';
 import {Logger} from '../utils/logger';
 
-import {LoginComponent} from '../account/';
-import {HomepageComponent} from './homepage.component';
-import {FeedbackComponent} from './feedback.component';
-import {PrivateModeComponent} from './private-mode.component';
-
-
 type ModalType = null | 'loading' | 'login' | 'feedback' | 'privateMode' | 'generic';
 type ModalConfigType = {
   okCb?: (result?: any, showLoadingState?: Function, hideLoadingState?: Function) => any, // Called when OK is pressed (or enter in prompt), just before modal is closed. If it's a prompt and not cancelled, prompt contents is passed in, otherwise falsey value passed. Return explicit false to prevent modal from being closed. Callback is also passed two functions that control loading state of button.
@@ -34,14 +28,7 @@ type ModalConfigType = {
 
 @Component({
   selector: 'modal',
-  pipes: [ ],
   providers: [ ],
-  directives: [
-    LoginComponent,
-    HomepageComponent,
-    FeedbackComponent,
-    PrivateModeComponent,
-  ],
   templateUrl: './modal.component.html'
 })
 export class ModalComponent {

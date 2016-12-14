@@ -2,11 +2,13 @@ import {Injectable} from '@angular/core';
 import {Subject, ReplaySubject} from 'rxjs';
 
 import {Logger, utils} from '../utils/';
-import {DataService} from '../';
+import {DataService} from '../data.service';
 
 import {Tag} from './tag.model'; // For some reason this breaks with `TypeError: Cannot read property 'getOptional' of undefined` if I do `from './'`, which I think should work
 import {ProgTagApiService} from './prog-tag-api.service';
 import {ProgTagLibraryService} from './prog-tag-library.service';
+
+import * as _ from 'lodash';
 
 @Injectable()
 export class TagsService {

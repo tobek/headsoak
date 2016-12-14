@@ -1,23 +1,18 @@
-import {Component, EventEmitter/*, ElementRef*/, Input, Output} from '@angular/core';
+import {Component, EventEmitter/*, ElementRef*/, Input, Output, HostBinding} from '@angular/core';
 import {Router, NavigationEnd} from '@angular/router';
 import {Subscription} from 'rxjs';
 // import 'rxjs/add/operator/debounceTime';
 
 import {AnalyticsService} from '../analytics.service';
-import {Tag, TagComponent, ProgTagControlComponent} from './';
+import {Tag} from './';
 import {TagsService} from './tags.service'; // Dunno why we can't import from tags/index.ts
-import {TagVisualizationComponent} from './tag-visualization.component'; // ditto
 import {ToasterService} from '../utils/toaster.service'; // Likewise, this breaks if combined with import of Logger below
 import {Logger} from '../utils/';
 
+import * as _ from 'lodash';
+
 @Component({
   selector: 'tag-details',
-  pipes: [],
-  directives: [
-    TagComponent,
-    TagVisualizationComponent,
-    ProgTagControlComponent,
-  ],
   template: require('./tag-details.component.html')
 })
 export class TagDetailsComponent {
@@ -33,6 +28,9 @@ export class TagDetailsComponent {
 
   @Input() tag: Tag;
   @Output() deleted = new EventEmitter<Tag>();
+
+  /** We want to use `.tag-details` selector to style this so that we can have a "fake" component using same styles in homepage demo. Set that class here so we don't have to remember to do so whenever using <tag-details>. */
+  @HostBinding('class.tag-details') thisIsUnusedAndAlwaysTrue = true;
 
   private routerSub: Subscription;
 

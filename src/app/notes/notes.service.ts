@@ -2,11 +2,13 @@ import {Injectable} from '@angular/core';
 import {ReplaySubject, Subject} from 'rxjs';
 
 import {Logger, utils} from '../utils/';
-import {DataService} from '../';
-import {Tag, TagsService} from '../tags/';
+import {DataService} from '../data.service';
+import {Tag} from '../tags/';
+import {TagsService} from '../tags/tags.service';
 
 import {Note} from './';
 
+import * as _ from 'lodash';
 const lunr = require('lunr');
 
 @Injectable()

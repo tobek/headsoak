@@ -10,9 +10,6 @@ const ace = require('brace');
 
 @Component({
   selector: 'prog-tag-control',
-  pipes: [],
-  directives: [
-  ],
   template: require('./prog-tag-control.component.html')
 })
 export class ProgTagControlComponent {

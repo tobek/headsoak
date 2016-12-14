@@ -3,7 +3,7 @@
  */
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { decorateModuleRef } from './app/environment';
-// import { bootloader } from '@angularclass/hmr';
+import { bootloader } from '@angularclass/hmr';
 /*
  * App Module
  * our top level module that holds all of our components
@@ -23,6 +23,4 @@ export function main(): Promise<any> {
 
 // needed for hmr
 // in prod this is replace for document ready
-// bootloader(main);
-// DON'T THINK THAT WILL WORK cause we removed hrm stuff, so let's just do this - @toby
-document.addEventListener('DOMContentLoaded', () => main());
+bootloader(main);

@@ -4,9 +4,11 @@ import {ReplaySubject} from 'rxjs/ReplaySubject';
 import {Setting, Shortcut} from './';
 import {ActiveUIsService} from '../active-uis.service';
 import {ModalService} from '../modals/modal.service';
-import {DataService} from '../';
+import {DataService} from '../data.service';
 
 import {Logger, utils} from '../utils/';
+
+import * as _ from 'lodash';
 
 @Injectable()
 export class SettingsService {

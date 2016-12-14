@@ -10,10 +10,7 @@ import {Logger} from '../utils/logger';
 
 @Component({
   selector: 'private-mode',
-  pipes: [ ],
   providers: [ ],
-  directives: [
-  ],
   templateUrl: './private-mode.component.html'
 })
 export class PrivateModeComponent {

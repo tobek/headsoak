@@ -1,8 +1,8 @@
-import {Component, ViewChild, ElementRef/*, ViewChildren, QueryList*/} from '@angular/core';
+import {Inject, forwardRef, Component, ViewChild, ElementRef/*, ViewChildren, QueryList*/} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
 
-import {TooltipService} from '../utils/';
+import {TooltipService} from '../utils/tooltip.service';
 import {Logger} from '../utils/';
 
 import {DataService} from '../data.service';
@@ -10,17 +10,12 @@ import {ModalService} from '../modals/modal.service';
 import {SettingsService} from './settings.service';
 import {Setting, Shortcut} from './';
 
-import {SettingComponent} from './setting.component';
-import {FeedbackComponent} from '../modals/feedback.component';
-import {PrivateModeComponent} from '../modals/private-mode.component';
+// import {SettingComponent} from './setting.component';
+
+import * as _ from 'lodash';
 
 @Component({
   selector: 'settings',
-  directives: [
-    SettingComponent,
-    FeedbackComponent,
-    PrivateModeComponent,
-  ],
   template: require('./settings.component.html')
 })
 export class SettingsComponent {
@@ -61,7 +56,7 @@ export class SettingsComponent {
   constructor(
     private route: ActivatedRoute,
     private modalService: ModalService,
-    private settings: SettingsService,
+    @Inject(forwardRef(() => SettingsService)) private settings: SettingsService,
     private tooltipService: TooltipService,
     private dataService: DataService
   ) {

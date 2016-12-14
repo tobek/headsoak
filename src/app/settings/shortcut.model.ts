@@ -1,8 +1,10 @@
 import {NavigationEnd} from '@angular/router';
 
-import {DataService} from '../';
+import {DataService} from '../data.service';
 
 import {Setting} from './';
+
+import * as _ from 'lodash';
 
 export class Shortcut extends Setting {
   static VALID_MOD_KEYS = ['ctrl', 'shift', 'alt', 'option', 'meta', 'mod', 'command'];

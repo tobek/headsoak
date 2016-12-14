@@ -23,18 +23,18 @@ homepage
     @media (max-height: 750px)
       padding-top:  0
 
-  note,
+  .note,
   .tag-explore-wrapper
     transition: opacity $transition-med, visibility $transition-med
   .tag-explore-wrapper,
-  &.is--tag-explore-stage note
+  &.is--tag-explore-stage .note
     opacity: 0
     visibility: hidden
   &.is--tag-explore-stage .tag-explore-wrapper
     opacity: 1
     visibility: visible
 
-  note
+  .note
     margin-top: 170px // size of login header height/margin
     height: 300px
 
@@ -194,7 +194,7 @@ homepage
       height: auto
       padding: 0
 
-    note
+    .note
       margin: 20px 0 50px
 
     .tag-explore

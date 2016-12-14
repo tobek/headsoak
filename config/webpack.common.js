@@ -22,7 +22,7 @@ const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
  */
 const HMR = helpers.hasProcessFlag('hot');
 const METADATA = {
-  title: 'nutmeg',
+  title: 'Headsoak',
   baseUrl: '/',
   isDevServer: helpers.isWebpackDevServer()
 };
@@ -61,8 +61,6 @@ module.exports = function (options) {
 
     },
 
-    postcss: [autoprefixer],
-
     /*
      * Options affecting the resolving of modules.
      *
@@ -94,16 +92,15 @@ module.exports = function (options) {
        *
        * See: http://webpack.github.io/docs/configuration.html#module-preloaders-module-postloaders
        */
-     // @TODO/now Maybe this should bein rules
-      preLoaders: [
-        {
-          test: /\.sass$/,
-          exclude: /node_modules/,
-          loader: 'import-glob-loader'
-        },
-      ],
 
       rules: [
+
+        {
+          enforce: 'pre',
+          test: /\.sass$/,
+          exclude: /node_modules/,
+          use: 'import-glob-loader'
+        },
 
         /*
          * Typescript loader support for .ts and Angular 2 async routes via .async.ts
@@ -143,13 +140,20 @@ module.exports = function (options) {
           use: ['to-string-loader', 'css-loader']
         },
 
-        /*
-         * Support for SASS, via <https://github.com/AngularClass/angular2-webpack-starter/wiki/How-to-include-SCSS-in-components>
-         */
         {
           test: /\.sass$/,
-          use: ['raw-loader', 'postcss-loader?parser=postcss-scss', 'sass-loader']
           exclude: /node_modules/,
+          use: [
+            'raw-loader',
+            {
+              loader: 'postcss-loader',
+              options: {
+                parser: 'postcss-scss',
+                plugins: () => [autoprefixer],
+              }
+            },
+            'sass-loader',
+          ]
         },
 
         /* Raw loader support for *.html
