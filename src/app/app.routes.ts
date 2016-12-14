@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { RouterConfig } from '@angular/router';
+import { Routes } from '@angular/router';
 import { SettingsComponent } from './settings';
-import { NoContent } from './no-content';
+import { NoContentComponent } from './no-content';
 
 /** @NOTE Empty component that we can plug into routes in order to have some route behavior (e.g. listening to URL changes, browser history, etc.) without being restricted to defining routes by a component. Primarily, there's no easy or elegant way to preserve a view when switching between routes (even if we store all the data in a service, things like scroll position, input states etc would have to saved manually... ugly). So instead we put an empty component into the router outlet, and simply use the current router URL to toggle `hidden` or use `*ngIf` on the views. For views where we don't care about persisting state, we can use the router properly. */
 @Component({
@@ -21,7 +21,7 @@ export const NOTE_BROWSER_ROUTES = [
 ];
 export const DEFAULT_NOTE_ROUTE = '/';
 
-export const routes: RouterConfig = [
+export const routes: Routes = [
   {
     // @TODO/rewrite This should be hidden on mobile
     path: 'focus',
@@ -172,6 +172,6 @@ export const routes: RouterConfig = [
       name: 'Not Found',
       slug: 'not-found',
     },
-    component: NoContent
+    component: NoContentComponent
   },
 ];

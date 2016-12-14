@@ -164,5 +164,4 @@ export class HomeComponent {
       return ! tag.prog && ! tag.readOnly;
     });
   }
-
 }

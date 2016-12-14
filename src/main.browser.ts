@@ -1,49 +1,28 @@
 /*
- * Providers provided by Angular
+ * Angular bootstraping
  */
-import { bootstrap } from '@angular/platform-browser-dynamic';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { decorateModuleRef } from './app/environment';
+// import { bootloader } from '@angularclass/hmr';
 /*
-* Platform and Environment
-* our providers/directives/pipes
-*/
-import { PLATFORM_PROVIDERS } from './platform/browser';
-import { ENV_PROVIDERS, decorateComponentRef } from './platform/environment';
+ * App Module
+ * our top level module that holds all of our components
+ */
 
-
-/*
-* App Component
-* our top level component that holds all of our components
-*/
-import { App, APP_PROVIDERS } from './app';
+import { AppModule } from './app';
 
 /*
- * Bootstrap our Angular app with a top level component `App` and inject
- * our Services and Providers into Angular's dependency injection
+ * Bootstrap our Angular app with a top level NgModule
  */
 export function main(): Promise<any> {
-
-  return bootstrap(App, [
-    // To add more vendor providers please look in the platform/ folder
-    ...PLATFORM_PROVIDERS,
-    ...ENV_PROVIDERS,
-    ...APP_PROVIDERS,
-  ])
-  .then(decorateComponentRef)
-  .catch(err => console.error(err));
-
+  return platformBrowserDynamic()
+    .bootstrapModule(AppModule)
+    .then(decorateModuleRef)
+    .catch(err => console.error(err));
 }
 
-
-
-
-
-/*
- * Vendors
- * For vendors for example jQuery, Lodash, angular2-jwt just import them anywhere in your app
- * You can also import them in vendors to ensure that they are bundled in one file
- * Also see custom-typings.d.ts as you also need to do `typings install x` where `x` is your module
- */
-
-
-// bootstrap when document is ready
+// needed for hmr
+// in prod this is replace for document ready
+// bootloader(main);
+// DON'T THINK THAT WILL WORK cause we removed hrm stuff, so let's just do this - @toby
 document.addEventListener('DOMContentLoaded', () => main());
