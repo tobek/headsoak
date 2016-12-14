@@ -53,12 +53,21 @@
       <!-- <a (click)="newNoteWithSameTags()">NNST</a> -->
       <!-- @TODO/rewrite @TODO/ece What are we doing  with "explore note"? We still need somewhere to show timestamps. -->
       <a class="note-action"
-        [attr.data-tooltip]="'Explore note&lt;br&gt;&lt;br&gt;created: ' + (note.created | date:'medium') + '&lt;br&gt;modified: ' + (note.modified | date:'medium')"
-        (click)="note.explore()"
-        (mouseleave)="tooltipService.reloadOnMouseleave($event)"
+        data-tooltip="Explore note"
+        (click)="toggleExplore()"
       ><i class="fa fa-bar-chart"></i></a><!--@TODO/rewrite angular2 date pipe is "pure" and won't check for updates, so note.created and note.modified will have to be reassigned, confirm it works, etc. -->
       <a data-tooltip="Delete note" class="note-action" (click)="delete($event)"><i class="fa fa-trash-o"></i></a>
     </span>
+  </div>
+</div>
+
+<div class="explore">
+  <div *ngIf="showExplore">
+    Created: {{ note.created | date:'medium' }}<br>
+    Modified: {{ note.modified | date:'medium' }}
+
+    <h4>Raw data:</h4>
+    <pre class="syntax" [innerHTML]="rawDataHtml"></pre>
   </div>
 </div>
 

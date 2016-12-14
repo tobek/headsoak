@@ -1,4 +1,5 @@
 import {Inject, forwardRef, Component, EventEmitter, ElementRef, Input, Output, ViewChild, HostBinding/*, ChangeDetectorRef*/} from '@angular/core';
+import {SafeHtml} from '@angular/platform-browser';
 
 import {ActiveUIsService} from '../active-uis.service';
 import {AnalyticsService} from '../analytics.service';
@@ -6,7 +7,7 @@ import {SettingsService} from '../settings/settings.service';
 import {NotesService} from '../notes/notes.service';
 import {Note} from '../notes/note.model';
 
-import {Logger, AutocompleteService, TooltipService} from '../utils/';
+import {Logger, AutocompleteService, SyntaxService, TooltipService} from '../utils/';
 
 @Component({
   selector: 'note',
@@ -29,6 +30,9 @@ export class NoteComponent {
   @HostBinding('class.note') thisIsUnusedAndAlwaysTrue = true;
 
   @HostBinding('class.is--expanded') isExpanded = false;
+  @HostBinding('class.show--explore') showExplore = false;
+
+  private rawDataHtml: SafeHtml;
 
   private boundCloseAddTagFieldHandler = this.closeAddTagFieldHandler.bind(this);
 
@@ -39,12 +43,10 @@ export class NoteComponent {
     private el: ElementRef,
     private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
-    // private autocompleteService: AutocompleteService,
-    // private tooltipService: TooltipService,
-    // private settings: SettingsService,
-    @Inject(forwardRef(() => AutocompleteService)) private autocompleteService: AutocompleteService,
-    @Inject(forwardRef(() => TooltipService)) private tooltipService: TooltipService,
-    @Inject(forwardRef(() => SettingsService)) private settings: SettingsService,
+    private autocompleteService: AutocompleteService,
+    private tooltipService: TooltipService,
+    private syntaxService: SyntaxService,
+    private settings: SettingsService,
     private notesService: NotesService
   ) {}
 
@@ -256,5 +258,16 @@ export class NoteComponent {
       this.activeUIs.home.goToNewNoteWithSameTags(this.note);
     }
   }
-}
 
+  toggleExplore() {
+    this.showExplore = ! this.showExplore;
+
+    if (this.showExplore) {
+      this.rawDataHtml = this.syntaxService.prettyPrintJson(this.note.forDataStore());
+    }
+
+    // @TODO/polish Could have a button to refresh the data if you've since typed stuff?
+
+    // @TODO/now Click out (anywhere except explore or explore button) should close
+  }
+}

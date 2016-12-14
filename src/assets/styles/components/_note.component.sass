@@ -172,6 +172,30 @@
       .unlocked
         display: inline-block
 
+  .explore
+    z-index: 1
+    position: absolute
+    top: 100%
+    left: 5px
+    width: calc(100% - 10px)
+    height: 0
+    padding: 0 15px
+    overflow-y: auto
+    background: fade-out($primary-color, 0.05)
+    color: $primary-color-contrast
+
+    transition: opacity $transition-fast, visibility $transition-fast, max-height $transition-fast ease-in, padding $transition-fast ease-out
+    +faded-out
+
+  &.show--explore
+    .explore
+      +faded-in
+      height: calc(100vh - #{$header-height} - 100% - 15px) // 100% to get note height, 15px to give a bit of breathing room
+      padding: 15px
+
+      @media (max-height: 600px)
+        height: 300px
+
 
   note-browser &
     .note-actions

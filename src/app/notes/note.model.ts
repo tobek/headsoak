@@ -39,10 +39,10 @@ export class Note {
 
   private _logger: Logger;
 
-  /** Properties that we save to data store */
+  /** Properties that we save to data store. The ordering is also the order in which data is shown in the explore note raw data dropdown. */
   private DATA_PROPS = [
     'id',
-    'body',
+    'tags',
     'created',
     'modified',
     'fullUpdateRequired',
@@ -50,7 +50,7 @@ export class Note {
     'readOnly',
     'share',
     'sharedBy',
-    'tags',
+    'body',
   ];
 
   constructor(noteData: any, private dataService: DataService) {
@@ -334,10 +334,6 @@ export class Note {
       );
       // @TODO/ece If this is the "open" note then we do *not* hide it. So in that case we should either a) simply not show this message, b) do actually hide the note, and show this message, or c) show a different message (like 'when you close this note it'll be invisible...'')
     }
-  }
-
-  explore() {
-    alert('not yet!');
   }
 
   /** Returns true if note was deleted. */

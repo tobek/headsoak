@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 
 export * from './autocomplete.service';
 export * from './scroll-monitor.service';
+export * from './syntax.service';
 export * from './toaster.service';
 export * from './tooltip.service';
 
