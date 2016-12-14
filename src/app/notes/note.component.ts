@@ -1,20 +1,15 @@
-import {Component, EventEmitter, ElementRef, Input, Output, ViewChild, HostBinding/*, ChangeDetectorRef*/} from '@angular/core';
+import {Inject, forwardRef, Component, EventEmitter, ElementRef, Input, Output, ViewChild, HostBinding/*, ChangeDetectorRef*/} from '@angular/core';
 
 import {ActiveUIsService} from '../active-uis.service';
 import {AnalyticsService} from '../analytics.service';
 import {SettingsService} from '../settings/settings.service';
-import {Note} from '../notes/note.model';
 import {NotesService} from '../notes/notes.service';
-import {TagComponent} from '../tags/';
+import {Note} from '../notes/note.model';
 
 import {Logger, AutocompleteService, TooltipService} from '../utils/';
 
 @Component({
   selector: 'note',
-  pipes: [],
-  directives: [
-    TagComponent,
-  ],
   template: require('./note.component.html')
 })
 export class NoteComponent {
@@ -30,6 +25,9 @@ export class NoteComponent {
   @ViewChild('bodyInput') bodyInputRef: ElementRef;
   @ViewChild('addTagInput') addTagInputRef: ElementRef;
 
+  /** We want to use `.note` selector to style notes so that we can have a "fake" note using same styles in homepage demo. Set that class here so we don't have to remember to do so whenever using <note>. */
+  @HostBinding('class.note') thisIsUnusedAndAlwaysTrue = true;
+
   @HostBinding('class.is--expanded') isExpanded = false;
 
   private boundCloseAddTagFieldHandler = this.closeAddTagFieldHandler.bind(this);
@@ -41,9 +39,12 @@ export class NoteComponent {
     private el: ElementRef,
     private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
-    private autocompleteService: AutocompleteService,
-    private tooltipService: TooltipService,
-    private settings: SettingsService,
+    // private autocompleteService: AutocompleteService,
+    // private tooltipService: TooltipService,
+    // private settings: SettingsService,
+    @Inject(forwardRef(() => AutocompleteService)) private autocompleteService: AutocompleteService,
+    @Inject(forwardRef(() => TooltipService)) private tooltipService: TooltipService,
+    @Inject(forwardRef(() => SettingsService)) private settings: SettingsService,
     private notesService: NotesService
   ) {}
 

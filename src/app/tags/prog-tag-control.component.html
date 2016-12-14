@@ -17,9 +17,9 @@
 <div class="code-container" [class.is--disabled]="! tag.prog">
   <div class="disabled-cover"></div>
 
-  <pre class="function-wrapper">function(note) {</pre>
+  <pre class="function-wrapper">function(note) {{ '{' }}</pre>
   <pre ref-editorRef class="code-editor">{{ tag.progFuncString }}</pre>
-  <pre class="function-wrapper">}</pre>
+  <pre class="function-wrapper">{{ '}' }}</pre>
 
   <div *ngIf="! tag.readOnly">
     <button class="btn btn-primary"
@@ -81,26 +81,26 @@ private: boolean; // whether this note is a private note</pre>
 
   <p>A tag such as <code>nsfw</code> doesn't have any special data associated with it: a note either has it or doesn't. Some smart tags, however, may want to attach specific data to a note. For example, a language detection algorithm may mark a note as <code>language: english</code> or <code>language: italian</code>. Instead of returning <code>true</code>, your function may return the following object:</p>
 
-  <pre>{
+  <pre>{{ '{' }}
     subTag: 'italian'
-}</pre>
+{{ '}' }}</pre>
 
   <p>This value would be shown as part of the tag when it's displayed on the note, and users will be able to filter their notes by sub-tags.</p>
 
   <p>Some smart tags may not have discrete sub-tags but may have a score, which could be any number. For example you might have a <code>word count</code> tag that calculates word counts. For this you can return something like the following:</p>
 
-  <pre>{
+  <pre>{{ '{' }}
     score: 842
-}</pre>
+{{ '}' }}</pre>
 
   <p>The above value would be displayed on the tag as well, e.g. <code>word count: 842</code>.</p>
 
   <p><code>subTag</code> and <code>score</code> can be combined, for instance a sentiment analysis tag might return the strength of the associated sentiment:</p>
 
-  <pre>{
+  <pre>{{ '{' }}
     subTag: 'joy',
     score: 0.82
-}</pre>
+{{ '}' }}</pre>
 
   <p>The above would be displayed as <code>sentiment: joy</code>, and on hover would show <code>sentiment: joy (0.82)</code>.
 

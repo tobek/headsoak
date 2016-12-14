@@ -3,10 +3,10 @@ import {Component, ViewChild, ElementRef, HostBinding} from '@angular/core';
 import {AnalyticsService} from '../analytics.service';
 import {Logger} from '../utils/logger';
 
-import {LoginComponent} from '../account/';
-import {Tag, SubTag, TagComponent} from '../tags/';
-import {ForceGraphComponent, ForceGraph} from '../utils/force-graph.component';
+import {Tag, SubTag} from '../tags/';
+import {ForceGraph} from '../utils/force-graph.component';
 
+import * as _ from 'lodash';
 const jQuery = require('jquery');
 
 type SceneType = {
@@ -21,13 +21,7 @@ type SceneType = {
 
 @Component({
   selector: 'homepage',
-  pipes: [ ],
   providers: [ ],
-  directives: [
-    LoginComponent,
-    TagComponent,
-    ForceGraphComponent,
-  ],
   templateUrl: './homepage.component.html'
 })
 export class HomepageComponent {

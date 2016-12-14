@@ -6,6 +6,8 @@ import {Tag} from './tag.model';
 
 import {Logger} from '../utils/logger';
 
+import * as _ from 'lodash';
+
 @Injectable()
 export class ProgTagLibraryService {
   private tagsService: TagsService;

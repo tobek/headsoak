@@ -9,10 +9,7 @@ import {Logger} from '../utils/logger';
 
 @Component({
   selector: 'feedback',
-  pipes: [ ],
   providers: [ ],
-  directives: [
-  ],
   templateUrl: './feedback.component.html'
 })
 export class FeedbackComponent {

@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild, ViewChildren, QueryList} from '@angular/core';
+import {Inject, forwardRef, Component, ElementRef, ViewChild, ViewChildren, QueryList} from '@angular/core';
 import {Router, NavigationEnd} from '@angular/router';
 import {Subject, Subscription} from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
@@ -8,18 +8,14 @@ import {SettingsService} from '../settings/settings.service';
 // import {Note} from '../notes/note.model';
 // import {NoteComponent} from '../notes/note.component';
 // import {NotesService} from '../notes/notes.service';
-import {Tag, TagComponent, TagDetailsComponent, TagsService, TagVisualizationComponent, ProgTagLibraryComponent} from './';
+import {Tag, TagComponent} from './';
+import {TagsService} from './tags.service'; // no idea why importing this separately is necessary
 import {Logger/*, ScrollMonitorService, AutocompleteService*/} from '../utils/';
+
+import * as _ from 'lodash';
 
 @Component({
   selector: 'tag-browser',
-  pipes: [],
-  directives: [
-    TagComponent,
-    TagDetailsComponent,
-    TagVisualizationComponent,
-    ProgTagLibraryComponent,
-  ],
   template: require('./tag-browser.component.html')
 })
 export class TagBrowserComponent {
@@ -58,7 +54,7 @@ export class TagBrowserComponent {
     private router: Router,
     private elRef: ElementRef,
     private analyticsService: AnalyticsService,
-    private settings: SettingsService,
+    @Inject(forwardRef(() => SettingsService)) private settings: SettingsService,
     // private autocompleteService: AutocompleteService,
     // private scrollMonitor: ScrollMonitorService,
     // private notesService: NotesService,

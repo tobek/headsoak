@@ -4,6 +4,8 @@ import {Subject, ReplaySubject} from 'rxjs';
 
 import {ModalComponent} from './modal.component';
 
+import * as _ from 'lodash';
+
 @Injectable()
 export class ModalService {
   modal: ModalComponent;

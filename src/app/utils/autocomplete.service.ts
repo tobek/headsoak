@@ -1,7 +1,10 @@
 import {Injectable} from '@angular/core';
 
 import {Logger, fuzzyMatchSort} from './';
-import {Tag, SubTag, TagsService} from '../tags';
+import {TagsService} from '../tags/tags.service';
+import {Tag, SubTag} from '../tags';
+
+import * as _ from 'lodash';
 
 const jQuery = require('jquery');
 // window['jQuery'] = jQuery;

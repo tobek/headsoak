@@ -2,6 +2,8 @@ import {Injectable} from '@angular/core';
 
 import {Logger, utils} from '../utils/';
 
+import * as _ from 'lodash';
+
 @Injectable()
 export class UserService {
   loggedIn: boolean = false;

@@ -21,8 +21,7 @@
   </span>
   <ng-select class="sort-dropdown"
     [items]="notesService.sortOpts"
-    [data]="notesService.sortOpts[0]"
-    [showSearchInputInDropdown]="false"
+    [active]="[notesService.sortOpts[0]]"
     (selected)="ngSelectSelected($event)"
     placeholder="{{ sortOpt.text }}"
   ></ng-select>

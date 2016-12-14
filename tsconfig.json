@@ -38,8 +38,6 @@
     "dist",
     "node_modules",
     "old"
-    "node_modules",
-    "dist"
   ],
   "awesomeTypescriptLoaderOptions": {
     "forkChecker": true,

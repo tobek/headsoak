@@ -1,9 +1,11 @@
 import {Injectable} from '@angular/core';
 
-import {DataService} from '../';
+import {DataService} from '../data.service';
 
 import {Tag} from './tag.model';
 import {Note} from '../notes/note.model';
+
+import * as _ from 'lodash';
 
 const sentiment = require('sentiment');
 

@@ -1,6 +1,8 @@
 import {Logger} from '../utils/logger';
 
-import {DataService} from '../';
+import {DataService} from '../data.service';
+
+import * as _ from 'lodash';
 
 export class Setting {
   id: string;

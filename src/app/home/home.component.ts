@@ -7,20 +7,13 @@ import {DataService} from '../data.service';
 import {SettingsService} from '../settings/settings.service';
 import {Logger} from '../utils/logger';
 
-import {LoginComponent} from '../account';
-import {Note, NoteComponent, NoteBrowserComponent, NotesService} from '../notes/';
+import {Note, NoteComponent, NotesService} from '../notes/';
 import {Tag, TagsService} from '../tags/';
 
 
 @Component({
   selector: 'home',
-  pipes: [ ],
   providers: [ ],
-  directives: [
-    LoginComponent,
-    NoteComponent,
-    NoteBrowserComponent,
-  ],
   templateUrl: './home.component.html'
 })
 export class HomeComponent {
