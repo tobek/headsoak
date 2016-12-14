@@ -71,5 +71,5 @@ export var utils = {
     });
 
     return el.dispatchEvent(event);
-  }
+  },
 };

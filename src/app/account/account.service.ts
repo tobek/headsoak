@@ -1,5 +1,5 @@
 import {Injectable, ChangeDetectorRef} from '@angular/core';
-import {DomSanitizationService} from '@angular/platform-browser'; // @TODO In latest version of Angular this is called DomSanitizer
+import {DomSanitizationService} from '@angular/platform-browser'; // @TODO/update In latest version of Angular this is called DomSanitizer
 import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 const Firebase = require('firebase');

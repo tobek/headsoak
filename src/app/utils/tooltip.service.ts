@@ -49,6 +49,7 @@ export class TooltipService {
     this.reloadOnEvent(event, true);
   }
 
+  /** E.g. to attach to dynamic tooltip with `(mouseleave)="tooltipService.reloadOnMouseleave($event)"`. */
   reloadOnMouseleave(event: MouseEvent) {
     // Wait for fade animation before reloading tooltip
     this.reloadOnEvent(event, false, 500);

@@ -80,6 +80,7 @@ export class ProgTagLibraryService {
         return localTag;
       }
       else {
+        // A sort of "detached" version of the tag, that will be added to user's data if they choose to enable it
         return new Tag(tagData, this.tagsService.dataService);
       }
     });

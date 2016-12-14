@@ -1,4 +1,4 @@
-import {Injectable, NgZone} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 import {Setting, Shortcut} from './';
