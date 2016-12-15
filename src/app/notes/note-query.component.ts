@@ -299,6 +299,7 @@ export class NoteQueryComponent {
                 note.archived = false;
               },
               preventDuplicates: true,
+              toastClass: 'toast toast--archived',
             });
           }
           else if (note.pinned) {
@@ -309,6 +310,7 @@ export class NoteQueryComponent {
                 this.modalService.alert('<h3>Pinning and archiving</h3><p><b>Pinned</b> notes will always appear above un-pinned notes, but, like all notes, they are only shown if they match what you put in the search bar.</p><p>Likewise, <b>archived</b> notes will always appear below other notes.</p><p>You can specifically search for archived or pinned notes by treating them as tags: you can type "archived" or "pinned" in the search bar and choose them from the autocomplete dropdown.</p>', true, 'Thanks'); // @TODO/ece Is "thanks" sassy here? Shouldnt' make a habit of it, but things other than "ok" are good.
               },
               preventDuplicates: true,
+              toastClass: 'toast toast--pinned',
             });
           }
         }

@@ -10,6 +10,7 @@ export class ToasterService {
   constructor(
   ) {
     this._toaster.options = {
+      toastClass: 'toast', // if you override this you must also include `toast` or styles will break
       closeButton: false,
       debug: false,
       newestOnTop: false,
