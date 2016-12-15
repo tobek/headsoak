@@ -65,7 +65,7 @@ export class TagsService {
   }
 
   setUpInternalTags() {
-    _.each(Tag.INTERNAL_TAG_DATA, (tagData) {
+    _.each(Tag.INTERNAL_TAG_DATA, (tagData) => {
       if (this.tags[tagData.id]) {
         // User already has this tag set up
         return;
@@ -133,9 +133,9 @@ export class TagsService {
     return _.find(this.tags, { name: name });
   }
 
-  sortTags(sortOpt?, tagsToSort?): Tag[] {
+  sortTags(sortOpt?, tagsToSort?: Tag[] | {[k: string]: Tag}): Tag[] {
     if (! tagsToSort) tagsToSort = this.tags;
-    if (! tagsToSort || tagsToSort.length === 0) return [];
+    if (_.isEmpty(tagsToSort)) return [];
 
     if (! sortOpt) {
       // Just get the "first" sort option

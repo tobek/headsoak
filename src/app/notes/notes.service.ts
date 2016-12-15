@@ -195,8 +195,8 @@ export class NotesService {
       }
     }
 
-    var filteredNotes;
-    var filterArrays = [];
+    let filteredNotes;
+    const filterArrays = [];
     if (filteredByTags) filterArrays.push(filteredByTags);
     if (filteredByString) filterArrays.push(filteredByString);
     if (filteredByPrivate) filterArrays.push(filteredByPrivate);
@@ -209,7 +209,7 @@ export class NotesService {
     }
     else {
       // show all
-      filteredNotes = this.notes;
+      filteredNotes = _.values(this.notes);
     }
 
     // @TODO/rewrite - i think these are handled by whoever called the query?
@@ -239,9 +239,9 @@ export class NotesService {
    * 
    * Note that we don't want sort order updating *while* you're editing some property that we're sorting on, e.g. you're sorting on recently modified and as you start typing, that note shoots to the top. So we need to control this separately and only change order when we want to.
    */
-  sortNotes(sortOpt?, notesToSort?): Note[] {
+  sortNotes(sortOpt?, notesToSort?: Note[] | {[k: string]: Note}): Note[] {
     if (! notesToSort) notesToSort = this.notes;
-    if (! notesToSort || notesToSort.length === 0) return [];
+    if (_.isEmpty(notesToSort)) return [];
 
     if (! sortOpt) {
       // Just get the "first" sort option
@@ -251,7 +251,7 @@ export class NotesService {
     this._logger.time('Sorting notes');
     this._logger.log('Sorting notes by', sortOpt);
 
-    var sortedNotes;
+    let sortedNotes: Note[];
 
     if (sortOpt.field.indexOf('.') !== -1 ) { // e.g. field might be `tags.length`
       var fields = sortOpt.field.split('.');
@@ -272,6 +272,19 @@ export class NotesService {
     // @NOTE: Here is a more generic way to deal with this indexing of sub-objects by dot-notation string: http://stackoverflow.com/a/6394168. _.get might do it too.
 
     if (sortOpt.rev) sortedNotes.reverse();
+
+    // Pinned notes first and archived notes last. Lodash sort is stable, so it'll preserve original order within each group.
+    sortedNotes = _.sortBy(sortedNotes, (note) => {
+      if (note.pinned) {
+        return -1;
+      }
+      else if (note.archived) {
+        return 1
+      }
+      else {
+        return 0;
+      }
+    });
 
     this._logger.timeEnd('Sorting notes');
 
