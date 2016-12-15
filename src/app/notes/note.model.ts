@@ -9,18 +9,21 @@ import * as _ from 'lodash';
 
 export class Note {
   id: string;
-  body: string;
-  created: number;
-  modified: number;
+  
+  body = '';
 
-  // Optional:
-  fullUpdateRequired: Boolean;
-  readOnly: Boolean;
-  share: { [uid: string]: boolean };
-  sharedBy: string;
-  sharedBody: string;
-  tags: string[]; // Array of tag IDs
-  private: boolean;
+  created = Date.now(); // doesn't actually get called til object is instantiated so time is correct (and of course can be overridden by data passed to constructor)
+  modified = Date.now();
+
+  fullUpdateRequired?: Boolean;
+  readOnly?: Boolean;
+  share?: { [uid: string]: boolean };
+  sharedBy?: string;
+  sharedBody?: string;
+  tags: string[] = []; // Array of tag IDs
+  private?: boolean;
+
+  // history: Note[], // an array of notes, last is the latest
 
   /** Currently used to a) hide new/unsaved notes from note browser, and b) distinguish a new note with empty body from old note with empty body for the purposes of placeholder text. As soon as a note has any content or changes at all, it gets saved to data store and is marked as no longer new. */
   new = false;
@@ -29,10 +32,10 @@ export class Note {
   deleted = false;
 
   /** Hold interval for checking if we should sync note body while it's focused. */
-  private nutSaver: number;
+  private nutSaver?: number;
 
   /** Stores what the note body was before focusing, in order to determine, upon blurring, whether anything has changed. */
-  private oldBody: string;
+  private oldBody?: string;
 
   /** Used to prevent infinite loops when running prog tags.*/
   private progTagDepth = 0;
@@ -40,7 +43,7 @@ export class Note {
   private _logger: Logger;
 
   /** Properties that we save to data store. The ordering is also the order in which data is shown in the explore note raw data dropdown. */
-  private DATA_PROPS = [
+  static DATA_PROPS = [
     'id',
     'tags',
     'created',
@@ -62,17 +65,9 @@ export class Note {
 
     this._logger = new Logger('Note ' + this.id);
 
-    _.defaults(this, {
-      body: '',
-      tags: [],
-      created: Date.now(),
-      modified: Date.now(),
-      // history: [], // an array of notes, last is the latest
-    });
-
     this.oldBody = this.body;
 
-    // @TODO/rewrite @TODO/now
+    // @TODO/rewrite @TODO/now maybe we do this in NotesService.createNote
     // // If user was disconnected while editing a note, we won't have done a full update (which we only do on blur), so do that now
     // if (this.fullUpdateRequired) {
     //   console.log('note ' + this.id + ' was saved but requires a full update');
@@ -80,6 +75,37 @@ export class Note {
     // }
 
     // console.log('New note created:', this);
+  }
+
+  get pinned(): boolean {
+    return this.getFromInternalTag(Tag.INTERNAL_TAG_DATA.PINNED.id);
+  }
+  set pinned(newVal: boolean) {
+    if (newVal) {
+      this.archived = false;
+    }
+    this.setToInternalTag('pinned', Tag.INTERNAL_TAG_DATA.PINNED.id, newVal);
+  }
+  get archived(): boolean {
+    return this.getFromInternalTag(Tag.INTERNAL_TAG_DATA.ARCHIVED.id);
+  }
+  set archived(newVal: boolean) {
+    if (newVal) {
+      this.pinned = false;
+    }
+    this.setToInternalTag('archived', Tag.INTERNAL_TAG_DATA.ARCHIVED.id, newVal);
+  }
+
+  getFromInternalTag(tagId: string): boolean {
+    return _.includes(this.tags, tagId);
+  }
+  setToInternalTag(propName: string, tagId: string, newVal: boolean) {
+    if (newVal && ! this[propName]) {
+      this.addTagById(tagId);
+    }
+    else if (! newVal && this[propName]) {
+      this.removeTagId(tagId);
+    }
   }
 
   /**
@@ -133,7 +159,7 @@ export class Note {
     const noteData = {};
 
     // @NOTE A value must be set to `null` to remove from Firebase. undefined isn't allowed.
-    this.DATA_PROPS.forEach((prop) => {
+    Note.DATA_PROPS.forEach((prop) => {
       if (this[prop] !== undefined) {
         noteData[prop] = this[prop];
       }
@@ -228,10 +254,21 @@ export class Note {
     if (! tag) {
       this._logger.log('Have to create new tag with name:', tagName);
 
-      tag = this.dataService.tags.createTag({ name: tagName }, false);
+      tag = this.dataService.tags.createTag({ name: tagName }, true);
     }
 
     return this.addTag(tag);
+  }
+
+  /** Just looks up tag in `TagsService` and calls `addTag` - throws an error if tag not found. */
+  addTagById(tagId: string, fullUpdate = true, evenIfProg = false): Tag {
+    const tag = this.dataService.tags.tags[tagId];
+
+    if (! tag) {
+      throw new Error('No tag with id "' + tagId + '" found.');
+    }
+
+    return this.addTag(tag, fullUpdate, evenIfProg);
   }
 
   /** Adds tag to note and returns tag, or returns null if no tag added. Also updates the tag as necessary. */
@@ -247,12 +284,12 @@ export class Note {
       return null;
     }
 
-    if (! tag.prog) {
+    if (! tag.prog && ! tag.internal) {
       // Add at the front - this makes tags on notes ordered by most-recently-added, which a) is fine, and b) looks good when you add a new tag. Later order could be smarter.
       this.tags.unshift('' + tag.id);
     }
     else {
-      // We'll leave prog tags at the back
+      // We'll leave prog and internal tags at the back
       this.tags.push('' + tag.id);
     }
 

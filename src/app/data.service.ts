@@ -366,7 +366,7 @@ export class DataService {
 
   /**
    * The shift from notes and tags being arrays to being objects meant that all keys are now strings, so tag.docs and note.tags have to be updated.
-   * @TODO This migration happened Jan 2015. Can safely remove this and related code if all users have lastLogin after than, or if we finish off migration manually. @NOTE Actually it seems like the migration didn't work. Updated September 29 2016 and now using `idsMigrated2016` field to try this again.
+   * @TODO This migration happened Jan 2015. Can safely remove this and related code if all users have lastLogin after than, or if we finish off migration manually. @NOTE Actually it seems like the migration didn't work. Updated September 29 2016 and now using `idsMigrated2016` field to try this again. If we get rid of this then we can make Note/Tag `id` properties `readonly` =)
    */
   handleIdMigration() {
     if (this.user.idsMigrated2016) {

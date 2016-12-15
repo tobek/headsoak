@@ -149,6 +149,7 @@ export class TagBrowserComponent {
   }
 
   newTag(): void {
+    // Passing in false to not save to data store cause it has no name yet. If/when it gets named, then we'll save it.
     const newTag = this.tagsService.createTag({}, false);
 
     this.tags = _.concat([newTag], this.tags);
