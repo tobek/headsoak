@@ -31,7 +31,7 @@ export class NoteQueryComponent {
 
   queryText: string;
   tags: Tag[] = [];
-  tagsUpdated$ = new Subject<Tag[]>();
+  tagsUpdated$ = new Subject<Tag[]>(); // the tags in the query, not tags in general
   private queryUpdated$ = new Subject<void>();
   private querySub: Subscription;
   private noteInitializationSub: Subscription;
@@ -263,7 +263,6 @@ export class NoteQueryComponent {
   /**
    * Check if the updated note should be added or removed from currently visible notes. If note was deleted we simply remove note from visible notes if necessary.
    * @TODO Make sure to maintain scroll position
-   * @TODO Ideally when removing a note, we should show some indicator about how the note is no longer visible due to query (and button to clear query)
    * @TODO/optimization During `tag.runProgOnAllNotes` (and any other actions that cause mass updates of notes, like tag deletion) this function gets run once for every note that's updated. It's true that we need to check if each note shouldn't/shouldn't be shown, but in this case we should kind of throttle the check: on first call, do this. If second call comes too quickly, wait til calls don't come in for a while and then simply redo the entire query rather than checking each note individually.
    */
   noteUpdated(note: Note) {
@@ -275,9 +274,22 @@ export class NoteQueryComponent {
     // No need to sort yet, first let's just see if we need to add/remove note:
     const newNoteList = this.notesService.doQuery(this.queryText, this.tags);
 
-    if (_.includes(this.notes, note) && ! _.includes(newNoteList, note)) {
-      this._logger.log('Updated note was visible but shouldn\'t be any more:', note);
-      this.notes = _.without(this.notes, note);
+    if (_.includes(this.notes, note)) {
+      if (! _.includes(newNoteList, note)) {
+        this._logger.log('Updated note was visible but shouldn\'t be any more:', note);
+        // @TODO/toaster @TODO/polish If the note component is visible in viewport, we should show toaster notification about why note is no longer visible, and maybe click to clear query or see note again
+        this.notes = _.without(this.notes, note);
+      }
+      else {
+        // Note was visible and should remain visible
+
+        if (note.updateSortHack) {
+          // But we should explicitly re-sort
+          note.updateSortHack = false;
+
+          this.notes = this.notesService.sortNotes(this.sortOpt, this.notes);
+        }
+      }
     }
     else if (! _.includes(this.notes, note) && _.includes(newNoteList, note)) {
       this._logger.log('Updated note wasn\'t visible but should be now:', note);

@@ -31,6 +31,9 @@ export class Note {
   /** Temporary flag attached to note model as it's passed around, indicating that it's about to be deleted. */
   deleted = false;
 
+  /** @HACK Temporary flag attached to note model as it gets passed to `NoteQueryComponent` via `noteUpdated`, indicating that some property changed (e.g. pinning or archiving) so sort should be updated. This is NOT used when other possibly-sort-dependent properties have changed, such as body length, # of tags, or timestamps, so as not to whip out a note from under a user's nose while they're editing it. `NoteQueryComponent` sets it back to false when it sees it. */
+  updateSortHack = false;
+
   /** Hold interval for checking if we should sync note body while it's focused. */
   private nutSaver?: number;
 
@@ -85,6 +88,8 @@ export class Note {
       this.archived = false;
     }
     this.setToInternalTag('pinned', Tag.INTERNAL_TAG_DATA.PINNED.id, newVal);
+
+    this.updateSortHack = true;
   }
   get archived(): boolean {
     return this.getFromInternalTag(Tag.INTERNAL_TAG_DATA.ARCHIVED.id);
@@ -94,6 +99,8 @@ export class Note {
       this.pinned = false;
     }
     this.setToInternalTag('archived', Tag.INTERNAL_TAG_DATA.ARCHIVED.id, newVal);
+    
+    this.updateSortHack = true;
   }
 
   getFromInternalTag(tagId: string): boolean {
@@ -172,6 +179,8 @@ export class Note {
    * 1. Updates timestamps of attached tags, if appropriate
    * 2. Updates lunr index. Note: this can be slow: 0.5s for 40k char text on one machine).
    * 3. Runs through all programmatic tags. Might be slow depending on user functions.
+   *
+   * @TODO/optimization This should be debounced (while preserving any true `updatedModified` argument). Some scenarios cause multiple full udpates in a row. (One example: archiving a pinned note removes pinned tag and adds archived tag - both do full updates).
    */
   doFullUpdate(updateModified = true): void {
     this._logger.log('Doing full update');
