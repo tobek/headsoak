@@ -41,39 +41,40 @@
   <!-- @TODO/rewrite/sharing Better to put read-only class and disabled attribute on above textarea so reference is preserved <textarea class="body read-only" disabled="disabled" tabindex=2 *ngIf="note.sharedBody">{{ note.sharedBody }}</textarea> -->
 
   <div class="note-actions">
-    <a data-tooltip="Expand note" class="note-action note-action--open" *ngIf="! opened" (click)="openNote()"><i class="fa fa-pencil-square-o"></i></a>
+    <a data-tooltip="Expand note" class="note-action note-action--open" *ngIf="! opened" (click)="openNote()"><i class="fa fa-fw fa-pencil-square-o"></i></a
 
-    <a data-tooltip="Close note" class="note-action" *ngIf="opened && ! note.new" (click)="closeNote()"><i class="fa fa-close"></i></a>
+    ><a data-tooltip="Close note" class="note-action" *ngIf="opened && ! note.new" (click)="closeNote()"><i class="fa fa-fw fa-close"></i></a
 
-    <a class="note-action"
+    ><a class="note-action"
       [class.is--active]="note.pinned"
       [attr.data-tooltip]="(note.pinned ? 'Un-pin' : 'Pin') + ' this note'"
       (click)="note.pinned = ! note.pinned; tooltipService.reloadOnClick($event)"
-    ><i class="fa fa-thumb-tack"></i></a>
+    ><i class="fa fa-fw fa-thumb-tack"></i></a
 
-    <a data-tooltip="Share settings" class="note-action" (click)="note.showShareSettings()"><i class="fa fa-users"></i></a>
+    ><!--<a data-tooltip="Share settings" class="note-action" (click)="note.showShareSettings()"><i class="fa fa-fw fa-users"></i></a
 
-    <a class="note-action note-action--private"
+    >--><a class="note-action note-action--private"
       [class.is--active]="note.private"
       [attr.data-tooltip]="'Make this note' + (note.private ? ' not' : '') + ' private'"
       (click)="note.togglePrivate(); tooltipService.reloadOnClick($event)"
-    ><i class="fa fa-lock locked"></i><i class="fa fa-unlock-alt unlocked"></i></a>
+    ><i class="fa fa-fw fa-lock locked"></i><i class="fa fa-fw fa-unlock-alt unlocked"></i></a
 
-    <span *ngIf="! note.new">
-      <!-- <a (click)="newNoteWithSameTags()">NNST</a> -->
+    ><span *ngIf="! note.new"><!--
+           <a (click)="newNoteWithSameTags()">NNST</a> -->
       <!-- @TODO/rewrite @TODO/ece What are we doing  with "explore note"? We still need somewhere to show timestamps. -->
-      <a class="note-action"
+      <!--@TODO/rewrite angular2 date pipe is "pure" and won't check for updates, so note.created and note.modified will have to be reassigned, confirm it works, etc.
+      --><a class="note-action"
         data-tooltip="Explore note"
         (click)="toggleExplore()"
-      ><i class="fa fa-bar-chart"></i></a><!--@TODO/rewrite angular2 date pipe is "pure" and won't check for updates, so note.created and note.modified will have to be reassigned, confirm it works, etc. -->
+      ><i class="fa fa-fw fa-bar-chart"></i></a
 
-      <a class="note-action"
+      ><a class="note-action"
         [class.is--active]="note.archived"
         [attr.data-tooltip]="(note.archived ? 'Un-archive' : 'Archive') + ' this note'"
         (click)="note.archived = ! note.archived; tooltipService.reloadOnClick($event)"
-      ><i class="fa fa-archive"></i></a>
+      ><i class="fa fa-fw fa-archive"></i></a
 
-      <a data-tooltip="Delete note" class="note-action" (click)="delete($event)"><i class="fa fa-trash-o"></i></a>
+      ><a data-tooltip="Delete note" class="note-action" (click)="delete($event)"><i class="fa fa-fw fa-trash-o"></i></a>
     </span>
   </div>
 </div>

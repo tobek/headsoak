@@ -146,7 +146,6 @@
   .note-action
     +icon-button
 
-    margin-right: 5px
     position: relative
 
     &:last-child
@@ -197,9 +196,29 @@
         height: 300px
 
 
+  // @TODO/ece What do you think about 1) the slide-in icon effect, 2) them being faded out until hover
+
+  .note-action .fa
+    transition: opacity $transition-fast, visibility $transition-fast, width $transition-fast
+    opacity: 0.25
+  .note-actions:hover .note-action .fa
+    opacity: 1
+
   note-browser &
-    .note-actions
-      display: none
+    .note-action .fa
+      +faded-out
+      width: 0
+
+    &:hover .note-action .fa
+      visibility: visible
+      opacity: 0.25
+      width: 1.3em // just copied from what font-awesome gives to fixed width icons
+
+    .note-action.is--active,
+      .fa
+        +faded-in
+        width: 1.3em
+
 
     .body-input
       overflow: hidden
@@ -208,9 +227,6 @@
         overflow-y: auto
 
     &:hover
-      .note-actions
-        display: block
-
       .body-input
         overflow-y: auto
 
