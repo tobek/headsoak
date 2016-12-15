@@ -1,14 +1,15 @@
-import {Inject, forwardRef, Component, ViewChild, ElementRef, Renderer} from '@angular/core';
+import {Component, ViewChild, ElementRef, Renderer} from '@angular/core';
 import {ReplaySubject, Subject, Subscription} from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
 
 import {ActiveUIsService} from '../active-uis.service';
 import {AnalyticsService} from '../analytics.service';
+import {ModalService} from '../modals/modal.service';
 import {SettingsService} from '../settings/settings.service';
 import {Note} from './note.model';
 import {NotesService} from './notes.service';
 import {Tag, SubTag, TagsService} from '../tags';
-import {Logger, AutocompleteService} from '../utils/';
+import {Logger, AutocompleteService, ToasterService} from '../utils/';
 import {NOTE_BROWSER_ROUTES, DEFAULT_NOTE_ROUTE} from '../app.routes';
 
 import * as _ from 'lodash';
@@ -44,8 +45,10 @@ export class NoteQueryComponent {
     private renderer: Renderer,
     private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
-    @Inject(forwardRef(() => AutocompleteService)) private autocompleteService: AutocompleteService,
-    @Inject(forwardRef(() => SettingsService)) private settings: SettingsService,
+    private autocompleteService: AutocompleteService,
+    private modalService: ModalService,
+    private toaster: ToasterService,
+    private settings: SettingsService,
     private notesService: NotesService,
     private tagsService: TagsService,
   ) {
@@ -288,6 +291,26 @@ export class NoteQueryComponent {
           note.updateSortHack = false;
 
           this.notes = this.notesService.sortNotes(this.sortOpt, this.notes);
+
+          if (note.archived) {
+            // @TODO/ece Should this be a button on the toaster?
+            this.toaster.info('<a>Undo</a>', 'Note archived', {
+              onclick: () => {
+                note.archived = false;
+              },
+              preventDuplicates: true,
+            });
+          }
+          else if (note.pinned) {
+            // @TODO/ece Should this be a button on the toaster?
+            // @TODO/ece Do we even want to show a toaster here? A "never show me again" might be useful, but then that would be two buttons on a toaster, which is bad form according to google. We could put "never show this message again" in the modal. But either way not implementing "don't show again" options for now.
+            this.toaster.info('<a>Learn more</a>', 'Note pinned', {
+              onclick: () => {
+                this.modalService.alert('<h3>Pinning and archiving</h3><p><b>Pinned</b> notes will always appear above un-pinned notes, but, like all notes, they are only shown if they match what you put in the search bar.</p><p>Likewise, <b>archived</b> notes will always appear below other notes.</p><p>You can specifically search for archived or pinned notes by treating them as tags: you can type "archived" or "pinned" in the search bar and choose them from the autocomplete dropdown.</p>', true, 'Thanks'); // @TODO/ece Is "thanks" sassy here? Shouldnt' make a habit of it, but things other than "ok" are good.
+              },
+              preventDuplicates: true,
+            });
+          }
         }
       }
     }
