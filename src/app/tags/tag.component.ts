@@ -11,6 +11,8 @@ import {Logger, utils} from '../utils/';
   template: require('./tag.component.html')
 })
 export class TagComponent {
+  INTERNAL_TAG_DATA = Tag.INTERNAL_TAG_DATA // expose to template
+  
   @Input() tag: Tag;
 
   /** Optional, supplied if this tag component is being shown on a specific note. */
