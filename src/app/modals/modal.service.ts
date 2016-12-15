@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {SafeHtml} from '@angular/platform-browser';
+import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {Subject, ReplaySubject} from 'rxjs';
 
 import {ModalComponent} from './modal.component';
@@ -16,6 +16,7 @@ export class ModalService {
   closed$ = new Subject<void>();
 
   constructor(
+    private sanitizer: DomSanitizer
   ) {
   }
 
@@ -56,9 +57,10 @@ export class ModalService {
     this.activeModal$.next('loading');
   }
 
-  alert(message: string | SafeHtml): void {
+  alert(message: string, trustAsHtml = false, okButtonText?: string): void {
     this.modal.generic({
-      message: message
+      message: trustAsHtml ? this.sanitizer.bypassSecurityTrustHtml(message) : message,
+      okButtonText: okButtonText,
     });
   }
 

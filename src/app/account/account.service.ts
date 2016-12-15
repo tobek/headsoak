@@ -1,5 +1,4 @@
 import {Injectable, ChangeDetectorRef} from '@angular/core';
-import {DomSanitizer} from '@angular/platform-browser';
 import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 const Firebase = require('firebase');
@@ -34,7 +33,6 @@ export class AccountService {
   private onlineStateRef: Firebase;
 
   constructor(
-    private sanitizer: DomSanitizer,
     private notes: NotesService,
     private dataService: DataService,
     private modalService: ModalService,
@@ -396,7 +394,7 @@ export class AccountService {
     // @TODO/modals Need a way to queue up modals, what happens if this gets hit when another modal is open? Especially could be weird when the close listener to refresh fires too soon.
 
     // @TODO We could log time and IP and browser etc. of the login so we can tell them when and where etc.
-    this.modalService.alert(this.sanitizer.bypassSecurityTrustHtml('<p>Hey, it looks like you\'ve logged into Headsoak from another device or browser window.</p><p>Headsoak doesn\'t yet support editing from multiple sessions at the same time. Please  <a href="#" onclick="document.location.reload()">refresh this window</a> to load any changes made in other sessions and continue.</p>'));
+    this.modalService.alert('<p>Hey, it looks like you\'ve logged into Headsoak from another device or browser window.</p><p>Headsoak doesn\'t yet support editing from multiple sessions at the same time. Please  <a href="#" onclick="document.location.reload()">refresh this window</a> to load any changes made in other sessions and continue.</p>', true);
 
     // When this modal is closed, refresh the page
     this.modalService.closed$.first().subscribe(function() {

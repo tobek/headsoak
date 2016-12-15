@@ -8,7 +8,8 @@ import {SettingsService} from '../settings/settings.service';
 import {Logger} from '../utils/logger';
 
 type ModalType = null | 'loading' | 'login' | 'feedback' | 'privateMode' | 'generic';
-type ModalConfigType = {
+
+export interface ModalConfig {
   okCb?: (result?: any, showLoadingState?: Function, hideLoadingState?: Function) => any, // Called when OK is pressed (or enter in prompt), just before modal is closed. If it's a prompt and not cancelled, prompt contents is passed in, otherwise falsey value passed. Return explicit false to prevent modal from being closed. Callback is also passed two functions that control loading state of button.
 
   message?: string | SafeHtml,
@@ -24,7 +25,7 @@ type ModalConfigType = {
     text: string,
     cb: Function, // called when button is pressed (modal is closed first)
   }]
-};
+}
 
 @Component({
   selector: 'modal',
@@ -53,7 +54,7 @@ export class ModalComponent {
 
   message: string | SafeHtml;
 
-  config: ModalConfigType = {};
+  config: ModalConfig = {};
 
   okButtonIsLoading = false;
 
@@ -173,7 +174,7 @@ export class ModalComponent {
     }
   }
 
-  generic(config: ModalConfigType): void {
+  generic(config: ModalConfig): void {
     this.config = config;
     this.activeModal = 'generic';
 
