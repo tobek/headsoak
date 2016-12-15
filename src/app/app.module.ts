@@ -101,9 +101,11 @@ const APP_PROVIDERS = [
 
 // import { PLATFORM_PIPES } from '@angular/core';
 import {ArrayLimitPipe} from './pipes/array-limit.pipe';
+import {InternalTagsFilterPipe} from './pipes/internal-tags-filter.pipe';
 
 const APP_PIPES = [
   ArrayLimitPipe,
+  InternalTagsFilterPipe,
 ];
 
 

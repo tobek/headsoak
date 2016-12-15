@@ -23,7 +23,7 @@ export class TagBrowserComponent {
 
   el: HTMLElement;
 
-  tags: Tag[] = [];
+  tags: Tag[] = []; // Tags currently being displayed in the tag browser list
   activeTag: Tag; // Tag that's currently being show in details view
   hoveredTag?: Tag; // Tag that's currently hovered in the tag list (used to highlight tag in the visualization)
 
@@ -72,6 +72,10 @@ export class TagBrowserComponent {
       .subscribe(() => {
         // @TODO/tags Ideally this should use fuzzy match sorter (and bold matching parts of tag names)
         let queriedTags = _.filter(this.tagsService.tags, (tag: Tag) => {
+          if (tag.internal) {
+            return false;
+          }
+
           return tag.name.toLowerCase().indexOf(this.query.toLowerCase()) !== -1;
         });
         this.tags = this.tagsService.sortTags(this.sortOpt, queriedTags);
@@ -95,7 +99,10 @@ export class TagBrowserComponent {
   initTags(): void {
     this.sortOpt = _.find(this.tagsService.sortOpts, { id: this.settings.get('tagSortBy') });
 
-    this.tags = this.tagsService.sortTags(this.sortOpt);
+    this.tags = _.filter(
+      this.tagsService.sortTags(this.sortOpt),
+      (tag) => ! tag.internal
+    );
 
     this.routerSub = this.router.events
       .filter(event => event instanceof NavigationEnd)
@@ -145,7 +152,10 @@ export class TagBrowserComponent {
       this.sortOpt = sortOpt;
     }
 
-    this.tags = this.tagsService.sortTags(this.sortOpt);
+    this.tags = _.filter(
+      this.tagsService.sortTags(this.sortOpt),
+      (tag) => ! tag.internal
+    );
   }
 
   newTag(): void {

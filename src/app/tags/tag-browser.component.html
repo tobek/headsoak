@@ -43,6 +43,17 @@
         (mouseleave)="hoveredTag = null"
       ></tag>
     </span>
+
+    <hr style="width: 100%">
+    <h4>Internal tags</h4>
+    <!-- TODO/ece Bad name - maybe don't even call them tags. -->
+    <span *ngFor="let tag of tagsService.internalTags" class="tag-wrapper">
+      <tag class="tag tag-{{ tag.id }}"
+        [routerLink]="['/tags/tag', tag.id, tag.name]"
+        [tag]="tag"
+        [showCount]="true"
+      ></tag>
+    </span>
   </div>
 
   <div class="fixed-pane-wrapper">

@@ -17,7 +17,7 @@
         <i class="fa fa-fw fa-lg fa-users"></i>
         Share
       </li>
-      <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'smartness']" [class.is--active]="activePane === 'smartness'">
+      <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'smartness']" [class.is--active]="activePane === 'smartness'">
         <i class="fa fa-fw fa-lg fa-bolt"></i>
         Smart tag
       </li>
@@ -27,7 +27,7 @@
         Private tag
       </li>
       -->
-      <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'delete']" [class.is--active]="activePane === 'delete'">
+      <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'delete']" [class.is--active]="activePane === 'delete'">
         <i class="fa fa-fw fa-lg fa-trash-o"></i>
         Delete
       </li>
@@ -82,7 +82,7 @@
     <p>This tag is <b>{{ tag.share ? '' : 'not' }} shared</b>. You can't change this right now.</p>
   </div>
 
-  <div class="pane" *ngIf="activePane === 'smartness'">
+  <div class="pane" *ngIf="activePane === 'smartness' && ! tag.internal">
     <h3 class="pane-heading">Smart Tag settings for <span class="static-tag">{{ tag.name }}</span></h3>
 
     <prog-tag-control [tag]="tag"></prog-tag-control>
@@ -93,7 +93,7 @@
     <p>This tag is <b>{{ tag.private ? '' : 'not' }} hidden</b>. You can't change this right now.</p>
   </div>
 
-  <div class="pane" *ngIf="activePane === 'delete'">
+  <div class="pane" *ngIf="activePane === 'delete' && ! tag.internal">
     <h3 class="pane-heading">Delete <span class="static-tag">{{ tag.name }}</span></h3>
 
     <p *ngIf="tag.docs.length === 0">This tag isn't used on any of your notes, so deleting it isn't really a big deal.</p>

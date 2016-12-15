@@ -4,8 +4,8 @@ import {SafeHtml} from '@angular/platform-browser';
 import {ActiveUIsService} from '../active-uis.service';
 import {AnalyticsService} from '../analytics.service';
 import {SettingsService} from '../settings/settings.service';
-import {NotesService} from '../notes/notes.service';
-import {Note} from '../notes/note.model';
+import {NotesService} from './notes.service';
+import {Note} from './note.model';
 
 import {Logger, AutocompleteService, SyntaxService, TooltipService} from '../utils/';
 

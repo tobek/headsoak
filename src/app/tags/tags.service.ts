@@ -20,6 +20,9 @@ export class TagsService {
   /** Updates whenever a tag is removed from users tags (not removed from a given note). */
   tagDeleted$ = new Subject<Tag>();
 
+  // Handy references to just the internal tags
+  internalTags: Tag[] = [];
+
   /**
    * id format: `[desiredOrder] + '-' + field + '-' + rev`
    */
@@ -68,12 +71,13 @@ export class TagsService {
     _.each(Tag.INTERNAL_TAG_DATA, (tagData) => {
       if (this.tags[tagData.id]) {
         // User already has this tag set up
+        this.internalTags.push(this.tags[tagData.id]);
         return;
       }
 
       // Otherwise, either this is a new user (@TODO/now check they call get called) or there's a new internal tag - either way, create it and explicitly add it to data store.
       this._logger.info('Initializing internal tag "' + tagData.name + '"');
-      this.createTag(tagData, true);
+      this.internalTags.push(this.createTag(tagData, true));
     });
   }
 

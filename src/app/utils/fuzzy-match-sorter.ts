@@ -1,16 +1,10 @@
+import {AutocompleteSuggestion} from './autocomplete.service';
+
 // One situation in which this algorithm isn't quite optimal: you search "ep" against "extra special powers" - after matching `e` it will look ahead to the `s` in "special", not match `p`, and iterate through `special` until matching the `p` there, increasing score in the process. this could be fixed by look at every char after space in the remaining substring, which i didn't bother to do
 // Also, separator maybe shouldn't be just ' '. but for now this is fine
 
-// @TODO/refactor Copied from AutocompleteService, should look up how to centralize type definitions
-type SuggestionType = {
-  value: string,
-  score?: number;
-  highlighted?: string,
-  data?: any,
-};
 
-
-function fuzzyInitialismMatch(needle: string, haystack: SuggestionType): SuggestionType | boolean {
+function fuzzyInitialismMatch(needle: string, haystack: AutocompleteSuggestion): AutocompleteSuggestion | boolean {
   needle = needle.toLowerCase();
   var haystackStr = haystack.value.toLowerCase();
 
@@ -88,10 +82,10 @@ function highlightStringIndices(s, indices, before, after) {
 }
 
 // returns array of elements from array of haystacks that fuzzily match needle
-function rankedFuzzyInitialismMatches(needle: string, haystacks: SuggestionType[]): SuggestionType[] {
+function rankedFuzzyInitialismMatches(needle: string, haystacks: AutocompleteSuggestion[]): AutocompleteSuggestion[] {
   var matches = [];
 
-  haystacks.forEach(function(suggestion: SuggestionType) {
+  haystacks.forEach(function(suggestion: AutocompleteSuggestion) {
     var result = fuzzyInitialismMatch(needle, suggestion);
     if (result !== false) {
       matches.push(result);

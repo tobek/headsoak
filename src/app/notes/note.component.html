@@ -14,7 +14,7 @@
       ></span
 
       ><tag class="tag-{{ tagId }}"
-        *ngFor="let tagId of note.tags"
+        *ngFor="let tagId of (note.tags | internalTagsFilter)"
         [tag]="getTagById(tagId)"
         [ofNoteId]="note.id"
         (click)="toggleTag(tagId, $event)"

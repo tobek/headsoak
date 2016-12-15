@@ -9,7 +9,7 @@ import * as _ from 'lodash';
 const jQuery = require('jquery');
 // window['jQuery'] = jQuery;
 
-type SuggestionType = {
+export interface AutocompleteSuggestion {
   value: string,
   score?: number;
   highlighted?: string,
@@ -17,7 +17,7 @@ type SuggestionType = {
     tag?: Tag,
     subTag?: string,
   },
-};
+}
 
 @Injectable()
 export class AutocompleteService {
@@ -31,7 +31,7 @@ export class AutocompleteService {
     private tagsService: TagsService
   ) {}
 
-  // TypeScript's new checking for destructuring function parameter object literal: `el` required, `excludeTags` not and defaults to null, etc.
+  // TypeScript's new checking for destructuring function parameter object literal: `el` required, `excludeTags` not and defaults to empty array, etc.
   autocompleteTags({
     el,
     excludeTags = [],
@@ -46,13 +46,14 @@ export class AutocompleteService {
     autocompleteOpts: {}, // should be `any` but can't be found...?
   }) {
     // While we're iterating through tags creating lookup list, we can build this too:
-    const subTags: SuggestionType[] = [];
+    const subTags: AutocompleteSuggestion[] = [];
 
-    var lookupArray: SuggestionType[] = _.filter(this.tagsService.tags, (tag: Tag) => {
+    var lookupArray: AutocompleteSuggestion[] = _.filter(this.tagsService.tags, (tag: Tag) => {
 
       if (context === 'note') {
-        if (tag.readOnly) {
-          return false; // can't add readOnly tags
+        if (tag.readOnly || tag.internal) {
+          return false; // can't add readOnly tags. internal tags can be added through other methods.
+          // @TODO/ece @TODO/usertesting Should these be add-able from add tag field autocomplete? actually for now it's easier to keep them removed - some extra behavior for pinning/archiving wouldn't get triggered through normal add tag (though pretty easy to fix)
         }
 
         // @TODO also hide prog tags here? on the one hand, trying to add a prog tag shows progTagCantChangeAlert, so you might ask "why did you put it in autocomplete in the first place?". on the other hand, if we hide it, users might be like "why isn't this tag showing up?"
@@ -90,7 +91,7 @@ export class AutocompleteService {
       triggerSelectOnValidInput: false,
       allowBubblingOnKeyCodes: [27], // escape key
 
-      customLookup: (query: string, suggestions: SuggestionType[]): SuggestionType[] => {
+      customLookup: (query: string, suggestions: AutocompleteSuggestion[]): AutocompleteSuggestion[] => {
         var results = fuzzyMatchSort(query, suggestions);
 
         // On notes, offer option to add new tag with currently-entered query
@@ -111,9 +112,9 @@ export class AutocompleteService {
         return results;
       },
 
-      formatResult: (suggestion: SuggestionType) => suggestion.highlighted,
+      formatResult: (suggestion: AutocompleteSuggestion) => suggestion.highlighted,
 
-      onSelect: (suggestion: SuggestionType, e) => {
+      onSelect: (suggestion: AutocompleteSuggestion, e) => {
         if (autocompleteOpts['onSelect']) {
           autocompleteOpts['onSelect'](suggestion, e);
         }
