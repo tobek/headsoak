@@ -249,7 +249,7 @@ export var _autocomplete = null;
             };
 
             if (that.options.width === 'auto') {
-                styles.width = (that.el.outerWidth() - 2) + 'px';
+                styles['width'] = (that.el.outerWidth() - 2) + 'px';
             }
 
             $(that.suggestionsContainer).css(styles);

@@ -124,7 +124,12 @@ export class Shortcut extends Setting {
     return ! this.preventDefault;
   }
 
-  updated(newVal?: string): void {
+  updated(newVal?: any): void {
+    // Argument of type `any` otherwise typescript complains cause it doesn't jive with Setting.updated signature. But it should be a string.
+    if (typeof newVal !== 'string') {
+      throw new Error('Invalid setting for shortcut ' + this.id + ': ' + JSON.stringify(newVal));
+    }
+    
     const oldBinding = this.noMod ? this.value : this.dataService.settings['sMod'] + '+' + this.value;
     const unbindFuncName = this.global ? 'unbindGlobal' : 'unbind';
     Mousetrap[unbindFuncName](oldBinding);

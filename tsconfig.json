@@ -17,7 +17,6 @@
       "es6"
     ],
     "types": [
-      "core-js",
       "d3-force",
       "d3-selection",
       "firebase",
