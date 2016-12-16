@@ -196,11 +196,9 @@
         height: 300px
 
 
-  // @TODO/ece What do you think about 1) the slide-in icon effect, 2) them being faded out until hover
-
   .note-action .fa
     transition: opacity $transition-fast, visibility $transition-fast, width $transition-fast
-    opacity: 0.25
+    opacity: 0.5
   .note-actions:hover .note-action .fa
     opacity: 1
 
@@ -211,7 +209,7 @@
 
     &:hover .note-action .fa
       visibility: visible
-      opacity: 0.25
+      opacity: 0.5
       width: 1.3em // just copied from what font-awesome gives to fixed width icons
 
     .note-action.is--active,
