@@ -59,7 +59,7 @@
             (mouseenter)="hoveredTag = cooccurrence.tag"
             (mouseleave)="hoveredTag = null"
           >
-            <span class="static-tag" [routerLink]="['/tags/tag', cooccurrence.tag.id, cooccurrence.tag.name]">
+            <span class="static-tag" [routerLink]="['/tags/tag', cooccurrence.tag.baseTagId, cooccurrence.tag.name]">
               {{ cooccurrence.tag.name }}
             </span>
             <!-- @TODO/tags Should link these to the search query! -->
@@ -76,7 +76,7 @@
             (mouseenter)="hoveredTag = cooccurrence.tag"
             (mouseleave)="hoveredTag = null"
           >
-            <span class="static-tag" [routerLink]="['/tags/tag', cooccurrence.tag.id, cooccurrence.tag.name]">
+            <span class="static-tag" [routerLink]="['/tags/tag', cooccurrence.tag.baseTagId, cooccurrence.tag.name]">
               {{ cooccurrence.tag.name }}
             </span>
             ({{ cooccurrence.numNotes }} time{{ cooccurrence.numNotes !== 1 ? 's' : '' }})

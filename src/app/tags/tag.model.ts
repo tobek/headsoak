@@ -322,13 +322,18 @@ export class Tag {
     let path: string;
 
     if (subPage) {
-      path = ['', 'tags', 'tag', this.id, this.name, subPage].join('/');
+      path = ['', 'tags', 'tag', this.baseTagId, this.name, subPage].join('/');
     }
     else {
-      path = ['', 'tags', 'tag', this.id, this.name].join('/');
+      path = ['', 'tags', 'tag', this.baseTagId, this.name].join('/');
     }
 
     this.dataService.router.navigateByUrl(path);
+  }
+
+  /** Implemented in SubTag to return not the subtag ID. */
+  get baseTagId(): string {
+    return this.id;
   }
 
   /** Returns array of Note instances that have this tag. */

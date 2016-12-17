@@ -9,7 +9,7 @@ export class SubTag extends Tag {
   baseTag: Tag;
 
   constructor(subTagName: string, baseTag: Tag) {
-    super(baseTag, baseTag.dataService);
+    super(baseTag.forDataStore(), baseTag.dataService);
 
     this.subTagName = subTagName;
     this.baseTag = baseTag;
@@ -19,6 +19,10 @@ export class SubTag extends Tag {
     this.docs = baseTag.subTagDocs[subTagName];
 
     this._logger = new Logger('SubTag ' + this.id + ':' + subTagName);
+  }
+
+  get baseTagId(): string {
+    return this.baseTag.id;
   }
 
   /** Given an id that may be a subtag or not, returns the Tag or SubTag instance. */

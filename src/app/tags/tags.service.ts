@@ -125,7 +125,7 @@ export class TagsService {
     this.tagCreated$.next(tag);
   }
 
-  /** Doesn't actually "delete" tag, e.g. remove it from notes. This function simply removes it from list of tags and from tags in data store. */
+  /** Doesn't do all the work required to delete a tag (Tag.delete actually removes it from notes, etc.). This function simply removes it from list of user's tags locally and in data store. */
   removeTag(tag: Tag): void {
     this.dataService.removeData('tag', tag.id);
     delete this.tags[tag.id];
