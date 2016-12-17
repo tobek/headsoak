@@ -87,10 +87,10 @@ export class TagDetailsComponent {
       this.activePane = this.DEFAULT_PANE;
     }
 
-    if (this.activePane === 'explore') {
-      // Wait a tick while router change hits Tag Browser and changes the tag that gets @Input into us
-      setTimeout(this.computeExplore.bind(this), 0);
-    }
+    if (this.activePane === 'explore') { 
+      // Wait a tick while router change hits TagBrowserComponent and changes the tag that gets @Input into us. (We could do this on ngOnChanges instead, but since that fires before activePane is set up, we end up calculating states even if user isn't going to explore pane, and workaround for this is messy.)
+      setTimeout(this.computeExplore.bind(this), 0); 
+    } 
   }
 
   exploreStatsReset(): void {
@@ -126,6 +126,11 @@ export class TagDetailsComponent {
         }
 
         pairedTag = this.tagsService.tags[tagId];
+        if (! pairedTag) {
+          // @TODO I think/hope this stems from past problems with properly deleting tagIds from notes when deleting a tag. If this continues to show up in the future we have a problem.
+          this._logger.warn('Note', note, 'appears to have non-existent tag with ID', tagId);
+          return;
+        }
 
         pairedSubTagId = pairedTag.getSubTagIdForNoteId(note.id);
         if (pairedSubTagId) {
