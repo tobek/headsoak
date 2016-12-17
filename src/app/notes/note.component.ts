@@ -7,7 +7,7 @@ import {SettingsService} from '../settings/settings.service';
 import {NotesService} from './notes.service';
 import {Note} from './note.model';
 
-import {Logger, AutocompleteService, SyntaxService, TooltipService} from '../utils/';
+import {Logger, AutocompleteService, AutocompleteSuggestion, SyntaxService, TooltipService} from '../utils/';
 
 @Component({
   selector: 'note',
@@ -153,7 +153,7 @@ export class NoteComponent {
     });
   }
 
-  addTagAutocompleteSelect(suggestion, event): void {
+  addTagAutocompleteSelect(suggestion: AutocompleteSuggestion, event): void {
     event.preventDefault();
     event.stopPropagation();
 

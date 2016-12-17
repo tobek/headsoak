@@ -9,7 +9,7 @@ import {SettingsService} from '../settings/settings.service';
 import {Note} from './note.model';
 import {NotesService} from './notes.service';
 import {Tag, SubTag, TagsService} from '../tags';
-import {Logger, AutocompleteService, ToasterService} from '../utils/';
+import {Logger, AutocompleteService, AutocompleteSuggestion, ToasterService} from '../utils/';
 import {NOTE_BROWSER_ROUTES, DEFAULT_NOTE_ROUTE} from '../app.routes';
 
 import * as _ from 'lodash';
@@ -136,7 +136,7 @@ export class NoteQueryComponent {
     });
   }
 
-  tagAutocompleteSelect(suggestion, e): void {
+  tagAutocompleteSelect(suggestion: AutocompleteSuggestion, e): void {
     this.queryText = '';
 
     if (suggestion.data && suggestion.data.tag) {

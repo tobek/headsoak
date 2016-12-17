@@ -15,7 +15,6 @@ export interface AutocompleteSuggestion {
   highlighted?: string,
   data?: {
     tag?: Tag,
-    subTag?: string,
   },
 }
 
