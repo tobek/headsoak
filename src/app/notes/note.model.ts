@@ -293,13 +293,14 @@ export class Note {
       return null;
     }
 
+    // Need to reassign this.tags for angular's pure pipes pick up the change
     if (! tag.prog && ! tag.internal) {
       // Add at the front - this makes tags on notes ordered by most-recently-added, which a) is fine, and b) looks good when you add a new tag. Later order could be smarter.
-      this.tags.unshift('' + tag.id);
+      this.tags = ['' + tag.id].concat(this.tags);
     }
     else {
       // We'll leave prog and internal tags at the back
-      this.tags.push('' + tag.id);
+      this.tags = this.tags.concat(['' + tag.id]);
     }
 
     tag.addNoteId(this.id);
@@ -332,7 +333,8 @@ export class Note {
 
     this._logger.log('Removing tag', tag);
 
-    _.pull(this.tags, '' + tag.id);
+    // Need to reassign this.tags for angular's pure pipes pick up the change
+    this.tags = _.without(this.tags, '' + tag.id);
     tag.removeNoteId(this.id);
 
     this.rebuildNoteSharing();
