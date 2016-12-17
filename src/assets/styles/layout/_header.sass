@@ -31,10 +31,13 @@
 
     &:hover
       border-color: $shadow-border
-
       .menu-body
-        visibility: visible
-        opacity: 1
+        +faded-in
+
+    &.is--force-closed
+      border-color: transparent
+      .menu-body
+        +faded-out
 
   .menu
     cursor: pointer
@@ -66,9 +69,8 @@
 
   .menu-body
     +plain-list
-    visibility: hidden
-    opacity: 0
-    transition: visibility $transition-fast, opacity $transition-fast
+    +fadeable
+    +faded-out
 
     z-index: 10
     cursor: default

@@ -34,6 +34,7 @@ export class App {
   routes: Route[] = ROUTES;
   mainNavRoutes: Route[];
   menuNavSettingsRoutes: Route[];
+  closeMenu = false;
 
   initialized = false;
   @HostBinding('class') hostClass = '';
