@@ -46,6 +46,7 @@ export class TagVisualizationComponent {
       else {
         // Kind of a hack but not sure how to reset the d3 viz so let's just destroy and recreate whole component
         this.tagGraph = null // will destroy the component via ngIf
+        this.highlightedTag = null; // because the currently highlighted tag might not be present in the new viz
         setTimeout(this.setUpGraph.bind(this), 0);
       }
     }
@@ -162,7 +163,7 @@ export class TagVisualizationComponent {
           let sourceTagId = sourceTag.id;
           let targetTagId = targetTag.id;
 
-          // Modify source/target tag "id"s if it's actually a subtag
+          // Modify source/target tag "id"s if this note actually has a SubTag
           let sourceSubTagId = sourceTag.getSubTagIdForNoteId(note.id);
           if (sourceSubTagId) {
             sourceTagId = sourceSubTagId;
