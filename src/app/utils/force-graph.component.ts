@@ -491,7 +491,12 @@ export class ForceGraphComponent {
       return;
     }
 
-    const nodeEl = this.nodeEls.filter((nodeEl) => nodeEl.id === tag.id)
+    const nodeEl = this.nodeEls.filter((nodeEl) => nodeEl.id === tag.id);
+
+    if (! nodeEl.size()) {
+      this._logger.warn('Can\'t highlight tag - no node found in graph for tag', tag);
+      return;
+    }
 
     nodeEl.classed('is--highlighted', true);
     this.highlightNode(nodeEl.datum());

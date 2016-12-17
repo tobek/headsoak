@@ -4,7 +4,7 @@ import {Subscription} from 'rxjs';
 // import 'rxjs/add/operator/debounceTime';
 
 import {AnalyticsService} from '../analytics.service';
-import {Tag} from './';
+import {Tag, SubTag} from './';
 import {TagsService} from './tags.service'; // Dunno why we can't import from tags/index.ts
 import {ToasterService} from '../utils/toaster.service'; // Likewise, this breaks if combined with import of Logger below
 import {Logger} from '../utils/';
@@ -25,6 +25,8 @@ export class TagDetailsComponent {
     topCooccurrences: [ { tag: Tag, numNotes: number }],
     bottomCooccurrences: [ { tag: Tag, numNotes: number }]
   };
+
+  hoveredTag?: Tag; // Tag that's currently hovered in cooccurrence lists (used to highlight tag in the visualization)
 
   @Input() tag: Tag;
   @Output() deleted = new EventEmitter<Tag>();
@@ -107,17 +109,28 @@ export class TagDetailsComponent {
 
     this.exploreStatsReset();
 
-    const cooccurrences: { [key: string]: number } = {}; // tagId => # of cooccurrences
+    const cooccurrences: { [key: string]: number } = {}; // tagId => # of cooccurrences with the current tag
+    let note, pairedTag, pairedSubTagId;
     this.tag.docs.forEach((noteId) => {
-      const note = this.tagsService.dataService.notes.notes[noteId];
+      // This note has the given tag
+      note = this.tagsService.dataService.notes.notes[noteId];
 
       if (! note) {
         return;
       }
 
+      // Now let's see what other tags this note has
       note.tags.forEach((tagId) => {
         if (tagId == this.tag.id) { // intentional == (we have some integer IDs floating around in data store)
           return;
+        }
+
+        pairedTag = this.tagsService.tags[tagId];
+
+        pairedSubTagId = pairedTag.getSubTagIdForNoteId(note.id);
+        if (pairedSubTagId) {
+          // Actually a subtag of this tag is on this note so we can overwrite what we have
+          tagId = pairedSubTagId;
         }
 
         if (! cooccurrences[tagId]) {
@@ -135,8 +148,12 @@ export class TagDetailsComponent {
       });
       // We now have array of tagIds sorted from least-cooccurring to most-
 
+      let tagId: string;
+      let tag: Tag;
+
       while(_.size(sortedCooccurrences) && this.exploreStats.topCooccurrences.length < 5) {
-        const tag = this.tagsService.tags[sortedCooccurrences.pop()];
+        tagId = sortedCooccurrences.pop();
+        tag = SubTag.getTagOrSubTag(tagId, this.tagsService);
 
         if (! tag) {
           continue;
@@ -149,7 +166,8 @@ export class TagDetailsComponent {
       }
 
       while(_.size(sortedCooccurrences) && this.exploreStats.bottomCooccurrences.length < 5) {
-        const tag = this.tagsService.tags[sortedCooccurrences.shift()];
+        tagId = sortedCooccurrences.shift();
+        tag = SubTag.getTagOrSubTag(tagId, this.tagsService);
 
         if (! tag) {
           continue;

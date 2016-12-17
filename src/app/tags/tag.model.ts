@@ -9,7 +9,7 @@ import * as _ from 'lodash';
 /** Information this tag generates about a specific note. */
 type NoteDataType = {
   subTag?: string, // will be displayed after tag name when shown on this note, e.g. for sentiment analysis tag called "sentiment", `val` might be "joy" and be displayed as "sentiment: joy"
-  score?: any, // in addition to `val`, this will be displayed in parentheses after tag name on hover, e.g. `valHover` might be "90% confidence" and show "sentiment: joy (90% confidence)" @TODO/prog Update component and this comment: f no subTag, show score always w ithout hover
+  score?: any, // in addition to `val`, this will be displayed in parentheses after tag name on hover, e.g. `valHover` might be "90% confidence" and show "sentiment: joy (90% confidence)" @TODO/prog Update component and this comment: if no subTag, show score always without hover
   more?: string, // additional stuff can be displayed in the dropdown (unimplemented)
 };
 
@@ -38,7 +38,7 @@ export class Tag {
   /** Tag can store specific information on a per-note basis, indexed by note ID. */
   noteData: { [key: string]: NoteDataType } = {};
 
-  /** Tags (currently only prog tags) can have sub tags. This index maps subTag name to list of Note IDs, so that we can both get a list of all possible subtags, and sort easily. */
+  /** Tags (currently only prog tags) can have sub tags. This index maps subTag name to list of Note IDs, so that we can both get a list of all possible subtags, and sort easily. @TODO/tags This is overall a shitty way of handling this, and I don't think multiple subtags of the same tag on one note will work very well or at all. */
   subTagDocs: { [key: string]: string[] } = {};
 
 
@@ -293,6 +293,28 @@ export class Tag {
     //     large: true,
     //   });
     // }, 50);
+  }
+
+  /** Given a noteId, find which subTag of this tag the note has, and return its "id" (or undefined if there's no subtag of this tag that the note has). */
+  getSubTagIdForNoteId(noteId: string): string {
+    if (! _.size(this.subTagDocs)) {
+      return undefined;
+    }
+
+    let subTagId;
+
+    _.each(this.subTagDocs, (docs, subTagName) => {
+      if (_.includes(docs, noteId)) {
+        subTagId = this.getSubTagId(subTagName);
+        return false; // short-circuit _.each loop
+      }
+    });
+
+    return subTagId;
+  }
+  /** Kind of lame, and evidence of poor data structure here, but to keep this consistent this is how we generate "id"s of subtags. */
+  getSubTagId(subTagName: string): string {
+    return this.id + ':' + subTagName;
   }
 
   /** Navigates to the tag details page for this tag, optionally to a sub-page within it. */

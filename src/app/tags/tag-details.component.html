@@ -40,7 +40,7 @@
 
     <div class="note-count-heading">{{ tag.docs.length }} Note{{ tag.docs.length !== 1 ? 's' : '' }}</div>
     
-    <tag-visualization [centralTag]="tag"></tag-visualization>
+    <tag-visualization [centralTag]="tag" [highlightedTag]="hoveredTag"></tag-visualization>
 
     <p *ngIf="! exploreComputed">
       <i class="fa fa-spin fa-cube"></i>&nbsp;
@@ -54,7 +54,11 @@
         <h4>Most commonly paired with:</h4>
 
         <ul class="cooccurring-tags">
-          <li *ngFor="let cooccurrence of exploreStats.topCooccurrences">
+          <li
+            *ngFor="let cooccurrence of exploreStats.topCooccurrences"
+            (mouseenter)="hoveredTag = cooccurrence.tag"
+            (mouseleave)="hoveredTag = null"
+          >
             <span class="static-tag" [routerLink]="['/tags/tag', cooccurrence.tag.id, cooccurrence.tag.name]">
               {{ cooccurrence.tag.name }}
             </span>
@@ -67,7 +71,11 @@
         <h4>Least commonly paired with:</h4>
 
         <ul class="cooccurring-tags">
-          <li *ngFor="let cooccurrence of exploreStats.bottomCooccurrences">
+          <li
+            *ngFor="let cooccurrence of exploreStats.bottomCooccurrences"
+            (mouseenter)="hoveredTag = cooccurrence.tag"
+            (mouseleave)="hoveredTag = null"
+          >
             <span class="static-tag" [routerLink]="['/tags/tag', cooccurrence.tag.id, cooccurrence.tag.name]">
               {{ cooccurrence.tag.name }}
             </span>

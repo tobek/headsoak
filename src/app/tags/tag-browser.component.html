@@ -51,6 +51,8 @@
         [routerLink]="['/tags/tag', tag.id, tag.name]"
         [tag]="tag"
         [showCount]="true"
+        (mouseenter)="hoveredTag = tag"
+        (mouseleave)="hoveredTag = null"
       ></tag>
     </span>
   </div>

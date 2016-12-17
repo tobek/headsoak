@@ -104,8 +104,8 @@ export class TagVisualizationComponent {
       if (_.size(tag.subTagDocs)) {
         // Go through each subtag
         _.each(tag.subTagDocs, (docs, subTagName) => {
-          nodeIndex[tag.id + ':' + subTagName] = {
-            id: tag.id + ':' + subTagName,
+          nodeIndex[tag.getSubTagId(subTagName)] = {
+            id: tag.getSubTagId(subTagName),
             name: tag.name + ': ' + subTagName,
             size: docs.length,
             classAttr: tag.prog ? 'is--prog': '',
@@ -145,7 +145,7 @@ export class TagVisualizationComponent {
       }
 
       // Get actual Tag instances and filter out shared tags or broken stuff
-      const validTags = note.tags
+      const validTags: Tag[] = note.tags
         .map(tagId => tags[tagId])
         .filter(tag => tag);
 
@@ -163,21 +163,13 @@ export class TagVisualizationComponent {
           let targetTagId = targetTag.id;
 
           // Modify source/target tag "id"s if it's actually a subtag
-          if (_.size(sourceTag.subTagDocs)) {
-            _.each(sourceTag.subTagDocs, (docs, sourceTagName) => {
-              if (docs.indexOf(note.id) !== -1) {
-                sourceTagId += ':' + sourceTagName;
-                return false;
-              }
-            });
+          let sourceSubTagId = sourceTag.getSubTagIdForNoteId(note.id);
+          if (sourceSubTagId) {
+            sourceTagId = sourceSubTagId;
           }
-          if (_.size(targetTag.subTagDocs)) {
-            _.each(targetTag.subTagDocs, (docs, targetTagName) => {
-              if (docs.indexOf(note.id) !== -1) {
-                targetTagId += ':' + targetTagName;
-                return false;
-              }
-            });
+          let targetSubTagId = targetTag.getSubTagIdForNoteId(note.id);
+          if (targetSubTagId) {
+            targetTagId = targetSubTagId;
           }
 
           if (nodeIndexAll && nodeIndexToUse) {
