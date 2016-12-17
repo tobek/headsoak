@@ -17,6 +17,7 @@ export class SubTag extends Tag {
     this.name += ': ' + subTagName;
     this.id += ':' + subTagName;
     this.docs = baseTag.subTagDocs[subTagName];
+    this.subTagDocs = null;
 
     this._logger = new Logger('SubTag ' + this.id + ':' + subTagName);
   }

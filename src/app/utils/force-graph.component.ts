@@ -57,8 +57,8 @@ export class ForceGraphComponent {
   @Input() graph: ForceGraph;
   @Input() highlightedTag?: Tag;
 
-  /** When a tag is currently highlighted and/or hovered, we store the affected node here. */
-  highlightedNodeDatum?: NodeDatum;
+  /** When any tags are currently highlighted and/or hovered, we store the affected nodes here. */
+  highlightedNodeData?: NodeDatum[];
 
   @ViewChild('svg') svgRef: ElementRef;
 
@@ -343,7 +343,9 @@ export class ForceGraphComponent {
           .on('end', dragEnded));
 
     this.nodeEls
-      .on('mouseenter', this.highlightNode.bind(this))
+      .on('mouseenter', (datum) => {
+        this.highlightNodes([datum]);
+      })
       .on('mouseleave', this.unHighlightNodes.bind(this))
       .on('click', nodeClick.bind(this));
 
@@ -447,22 +449,35 @@ export class ForceGraphComponent {
     this._logger.timeEnd('Initialized D3 graph');
   }
 
-  highlightNode(hoveredNode: NodeDatum) {
+  highlightNodes(hoveredNodes: NodeDatum[]) {
     this.nodeHovered = true;
-    this.highlightedNodeDatum = hoveredNode;
+    this.highlightedNodeData = hoveredNodes;
 
-    hoveredNode.fx = hoveredNode.x;
-    hoveredNode.fy = hoveredNode.y;
+    _.each(hoveredNodes, (hoveredNode) => {
+      hoveredNode.fx = hoveredNode.x;
+      hoveredNode.fy = hoveredNode.y;
+    });
 
     this.nodeEls.classed('is--connected', (node: NodeDatum) => {
-      if (node === hoveredNode || (this.nodeConnections[node.id] && this.nodeConnections[node.id][hoveredNode.id])) {
+      if (_.includes(hoveredNodes, node)) {
+        // This node is one of the hovered nodes
         return true;
       }
+      if (this.nodeConnections[node.id]) {
+        // Let's see if this node is connected to any of the hovered nodes
+        for (let i = hoveredNodes.length - 1; i >= 0; i--) {
+          if (this.nodeConnections[node.id][hoveredNodes[i].id]) {
+            return true;
+          }
+        }
+      }
+
       return false;
     });
 
     this.linkEls.classed('is--connected', function(link: LinkDatum) {
-      if (link.source === hoveredNode || link.target === hoveredNode) {
+      if (_.includes(hoveredNodes, link.source) || _.includes(hoveredNodes, link.target)) {
+        // We're connected to at least one of the hovered nodes
         return true;
       }
       return false;
@@ -472,12 +487,15 @@ export class ForceGraphComponent {
   unHighlightNodes() {
     this.nodeHovered = false;
 
-    if (this.highlightedNodeDatum) {
-      if (! this.highlightedNodeDatum.isFixed) {
-        this.highlightedNodeDatum.fx = this.highlightedNodeDatum.fy = null;
-      }
+    if (this.highlightedNodeData) {
+      // Release any unfixed nodes that we temporarily fixed in place cause of hover
+      _.each(this.highlightedNodeData, (highlightedNodeDatum) => {
+        if (! highlightedNodeDatum.isFixed) {
+          highlightedNodeDatum.fx = highlightedNodeDatum.fy = null;
+        }
+      });
 
-      this.highlightedNodeDatum = null;
+      this.highlightedNodeData = null;
     }
 
     if (this.nodeEls) { // might not be initialized yet
@@ -491,15 +509,23 @@ export class ForceGraphComponent {
       return;
     }
 
-    const nodeEl = this.nodeEls.filter((nodeEl) => nodeEl.id === tag.id);
+    let higlightNodeEls;
+    if (_.size(tag.subTagDocs)) {
+      // This is a tag with subtags, and since we break out individual subtags and don't show the parent in the viz, let's highlight all of them.
+      const subTagIds = tag.getSubTagIds();
+      higlightNodeEls = this.nodeEls.filter((nodeEl) => _.includes(subTagIds, nodeEl.id));
+    }
+    else {
+      higlightNodeEls = this.nodeEls.filter((nodeEl) => nodeEl.id === tag.id);
+    }
 
-    if (! nodeEl.size()) {
+    if (! higlightNodeEls.size()) {
       this._logger.warn('Can\'t highlight tag - no node found in graph for tag', tag);
       return;
     }
 
-    nodeEl.classed('is--highlighted', true);
-    this.highlightNode(nodeEl.datum());
+    higlightNodeEls.classed('is--highlighted', true);
+    this.highlightNodes(higlightNodeEls.data());
   }
 
   /** Somewhat normalizes radius based on # of notes a tag is on. Could need tweaking but should do for a while! */

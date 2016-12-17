@@ -316,6 +316,10 @@ export class Tag {
   getSubTagId(subTagName: string): string {
     return this.id + ':' + subTagName;
   }
+  getSubTagIds(): string[] {
+    // Have to cooerce type with double any because bind messes up types.
+    return _.map(_.keys(this.subTagDocs), this.getSubTagId.bind(this)) as any as string[];
+  }
 
   /** Navigates to the tag details page for this tag, optionally to a sub-page within it. */
   goTo(subPage?: 'share' | 'smartness' | 'delete'): void {
