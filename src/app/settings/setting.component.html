@@ -19,8 +19,8 @@
     type="text"
     id="setting-{{ setting.id }}"
     [(ngModel)]="setting.value"
-    (blur)="settingUpdated(setting, setting.value)"
-    (keyup.enter)="settingUpdated(setting)"
+    (keyup.enter)="$event.currentTarget.blur()"
+    (blur)="settingUpdated(setting)"
   />
 </td>
 <td>

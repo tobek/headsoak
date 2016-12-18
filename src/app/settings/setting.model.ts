@@ -32,6 +32,8 @@ export class Setting {
   /** This gets attached to the SettingComponent element and will catch any clicks as they bubble up. */
   clickHandler: Function;
 
+  private savedValue: any; // last saved value, used to see if it has changed when we get "updated"
+
   private _logger: Logger;
 
   constructor(settingData: any, public dataService: DataService) {
@@ -41,19 +43,21 @@ export class Setting {
 
     _.extend(this, settingData);
 
+    this.savedValue = this.value;
+
     this.enact();
 
     this._logger = new Logger('Setting ' + this.id);
   }
 
-  updated(newVal?: any): void {
-    if (newVal !== undefined) {
-      this._logger.log('Updating to', newVal);
-      this.value = newVal;
+  /** Call whenever setting has been updated and we should make it take effect and save it to data store. Calling it without explicit `newVal` will use the current `value`, which works great if it `value` is being used as the model for some input. */
+  updated(newVal = this.value): void {
+    if (newVal === this.savedValue) {
+      return;
     }
-    else {
-      this._logger.log('Updated to', this.value);
-    }
+
+    this._logger.log('Updating to', newVal);
+    this.savedValue = this.value = newVal;
 
     this.enact();
 

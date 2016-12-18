@@ -68,7 +68,7 @@ export class SettingsService {
       type: 'string',
       section: 'settings',
       enact: function() {
-        // @TODO/settings/bg Check it's a URL and that it fetches (validation property function!)
+        // @TODO/settings/bg Check it's a URL and that it fetches (validation property function!) - also, it should load the image fully and then fade it in
 
         const el = <HTMLElement> document.querySelector('#app-bg');
 

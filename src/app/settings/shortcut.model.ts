@@ -124,8 +124,8 @@ export class Shortcut extends Setting {
     return ! this.preventDefault;
   }
 
-  updated(newVal?: any): void {
-    // Argument of type `any` otherwise typescript complains cause it doesn't jive with Setting.updated signature. But it should be a string.
+  updated(newVal = this.value as any): void {
+    // Argument of type `any` otherwise typescript complains cause it doesn't jive with Setting.updated signature. But it should be a string, see:
     if (typeof newVal !== 'string') {
       throw new Error('Invalid setting for shortcut ' + this.id + ': ' + JSON.stringify(newVal));
     }
