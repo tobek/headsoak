@@ -1,4 +1,4 @@
-import {Inject, forwardRef, Component, ViewChild, ElementRef/*, ViewChildren, QueryList*/} from '@angular/core';
+import {Inject, forwardRef, Component, ViewChild, ElementRef, HostBinding/*, ViewChildren, QueryList*/} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
 
@@ -33,6 +33,8 @@ export class SettingsComponent {
 
   // @ViewChildren(SettingComponent) settingComponents: QueryList<SettingComponent>;
 
+  @HostBinding('class') hostClass: string;
+
   @ViewChild('currentPasswordInput') currentPasswordInput: ElementRef;
   @ViewChild('changePasswordButton') changePasswordButton: ElementRef;
 
@@ -65,6 +67,7 @@ export class SettingsComponent {
   ngOnInit() {
     this.routeDataSub = this.route.data.subscribe((data) => {
       this.section = data['slug'];
+      this.hostClass = 'settings--' + this.section;
     });
 
     // Will fire immediately if already initialized, otherwise will wait for initialization and then fire. Either way, will unsubscribe immediately after.
@@ -107,7 +110,7 @@ export class SettingsComponent {
       return;
     }
 
-    // @TODO/rewrite/settings We should check for duplicate shortcuts here. Ideally we can have a per-setting place for errors (and the modless issue should be shown there).
+    // @TODO/rewrite/settings We should check for duplicate shortcuts here. Ideally we can have a per-setting place for errors (and the modless issue should be shown there). Also, we should check validity of shortcuts - could split by '+' and last/only element is key or special key, and any earlier ones are mod keys. EVEN BETTER: let the user press stuff and capture input
 
     setting.updated(newVal);
 

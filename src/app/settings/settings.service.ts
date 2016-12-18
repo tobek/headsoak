@@ -102,15 +102,17 @@ export class SettingsService {
         'http://thereitwas.com/images/The Fox is Black - Desktop Wallpaper Project/chris-jaurique-2560x1440.jpg',
         'http://thereitwas.com/images/The Fox is Black - Desktop Wallpaper Project/upso-1920x1200.jpg',
         'https://s3.amazonaws.com/static.headsoak.com/img/bg/Hokusai_1760-1849_Ocean_waves-huge.jpg',
-        'https://upload.wikimedia.org/wikipedia/commons/e/ee/Extermination_of_Evil_Vaisravana.jpg',
         'https://upload.wikimedia.org/wikipedia/commons/a/a6/Rosette%2C_Titles_of_Sha_Jahan.jpg',
-        'https://upload.wikimedia.org/wikipedia/commons/8/8a/Darvasa_gas_crater_panorama.jpg',
-        'https://upload.wikimedia.org/wikipedia/commons/6/69/MarsSunset.jpg',
         'https://upload.wikimedia.org/wikipedia/commons/d/d5/Vincent_van_Gogh_-_Wheatfield_with_a_reaper_-_Google_Art_Project.jpg',
         'https://upload.wikimedia.org/wikipedia/commons/a/a3/Gustav_Klimt_-_Beech_Grove_I_-_Google_Art_Project.jpg',
         'https://upload.wikimedia.org/wikipedia/commons/5/50/John_Martin_-_The_Great_Day_of_His_Wrath_-_Google_Art_Project.jpg',
+
+        // @TODO/ece maybs not?
+        // 'https://upload.wikimedia.org/wikipedia/commons/e/ee/Extermination_of_Evil_Vaisravana.jpg',
+        // 'https://upload.wikimedia.org/wikipedia/commons/8/8a/Darvasa_gas_crater_panorama.jpg',
+        // 'https://upload.wikimedia.org/wikipedia/commons/6/69/MarsSunset.jpg',
       ],
-      postSettingHtml: '(<a class="random">SHOW ME WHAT YOU GOT</a>)',
+      postSettingHtml: '<a class="random">random background</a>',
     },
 
     {
@@ -197,7 +199,7 @@ export class SettingsService {
         'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Bacon_by_Gray_257.jpg/192px-Bacon_by_Gray_257.jpg',
         'https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Jan_van_Eyck_-_Kardinal_Niccol%C3%B2_Albergati_-_Google_Art_Project.jpg/187px-Jan_van_Eyck_-_Kardinal_Niccol%C3%B2_Albergati_-_Google_Art_Project.jpg',
       ],
-      postSettingHtml: '(<a class="random">WHAT ARE YOU??</a>)',
+      postSettingHtml: '<a class="random">random avatar</a>',
     },
   ];
 

@@ -2,17 +2,52 @@ settings
   .logo h1
     margin-top: 15px
 
+  table
+    border-collapse: collapse
+    width: 100%
+    margin-bottom: 25px
+
   td
+    height: 25px // on table elements this is like min-height
     vertical-align: top
 
+  input[type=text],
+  input[type=email],
+  input[type=password]
+    width: 100%
+    margin-bottom: 5px
+    padding-bottom: 3px
+    text-overflow: ellipsis
+
   .notes
+    +small
+    text-align: right
     color: $primary-color
-    width: 250px
-    max-width: 75%
-    margin-left: 1em
 
     a
       +text-link
+
+  &.settings--shortcuts
+    table
+      max-width: 500px
+
+    thead td
+      +h4
+
+    td
+      height: 35px
+
+    input
+      max-width: 100px
+
+  &.settings--account
+    td:first-child
+      // Currently, account settings are set up sort of heading in first column, actions in left
+      +h4
+      width: 250px
+
+    td:nth-child(2) // i.e. the column with inputs
+      width: 300px
 
   .avatar
     position: absolute
@@ -27,12 +62,20 @@ settings
       // Use the settings pane heading instead
       display: none
 
-setting,
-.setting
-  display: table-row
 
-  input
-    margin-bottom: 5px
+  setting,
+  .setting
+    display: table-row
 
-.setting--account td
-  padding-top: 25px
+  .setting--account td
+    padding-top: 25px
+
+  .smod
+    opacity: 0.5
+
+  .save-notice
+    +fadeable
+    +faded-out
+
+    &.fa-spin // template triggers this class when saving
+      +faded-in

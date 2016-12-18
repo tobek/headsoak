@@ -169,11 +169,10 @@ private-mode
   .intro
     margin-bottom: 50px
 
-  input[type=password]
+  body & input[type=password] // sorry, awkward specificity over stuff in <settings>
     width: 100%
     margin-bottom: 15px
-    padding-right: 15px
-    padding-left: 15px
+    padding: 0 15px 5px 15px
 
   .enable-button
     float: right

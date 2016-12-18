@@ -3,10 +3,9 @@
     {{ setting.name }}
     <i class="fa fa-question-circle" [attr.data-tooltip]="setting.description" *ngIf="setting.description"></i>
   </label>
-  <div class="notes" *ngIf="setting.postSettingHtml" [innerHTML]="setting.postSettingHtml"></div>
 </td>
 <td>
-  <span *ngIf="setting.section === 'shortcuts' && settings.get('sMod')">{{ settings.get('sMod') }}+</span>
+  <span class="smod" *ngIf="setting.section === 'shortcuts' && settings.get('sMod')">{{ settings.get('sMod') }}+</span>
   <input
     *ngIf="setting.type === 'boolean'"
     type="checkbox"
@@ -22,7 +21,8 @@
     (keyup.enter)="$event.currentTarget.blur()"
     (blur)="settingUpdated(setting)"
   />
+  <div class="notes" *ngIf="setting.postSettingHtml" [innerHTML]="setting.postSettingHtml"></div>
 </td>
 <td>
-  <span *ngIf="dataService.isUnsaved(setting)">saving...</span>
+  <i class="fa fa-cube save-notice" [class.fa-spin]="dataService.isUnsaved(setting)"></i>
 </td>

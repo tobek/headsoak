@@ -46,7 +46,7 @@
         />
         <i class="fa fa-question-circle" data-tooltip="This will prefix all of these shortcuts. Your options are:&lt;br&gt;&lt;br&gt;- 'ctrl'&lt;br&gt;- 'shift'&lt;br&gt;- 'alt'&lt;br&gt;- 'option'&lt;br&gt;- 'command' (only on Mac)&lt;br&gt;- 'meta' (doesn't work?)&lt;br&gt;- 'mod' ('ctrl' on a PC, 'command' on a Mac).&lt;br&gt;&lt;br&gt;You can also combine them, e.g. 'ctrl+shift', or leave blank to control different shortcuts separately."></i>
       </label>
-      <span *ngIf="dataService.isUnsaved(settings.data['sMod'])">saving...</span>
+      <i class="fa fa-cube save-notice" [class.fa-spin]="dataService.isUnsaved(settings.data['sMod'])"></i>
       <span style="color: red">{{ modKeyError }}</span>
     </div>
 
@@ -111,8 +111,6 @@
     <div *ngIf="initialized && section === 'account'">
       <img class="avatar" src="{{ settings.get('profileImageUrl', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7') }}" />
         
-      <br><br><br>
-
       <h4>Delete account</h4>
       <p>Remove all trace of your stuff from Headsoak.</p>
       <!-- @TODO/rewrite This needs some UI love. -->
