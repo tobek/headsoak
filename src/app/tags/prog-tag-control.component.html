@@ -52,7 +52,7 @@
 name: string;
 created: number; // unix timestamp
 modified: number; // unix timestamp
-docs: string[] | null; // array of note IDs tagged with this tag</pre>
+docs: string[]; // array of note IDs tagged with this tag</pre>
 
   <h3><code>note</code></h3>
 
@@ -62,7 +62,7 @@ docs: string[] | null; // array of note IDs tagged with this tag</pre>
 body: string; // text of the name
 created: number; // unix timestamp
 modified: number; // unix timestamp
-tags: string[] | null; // array of tag IDs this note is tagged with
+tags: string[]; // array of tag IDs this note is tagged with
 private: boolean; // whether this note is a private note</pre>
 
   <h3><code>api</code></h3>

@@ -111,6 +111,7 @@ textarea,
 
   background-color: $secondary-color
   color: $primary-color-contrast
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15)
   font-weight: bold
   text-transform: uppercase
 
@@ -131,6 +132,10 @@ textarea,
   &.is--loading:before
     color: $secondary-color
 
+.btn-success
+  +success-style
+.btn-warning
+  +warning-style
 .btn-danger
-  background-color: $error-fill
+  +danger-style
 

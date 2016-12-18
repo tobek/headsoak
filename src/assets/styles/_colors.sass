@@ -1,10 +1,13 @@
 // BASE COLORS
 
 $primary-color: #4a4a4a // e.g. body text, icons
-$primary-color-light: #f2f2f2 // e.g. tag chiclet bg
+// $primary-color: #495867 // @TODO/ece You gave this but what do you think, it's fairly colored to be used everywhere
+$primary-color-light: #f2f2f2 // @TODO/ece This was used for tag chiclet bg, but is now *only* used on secondary buttons (which should be compared against regular buttons, we might not need both) and background for prog tag documentation (maybe should just be white).
 $primary-color-contrast: rgba(255, 255, 255, 0.925) // e.g. card bg, text background
-$secondary-color: #c3521b // e.g. tag text, button stuff
-$highlight-color: #50e3c2 // e.g. hover states
+$secondary-color: #c3521b // e.g. tag text, button stuff, "active color"
+$highlight-color: #50e3c2 // e.g. hover states, "hover color"
+
+// $light-gray: #bcc2c7 // @TODO/ece What's this for? We have $input-stroke, used for various things, but this may be too light like on logged-out homepage - but maybe not? And too dark for $primary-color-light.
 
 
 // OTHER COLORS
@@ -14,11 +17,9 @@ $logo-color: $highlight-color
 $app-bg-gradient-top: #16697f
 $app-bg-gradient-bottom: #0e465e
 
-// @TODO/ece These
-$success-stroke: green
-$warning-stroke: yellow
-$error-stroke: red
-$error-fill: red
+$success-color: #71b72b
+$warning-color: #edc23a
+$danger-color: #c33132
 
 $btn-disabled-opacity: 0.5
 
@@ -39,7 +40,7 @@ $link-color: $secondary-color
 $link-hover: $highlight-color
 
 $tag-color: $secondary-color
-$tag-bg: $primary-color-light
+// $tag-bg: $primary-color-light // was used when all tags were chiclets
 
 $icon-color: $primary-color
 $icon-hover: $highlight-color

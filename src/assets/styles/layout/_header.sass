@@ -51,21 +51,21 @@
     border-radius: 50%
 
     &.status--synced
-      border-color: $success-stroke
+      border-color: $success-color
       .sync-status
-        color: $success-stroke
+        color: $success-color
     &.status--syncing
-      border-color: mix($success-stroke, $warning-stroke)
+      border-color: mix($success-color, $warning-color)
       .sync-status
-        color: mix($success-stroke, $warning-stroke)
+        color: mix($success-color, $warning-color)
     &.status--unsynced
-      border-color: $warning-stroke
+      border-color: $warning-color
       .sync-status
-        color: $warning-stroke
+        color: $warning-color
     &.status--disconnected
-      border-color: $error-stroke
+      border-color: $danger-color
       .sync-status
-        color: $error-stroke
+        color: $danger-color
 
   .menu-body
     +menu-dropdown
@@ -116,7 +116,7 @@
     +h3 // same as control icons in note-query
     margin-right: 3px
     padding-top: 10px // same as padding in note-query
-    color: $error-stroke
+    color: $danger-color
 
     .unlocked
       display: none

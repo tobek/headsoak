@@ -119,6 +119,6 @@
       Do you want to continue? You can always re-enable this tag again from the <a [routerLink]="['/tags/smart-tags/library']">Smart Tag Library</a> later.
     </p>
 
-    <button class="btn" [class.btn-danger]="! tag.isLibraryTag" (click)="_deleted()">Yes, delete the <span class="static-tag">{{ tag.name }}</span> tag</button>
+    <button class="btn" [class.btn-danger]="! tag.isLibraryTag" (click)="_deleted()">Yes, delete this tag</button>
   </div>
 </div>

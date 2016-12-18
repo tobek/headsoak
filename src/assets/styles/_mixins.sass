@@ -82,6 +82,24 @@
     &:hover
       color: $icon-color
 
+
+=alert-style
+  color: white
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15) // @TODO/ece What do you think of this? Look at toasters and primary and other buttons
+=success-style
+  +alert-style
+  background-color: $success-color
+=info-style
+  +alert-style
+  background-color: $primary-color
+=warning-style
+  +alert-style
+  background-color: $warning-color
+=danger-style
+  +alert-style
+  background-color: $danger-color
+
+
 =fadeable
   transition: opacity $transition-fast, visibility $transition-fast
 =faded-out

@@ -1,6 +1,7 @@
 // Overrides for Toastr vendor CSS
 
 #toast-container
+  text-shadow
   & > div // selector that original library uses
     opacity: 0.9
     padding-right: 30px
@@ -22,32 +23,41 @@
   .toast-progress
     opacity: 0.2
 
+  .toast-success
+    +success-style
+  .toast-info
+    +info-style
+  .toast-warning
+    +warning-style
+  .toast-error
+    +danger-style
+
   // Override icons
   & > .toast // selector that original library uses, and the !important
     background-image: none !important
 
     &:before
-        position: absolute
-        float: left
-        top: 50%
-        margin: -9px 0 0 -40px // -9px top to vertically center based on 18px line height
-        padding-right: 0.5em
-        
-        line-height: 18px
-        font-family: FontAwesome
-        font-size: 24px
-        color: white
+      position: absolute
+      float: left
+      top: 50%
+      margin: -9px 0 0 -40px // -9px top to vertically center based on 18px line height
+      padding-right: 0.5em
+      
+      line-height: 18px
+      font-family: FontAwesome
+      font-size: 24px
+      color: white
 
     &.toast-error:before
-        content: "\f071"
+      content: "\f071"
     &.toast-warning:before
-        content: "\f06a"
+      content: "\f06a"
     &.toast-info:before
-        content: "\f05a"
+      content: "\f05a"
     &.toast-success:before
-        content: "\f058"
+      content: "\f058"
 
     &.toast--pinned:before
-        content: "\f08d"
+      content: "\f08d"
     &.toast--archived:before
-        content: "\f187"
+      content: "\f187"
