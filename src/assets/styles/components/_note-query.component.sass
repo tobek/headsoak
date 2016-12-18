@@ -89,13 +89,12 @@ note-query
       position: relative
 
     .dropdown-menu
-      +card
-      background-color: $overlaid-bg-color;
+      +plain-list
+      +menu-dropdown
       position: absolute
       top: 100%
       z-index: 1000
       display: none
-      padding: 0
       margin: -17px 0 0 // magic number to vert align with note count text
 
     .open

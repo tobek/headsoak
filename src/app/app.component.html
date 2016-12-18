@@ -30,7 +30,7 @@
             <ul class="menu-body" (click)="closeMenu = true">
               <li class="sync-status">Status: {{ dataService.status }}</li>
 
-              <li *ngFor="let route of menuNavSettingsRoutes" [class.active]="router.url === '/settings' + (route.path ? '/' + route.path : '')">
+              <li *ngFor="let route of menuNavSettingsRoutes" [class.is--active]="router.url === '/settings' + (route.path ? '/' + route.path : '')">
                 <a [routerLink]="route.path ? ['/settings', route.path] : ['/settings']">
                   <!-- @TODO/optimization These could be a one time binding -->
                   <i class="fa fa-lg fa-fw fa-{{ route.data.iconSlug }}"></i>
@@ -64,7 +64,7 @@
       </a>
 
       <ul
-        ><li *ngFor="let route of mainNavRoutes" [class.active]="route.path ? router.url.indexOf('/' + route.path) === 0 : router.url === '/'"
+        ><li *ngFor="let route of mainNavRoutes" [class.is--active]="route.path ? router.url.indexOf('/' + route.path) === 0 : router.url === '/'"
           ><a class="nav-link" [routerLink]="[route.path]">
             <!-- @TODO/optimization These could be a one time binding -->
             <div><i class="fa fa-lg fa-{{ route.data.iconSlug }}"></i></div>

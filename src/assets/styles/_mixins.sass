@@ -3,15 +3,14 @@
   padding-left: gutter()
   padding-right: gutter()
 
-=card
-  padding: 50px gutter() * 2 // @TODO If this mixin is used in any context other than full 12 columns, padding will need to be redeclared passing # of columns its in to gutter()
-  background-color: $primary-color-contrast
+=box-shadowed
   box-shadow: 0 2px 4px 0 $shadow-color
 
+=card
+  +box-shadowed
+  padding: 50px gutter() * 2 // @TODO If this mixin is used in any context other than full 12 columns, padding will need to be redeclared passing # of columns its in to gutter()
+  background-color: $primary-color-contrast
 
-=menu-dropdown
-  box-shadow: 2px 2px 2px 0 $shadow-color-light
-  // @TODO/ece Show adding this to .menu-wrapper and .menu-body (and removing their borders and right: 0 on body)
 
 =tag-chiclet
   display: inline-block
@@ -38,18 +37,26 @@
     &:hover
       color: $link-color
 
+=menu-dropdown
+  +box-shadowed
+  background-color: $menu-dropdown-bg-color;
+
 =menu-link
-  +menu-link-base
+  +menu-link-unhovered
   cursor: pointer
   width: 100%
+  padding: 5px 10px
   text-decoration: none
   transition: color $transition-fast, background-color $transition-fast
+
+  .fa
+    margin-right: 5px;
 
   &:hover,
   &.is--active
     +menu-link-hover
 
-=menu-link-base
+=menu-link-unhovered
   color: $primary-color
   background-color: transparent
 =menu-link-hover

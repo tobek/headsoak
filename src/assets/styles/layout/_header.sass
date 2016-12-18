@@ -30,8 +30,7 @@
     transition: border-color $transition-fast
 
     &:hover
-      background-color: $overlaid-bg-color
-      border-color: $shadow-border
+      +menu-dropdown
       .menu-body
         +faded-in
 
@@ -69,6 +68,7 @@
         color: $error-stroke
 
   .menu-body
+    +menu-dropdown
     +plain-list
     +fadeable
     +faded-out
@@ -80,16 +80,13 @@
     width: 160px
     margin: 0
     padding: 10px 0 15px
-    background-color: $overlaid-bg-color
-    border: 1px solid $shadow-border
-    border-top-width: 0
     letter-spacing: 0.5px
 
     li
       display: block
 
-      &.active
-        // @TODO/ece Active state for menu item?
+      &.is--active
+        // @TODO/ece Active state for menu item, like when you're on settings screen?
 
       &.sync-status
         +small // @TODO/ece This might be too small
@@ -105,10 +102,6 @@
       a
         +menu-link
         display: inline-block
-        padding: 5px 10px
-
-        .fa
-          margin-right: 5px;
 
   .avatar
     width: 100%
@@ -180,7 +173,7 @@
   li:last-of-type a.nav-link
     margin-right: 0
 
-  .active a .fa
+  .is--active a .fa
     border-color: $primary-color-contrast
-  .active a:hover .fa
+  .is--active a:hover .fa
     border-color: $highlight-color
