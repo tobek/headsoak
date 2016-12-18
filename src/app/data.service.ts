@@ -28,13 +28,15 @@ export class DataService {
   // online: boolean; // @TODO/rewrite connection widget should show if offline
 
   /**
-   * Fired with initialization state when allll the data is initialized (true), or when everything is unloaded (false).
+   * Fired with initialization state when allll the data is initialized (true) for a logged-in user, or when everything is unloaded (false).
    *
    * In order to fire an event once everything is initialized - which could be now or in the future - you can do:
    *
    *     dataService.initialized$.filter(initialized => !! initialized).first().subscribe(...);
    */
   initialized$ = new ReplaySubject<boolean>(1);
+
+  isInitialized = false;
 
   digest$ = new EventEmitter<DataItem>();
 
@@ -287,6 +289,7 @@ export class DataService {
   initFromData(data) {
     // In theory we should probably not fire this.initialized$ until all the different services are done, but right now the notes service is the only one that takes any real time (cause it also has to calculate lunr index) so we can just wait for that.
     this.notes.initialized$.first().subscribe(() => {
+      this.isInitialized = true;
       this.initialized$.next(true);
     });
 
@@ -402,6 +405,7 @@ export class DataService {
 
   /** Clears all loaded data. */
   clear(): void {
+    this.isInitialized = false;
     this.initialized$.next(false);
 
     this.notes.clear();

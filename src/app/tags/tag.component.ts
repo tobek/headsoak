@@ -1,4 +1,4 @@
-import {Component, HostListener, HostBinding, EventEmitter, Input, Output, SimpleChange, ElementRef, ViewChild} from '@angular/core';
+import {Component, HostListener, HostBinding, EventEmitter, Input, Output, ElementRef, ViewChild} from '@angular/core';
 
 import {AnalyticsService} from '../analytics.service';
 import {Tag} from './tag.model';
