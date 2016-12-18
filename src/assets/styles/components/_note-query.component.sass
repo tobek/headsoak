@@ -90,6 +90,7 @@ note-query
 
     .dropdown-menu
       +card
+      background-color: $overlaid-bg-color;
       position: absolute
       top: 100%
       z-index: 1000
@@ -111,12 +112,10 @@ note-query
       .dropdown-item
         padding: 5px
         line-height: 1
-        text-decoration: none
-        color: $primary-color
+        +menu-link
 
       &.active .dropdown-item
-        // @TODO/ece Active color? Should this be the same as other menus?
-        background-color: $secondary-color
+        +menu-link-hover
 
   .control-icon
     +icon-button

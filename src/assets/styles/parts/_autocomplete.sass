@@ -1,12 +1,11 @@
 .autocomplete-suggestions
   margin-left: -8px // same as tag-chiclet padding
-  color: $primary-color
-  background-color: $primary-color-contrast
+  background-color: $overlaid-bg-color;
 
   .autocomplete-suggestion
+    +menu-link
     padding-left: 8px
     padding-right: 8px
 
   .autocomplete-selected
-    color: $primary-color-contrast
-    background-color: $primary-color
+    +menu-link-hover
