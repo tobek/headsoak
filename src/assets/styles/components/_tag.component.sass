@@ -20,6 +20,9 @@ tag,
 tag
   +tag-chiclet
 
+  &.is--active
+    +tag-chiclet-active
+
   .tag-actions
     // @TODO/ece What's the tag action flow? must include easy toggle and remove from note
     // @TODO/ece Still need a way to view all tags
@@ -34,6 +37,7 @@ tag
 
   &.dropdown-enabled.hovered
     +tag-actions-dropdown
+    +tag-face
 
   .tag-action
     +icon-button

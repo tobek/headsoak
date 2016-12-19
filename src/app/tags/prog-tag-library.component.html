@@ -6,7 +6,7 @@
 
 <div class="library">
   <div class="library-tag" *ngFor="let tag of progTagLibraryService.library">
-    <tag [tag]="tag" [class.is--active]="!! tagsService.tags[tag.id]"></tag>
+    <tag [tag]="tag" [isActive]="!! tagsService.tags[tag.id]"></tag>
 
     <label class="enable">
       Enabled:

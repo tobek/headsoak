@@ -1,10 +1,14 @@
 import {Component, HostListener, HostBinding, EventEmitter, Input, Output, ElementRef, ViewChild} from '@angular/core';
+import {Subscription} from 'rxjs';
 
 import {AnalyticsService} from '../analytics.service';
+import {ActiveUIsService} from '../active-uis.service';
 import {Tag} from './tag.model';
 import {TagsService} from './tags.service';
 
 import {Logger, utils} from '../utils/';
+
+import * as _ from 'lodash';
 
 @Component({
   selector: 'tag',
@@ -20,6 +24,9 @@ export class TagComponent {
 
   /** If this is a new tag not yet saved to data store but just created for the user to type new tag name into. */
   isNewTag = false;
+
+  /** Whether this should have active state, e.g. note is in the note query search bar is enabled in smart tag library */
+  @Input() @HostBinding('class.is--active') isActive;
 
   @HostBinding('class.renaming') renaming = false;
   @HostBinding('hidden') hidden = false;
@@ -55,10 +62,13 @@ export class TagComponent {
 
   private hoveredTimeout;
 
+  private queryTagsUpdatedSub: Subscription;
+
   private _logger = new Logger(this.constructor.name);
 
   constructor(
     private analyticsService: AnalyticsService,
+    private activeUIs: ActiveUIsService,
     private tagsService: TagsService
   ) {}
 
@@ -78,6 +88,19 @@ export class TagComponent {
     }
 
     this.tagNameEl = this.tagNameRef.nativeElement;
+
+    if (this.ofNoteId) {
+      this.queryTagsUpdatedSub = this.activeUIs.noteQuery.tagsUpdated$.subscribe((tags) => {
+        // @TODO/tags/subtags @HACK Since on notes we show Tag instances but sort of hack to show subtag stuff if relelvant, but in note query we can get actual SubTag instances, we need to check base tag ID.
+        this.isActive = !! _.find(tags, (tag) => tag.baseTagId === this.tag.id);
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.queryTagsUpdatedSub) {
+      this.queryTagsUpdatedSub.unsubscribe();
+    }
   }
 
   remove() {
