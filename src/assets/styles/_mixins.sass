@@ -5,6 +5,8 @@
 
 =box-shadowed
   box-shadow: 0 2px 4px 0 $shadow-color
+=box-shadowed-small
+  box-shadow: 0 1px 2px 0 $shadow-color
 
 =card
   +box-shadowed
@@ -16,11 +18,12 @@
   display: inline-block
   margin: 5px 5px 5px 0
   padding: 4px 4px
-  transition: color $transition-fast, background-color $transition-fast
+  transition: color $transition-fast, background-color $transition-fast, box-shadow $transition-fast
 
 // there's a mixin "tag-face" in typography
 
 =tag-chiclet-active
+  +box-shadowed-small
   color: $primary-color-contrast
   background-color: $tag-color
 

@@ -3,6 +3,7 @@
     *ngFor="let tag of tags"
     [tag]="tag"
     [inlineRemovable]="true"
+    [isActive]="true"
     (removed)="removeTag(tag, true)"
   ></tag>
 </span>
