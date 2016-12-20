@@ -49,6 +49,11 @@ force-graph
         circle
           stroke: fade-out($highlight-color, 0.5)
 
+    &.is--internal
+      circle
+        stroke: $primary-color
+
+    &.is--internal,
     &.is--prog
       circle,
       &:hover circle,
@@ -77,13 +82,13 @@ force-graph
   .node:hover text,
   .node.is--central text,
   .node.is--highlighted text
-    font-weight: bold
+    text-shadow: white 2px 2px 3px, white -2px -2px 3px, black 0 0 1px
 
 
   .node,
   .link,
   text
-    transition: fill-opacity $transition-med, stroke-opacity $transition-med
+    transition: fill-opacity $transition-med, stroke-opacity $transition-med, text-shadow $transition-med
 
   .node,
   text
@@ -126,7 +131,7 @@ force-graph
       stroke-opacity: $link-opacity--connected !important
     .node:hover text,
     .node.is--highlighted text
-      transition: fill-opacity $transition-fast
+      transition: fill-opacity $transition-fast, text-shadow $transition-fast
       fill-opacity: 1 !important
 
 

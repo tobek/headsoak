@@ -101,7 +101,18 @@ export class TagVisualizationComponent {
   computeNodes(tags: { [key: string]: Tag }): { [key: string]: GraphNode } {
     const nodeIndex: { [key: string]: GraphNode } = {};
 
+    let classAttr;
     _(tags).each((tag: Tag) => {
+      if (tag.prog) {
+        classAttr = 'is--prog';
+      }
+      else if (tag.internal) {
+        classAttr = 'is--internal';
+      }
+      else {
+        classAttr = '';
+      }
+
       if (_.size(tag.subTagDocs)) {
         // Go through each subtag
         _.each(tag.subTagDocs, (docs, subTagName) => {
@@ -109,7 +120,7 @@ export class TagVisualizationComponent {
             id: tag.getSubTagId(subTagName),
             name: tag.name + ': ' + subTagName,
             size: docs.length,
-            classAttr: tag.prog ? 'is--prog': '',
+            classAttr: classAttr,
             tagInstance: tag,
             central: tag === this.centralTag,
           };
@@ -120,7 +131,7 @@ export class TagVisualizationComponent {
           id: tag.id,
           name: tag.name,
           size: tag.docs.length,
-          classAttr: tag.prog ? 'is--prog': '',
+          classAttr: classAttr,
           tagInstance: tag,
           central: tag === this.centralTag,
         };
