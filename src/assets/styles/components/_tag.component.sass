@@ -2,12 +2,6 @@
   +tag-chiclet
   +tag-face
 
-=tag-actions-dropdown
-  +menu-dropdown
-  // @TODO/ece We should experiment with opacity (here) and with x-offest (everywhere)
-  box-shadow: 0 2px 4px 0 $secondary-color
-  box-shadow: 2px 2px 4px 0 rgba($secondary-color, 0.5);
-
 tag,
 .static-tag // elements for which we don't need all the compononent logic
   +tag-face
@@ -36,7 +30,7 @@ tag
     display: none
 
   &.dropdown-enabled.hovered
-    +tag-actions-dropdown
+    +menu-dropdown
     +tag-face
 
   .tag-action
@@ -79,7 +73,7 @@ tag
     // @TODO/bug Dropdown can get hidden off right edgeof the screen (also making horizontal scrollbar appear)
     // @TODO/bug For very long tag names this is SHORTER and looks a bit weird, and for very very long tag names, the box shadow from .tag-actions doesn't go far enough back... looks weird
 
-    +tag-actions-dropdown
+    +menu-dropdown
 
     z-index: 1
     position: absolute
@@ -87,8 +81,6 @@ tag
     margin-top: 4px // matching bottom padding of tag chiclet
     margin-left: -4px // magic number to align with left edge of tag - we can't do left 0 and position the tag relatively because then we'll run afoul of tag container with overflow hidden
     padding: 5px 0
-    // @TODO/styles Border might be good if we could get left border to align with a left border on the tag, and a top border to be clipped by the tag towards the left, but eh
-    // border: 1px solid $primary-color-light
     font-weight: normal
 
     .tag-action

@@ -1,13 +1,13 @@
 // BASE COLORS
 
 $primary-color: #4a4a4a // e.g. body text, icons
-// $primary-color: #495867 // @TODO/ece You gave this but what do you think, it's fairly colored to be used everywhere
-$primary-color-light: #f2f2f2 // @TODO/ece This was used for tag chiclet bg, but is now *only* used on secondary buttons (which should be compared against regular buttons, we might not need both) and background for prog tag documentation (maybe should just be white).
 $primary-color-contrast: rgba(255, 255, 255, 0.925) // e.g. card bg, text background
 $secondary-color: #c3521b // e.g. tag text, button stuff, "active color"
 $highlight-color: #50e3c2 // e.g. hover states, "hover color"
 
-// $light-gray: #bcc2c7 // @TODO/ece What's this for? We have $input-stroke, used for various things, but this may be too light like on logged-out homepage - but maybe not? And too dark for $primary-color-light.
+// $primary-color-light: #f2f2f2 // was used for tag chiclet bg and secondary button bg, no longer used anywhere
+// $light-gray: #bcc2c7 // Unused but could be used in the future. We have $input-stroke, used for various things, but this may be too light like on logged-out homepage - but maybe not?
+$input-stroke: #989898 // @TODO/ece This is used for input placeholder text, input borders/underlines, logo slogan, minor text on login (forgot password, T&Cs)
 
 
 // OTHER COLORS
@@ -48,7 +48,3 @@ $icon-active: $secondary-color
 $icon-active-hover: mix($highlight-color, $secondary-color) // @TODO/ece What do you think of this? any of the other 3 colors produces weird UX when clicking. Another option (though this also adds a new design element) would be to slightly enlarge the icon upon hover.
 
 $menu-dropdown-bg-color: rgba($primary-color-contrast, 1)
-
-// @TODO/ece This is used for input placeholder text, input borders/underlines, logo slogan, minor text on login (forgot password, T&Cs), etc. Current $primary-color-light is too light to be visible on white, so using this for now:
-// $input-stroke: $primary-color-light
-$input-stroke: #989898
