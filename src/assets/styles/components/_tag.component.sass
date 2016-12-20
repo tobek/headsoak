@@ -17,25 +17,14 @@ tag
   &.is--active
     +tag-chiclet-active
 
-  .tag-actions
-    // @TODO/ece What's the tag action flow? must include easy toggle and remove from note
-    // @TODO/ece Still need a way to view all tags
-    display: none
-
-  &:hover .tag-actions
+  .name-wrapper
+    +single-line-truncate
     display: inline-block
+    max-width: 150px
+    vertical-align: top
 
-  // Hide, because any actions can be shown in the dropdown
-  &.dropdown-enabled .tag-actions
-    display: none
-
-  &.dropdown-enabled.hovered
-    +menu-dropdown
-    +tag-face
-
-  .tag-action
-    +icon-button
-    // @TODO/ece On note tags should this remove X be primary or secondary?
+    .route--browse &
+      max-width: 80px // @TODO/ece What do you think about shrinking it for this view?
 
   .name
     display: inline
@@ -51,6 +40,44 @@ tag
     display: none
   &:hover .tag-value-hover
     display: inline
+
+  .tag-actions
+    // @TODO/ece What's the tag action flow? must include easy toggle and remove from note
+    // @TODO/ece Still need a way to view all tags
+    display: none
+
+  &:hover .tag-actions
+    display: inline-block
+
+  // Hide, because any actions can be shown in the dropdown
+  &.dropdown-enabled .tag-actions
+    display: none
+
+  // Remove clipping name overflow in some situations:
+  &.dropdown-disabled:hover,
+  &.heading,
+  &.renaming
+    .name-wrapper
+      display: inline
+      white-space: normal
+      max-width: none
+
+  // &.dropdown-enabled:hover // @TODO/ece Should this happen on hover, or on the 0.25s-delayed .hover classs?
+  &.dropdown-enabled.hovered
+    +menu-dropdown
+    +tag-face
+
+    // @TODO/now This fixes the problem of a now-expanded tag overflowing tags container and going into new line, but it cause subsequent tags to up. Proper solution would maybe be to use JS to fix the tag width at its current value, but have the contents be absolutely positioned so it overflows. When this is fixed, it can happen on :hover instead of .hovered
+    // position: absolute
+    // z-index: 1
+    // white-space: nowrap
+
+    .name-wrapper
+      max-width: none
+
+  .tag-action
+    +icon-button
+    // @TODO/ece On note tags should this remove X be primary or secondary?
 
   &.renaming .tag-actions
     display: none

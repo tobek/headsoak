@@ -38,6 +38,7 @@ export class TagComponent {
   @Input() inlineRemovable: boolean;
   @Input() showCount: boolean;
   @HostBinding('class.dropdown-enabled') @Input() enableDropdown: boolean;
+  @HostBinding('class.dropdown-disabled') disableDropdown = true;
 
   @HostBinding('class.hovered') hovered = false;
 
@@ -95,6 +96,8 @@ export class TagComponent {
         this.isActive = !! _.find(tags, (tag) => tag.baseTagId === this.tag.id);
       });
     }
+
+    this.disableDropdown = ! this.enableDropdown;
   }
 
   ngOnDestroy() {

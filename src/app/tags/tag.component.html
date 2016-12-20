@@ -1,16 +1,18 @@
-<span class="name" placeholder="tag name"
-  ref-tagName
-  [attr.contenteditable]="renaming"
-  (click)="renaming && $event.stopPropagation()"
-  (keydown.enter)="renameFinish($event)"
-  (keydown.esc)="renameCancel()"
-  (blur)="renameCancel()"
->{{ tag.name }}</span
+<span class="name-wrapper"
+  ><span class="name" placeholder="tag name"
+    ref-tagName
+    [attr.contenteditable]="renaming"
+    (click)="renaming && $event.stopPropagation()"
+    (keydown.enter)="renameFinish($event)"
+    (keydown.esc)="renameCancel()"
+    (blur)="renameCancel()"
+  >{{ tag.name }}</span
 
-><span *ngIf="ofNoteId && tag.noteData && tag.noteData[ofNoteId]"
-  ><span *ngIf="tag.noteData[ofNoteId].subTag">: {{ tag.noteData[ofNoteId].subTag }}</span>
-  <span class="tag-value-hover" *ngIf="tag.noteData[ofNoteId].score">({{ tag.noteData[ofNoteId].score}})</span>
-</span>
+  ><span *ngIf="ofNoteId && tag.noteData && tag.noteData[ofNoteId]"
+    ><span *ngIf="tag.noteData[ofNoteId].subTag">: {{ tag.noteData[ofNoteId].subTag }}</span>
+    <span class="tag-value-hover" *ngIf="tag.noteData[ofNoteId].score">({{ tag.noteData[ofNoteId].score}})</span>
+  </span
+></span>
 
 <span *ngIf="showCount">({{ tag.docs.length }})</span>
 
