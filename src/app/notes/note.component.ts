@@ -30,6 +30,7 @@ export class NoteComponent {
   @HostBinding('class.note') thisIsUnusedAndAlwaysTrue = true;
 
   @HostBinding('class.is--expanded') isExpanded = false;
+  @HostBinding('class.is--focused') isFocused = false;
   @HostBinding('class.show--explore') showExplore = false;
 
   private rawDataHtml: SafeHtml;
@@ -122,6 +123,7 @@ export class NoteComponent {
   bodyFocused() {
     this.activeUIs.focusedNoteComponent = this;
     this.note.focused();
+    this.isFocused = true;
   }
 
   bodyBlurred() {
@@ -129,6 +131,7 @@ export class NoteComponent {
       this.activeUIs.focusedNoteComponent = null;
     }
     this.note.blurred();
+    this.isFocused = false;
   }
 
   addTagFocused() {
