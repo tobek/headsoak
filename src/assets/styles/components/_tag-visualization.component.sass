@@ -21,6 +21,9 @@ force-graph
     stroke-opacity: $link-opacity
 
   .node
+    &, text // guess it doesn't cascade in SVGs? both seem necessary
+      cursor: pointer
+
     circle
       fill: $secondary-color
       stroke: $secondary-color
