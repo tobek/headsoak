@@ -94,6 +94,7 @@ note-query
       +plain-list
       +menu-dropdown
       position: absolute
+      max-height: none
       top: 100%
       z-index: 1000
       display: none
@@ -111,8 +112,6 @@ note-query
 
     .ui-select-choices .ui-select-choices-row // extra specificity to override their styles
       .dropdown-item
-        padding: 5px
-        line-height: 1
         +menu-link
 
       &.active .dropdown-item
