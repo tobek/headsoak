@@ -4,10 +4,9 @@
   position: relative
   display: block
   border-bottom: 2px solid transparent
-  transition: box-shadow $transition-gonzales, border $transition-medium
+  transition: box-shadow $transition-gonzales, border $transition-med
 
   note-browser &
-    height: 232px // Sort of a magic number that gives us 7 lines of text after header and actions in Note Browser
     margin-bottom: gutter()
 
   padding: 54px 10px 35px gutter() // More magic numbers (correctly vertically positions header and note actions). Also, +card above has gutter-based left/right padding, but we need body input scrollbar to not be flush against body text nor flush against edge of note, which is hard to do with %-based gutters. 10px and 20px right padding (on .body-input) are close enough on all browser widths it seems, especially since right edge of text isn't clear because of non-justified left-alignment.
@@ -122,11 +121,23 @@
 
 
   .body-input
-    width: 100%
-    height: 100%
     resize: none
+    width: 100%
+    min-height: 30px
+    max-height: 133px // 6.5 lines of text (so that clipping is obvious)
     padding: 2px 20px 2px 2px // see note about right padding in base .note styles
     border: 0
+    outline: none
+    white-space: pre-wrap
+
+    transition: max-height $transition-fast
+
+  &.is--focused .body-input
+    max-height: calc(#{$full-height} - 100px) // magic numbers - 100px is about the vertical padding of note element plus a bit to spare
+
+  .route--browse & .body-input
+    max-height: none
+    height: 133px
 
 
   .note-actions
@@ -237,8 +248,10 @@
 
   home &.open-note
     .body-input
+      max-height: none
+      height: 100%
       padding-left: 10px
-      
+
       +susy-breakpoint($screen-small, $susy)
         // These achieve a "max width" of 600px while filling the rest with padding. Additionally, it's aligned a little towards the left from centered
         padding-right: calc(75% - 450px)

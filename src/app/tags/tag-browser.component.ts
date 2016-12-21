@@ -175,7 +175,7 @@ export class TagBrowserComponent {
     this.tags = _.filter(this.tags, (tag: Tag) => tag.id !== deletedTag.id);
   }
 
-  // // @TODO/testing infinite scroll e2e both directions
+  // // @TODO/polish Copied infinite scroll code from notes - we might want this eventually
   // infiniteScrollCheck(): void {
   //   if (! this.notes || this.limit >= this.notes.length) {
   //     return;
@@ -194,9 +194,6 @@ export class TagBrowserComponent {
   //     this.limit += 10;
 
   //     this._logger.log('Showing more notes: now showing', this.limit);
-
-  //     // @TODO/rewrite
-  //     // $s.n.autosizeSomeNuts($s.n.nutsLimit - 10); // only the new ones
   //   }
   //   else if (distanceTilLastNote > 1000 && this.limit > this.DEFAULT_NOTES_LIMIT) {
   //     let tenthFromlastNote = this.el.querySelector('note:nth-last-child(11)'); // CSS is off-by-one =(

@@ -77,9 +77,6 @@ export class NoteBrowserComponent {
       .filter(event => event instanceof NavigationEnd)
       .subscribe(this.routeUpdated.bind(this));
 
-    // @TODO/rewrite
-    // $timeout($s.n.autosizeAllNuts);
-
     this.activeUIs.noteBrowser = this;
   }
 
@@ -116,7 +113,7 @@ export class NoteBrowserComponent {
     this.noteClosed.emit(note);
   }
 
-  // @TODO/testing infinite scroll e2e both directions
+  // @TODO/optimization I think this is triggering change detection? Only should if we actually update stuff. (scrollmonitor itself might be the culprit)
   infiniteScrollCheck(): void {
     if (NOTE_BROWSER_ROUTES.indexOf(this.router.url) === -1) {
       return;
@@ -139,9 +136,6 @@ export class NoteBrowserComponent {
       this.limit += 10;
 
       this._logger.log('Showing more notes: now showing', this.limit);
-
-      // @TODO/rewrite
-      // $s.n.autosizeSomeNuts($s.n.nutsLimit - 10); // only the new ones
     }
     else if (distanceTilLastNote > 1000 && this.limit > this.DEFAULT_NOTES_LIMIT) {
       let tenthFromlastNote = this.el.querySelector('note:nth-last-child(11)'); // CSS is off-by-one =(

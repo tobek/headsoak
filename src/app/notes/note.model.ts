@@ -232,6 +232,8 @@ export class Note {
 
       this.fullUpdateRequired = true; // We haven't blurred now, so we're not doing full update. Need to make sure we full update (update lunr index and prog tags) later even if nut is unchanged by the time we blur. This persists to database too so that even if we're disconnected, the change will be done later.
 
+      // @TODO/prog Note doing a full update here means you won't, for instance, see sentiment change as you type. If we can offload to service worker so UI doesn't stutter, that'd be great - that make sense for this?
+
       this.updated(true, false);
 
       this.oldBody = this.body;
@@ -239,9 +241,8 @@ export class Note {
   }
 
   changed(): void {
+    // @TODO/rewrite @TODO/digest The goal here is to show unsynced state as soon as they start typing (and eventually to alert on attempt to close tab/navigate away) but because the `input` event isn't fully supported on `contenteditable`, we're using `keyup` event from contenteditableModel directive so this will fire on, say, arrow keys. So I guess when the digest next checks it'll find no changes and go back and that's fine. If we change digest to run on demand, though, will this part still work as intended?
     this.dataService.status = 'unsynced';
-
-    // @TODO/rewrite/notes Need to autosize note?
   }
 
   /** Finds or creates tag, adds to note, and returns it. Returns null if no tag added. */

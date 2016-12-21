@@ -172,42 +172,7 @@ function (
       nut.share = newShare;
     },
 
-    autosizeAllNuts: function() {
-      console.time('autosizing all nuts');
-      angular.element('.nut textarea').each(function(i, ta){
-        $s.n.autosizeNutByEl(ta);
-      });
-      console.timeEnd('autosizing all nuts');
-    },
-
-    /** autosize all except the first `skip` nuts */
-    autosizeSomeNuts: function(skip) {
-      if (! parseInt(skip)) throw new Error('invalid argument: ' + skip);
-
-      console.time('autosizing some nuts');
-      $('.nut:nth-child(n+' + skip + ') textarea').each(function(i, ta){
-        $s.n.autosizeNutByEl(ta);
-      });
-      console.timeEnd('autosizing some nuts');
-    },
-
-    // hack, needed because ngChange doesn't pass element
-    autosizeNutById: function(id) {
-      this.autosizeNutByEl(document.getElementById("nut-"+id+"-ta"));
-    },
-
-    autosizeNutByEl: function(el) {
-      if (!el) return;
-
-      var oldDocScroll = $(document).scrollTop();
-      var oldScroll = el.scrollTop;
-
-      el.style.height = "auto";
-      el.style.height = el.scrollHeight + 'px';
-
-      $(document).scrollTop(oldDocScroll);
-      el.scrollTop = oldScroll;
-    },
+    // autosize stuff DONE
 
     getFocusedNutID: function() {
       var match = document.activeElement.id.match(/^nut-(\d*)-ta$/); // ids are all e.g. nut-11-ta

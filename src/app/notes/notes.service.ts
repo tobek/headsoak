@@ -212,8 +212,7 @@ export class NotesService {
       filteredNotes = _.values(this.notes);
     }
 
-    // @TODO/rewrite - i think these are handled by whoever called the query?
-    // $s.n.sortNuts($s.n.sortOpts[$s.c.config.nutSortBy], filteredNotes); // re-sort, cause who knows what we've added into `$s.n.nuts` (sortNuts also autosizes textareas)
+    // @TODO/rewrite - or is this handled by whoever called the query?
     // $s.n.moreNutsCheck(); // new query may mean we have to increase/decrease limit
 
     if (excludeNew){

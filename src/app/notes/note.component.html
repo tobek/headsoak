@@ -33,15 +33,15 @@
     </div>
   </div>
 
-  <textarea class="body-input" tabindex=2
+  <div class="body-input" tabindex=2 contenteditable 
     ref-bodyInput
     *ngIf="! note.sharedBody"
-    placeholder="{{ note.new ? 'Enter a new note' : 'This note has no text' }}"
-    [ngModel]="note.body"
-    (ngModelChange)="note.body = $event; note.changed()"
+    [attr.placeholder]="note.new ? 'Enter a new note' : 'This note has no text'"
+    [contenteditableModel]="note.body"
+    (contenteditableModelChange)="note.body = $event; note.changed()"
     (focus)="bodyFocused()"
     (blur)="bodyBlurred()"
-  ></textarea>
+  ></div>
   <!-- @TODO/rewrite/sharing Better to put read-only class and disabled attribute on above textarea so reference is preserved <textarea class="body read-only" disabled="disabled" tabindex=2 *ngIf="note.sharedBody">{{ note.sharedBody }}</textarea> -->
 
   <div class="note-actions">

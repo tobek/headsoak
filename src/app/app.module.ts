@@ -65,6 +65,13 @@ const APP_COMPONENTS = [
 ];
 
 
+import {ContenteditableModel} from './directives';
+
+const APP_DIRECTIVES = [
+  ContenteditableModel,
+];
+
+
 import {ActiveUIsService} from './active-uis.service';
 import {AnalyticsService} from './analytics.service';
 import {DataService} from './data.service';
@@ -116,6 +123,7 @@ const APP_PIPES = [
   bootstrap: [ App ],
   declarations: [
     ...APP_COMPONENTS,
+    ...APP_DIRECTIVES,
     ...APP_PIPES,
   ],
   imports: [ // import Angular's modules
