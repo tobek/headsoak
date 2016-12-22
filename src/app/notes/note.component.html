@@ -6,7 +6,7 @@
           ref-addTagInput
           [(ngModel)]="addTagName"
           (focus)="addTagFocused()"
-          (keyup.enter)="closeAddTagField(true)"
+          (keyup.enter)="completeAddTag()"
           (keydown.esc)="closeAddTagField(true); $event.stopPropagation(); $event.preventDefault()"
         /><span class="new-tag-button"
           [attr.data-tooltip]="! addingTag ? 'Add a tag' : (! addTagName ? 'Close' : ('Add tag &quot;' + addTagName + '&quot;'))"
