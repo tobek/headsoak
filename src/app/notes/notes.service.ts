@@ -19,7 +19,7 @@ export class NotesService {
   index: lunr.Index;
 
   /**
-   * id format: `[desiredOrder] + '-' + field + '-' + rev`
+   * id format convention: `[desiredOrder] + '-' + field + '-' + rev` (not enforced, and changing IDs will break users' saved sort setting)
    */
   sortOpts = [
     { id: '0-modified-true', field: 'modified', rev: true, text: 'Recently modified' },
@@ -28,10 +28,11 @@ export class NotesService {
     { id: '3-created-false', field: 'created', rev: false, text: 'Oldest created' },
     { id: '4-body.length-true', field: 'body.length', rev: true, text: 'Longest' },
     { id: '5-body.length-false', field: 'body.length', rev: false, text: 'Shortest' },
+    // @TODO/privacy @TODO/tags Hard to test now since the only internal tags (pinning, archiving) dominate sort order. When private notes are done through internal tags, this `nonInternalTagsCount` getter should be tested
     { id: '6-tags.length-true', field: 'nonInternalTagsCount', rev: true, text: 'Most Tags' },
     { id: '7-tags.length-false', field: 'nonInternalTagsCount', rev: false, text: 'Fewest tags' }
     // @TODO: query match strength
-    // @NOTE: changes to the fields might require changes to the noteSort filter
+    // @NOTE: changes to the fields might require changes to the `sortNotes` function.
   ];
 
   dataService: DataService;

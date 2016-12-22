@@ -22,7 +22,7 @@
   </span>
   <ng-select class="sort-dropdown"
     [items]="notesService.sortOpts"
-    [active]="[notesService.sortOpts[0]]"
+    [active]="[sortOpt]"
     (selected)="ngSelectSelected($event)"
     placeholder="{{ sortOpt.text }}"
   ></ng-select>

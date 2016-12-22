@@ -84,6 +84,7 @@ export class TagsService {
   createTag(tagData: any = {}, addToDataStore = false): Tag {
     if (tagData.id) {
       if (this.tags[tagData.id]) {
+        this._logger.error('Cannot create a new tag with id "' + tagData.id + '" - that ID is already taken!\nExisting tag:', this.tags[tagData.id], '\nNew tag:', tagData);
         throw new Error('Cannot create a new tag with id "' + tagData.id + '" - that ID is already taken!');
       }
     }
