@@ -28,8 +28,8 @@ export class NotesService {
     { id: '3-created-false', field: 'created', rev: false, text: 'Oldest created' },
     { id: '4-body.length-true', field: 'body.length', rev: true, text: 'Longest' },
     { id: '5-body.length-false', field: 'body.length', rev: false, text: 'Shortest' },
-    { id: '6-tags.length-true', field: 'tags.length', rev: true, text: 'Most Tags' },
-    { id: '7-tags.length-false', field: 'tags.length', rev: false, text: 'Fewest tags' }
+    { id: '6-tags.length-true', field: 'nonInternalTagsCount', rev: true, text: 'Most Tags' },
+    { id: '7-tags.length-false', field: 'nonInternalTagsCount', rev: false, text: 'Fewest tags' }
     // @TODO: query match strength
     // @NOTE: changes to the fields might require changes to the noteSort filter
   ];

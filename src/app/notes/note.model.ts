@@ -103,10 +103,10 @@ export class Note {
     this.updateSortHack = true;
   }
 
-  getFromInternalTag(tagId: string): boolean {
+  private getFromInternalTag(tagId: string): boolean {
     return _.includes(this.tags, tagId);
   }
-  setToInternalTag(propName: string, tagId: string, newVal: boolean) {
+  private setToInternalTag(propName: string, tagId: string, newVal: boolean) {
     if (newVal && ! this[propName]) {
       this.addTagById(tagId);
     }
@@ -355,6 +355,10 @@ export class Note {
       ],
     });
     // @TODO/rewrite Maybe should explain smart tags (specifically this *type* of smart tag - with auto application), etc.
+  }
+
+  get nonInternalTagsCount() {
+    return _.difference(this.tags, Tag.INTERNAL_TAG_IDS).length;
   }
 
   showShareSettings() {

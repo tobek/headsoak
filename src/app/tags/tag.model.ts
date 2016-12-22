@@ -58,6 +58,7 @@ export class Tag {
       internal: true,
     },
   };
+  static INTERNAL_TAG_IDS = _.map(Tag.INTERNAL_TAG_DATA, (data) => data.id);
 
 
   protected _logger: Logger;
