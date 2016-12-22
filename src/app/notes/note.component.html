@@ -1,9 +1,7 @@
 <div class="note-wrapper" *ngIf="note">
   <div class="header">
     <div class="tags"
-      ><span class="tag-like"
-        [class.adding-tag]="addingTag"
-        (click)="newTagClick()"
+      ><span class="tag-like" (click)="newTagClick()"
         ><input type="text" placeholder="add tag" class="new-tag-input"
           ref-addTagInput
           [(ngModel)]="addTagName"

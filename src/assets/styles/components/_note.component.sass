@@ -3,7 +3,7 @@
 
   position: relative
   display: block
-  border-bottom: 2px solid transparent
+  border-bottom: 3px solid transparent
   transition: box-shadow $transition-gonzales, border $transition-med
 
   note-browser &
@@ -42,14 +42,14 @@
     &:hover .fa
       color: $icon-hover
 
-    &.adding-tag
-      cursor: default
+  &.is--adding-tag .tag-like
+    cursor: default
 
-      &:hover .fa
-        color: $tag-color
+    &:hover .fa
+      color: $tag-color
 
-      .new-tag-button:hover .fa
-        color: $icon-hover
+    .new-tag-button:hover .fa
+      color: $icon-hover
 
   .new-tag-input
     +tag-face
@@ -59,7 +59,7 @@
 
     transition: width $transition-fast, padding $transition-fast
 
-  .adding-tag .new-tag-input
+  &.is--adding-tag .new-tag-input
     width: 100px
     padding: 0 2px
 
@@ -96,9 +96,10 @@
     .expand-tags
       display: inline-block
 
+  &.is--adding-tag,
   &.is--focused
     box-shadow: 0px 6px 10px 5px $shadow-color
-    border-bottom: 2px solid $highlight-color
+    border-bottom-color: $highlight-color
 
   &.is--expanded
     .expand-tags
@@ -132,6 +133,7 @@
 
     transition: max-height $transition-fast
 
+  &.is--adding-tag .body-input,
   &.is--focused .body-input
     max-height: calc(#{$full-height} - 100px) // magic numbers - 100px is about the vertical padding of note element plus a bit to spare
 
@@ -213,6 +215,7 @@
       +faded-out
       width: 0
 
+    &.is--adding-tag .note-action .fa,
     &.is--focused .note-action .fa,
     &:hover .note-action .fa
       visibility: visible

@@ -17,7 +17,7 @@ export class NoteComponent {
   /** Currently entered text in the "add tag" field */
   addTagName = '';
   /** Whether the "add tag" field is active */
-  addingTag = false;
+  @HostBinding('class.is--adding-tag') addingTag = false;
 
   @Input() note: Note;
   @Input() opened = false;
