@@ -14,8 +14,6 @@
   </span
 ></span>
 
-<span *ngIf="showCount">({{ tag.docs.length }})</span>
-
 <span class="tag-state">
   <span class="share" *ngIf="tag.share" data-tooltip="This tag is shared">
     <i class="fa fa-users"></i>
@@ -30,6 +28,8 @@
     <i class="fa fa-archive"></i>
   </span>
 </span>
+
+<span *ngIf="showCount" class="count">{{ tag.docs.length }}</span>
 
 <span class="tag-actions" (click)="$event.stopPropagation()">
   <a data-tooltip="Remove" class="tag-action tag-action--remove" *ngIf="inlineRemovable" (click)="remove()">
