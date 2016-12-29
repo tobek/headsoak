@@ -63,7 +63,7 @@
                 {{ cooccurrence.tag.name }}
               </span>
               <!-- @TODO/tags Should link these to the search query! -->
-              ({{ cooccurrence.numNotes }} time{{ cooccurrence.numNotes !== 1 ? 's' : '' }})
+              ({{ cooccurrence.numNotes }} common note{{ cooccurrence.numNotes !== 1 ? 's' : '' }})
             </span>
           </li>
         </ul>
@@ -81,7 +81,7 @@
               <span class="static-tag" [routerLink]="['/tags/tag', cooccurrence.tag.baseTagId, cooccurrence.tag.name]">
                 {{ cooccurrence.tag.name }}
               </span>
-              ({{ cooccurrence.numNotes }} time{{ cooccurrence.numNotes !== 1 ? 's' : '' }})
+              ({{ cooccurrence.numNotes }} common note{{ cooccurrence.numNotes !== 1 ? 's' : '' }})
             </span>
           </li>
         </ul>
