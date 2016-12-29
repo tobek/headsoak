@@ -106,6 +106,16 @@ export const ROUTES: Routes = [
     },
     children: [
       {
+        path: 'account',
+        data: {
+          name: 'Account',
+          slug: 'account',
+          navSection: 'menu',
+          iconSlug: 'smile-o',
+        },
+        component: SettingsComponent
+      },
+      {
         path: '',
         data: {
           name: 'Settings',
@@ -122,16 +132,6 @@ export const ROUTES: Routes = [
           slug: 'shortcuts',
           navSection: 'menu',
           iconSlug: 'fighter-jet',
-        },
-        component: SettingsComponent
-      },
-      {
-        path: 'account',
-        data: {
-          name: 'Account',
-          slug: 'account',
-          navSection: 'menu',
-          iconSlug: 'smile-o',
         },
         component: SettingsComponent
       },
