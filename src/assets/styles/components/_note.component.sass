@@ -204,12 +204,20 @@
         height: 300px
 
 
-  .note-action .fa
-    transition: opacity $transition-fast, visibility $transition-fast, width $transition-fast
-    opacity: 0.5
-  .note-actions:hover .note-action .fa
-    opacity: 1
+  .note-action
+    .fa
+      transition: color $transition-fast, visibility $transition-fast, width $transition-fast
+      color: $primary-color-light
 
+    // re-set-up colors cause we overrode them by using primary-color-light for these normally
+    &:hover .fa
+      color: $icon-hover
+    &.is--active .fa
+      color: $icon-active
+    &.is--active:hover .fa
+      color: $primary-color
+
+  // slide-fade-in effect
   note-browser &
     .note-action .fa
       +faded-out
@@ -218,8 +226,7 @@
     &.is--adding-tag .note-action .fa,
     &.is--focused .note-action .fa,
     &:hover .note-action .fa
-      visibility: visible
-      opacity: 0.5
+      +faded-in
       width: 1.3em // just copied from what font-awesome gives to fixed width icons
 
     .note-action.is--active,

@@ -1,7 +1,7 @@
 // BASE COLORS
 
 $primary-color: #4a4a4a // e.g. body text, icons
-$primary-color-light: #bcc2c7 // used e.g. for tag count, active hover state
+$primary-color-light: #bcc2c7 // used e.g. for tag count, active icon hover, note action icons
 $primary-color-contrast: rgba(255, 255, 255, 0.925) // e.g. card bg, text background
 $secondary-color: #c3521b // e.g. tag text, button stuff, "active color"
 $highlight-color: #50e3c2 // e.g. hover states, "hover color"
@@ -44,6 +44,6 @@ $tag-color: $secondary-color
 $icon-color: $primary-color
 $icon-hover: $highlight-color
 $icon-active: $secondary-color
-$icon-active-hover: mix($highlight-color, $secondary-color) // @TODO/ece What do you think of this? any of the other 3 colors produces weird UX when clicking. Another option (though this also adds a new design element) would be to slightly enlarge the icon upon hover.
+$icon-active-hover: $primary-color-light
 
 $menu-dropdown-bg-color: rgba($primary-color-contrast, 1)
