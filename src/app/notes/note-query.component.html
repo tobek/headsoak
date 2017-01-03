@@ -12,7 +12,8 @@
   ref-textInput
   [(ngModel)]="queryText"
   (ngModelChange)="queryUpdated()"
-  (focus)="ensureCorrectRoute(); setUpAutocomplete()"
+  (focus)="focused(); ensureCorrectRoute(); setUpAutocomplete()"
+  (blur)="blurred()"
   (keydown)="inputKeydown($event)"
 >
 

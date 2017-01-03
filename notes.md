@@ -1,14 +1,13 @@
 # TODO
 
+- check tooltips are good on mobile
 - contenteditable
-    - make paste work
     - debounce
 - clicking on "archive" on an expanded note doesn't work. i think it starts unexpanding on mousedown and archive click doesn't register yet. it worked on touchdown.
 - layouts
     - get rid of write mode
     - scroll mode AND browse mode have option to bring in tag browser
 - all buttons should be same height, secondary should have white bg, private mode enabling should be primary, revert settings should be primary, get rid of all plain `.btn`s
-- checkboxes on settings page should be right-aligned
 - shortcuts align mod key with other ones
 - tag data like sentiment value - show in dropdown
 - make all bg images and profile images https
@@ -265,6 +264,7 @@ Display: note will have amongst its list of tags one or more location tags. Can 
     - [geocoding](https://developers.google.com/maps/documentation/geocoding/start) (convert coords <-> address)
     - [place search](https://developers.google.com/places/web-service/search) (searching for places near coords)
     - [places library](https://developers.google.com/maps/documentation/javascript/places) spec for places
+- <https://github.com/gwilson/getAccurateCurrentPosition>
 
 ### revert/trash ability
 
@@ -281,7 +281,7 @@ basically when instantiating
 
 - addanothertag behavior is janky. need to confirm it always works as expected but enabled and disabled, and with ctrl/shift enter, and everything
 - tag expand - when you click outside it should collapse
-- logging out fires a million "note component claims to have tag ID ... but ..."
+- logging out fires a million "note component claims to have tag ID ... but ..." - DID I FIX THIS
 - the way subtags are handled (autocomplete produces strings like "sentiment: positive" which get put into autocomplete box and then converted from string back into Tag instance...) will break if you have dupe tag names. when adding library tag (with subtags) if you have tag w same name, prevent it or somehow change lib tag name on your end
 - if notes sort is not recently modified, show it? i had it on longest and reloaded the page and of course it was still longest and i was like... where's my note
 - making a note private when it's the open-note doesn't hide it! should it? also confirm that open note is affected by changing private mode.
@@ -299,7 +299,6 @@ basically when instantiating
 ### misc
 
 - data service digest timeout should be run outside zone cause it triggers change detection everywhere
-- maybe hovering where private mode icon is, but when it's off, shows it faint gray and you can click on it to open it up
 - make sure when you logout you route back to home page `/` (so that if you log in again you'rein the right place)
 - pseudo login: POST not allowed on S3 (and 404ing on local?), and GET exposes creds - make sure ALWAYS over HTTPS
 - ensure we're not bundling 2 versions of jquery

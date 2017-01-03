@@ -1,4 +1,4 @@
-import {Component, ViewChild, ElementRef, Renderer} from '@angular/core';
+import {Component, ViewChild, ElementRef} from '@angular/core';
 import {ReplaySubject, Subject, Subscription} from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
 
@@ -42,7 +42,6 @@ export class NoteQueryComponent {
 
   constructor(
     private elementRef: ElementRef,
-    private renderer: Renderer,
     private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
     private autocompleteService: AutocompleteService,
@@ -71,9 +70,6 @@ export class NoteQueryComponent {
       .subscribe(() => {
         this.notes = this.notesService.getNotes(this.queryText, this.tags, this.sortOpt);
       });
-
-    this.renderer.listen(this.textInput.nativeElement, 'focus', this.focused.bind(this));
-    this.renderer.listen(this.textInput.nativeElement, 'blur', this.blurred.bind(this));
   }
 
   ngOnDestroy() {

@@ -1,4 +1,4 @@
-import {Inject, forwardRef, Component, EventEmitter, ElementRef, Input, Output, ViewChild, HostBinding/*, ChangeDetectorRef*/} from '@angular/core';
+import {Inject, forwardRef, Component, EventEmitter, ElementRef, Input, Output, ViewChild, HostBinding, Renderer/*, ChangeDetectorRef*/} from '@angular/core';
 import {SafeHtml} from '@angular/platform-browser';
 
 import {ActiveUIsService} from '../active-uis.service';
@@ -33,15 +33,18 @@ export class NoteComponent {
   @HostBinding('class.is--focused') isFocused = false;
   @HostBinding('class.show--explore') showExplore = false;
 
+  private removePasteListener: Function;
+
   private rawDataHtml: SafeHtml;
 
   private boundCloseAddTagFieldHandler = this.closeAddTagFieldHandler.bind(this);
 
-  private _logger = new Logger(this.constructor.name);
+  private _logger: Logger;
 
   constructor(
     // public cdrRef: ChangeDetectorRef,
     private el: ElementRef,
+    private renderer: Renderer,
     private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
     private autocompleteService: AutocompleteService,
@@ -52,13 +55,21 @@ export class NoteComponent {
   ) {}
 
   ngOnInit() {
+    this._logger = new Logger('NoteComponent ' + this.note.id);
   }
 
   ngAfterViewInit() {
     this.checkTagOverflow();
+
+    this.removePasteListener = this.renderer.listen(
+      this.bodyInputRef.nativeElement,
+      'paste',
+      this.bodyPaste.bind(this)
+    );
   }
 
   ngOnDestroy() {
+    this.removePasteListener();
   }
 
   checkTagOverflow(): void {
@@ -243,6 +254,26 @@ export class NoteComponent {
     this.note.removeTagId(tagId);
 
     setTimeout(this.checkTagOverflow.bind(this), 0);
+  }
+
+  bodyPaste(event): void {
+    const clipboardData = (event.originalEvent || event).clipboardData || window['clipboardData'];
+    const text = clipboardData.getData('Text');
+
+    if (document.queryCommandSupported('insertText')) {
+      document.execCommand('insertText', false, text);
+    }
+    else if (document.queryCommandSupported('insertText')) {
+      document.execCommand('paste', false, text);
+    }
+    else {
+      this._logger.error('Unexepected lack of support for execCommands `insertText` or `paste` - pasting as normal instead');
+      return; 
+    }
+
+    // Stop data actually being pasted
+    event.stopPropagation();
+    event.preventDefault();
   }
 
   delete(eventOrNoConfirm?: MouseEvent | boolean) {
