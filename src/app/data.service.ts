@@ -165,7 +165,7 @@ export class DataService {
     this.syncTasksRemaining--;
 
     if (err) {
-      alert('Error syncing your notes to the cloud! Some stuff may not have been saved. We\'ll keep trying though. You can email me at toby@headsoak.com if this keeps happening. Tell me what this error says:\n\n' + JSON.stringify(err));
+      this.modalService.alert('Error syncing your notes to the cloud! Some stuff may not have been saved. We\'ll keep trying though. You can email us at support@headsoak.com if this keeps happening. Tell us what this error says:<br><br><pre>' + JSON.stringify(err) + '</pre>', true);
       this.status = 'disconnected'; // @TODO/rewrite Make sure sync status widget updates
       return;
     }
@@ -350,6 +350,7 @@ export class DataService {
         // });
         // for now just:
         alert(feats);
+        // @TODO/modals
 
         this.ref.child('featuresSeen').set(this.NEW_FEATURE_COUNT);
 
