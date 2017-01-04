@@ -1,8 +1,6 @@
 # TODO
 
 - check tooltips are good on mobile
-- contenteditable
-    - debounce
 - clicking on "archive" on an expanded note doesn't work. i think it starts unexpanding on mousedown and archive click doesn't register yet. it worked on touchdown.
 - layouts
     - get rid of write mode
@@ -90,6 +88,9 @@ dec 26 - jan 1
 
 ### firebase migrate
 
+- links
+    - <https://firebase.google.com/docs/reference/js/firebase.auth.Auth#createUserWithEmailAndPassword>
+    - <https://firebase.google.com/docs/reference/js/firebase.User#sendEmailVerification>
 - what does provider/providerId get you?
 - delete account
 - test feedback
@@ -282,6 +283,7 @@ basically when instantiating
 - addanothertag behavior is janky. need to confirm it always works as expected but enabled and disabled, and with ctrl/shift enter, and everything
 - tag expand - when you click outside it should collapse
 - logging out fires a million "note component claims to have tag ID ... but ..." - DID I FIX THIS
+- deleting a tag (in this case a note with that tag was open in browser and in query bar) causing `[NoteComponent 12] Note ID 12 claims to have tag ID 16 but no tag found for that ID.`
 - the way subtags are handled (autocomplete produces strings like "sentiment: positive" which get put into autocomplete box and then converted from string back into Tag instance...) will break if you have dupe tag names. when adding library tag (with subtags) if you have tag w same name, prevent it or somehow change lib tag name on your end
 - if notes sort is not recently modified, show it? i had it on longest and reloaded the page and of course it was still longest and i was like... where's my note
 - making a note private when it's the open-note doesn't hide it! should it? also confirm that open note is affected by changing private mode.

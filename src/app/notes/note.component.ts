@@ -71,6 +71,10 @@ export class NoteComponent {
   ngOnDestroy() {
     this.removePasteListener();
   }
+  // ngDoCheck() {
+  //   debugger;
+  //   this._logger.log('change detection');
+  // }
 
   checkTagOverflow(): void {
     if (! this.note) {
