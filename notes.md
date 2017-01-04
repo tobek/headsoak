@@ -306,7 +306,6 @@ basically when instantiating
 - ensure we're not bundling 2 versions of jquery
     - <https://github.com/AngularClass/angular2-webpack-starter/issues/723>
     - something in wiki too
-- check `fullUpdateRequired` flag when notes are loaded from data store - make sure that's all set up
 - scrolling note textareas snagging scroll: only scroll in them if you *start* scrolling in them? doable?
 - "revert to defaults" is VERY clickable - make sure it `confirm`s
 - confirm `enableProdMode` is being called (check `environment.ts`) in prod deploy

@@ -70,14 +70,11 @@ export class Note {
 
     this.oldBody = this.body;
 
-    // @TODO/rewrite @TODO/now maybe we do this in NotesService.createNote
-    // // If user was disconnected while editing a note, we won't have done a full update (which we only do on blur), so do that now
-    // if (this.fullUpdateRequired) {
-    //   console.log('note ' + this.id + ' was saved but requires a full update');
-    //   $s.n.noteDoFullUpdate(note);
-    // }
-
-    // console.log('New note created:', this);
+    // If user was disconnected while editing a note, we won't have done a full update (which we only do on blur), so do that now
+    if (this.fullUpdateRequired) {
+      this._logger.info('Note was saved but never ran required full update, so running it now');
+      this.doFullUpdate(false);
+    }
   }
 
   get pinned(): boolean {
