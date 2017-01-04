@@ -1,4 +1,4 @@
-import {Injectable, ChangeDetectorRef} from '@angular/core';
+import {Injectable, NgZone, ChangeDetectorRef} from '@angular/core';
 import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 const Firebase = require('firebase');
@@ -27,12 +27,14 @@ export class AccountService {
 
   rootChangeDetector: ChangeDetectorRef;
 
+  ref: Firebase;
+
   private _logger: Logger = new Logger(this.constructor.name);
-  private ref: Firebase;
 
   private onlineStateRef: Firebase;
 
   constructor(
+    private zone: NgZone,
     private notes: NotesService,
     private dataService: DataService,
     private modalService: ModalService,
@@ -41,7 +43,11 @@ export class AccountService {
     private analytics: AnalyticsService,
     public user: UserService
   ) {
-    this.ref = new Firebase('https://nutmeg.firebaseio.com/');
+    // Instantiating this outside of the Angular zone prevents Firebase from using Angular/Zone's monkey-patched async services. If we don't do this, then any of Firebase's continual setInterval and setTimeout and websocket calls etc. will trigger change detection for the whole app. This way, we have to trigger change detection manually.
+    // @NOTE: This means that callbacks from functions like `this.ref.on('value', ...)` will not trigger change detection, even if called from within angular zone. As it stands (Jan 2017), there are no cases where we have to do so, since the only time we receive data *from* Firebase is on login/logout/initialization, where it seems that shortly-following stuff must be triggering change detection.
+    this.zone.runOutsideAngular(() => {
+      this.ref = new Firebase('https://nutmeg.firebaseio.com/');
+    });
   }
 
   init(rootChangeDetector: ChangeDetectorRef): void {

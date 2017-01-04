@@ -3,6 +3,7 @@ import {Subject} from 'rxjs/Subject';
 
 import * as _ from 'lodash';
 
+// @TODO/optimization This should be run outside zone I think, it's triggering change detection on every check? Also maybe set up listener using `Observable`, see <http://stackoverflow.com/a/36849347/458614>
 @Injectable()
 export class ScrollMonitorService {
   scroll$ = new Subject<void>();

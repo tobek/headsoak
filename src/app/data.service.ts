@@ -16,7 +16,6 @@ import {SettingsService} from './settings/settings.service';
 import {Setting} from './settings/setting.model';
 import {Shortcut} from './settings/shortcut.model';
 
-const Firebase = require('firebase');
 import * as _ from 'lodash';
 
 declare type DataItem = Note | Tag | Setting | Shortcut;
@@ -72,8 +71,6 @@ export class DataService {
     public tags: TagsService,
     @Inject(forwardRef(() => SettingsService)) public settings: SettingsService
   ) {
-    this.ref = new Firebase('https://nutmeg.firebaseio.com/');
-
     this.digestReset();
     this.digestSub = this.digest$.subscribe(this.dataUpdated.bind(this));
 
@@ -181,6 +178,7 @@ export class DataService {
 
   init(uid: string, accountService: AccountService) {
     this.accountService = accountService;
+    this.ref = accountService.ref;
     
     // Sync to server (if there are any changes) every 5s
     this.syncInterval = window.setInterval(this.sync.bind(this), 5000);
