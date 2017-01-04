@@ -23,6 +23,7 @@ declare type DataItem = Note | Tag | Setting | Shortcut;
 @Injectable()
 export class DataService {
   NEW_FEATURE_COUNT = 12; // Hard-coded so that it only updates when user actually receives updated code with the features
+  SYNC_THROTTLE = 5000; // As soon as data is updated it is synced to the server, but immediately-subsequent updates don't trigger a new sync until this time, in ms, has passed
 
   // online: boolean; // @TODO/rewrite connection widget should show if offline
 
@@ -52,11 +53,11 @@ export class DataService {
     'settings': { [key: string]: Setting | Shortcut },
   };
   private digestSub: Subscription;
+  private throttledSync: Function;
+  private cancelThrottledSync: Function;
 
   /** How many separate async callbacks to sync data to data store we're currently waiting on. Using `parallel` from `async` module would be more elegant, but we don't need anything else from that module right now and source code for that function simply keeps a counter of the number of tasks that have completed, so it's the same idea. */
   private syncTasksRemaining = 0;
-
-  private syncInterval;
 
   private _logger = new Logger(this.constructor.name);
 
@@ -73,6 +74,8 @@ export class DataService {
   ) {
     this.digestReset();
     this.digestSub = this.digest$.subscribe(this.dataUpdated.bind(this));
+    this.throttledSync = _.throttle(this.sync.bind(this), this.SYNC_THROTTLE);
+    this.cancelThrottledSync = this.throttledSync['cancel']; // lodash adds this property, which cancels any pending invocations
 
     // @TODO/rewrite - only do this if in dev mode (also, angular itself running in dev mode? there's a message in console about it. ensure that it runs in prod for prod build)
     window['dataService'] = this;
@@ -98,6 +101,7 @@ export class DataService {
     this.digest[this.getDataStoreName(update)][update.id] = update;
 
     this.status = 'unsynced';
+    this.throttledSync();
 
     // This function can get called inside change detection loop, and changing this.status is another change which will trigger another round of detection. This blows up in dev mode, so tell Angular/Zone that we need to check for changes now:
     this.accountService.rootChangeDetector.markForCheck();
@@ -126,7 +130,7 @@ export class DataService {
     return this.digest[this.getDataStoreName(item)][item.id] !== undefined;
   }
 
-  /** We run this on an interval. Checks the digest and syncs updates as necessary. */
+  /** We run this throttled. Checks the digest and syncs updates as necessary. */
   sync(): void {
     if (this.syncTasksRemaining > 0) return; // currently syncing
 
@@ -180,9 +184,10 @@ export class DataService {
     this.accountService = accountService;
     this.ref = accountService.ref;
     
-    // Sync to server (if there are any changes) every 5s
-    this.syncInterval = window.setInterval(this.sync.bind(this), 5000);
-    // @TODO/rewrite also sync before unload
+    // An initial check to see if anything needs updating after initialization (pretty sure this is impossible since we haven't fetched data, but why not):
+    this.throttledSync();
+
+    // @TODO/rewrite also sync (without throttle) before unload
 
     this.fetchData(uid);
   }
@@ -412,6 +417,6 @@ export class DataService {
     this.settings.clear();
     this.user.clear();
 
-    clearInterval(this.syncInterval);
+    this.cancelThrottledSync();
   }
 }

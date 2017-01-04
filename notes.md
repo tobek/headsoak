@@ -300,7 +300,6 @@ basically when instantiating
 
 ### misc
 
-- data service digest timeout should be run outside zone cause it triggers change detection everywhere
 - make sure when you logout you route back to home page `/` (so that if you log in again you'rein the right place)
 - pseudo login: POST not allowed on S3 (and 404ing on local?), and GET exposes creds - make sure ALWAYS over HTTPS
 - ensure we're not bundling 2 versions of jquery
