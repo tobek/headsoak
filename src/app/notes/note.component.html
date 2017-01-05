@@ -2,12 +2,14 @@
   <div class="header">
     <div class="tags"
       ><span class="tag-like" (click)="newTagClick()"
-        ><input type="text" placeholder="add tag" class="new-tag-input"
+        ><input type="text" placeholder="add tag" class="new-tag-input" tabindex=-1
           ref-addTagInput
           [(ngModel)]="addTagName"
           (focus)="addTagFocused()"
           (keyup.enter)="completeAddTag()"
           (keydown.esc)="closeAddTagField(true); $event.stopPropagation(); $event.preventDefault()"
+          (keydown.tab)="closeAddTagField()"
+          (keydown.shift.tab)="closeAddTagField()"
         /><span class="new-tag-button"
           [attr.data-tooltip]="! addingTag ? 'Add a tag' : (! addTagName ? 'Close' : ('Add tag &quot;' + addTagName + '&quot;'))"
           (click)="newTagIconClick($event); tooltipService.reloadOnEvent($event, false)"
@@ -31,7 +33,7 @@
     </div>
   </div>
 
-  <div class="body-input" tabindex=2 contenteditable 
+  <div class="body-input" tabindex=0 contenteditable 
     ref-bodyInput
     *ngIf="! note.sharedBody"
     [attr.placeholder]="note.new ? 'Enter a new note' : 'This note has no text'"
