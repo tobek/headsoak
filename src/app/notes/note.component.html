@@ -64,8 +64,7 @@
     ><i class="fa fa-fw fa-lock locked"></i><i class="fa fa-fw fa-unlock-alt unlocked"></i></a
 
     ><span *ngIf="! note.new"><!--
-           <a (click)="newNoteWithSameTags()">NNST</a> -->
-      <!-- @TODO/rewrite @TODO/ece What are we doing  with "explore note"? We still need somewhere to show timestamps.
+         <a (click)="newNoteWithSameTags()">NNST</a>
       --><a class="note-action"
         data-tooltip="Explore note"
         (click)="toggleExplore()"

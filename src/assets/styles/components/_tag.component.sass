@@ -66,6 +66,7 @@ tag
   &.dropdown-enabled.hovered
     +menu-dropdown
     +tag-face
+    border-color: $menu-dropdown-bg-color
 
     // @TODO/now This fixes the problem of a now-expanded tag overflowing tags container and going into new line, but it cause subsequent tags to up. Proper solution would maybe be to use JS to fix the tag width at its current value, but have the contents be absolutely positioned so it overflows. When this is fixed, it can happen on :hover instead of .hovered
     // position: absolute
