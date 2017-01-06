@@ -1,24 +1,35 @@
 // Overrides for Toastr vendor CSS
 
+/* Test code for toasters:
+
+    dataService.toaster.success('Private mode enabled', {timeOut: 0, extendedTimeOut: 0});
+    dataService.toaster.warning('<a>Undo</a>', 'Note archived', {timeOut: 0,  extendedTimeOut: 0});
+    dataService.toaster.info('<p>Since you do not currently have private mode enabled, this note will be hidden from view.</p><p>Click to enable private mode.</p>', 'Note made private', {timeOut: 0, extendedTimeOut: 0});
+    dataService.toaster.error('Deleted tag <b>#cool tag</b>', {timeOut: 0, extendedTimeOut: 0});
+ */
+
 #toast-container
   text-shadow
   & > div // selector that original library uses
     opacity: 0.9
-    padding-right: 30px
-    padding-left: 60px
+    margin-bottom: 0.5rem
+    padding: 0.5rem 1.5rem 0.5rem 52px // 52px = 16px (1rem) on either side of icon + 20px icon
     width: auto
     max-width: 400px
 
   .toast-title
-    +h4
     margin: 0.5rem 0
 
+    // No idea why this is necessary but it's offset 1px without:
+    position: relative;
+    top: 1px;
+
   .toast-title + .toast-message
-    margin: 0.75rem 0 0.5rem
+    +small
+    margin: 0.5rem 0
 
   p
     margin: 0.5rem 0
-    line-height: 1.25rem
 
   .toast-progress
     opacity: 0.2
@@ -40,8 +51,8 @@
       position: absolute
       float: left
       top: 50%
-      margin: -9px 0 0 -40px // -9px top to vertically center based on 18px line height
-      padding-right: 0.5em
+      left: 1rem
+      margin-top: -9px // to vertically center based on 18px line height
       
       line-height: 18px
       font-family: FontAwesome

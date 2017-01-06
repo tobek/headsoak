@@ -372,7 +372,7 @@ export class Note {
 
     if (this.private && ! this.dataService.accountService.privateMode) {
       this.dataService.toaster.info(
-        '<p>Since you do not currently have private mode enabled, this note will be hidden from view.<p></p>Click to enable private mode.</p>',
+        '<p>Since you do not currently have private mode enabled, this note will be hidden from view.</p><p>Click to enable private mode.</p>',
         'Note made private',
         {
           preventDuplicates: true,
