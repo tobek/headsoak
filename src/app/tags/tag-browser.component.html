@@ -51,7 +51,8 @@
 
     <div *ngFor="let tag of (tags | arrayLimit:limit)" class="tag-wrapper" [class.is--expanded]="expandedTag === tag">
       <span class="caret-wrapper" (click)="tagDropdownClick(tag)">
-        <span class="caret"></span>
+        <!-- <span class="caret"></span> -->
+        <i class="fa fa-chevron-down"></i>
       </span>
 
       <tag class="tag tag-{{ tag.id }}"
