@@ -1,5 +1,20 @@
 # TODO
 
+for ece, about tag browser: When looking at notes, obviously clicking on tag text filters by that tag, and dropdown arrow opens dropdown. What about if you're on the full-page tags screen - does clicking on a tag name open up the tag explore pane and/or dropdown, or does it take you back to notes and search for that tag? If the former, then should the dropdown arrow also open up explore pane so you can browse around tags with one click?
+
+### layout updates
+
+- single column (5m)
+- add new tag (with note behavior) on top (15m)
+- dropdown arrow (10m)
+- dropdown arrow opens up headings (15m)
+- headings change route (and un-highlight "explore tags") (30m)
+- style search/sort (30m)
+
+
+
+### misc
+
 - check tooltips are good on mobile
 - clicking on "archive" on an expanded note doesn't work. i think it starts unexpanding on mousedown and archive click doesn't register yet. it worked on touchdown.
 - layouts

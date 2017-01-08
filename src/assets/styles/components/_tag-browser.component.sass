@@ -29,8 +29,18 @@ tag-browser
     font-weight: bold
     margin: 10px 0 20px
 
-    .new
-      float: right
+  // @TODO/ece How are the styles for this?
+  .add-new-tag
+    @extend .tag-like
+    cursor: pointer
+
+    .text
+      color: $input-stroke
+
+    .fa
+      color: $icon-color
+    &:hover .fa
+      color: $icon-hover
 
 
   .tag-list tag

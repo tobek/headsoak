@@ -35,6 +35,8 @@ export class TagBrowserComponent {
 
   activePane: 'viz' | 'library';
 
+  addingNewTag = false;
+
   @ViewChild('queryInput') queryInput: ElementRef;
   @ViewChildren(TagComponent) tagComponents: QueryList<TagComponent>;
 
@@ -159,6 +161,8 @@ export class TagBrowserComponent {
   }
 
   newTag(): void {
+    this.addingNewTag = true;
+
     // Passing in false to not save to data store cause it has no name yet. If/when it gets named, then we'll save it.
     const newTag = this.tagsService.createTag({}, false);
 
@@ -167,6 +171,10 @@ export class TagBrowserComponent {
     // Have to wait cause angular hasn't updated the QueryList yet, but once it has, we can focus on the new tag component
     setTimeout(() => {
       this.tagComponents.first.renameStart();
+
+      this.tagComponents.first.renamingOver.first().subscribe(() => {
+        this.addingNewTag = false;
+      });
     }, 0);
   }
 

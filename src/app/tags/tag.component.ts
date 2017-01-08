@@ -44,6 +44,7 @@ export class TagComponent {
 
   @Output() removed = new EventEmitter<Tag>(); // removed from given context (e.g. note, search query)
   @Output() deleted = new EventEmitter<Tag>(); // deleted entirely
+  @Output() renamingOver = new EventEmitter<void>(); // renaming completed or canceled
 
   @HostListener('mouseover') onMouseover() {
     if (this.ofNoteId) {
@@ -147,6 +148,8 @@ export class TagComponent {
     if (this.isNewTag) {
       this.isNewTag = false;
     }
+    
+    this.renamingOver.emit();
   }
   renameCancel() {
     this.renaming = false;
@@ -157,6 +160,8 @@ export class TagComponent {
     else {
       this.tagNameEl.innerHTML = this.tag.name;
     }
+
+    this.renamingOver.emit();
   }
   /** We may have blurred because they clicked on the checkmark to finish renaming, so wait a moment before cancelling to see if they did that. */
   renameBlur() {
