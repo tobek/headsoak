@@ -23,7 +23,8 @@ declare type DataItem = Note | Tag | Setting | Shortcut;
 @Injectable()
 export class DataService {
   NEW_FEATURE_COUNT = 12; // Hard-coded so that it only updates when user actually receives updated code with the features
-  SYNC_THROTTLE = 5000; // As soon as data is updated it is synced to the server, but immediately-subsequent updates don't trigger a new sync until this time, in ms, has passed
+  SYNC_THROTTLE = 5000; // As soon as data is updated it is synced to the server after SYNC_DELAY, but immediately-subsequent updates don't trigger a new sync until this time, in ms, has passed
+  SYNC_DELAY = 500
 
   // online: boolean; // @TODO/rewrite connection widget should show if offline
 
@@ -101,7 +102,8 @@ export class DataService {
     this.digest[this.getDataStoreName(update)][update.id] = update;
 
     this.status = 'unsynced';
-    this.throttledSync();
+
+    setTimeout(this.throttledSync, this.SYNC_DELAY);
 
     // This function can get called inside change detection loop, and changing this.status is another change which will trigger another round of detection. This blows up in dev mode, so tell Angular/Zone that we need to check for changes now:
     this.accountService.rootChangeDetector.markForCheck();
@@ -180,6 +182,8 @@ export class DataService {
 
     if (this.syncTasksRemaining === 0) {
       this._logger.log('Changes pushed successfully');
+
+      // @TODO/soon @TODO/bug If anything was added to the digest while we were waiting for syc to run, this will clear those unsynced changes!! That's really bad. Due to the throttling hopefully this won't happen much, but it's a problem. Instead, `sync` should clear the digest (just of what it found at the time) but save them somewhere as like pending updates (so that it can keep trying and know what's not synced if it failed) but allowing for new changes to go in.
       this.digestReset();
     }
   }
