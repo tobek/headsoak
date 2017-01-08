@@ -45,15 +45,24 @@ export class TagComponent {
   @Output() removed = new EventEmitter<Tag>(); // removed from given context (e.g. note, search query)
   @Output() deleted = new EventEmitter<Tag>(); // deleted entirely
 
-  @HostListener('mouseover') onMouseover(btn) {
-    if (! this.hoveredTimeout) {
-      this.hoveredTimeout = setTimeout(() => {
+  @HostListener('mouseover') onMouseover() {
+    if (this.ofNoteId) {
+      // Wait a moment before showing dropdown or else they go flying willy-nilly as you mousearound the notes
+      if (! this.hoveredTimeout) {
+        this.hoveredTimeout = setTimeout(() => {
+          this.hovered = true;
+          this.hoveredTimeout = null;
+        }, 250);
+      }
+    }
+    else {
+      if (! this.renaming) {
         this.hovered = true;
-        this.hoveredTimeout = null;
-      }, 250);
+      }
+      // if renaming, showing active chiclet on hover is annoying
     }
   }
-  @HostListener('mouseleave') onMouseleave(btn) {
+  @HostListener('mouseleave') onMouseleave() {
     if (this.hoveredTimeout) {
       clearTimeout(this.hoveredTimeout);
       this.hoveredTimeout = null;

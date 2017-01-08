@@ -39,9 +39,9 @@
         [routerLink]="['/tags/tag', tag.id, tag.name]"
         [tag]="tag"
         [showCount]="true"
-        (mouseenter)="hoveredTag = tag"
+        (mouseenter)="hoveredTag = tag.name ? tag : null"
         (mouseleave)="hoveredTag = null"
-      ></tag>
+      ></tag><!-- checking tag.name in mouseenter to make sure it's not a new/unsaved tag -->
     </div>
 
     <hr style="width: 100%">

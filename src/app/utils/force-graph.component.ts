@@ -520,7 +520,7 @@ export class ForceGraphComponent {
     }
 
     if (! higlightNodeEls.size()) {
-      this._logger.warn('Can\'t highlight tag - no node found in graph for tag', tag);
+      this._logger.info('Can\'t highlight tag - no node found in graph for tag', tag);
       return;
     }
 
