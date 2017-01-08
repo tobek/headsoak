@@ -14,20 +14,32 @@
 
     <div class="tag-query">
       <div class="search-bar">
-        <input class="text-input" tabindex=1 type="text" placeholder="Search your tags"
+        <input class="text-input" tabindex=1 type="text" placeholder="Search tags"
           ref-queryInput [(ngModel)]="query"
           (ngModelChange)="queryUpdated()"
         >
-        <button class="clear" (click)="queryClear()">x</button>
+
+        <span class="query-controls">
+          <span class="control-icon"
+            *ngIf="query"
+            (click)="queryClear()"
+          ><i class="fa fa-times"></i></span>
+          <span class="control-icon"
+            *ngIf="! query"
+            (click)="queryFocus()"
+          ><i class="fa fa-search"></i></span>
+        </span>
       </div>
 
-      <div class="controls">
-        <label>
-          {{ tags.length }} TAG{{ tags.length !== 1 ? 'S' : '' }}
-          <select tabindex=3 [ngModel]="sortOpt" (ngModelChange)="sort($event)">
-            <option *ngFor="let opt of tagsService.sortOpts" [ngValue]="opt">{{opt.name}}</option>
-          </select>
-        </label>
+      <div class="query-controls sort-count">
+        <span class="count">{{ tags.length }} TAG{{ tags.length !== 1 ? 'S' : '' }}</span>
+
+        <ng-select class="sort-dropdown"
+          [items]="tagsService.sortOpts"
+          [active]="[sortOpt]"
+          (selected)="sort($event)"
+          placeholder="{{ sortOpt.text }}"
+        ></ng-select>
       </div>
     </div>
 

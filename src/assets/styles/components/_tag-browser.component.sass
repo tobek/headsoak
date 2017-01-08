@@ -10,24 +10,33 @@ tag-browser
     position: relative
 
   .menu.menu--tag-home
-    margin-bottom: 40px
-    padding-bottom: 20px
-    border-bottom: 1px solid $input-stroke
+    margin-bottom: 1rem
+    padding-bottom: 1rem
+    // border-bottom: 1px solid $input-stroke
 
   .search-bar
     +input-underline
+    padding-bottom: 4px
 
     .text-input
       border: 0
       padding: 0
       letter-spacing: 1.1px
 
-    .clear
+    .control-icon
+      +h4
       float: right
 
-  .controls
-    font-weight: bold
-    margin: 10px 0 20px
+  .sort-count
+    // see also styles for .query-controls in _forms.sass
+    text-align: right
+    margin: 0.5rem 0 1rem
+
+    // @TODO/soon @TODO/styles @TODO/ece Man the alignment thing sucks. The easy options now are 1) extra space on the left, 2) extra space on the right, or 3) count goes after sort dropdown. Medium-hard solution would be to change width when clicking so that it pushes count aside. Hard-but-ideal solution would be to have the dropdown overlay the count without anything moving, and only move it once you have selected
+    .sort-dropdown
+      text-align: left
+      width: 130px
+
 
   // @TODO/ece How are the styles for this?
   .add-new-tag
@@ -87,3 +96,4 @@ tag-browser
     // @TODO/ece Should this go all the way to the edge of the card, or leave normal padding?
     width: 100%
     height: 100%
+

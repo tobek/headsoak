@@ -156,13 +156,18 @@ export class TagBrowserComponent {
     this.queryUpdated$.next(null);
   }
 
+  queryFocus(): void {
+    this.queryInput.nativeElement.focus();
+  }
   queryClear(): void {
     this.query = '';
     this.queryUpdated();
   }
 
-  sort(sortOpt?): void {
-    if (sortOpt) {
+  sort(option?): void {
+    if (option) {
+      // ngSelect just gives us back object with id and text. We need to get full sortOpt:
+      const sortOpt = _.find(this.tagsService.sortOpts, { id: option.id });
       this.settings.set('tagSortBy', sortOpt.id);
       this.sortOpt = sortOpt;
     }

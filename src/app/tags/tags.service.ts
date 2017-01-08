@@ -27,15 +27,15 @@ export class TagsService {
    * id format: `[desiredOrder] + '-' + field + '-' + rev`
    */
   sortOpts = [
-    { id: '0-docs.length-true', field: 'docs.length', rev: true, name: 'Most used'},
-    { id: '1-docs.length-false', field: 'docs.length', rev: false, name: 'Least used'},
+    { id: '0-docs.length-true', field: 'docs.length', rev: true, text: 'Most used'},
+    { id: '1-docs.length-false', field: 'docs.length', rev: false, text: 'Least used'},
     // @TODO should this be called used, modified, or something else? should name change depending on nutChangesChangeTagModifiedTimestamp setting? should we have both options?
-    { id: '2-modified-true', field: 'modified', rev: true, name: 'Recently used'},
-    { id: '3-modified-false', field: 'modified', rev: false, name: 'Oldest used'},
-    { id: '4-created-true', field: 'created', rev: true, name: 'Recently created'},
-    { id: '5-created-false', field: 'created', rev: false, name: 'Oldest created'},
-    { id: '6-name-false', field: 'name', rev: false, name: 'Alphabetically'},
-    { id: '7-name-true', field: 'name', rev: true, name: 'Alpha (reversed)'},
+    { id: '2-modified-true', field: 'modified', rev: true, text: 'Recently used'},
+    { id: '3-modified-false', field: 'modified', rev: false, text: 'Oldest used'},
+    { id: '4-created-true', field: 'created', rev: true, text: 'Recently created'},
+    { id: '5-created-false', field: 'created', rev: false, text: 'Oldest created'},
+    { id: '6-name-false', field: 'name', rev: false, text: 'Alphabetically'},
+    { id: '7-name-true', field: 'name', rev: true, text: 'Alpha (reversed)'},
   ];
 
   dataService: DataService;

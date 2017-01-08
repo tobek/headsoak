@@ -154,3 +154,78 @@ textarea,
 .btn-danger
   +danger-style
 
+
+.query-controls
+  .count
+    margin-right: 4px
+    font-weight: bold
+    letter-spacing: 1.2px
+
+  .control-icon
+    +icon-button
+    position: relative
+    top: -2px;
+
+  .sort-dropdown
+    display: inline-block
+    position: relative
+    top: -2px // magic number, too lazy to figure out why this is necessary
+
+    // @NOTE: A bunch of the following styles are copying bootstrap styles needed by the ng-select component. These should probably be elsewhere as a reusable generic dropdown.
+
+    .ui-select-container
+      outline: 0 !important
+
+    .ui-select-toggle
+      cursor: pointer
+      user-select: none
+      touch-action: manipulation
+
+      display: inline-block
+      vertical-align: middle
+      height: auto
+
+      padding: 0 25px 0 0
+      border: 0
+      box-shadow: none
+
+      background: none
+      color: inherit
+      font-weight: normal
+      letter-spacing: 1.1px
+      line-height: 1
+      text-transform: none
+
+    // This is a thing for you to type in something to search, which we're not using and just leaves behind awkward underline
+    .ui-select-search
+      display: none
+
+    .dropdown
+      position: relative
+
+    .dropdown-menu
+      +plain-list
+      +menu-dropdown
+      position: absolute
+      max-height: none
+      top: 100%
+      z-index: 1000
+      display: none
+      margin: -17px 0 0 // magic number to vert align with note count text
+
+    .open
+      input
+        // The plugin lets users search within the dropdown - ours is so small that let's hide this and just use the dropdown popup.
+        position: absolute
+        height: 0
+        padding: 0
+
+      > .dropdown-menu
+        display: block
+
+    .ui-select-choices .ui-select-choices-row // extra specificity to override their styles
+      .dropdown-item
+        +menu-link
+
+      &.active .dropdown-item
+        +menu-link-hover
