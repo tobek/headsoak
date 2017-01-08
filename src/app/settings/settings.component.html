@@ -7,6 +7,10 @@
     </div>
 
     <ul class="menu">
+      <li class="item" [routerLink]="['/settings', 'account']" [class.is--active]="section === 'account'">
+        <i class="fa fa-fw fa-lg fa-smile-o"></i>
+        Account
+      </li>
       <li class="item" [routerLink]="['/settings']" [class.is--active]="section === 'settings'">
         <i class="fa fa-fw fa-lg fa-sliders"></i>
         Settings
@@ -14,10 +18,6 @@
       <li class="item" [routerLink]="['/settings', 'shortcuts']" [class.is--active]="section === 'shortcuts'">
         <i class="fa fa-fw fa-lg fa-fighter-jet"></i>
         Shortcuts
-      </li>
-      <li class="item" [routerLink]="['/settings', 'account']" [class.is--active]="section === 'account'">
-        <i class="fa fa-fw fa-lg fa-smile-o"></i>
-        Account
       </li>
       <li class="item" [routerLink]="['/settings', 'private-mode']" [class.is--active]="section === 'privateMode'">
         <i class="fa fa-fw fa-lg fa-user-secret"></i>
