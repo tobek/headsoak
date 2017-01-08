@@ -110,12 +110,16 @@ export class DataService {
   }
 
   removeData(dataType: string, id: string) {
+    this.status = 'unsynced';
+
     if (dataType === 'nut' || dataType === 'note') {
       this.digest.nuts[id] = null;
     }
     else if (dataType === 'tag') {
       this.digest.tags[id] = null;
     }
+    
+    this.throttledSync();
   }
 
   digestReset(): void {
