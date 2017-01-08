@@ -64,9 +64,16 @@ tag-browser
     tag
       cursor: pointer
       display: inline-block
+      max-width: 100%
 
       &.hovered
         +tag-chiclet-active
+
+      // @TODO/now Totally made up numbers to make space for caret, count, and any tag state icons based on how wide browser is. Should be flexbox or something.
+      .name-wrapper
+        max-width: 260px
+        .route--browse &
+          max-width: 180px
 
     // @TODO/now Caret should change when it's open, and it should be the same
     // @TODO/now @TODO/ece Too intense? Should it be tag color? Maybe light gray?
