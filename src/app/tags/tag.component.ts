@@ -125,12 +125,18 @@ export class TagComponent {
       utils.placeCaretAtEnd(this.tagNameEl);
     }, 0);
   }
-  renameFinish(event: KeyboardEvent) {
-    event.preventDefault();
+  renameFinish(event?: KeyboardEvent) {
+    if (! this.renaming) {
+      return;
+    }
+
+    if (event) {
+      event.preventDefault();
+    }
 
     const newName = this.tagNameEl.innerHTML.trim();
 
-    if (! newName) {
+    if (! newName || newName === this.tag.name) {
       this.renameCancel();
       return;
     }
@@ -140,7 +146,6 @@ export class TagComponent {
 
     if (this.isNewTag) {
       this.isNewTag = false;
-      this.renamable = true;
     }
   }
   renameCancel() {
@@ -152,6 +157,14 @@ export class TagComponent {
     else {
       this.tagNameEl.innerHTML = this.tag.name;
     }
+  }
+  /** We may have blurred because they clicked on the checkmark to finish renaming, so wait a moment before cancelling to see if they did that. */
+  renameBlur() {
+    setTimeout(() => {
+      if (this.renaming) {
+        this.renameCancel();
+      }
+    }, 50);
   }
 
   delete(noConfirm = false) {

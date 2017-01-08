@@ -1,12 +1,15 @@
 <span class="name-wrapper"
   ><span class="name" placeholder="tag name"
     ref-tagName
+    [innerHTML]="tag.name"
     [attr.contenteditable]="renaming"
     (click)="renaming && $event.stopPropagation()"
     (keydown.enter)="renameFinish($event)"
     (keydown.esc)="renameCancel()"
-    (blur)="renameCancel()"
-  >{{ tag.name }}</span
+    (blur)="renameBlur()"
+  ><!-- Not sure why normal `{{ tag.name }}` syntax is causing duplicate tag name when saving a new tag, but it is, so using `[innerHTML]` instead --></span
+
+  ><span class="accept-rename" *ngIf="renaming" (mousedown)="renameFinish()" (touchstart)="renameFinish()"> <i class="fa fa-check"></i></span
 
   ><span *ngIf="ofNoteId && tag.noteData && tag.noteData[ofNoteId]"
     ><span *ngIf="tag.noteData[ofNoteId].subTag">: {{ tag.noteData[ofNoteId].subTag }}</span>
