@@ -42,7 +42,7 @@
       <tag class="tag tag-{{ tag.id }}"
         [routerLink]="['/tags/tag', tag.id, tag.name]"
         [tag]="tag"
-        [showCount]="true"
+        showCount=1
         (mouseenter)="hoveredTag = tag.name ? tag : null"
         (mouseleave)="hoveredTag = null"
       ></tag><!-- checking tag.name in mouseenter to make sure it's not a new/unsaved tag -->
@@ -54,7 +54,7 @@
       <tag class="tag tag-{{ tag.id }}"
         [routerLink]="['/tags/tag', tag.id, tag.name]"
         [tag]="tag"
-        [showCount]="true"
+        showCount=1
         (mouseenter)="hoveredTag = tag"
         (mouseleave)="hoveredTag = null"
       ></tag>

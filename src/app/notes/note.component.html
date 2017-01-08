@@ -22,7 +22,7 @@
         [tag]="getTagById(tagId)"
         [ofNoteId]="note.id"
         (click)="toggleTag(tagId, $event)"
-        [enableDropdown]="true"
+        enableDropdown=1
         (removed)="removeTag(tagId)"
       ></tag>
       <!-- @TODO/ece Should make a call on if clicking on tag name should a) toggle in query, or b) go to tag details. Also, what should cursor be. -->
