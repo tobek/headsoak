@@ -125,11 +125,23 @@ export class TagBrowserComponent {
     }
     
     if (pathParts[1] === 'tag') {
+      // @HACK @TODO/tags @TODO/polish @TODO/soon This REALLY shouldn't be necessary, but for now, especially e.g. if you scroll to bottom of notes or tag list and then click on a tag, you don't see shit. They need to scroll independently. It also means you lose your place in your notes when you go back. Bah.
+      if (this.activeTag || this.activePane) {
+        // We were already looking at tags, so animate scroll so you don't lose your place
+        jQuery('main').animate({ scrollTop: 0 }, 250);
+      }
+      else {
+        // We were elsewhere, animating will look weird
+        document.querySelector('main').scrollTop = 0;
+      }
+
       this.activeTag = this.tagsService.tags[pathParts[2]];
       this.activePane = null;
+      this.expandedTag = this.activeTag;
     }
     else {
       this.activeTag = null;
+      this.expandedTag = null;
 
       if (event.url.indexOf('smart-tags/library') !== -1) {
         this.activePane = 'library';
@@ -182,6 +194,21 @@ export class TagBrowserComponent {
   /** Called when one of the tags in this component is deleted. */
   tagDeleted(deletedTag: Tag): void {
     this.tags = _.filter(this.tags, (tag: Tag) => tag.id !== deletedTag.id);
+  }
+
+  tagDropdownClick(tag: Tag): void {
+    // @TODO/ece @TODO/now If we're in full screen tag browser, should this behavior be different? The commented out version is an option
+    if (this.expandedTag !== tag) {
+      // tag.goTo();
+      this.expandedTag = tag;
+
+      // @TODO/tags What if `this.activeTag !== tag`? They've expanded a different tag than the one that's currently open - should we just make this new one the active tag? If we don't, then since we currently only allow one expanded tag at a time, we'll end up in an odd state where the expanded tag doesn't match what's open!
+    }
+    else {
+      // this.activeTag = null;
+      // this.router.navigateByUrl('/tags');
+      this.expandedTag = null
+    }
   }
 
   // // @TODO/polish Copied infinite scroll code from notes - we might want this eventually

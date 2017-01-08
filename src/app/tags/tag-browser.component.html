@@ -1,5 +1,4 @@
-<!-- `[hidden]` not `*ngIf` because it's wasteful/slow to re-initialize the tag browser view every time you go out of details. -->
-<div [hidden]="activeTag">
+<div class="pane-layout">
   <div class="overview tag-list">
     <ul class="menu menu--tag-home">
       <li class="item" [routerLink]="['/tags']" [class.is--active]="activePane === 'viz'">
@@ -39,7 +38,7 @@
     </div>
 
     <div *ngFor="let tag of (tags | arrayLimit:limit)" class="tag-wrapper" [class.is--expanded]="expandedTag === tag">
-      <span class="caret-wrapper" (click)="expandedTag = expandedTag === tag ? null : tag">
+      <span class="caret-wrapper" (click)="tagDropdownClick(tag)">
         <span class="caret"></span>
       </span>
 
@@ -80,7 +79,7 @@
     <h4>System Tags</h4>
     <div *ngFor="let tag of tagsService.internalTags" class="tag-wrapper">
       <!-- @TODO/refactor Copy-pasting from normal tags... -->
-      <span class="caret-wrapper" (click)="expandedTag = expandedTag === tag ? null : tag">
+      <span class="caret-wrapper" (click)="tagDropdownClick(tag)">
         <span class="caret"></span>
       </span>
 
@@ -110,16 +109,18 @@
     </div>
   </div>
 
-  <div class="fixed-pane-wrapper">
+  <div class="fixed-pane-wrapper" *ngIf="! activeTag && activePane === 'viz'">
     <div class="tag-pane fixed-pane-contents">
-      <tag-visualization *ngIf="activePane === 'viz'" class="all-tags" [highlightedTag]="hoveredTag"></tag-visualization>
-
-      <prog-tag-library *ngIf="activePane === 'library'"></prog-tag-library>
+      <tag-visualization class="all-tags" [highlightedTag]="hoveredTag"></tag-visualization>
     </div>
   </div>
-</div>
 
-<tag-details
-  *ngIf="activeTag"
-  [tag]="activeTag"
-></tag-details>
+  <div class="pane" *ngIf="activePane !== 'viz'">
+    <prog-tag-library *ngIf="! activeTag && activePane === 'library'"></prog-tag-library>
+
+    <tag-details
+      *ngIf="activeTag"
+      [tag]="activeTag"
+    ></tag-details>
+  </div>
+</div>

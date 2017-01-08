@@ -1,28 +1,7 @@
 .tag-details
 
-  tag
-    +h3
-    cursor: default
-    display: block
-    width: 100%
-    margin: 20px 0 15px
-    padding: 0
-    float: none
-    background: none !important
-    font-weight: bold
-
-    .name
-      padding-right: 10px
-
-    .tag-actions
-      display: inline
-      margin-left: 10px
-
-  .pane
-    // @TODO/style Animate pane visiblity (and entire tag details component really)
-
-    .btn
-      margin-top: 5px
+  .btn
+    margin-top: 5px
 
   .pane-heading
     .static-tag
@@ -48,14 +27,10 @@
 
     .static-tag
       cursor: pointer
-      padding: 4px 0 4px 4px
-      margin-right: 4px
+      padding: 2px 4px
       
       &:hover
         +tag-chiclet-active
-
-      &:before
-        margin-right: -2px
 
   ul.cooccurring-tags
     +plain-list

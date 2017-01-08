@@ -1,124 +1,91 @@
-<div *ngIf="tag" class="pane-layout">
-  <div class="overview">
-    <a class="go-back" [routerLink]="['/tags']"><i class="fa fa-long-arrow-left"></i>ALL TAGS</a>
+<!-- @TODO/polish Would be nice to animate/crossfade the active panes -->
 
-    <tag class="tag tag-{{ tag.id }} heading"
-      [tag]="tag"
-      renamable=1
-      (deleted)="tagDeleted($event)"
-    ></tag>
+<div *ngIf="activePane === 'explore'">
+  <!-- @TODO/ece Should there be a hashtag here? (if so, search elsewhere on this page where tag.name is mentioned) -->
+  <h3 class="pane-heading">Explore <span class="static-tag">{{ tag.name }}</span></h3>
 
-    <ul class="menu">
-      <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" [class.is--active]="activePane === 'explore'">
-        <i class="fa fa-fw fa-lg fa-bar-chart"></i>
-        Explore
-      </li>
-      <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'share']" [class.is--active]="activePane === 'share'">
-        <i class="fa fa-fw fa-lg fa-users"></i>
-        Share
-      </li>
-      <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'smartness']" [class.is--active]="activePane === 'smartness'">
-        <i class="fa fa-fw fa-lg fa-bolt"></i>
-        Smart tag
-      </li>
-      <!-- @TODO/tags @TODO/privacy
-      <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'privacy']" [class.is--active]="activePane === 'privacy'">
-        <i class="fa fa-fw fa-lg fa-lock"></i>
-        Private tag
-      </li>
-      -->
-      <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'delete']" [class.is--active]="activePane === 'delete'">
-        <i class="fa fa-fw fa-lg fa-trash-o"></i>
-        Delete
-      </li>
-    </ul>
-  </div>
+  <div class="note-count-heading">{{ tag.docs.length }} Note{{ tag.docs.length !== 1 ? 's' : '' }}</div>
+  
+  <tag-visualization [centralTag]="tag" [highlightedTag]="hoveredTag"></tag-visualization>
 
-  <div class="pane" *ngIf="activePane === 'explore'">
-    <!-- @TODO/ece Should there be a hashtag here? (if so, search elsewhere on this page where tag.name is mentioned) -->
-    <h3 class="pane-heading">Explore <span class="static-tag">{{ tag.name }}</span></h3>
+  <p *ngIf="! exploreComputed">
+    <i class="fa fa-spin fa-cube"></i>&nbsp;
+    Loading tag stats...
+  </p>
 
-    <div class="note-count-heading">{{ tag.docs.length }} Note{{ tag.docs.length !== 1 ? 's' : '' }}</div>
-    
-    <tag-visualization [centralTag]="tag" [highlightedTag]="hoveredTag"></tag-visualization>
+  <div *ngIf="exploreComputed">
+    <h4 *ngIf="! exploreStats.topCooccurrences.length && ! exploreStats.bottomCooccurrences.length">This tag has not been paired with any other tags.</h4>
 
-    <p *ngIf="! exploreComputed">
-      <i class="fa fa-spin fa-cube"></i>&nbsp;
-      Loading tag stats...
-    </p>
+    <div *ngIf="exploreStats.topCooccurrences.length" class="cooccurrences">
+      <h4>Most commonly paired with:</h4>
 
-    <div *ngIf="exploreComputed">
-      <h4 *ngIf="! exploreStats.topCooccurrences.length && ! exploreStats.bottomCooccurrences.length">This tag has not been paired with any other tags.</h4>
+      <ul class="cooccurring-tags">
+        <li *ngFor="let cooccurrence of exploreStats.topCooccurrences">
+          <span
+            (mouseenter)="hoveredTag = cooccurrence.tag"
+            (mouseleave)="hoveredTag = null"
+          >
+            <span class="static-tag"
+              [routerLink]="['/tags/tag', cooccurrence.tag.baseTagId, cooccurrence.tag.name]"
+            >{{ cooccurrence.tag.name }}</span>
 
-      <div *ngIf="exploreStats.topCooccurrences.length" class="cooccurrences">
-        <h4>Most commonly paired with:</h4>
+            <!-- @TODO/tags Should link these to the search query! -->
+            ({{ cooccurrence.numNotes }} common note{{ cooccurrence.numNotes !== 1 ? 's' : '' }})
+          </span>
+        </li>
+      </ul>
+    </div>
 
-        <ul class="cooccurring-tags">
-          <li *ngFor="let cooccurrence of exploreStats.topCooccurrences">
-            <span
-              (mouseenter)="hoveredTag = cooccurrence.tag"
-              (mouseleave)="hoveredTag = null"
-            >
-              <span class="static-tag" [routerLink]="['/tags/tag', cooccurrence.tag.baseTagId, cooccurrence.tag.name]">
-                {{ cooccurrence.tag.name }}
-              </span>
-              <!-- @TODO/tags Should link these to the search query! -->
-              ({{ cooccurrence.numNotes }} common note{{ cooccurrence.numNotes !== 1 ? 's' : '' }})
-            </span>
-          </li>
-        </ul>
-      </div>
+    <div *ngIf="exploreStats.bottomCooccurrences.length" class="cooccurrences">
+      <h4>Least commonly paired with:</h4>
 
-      <div *ngIf="exploreStats.bottomCooccurrences.length" class="cooccurrences">
-        <h4>Least commonly paired with:</h4>
+      <ul class="cooccurring-tags">
+        <li *ngFor="let cooccurrence of exploreStats.bottomCooccurrences">
+          <span
+            (mouseenter)="hoveredTag = cooccurrence.tag"
+            (mouseleave)="hoveredTag = null"
+          >
+            <span class="static-tag"
+              [routerLink]="['/tags/tag', cooccurrence.tag.baseTagId, cooccurrence.tag.name]"
+            >{{ cooccurrence.tag.name }}</span>
 
-        <ul class="cooccurring-tags">
-          <li *ngFor="let cooccurrence of exploreStats.bottomCooccurrences">
-            <span
-              (mouseenter)="hoveredTag = cooccurrence.tag"
-              (mouseleave)="hoveredTag = null"
-            >
-              <span class="static-tag" [routerLink]="['/tags/tag', cooccurrence.tag.baseTagId, cooccurrence.tag.name]">
-                {{ cooccurrence.tag.name }}
-              </span>
-              ({{ cooccurrence.numNotes }} common note{{ cooccurrence.numNotes !== 1 ? 's' : '' }})
-            </span>
-          </li>
-        </ul>
-      </div>
+            ({{ cooccurrence.numNotes }} common note{{ cooccurrence.numNotes !== 1 ? 's' : '' }})
+          </span>
+        </li>
+      </ul>
     </div>
   </div>
-
-  <div class="pane" *ngIf="activePane === 'share'">
-    <h3 class="pane-heading">Manage sharing for <span class="static-tag">{{ tag.name }}</span></h3>
-    <p>This tag is <b>{{ tag.share ? '' : 'not' }} shared</b>. You can't change this right now.</p>
-  </div>
-
-  <div class="pane" *ngIf="activePane === 'smartness' && ! tag.internal">
-    <h3 class="pane-heading">Smart Tag settings for <span class="static-tag">{{ tag.name }}</span></h3>
-
-    <prog-tag-control [tag]="tag"></prog-tag-control>
-  </div>
-
-  <div class="pane" *ngIf="activePane === 'privacy'">
-    <h3 class="pane-heading">Manage privacy for <span class="static-tag">{{ tag.name }}</span></h3>
-    <p>This tag is <b>{{ tag.private ? '' : 'not' }} hidden</b>. You can't change this right now.</p>
-  </div>
-
-  <div class="pane" *ngIf="activePane === 'delete' && ! tag.internal">
-    <h3 class="pane-heading">Delete <span class="static-tag">{{ tag.name }}</span></h3>
-
-    <p *ngIf="tag.docs.length === 0">This tag isn't used on any of your notes, so deleting it isn't really a big deal.</p>
-
-    <p *ngIf="tag.docs.length !== 0">Deleting this tag will remove if from {{ tag.docs.length === 1 ? 'the 1 note' : 'all ' + tag.docs.length + ' notes' }} tagged with it. {{ tag.docs.length === 1 ? 'That note' : 'Those notes' }} will remain undeleted.</p>
-
-    <p *ngIf="! tag.isLibraryTag">
-      Are you sure you want to continue? This can't be undone.
-    </p>
-    <p *ngIf="tag.isLibraryTag">
-      Do you want to continue? You can always re-enable this tag again from the <a [routerLink]="['/tags/smart-tags/library']">Smart Tag Library</a> later.
-    </p>
-
-    <button class="btn" [class.btn-danger]="! tag.isLibraryTag" (click)="_deleted()">Yes, delete this tag</button>
-  </div>
 </div>
+
+<div *ngIf="activePane === 'share'">
+  <h3 class="pane-heading">Manage sharing for <span class="static-tag">{{ tag.name }}</span></h3>
+  <p>This tag is <b>{{ tag.share ? '' : 'not' }} shared</b>. You can't change this right now.</p>
+</div>
+
+<div *ngIf="activePane === 'smartness' && ! tag.internal">
+  <h3 class="pane-heading">Smart Tag settings for <span class="static-tag">{{ tag.name }}</span></h3>
+
+  <prog-tag-control [tag]="tag"></prog-tag-control>
+</div>
+
+<div *ngIf="activePane === 'privacy'">
+  <h3 class="pane-heading">Manage privacy for <span class="static-tag">{{ tag.name }}</span></h3>
+  <p>This tag is <b>{{ tag.private ? '' : 'not' }} hidden</b>. You can't change this right now.</p>
+</div>
+
+<div *ngIf="activePane === 'delete' && ! tag.internal">
+  <h3 class="pane-heading">Delete <span class="static-tag">{{ tag.name }}</span></h3>
+
+  <p *ngIf="tag.docs.length === 0">This tag isn't used on any of your notes, so deleting it isn't really a big deal.</p>
+
+  <p *ngIf="tag.docs.length !== 0">Deleting this tag will remove if from {{ tag.docs.length === 1 ? 'the 1 note' : 'all ' + tag.docs.length + ' notes' }} tagged with it. {{ tag.docs.length === 1 ? 'That note' : 'Those notes' }} will remain undeleted.</p>
+
+  <p *ngIf="! tag.isLibraryTag">
+    Are you sure you want to continue? This can't be undone.
+  </p>
+  <p *ngIf="tag.isLibraryTag">
+    Do you want to continue? You can always re-enable this tag again from the <a [routerLink]="['/tags/smart-tags/library']">Smart Tag Library</a> later.
+  </p>
+
+  <button class="btn" [class.btn-danger]="! tag.isLibraryTag" (click)="_deleted()">Yes, delete this tag</button>
+  </div>
