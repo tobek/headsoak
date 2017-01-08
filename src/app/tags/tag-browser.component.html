@@ -34,7 +34,7 @@
       </div>
     </div>
 
-    <span *ngFor="let tag of (tags | arrayLimit:limit)" class="tag-wrapper">
+    <div *ngFor="let tag of (tags | arrayLimit:limit)" class="tag-wrapper">
       <tag class="tag tag-{{ tag.id }}"
         [routerLink]="['/tags/tag', tag.id, tag.name]"
         [tag]="tag"
@@ -42,11 +42,11 @@
         (mouseenter)="hoveredTag = tag"
         (mouseleave)="hoveredTag = null"
       ></tag>
-    </span>
+    </div>
 
     <hr style="width: 100%">
     <h4>System Tags</h4>
-    <span *ngFor="let tag of tagsService.internalTags" class="tag-wrapper">
+    <div *ngFor="let tag of tagsService.internalTags" class="tag-wrapper">
       <tag class="tag tag-{{ tag.id }}"
         [routerLink]="['/tags/tag', tag.id, tag.name]"
         [tag]="tag"
@@ -54,7 +54,7 @@
         (mouseenter)="hoveredTag = tag"
         (mouseleave)="hoveredTag = null"
       ></tag>
-    </span>
+    </div>
   </div>
 
   <div class="fixed-pane-wrapper">
