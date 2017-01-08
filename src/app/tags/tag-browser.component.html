@@ -38,19 +38,52 @@
       <span class="text">Add new tag</span>
     </div>
 
-    <div *ngFor="let tag of (tags | arrayLimit:limit)" class="tag-wrapper">
+    <div *ngFor="let tag of (tags | arrayLimit:limit)" class="tag-wrapper" [class.is--expanded]="expandedTag === tag">
+      <span class="caret-wrapper" (click)="expandedTag = expandedTag === tag ? null : tag">
+        <span class="caret"></span>
+      </span>
+
       <tag class="tag tag-{{ tag.id }}"
         [routerLink]="['/tags/tag', tag.id, tag.name]"
         [tag]="tag"
+        [renamable]="expandedTag === tag"
         showCount=1
         (mouseenter)="hoveredTag = tag.name ? tag : null"
         (mouseleave)="hoveredTag = null"
       ></tag><!-- checking tag.name in mouseenter to make sure it's not a new/unsaved tag -->
+
+      <div class="tag-manager" *ngIf="expandedTag === tag">
+        <ul class="menu">
+          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" [class.is--active]="activePane === 'explore'">
+            <i class="fa fa-fw fa-lg fa-bar-chart"></i>
+            Explore
+          </li>
+          <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'smartness']" [class.is--active]="activePane === 'smartness'">
+            <i class="fa fa-fw fa-lg fa-bolt"></i>
+            Smart tag
+          </li>
+          <!-- @TODO/tags @TODO/privacy
+          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'privacy']" [class.is--active]="activePane === 'privacy'">
+            <i class="fa fa-fw fa-lg fa-lock"></i>
+            Private tag
+          </li>
+          -->
+          <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'delete']" [class.is--active]="activePane === 'delete'">
+            <i class="fa fa-fw fa-lg fa-trash-o"></i>
+            Delete
+          </li>
+        </ul>
+      </div>
     </div>
 
     <hr style="width: 100%">
     <h4>System Tags</h4>
     <div *ngFor="let tag of tagsService.internalTags" class="tag-wrapper">
+      <!-- @TODO/refactor Copy-pasting from normal tags... -->
+      <span class="caret-wrapper" (click)="expandedTag = expandedTag === tag ? null : tag">
+        <span class="caret"></span>
+      </span>
+
       <tag class="tag tag-{{ tag.id }}"
         [routerLink]="['/tags/tag', tag.id, tag.name]"
         [tag]="tag"
@@ -58,6 +91,22 @@
         (mouseenter)="hoveredTag = tag"
         (mouseleave)="hoveredTag = null"
       ></tag>
+
+      <!-- @TODO/refactor Copy-pasting from normal tags... but a little different, cause you can't rename, delete, or smart tag these -->
+      <div class="tag-manager" *ngIf="expandedTag === tag">
+        <ul class="menu">
+          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" [class.is--active]="activePane === 'explore'">
+            <i class="fa fa-fw fa-lg fa-bar-chart"></i>
+            Explore
+          </li>
+          <!-- @TODO/tags @TODO/privacy
+          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'privacy']" [class.is--active]="activePane === 'privacy'">
+            <i class="fa fa-fw fa-lg fa-lock"></i>
+            Private tag
+          </li>
+          -->
+        </ul>
+      </div>
     </div>
   </div>
 

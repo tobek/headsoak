@@ -42,13 +42,42 @@ tag-browser
     &:hover .fa
       color: $icon-hover
 
+  .tag-wrapper
+    position: relative
 
-  .tag-list tag
-    cursor: pointer
-    display: inline-block
+    tag
+      cursor: pointer
+      display: inline-block
 
-    &.hovered
-      +tag-chiclet-active
+      &.hovered
+        +tag-chiclet-active
+
+    .caret-wrapper
+      +icon-button
+      position: absolute
+      top: 5px // magic number to center align with tag
+      right: 0
+
+    // @TODO/ece @TODO/now How's the styling here? It's identical to the dropdown menus elsewhere
+    .menu .item
+      +base-font-size
+      +menu-link
+      +base-line-height
+      padding-left: gutter() * 5
+
+    &.is--expanded tag
+      +tag-chiclet-reset
+      cursor: default
+
+      .name-wrapper
+        cursor: text // cause you can rename just by clicking on it
+
+      .tag-actions
+        display: inline-block
+      &.renaming .tag-actions
+        display: none
+
+
 
   .all-tags force-graph
     position: absolute

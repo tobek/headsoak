@@ -1,4 +1,5 @@
 <span class="name-wrapper"
+  (click)="renamable && ! renaming && renameStart($event)"
   ><span class="name" placeholder="tag name" spellcheck="false"
     ref-tagName
     [innerHTML]="tag.name"
@@ -32,8 +33,6 @@
   </span>
 </span>
 
-<span *ngIf="showCount && ! isNewTag" class="count">{{ tag.docs.length }}</span>
-
 <span class="tag-actions" (click)="$event.stopPropagation()">
   <a data-tooltip="Remove" class="tag-action tag-action--remove" *ngIf="inlineRemovable" (click)="remove()">
     <i class="fa fa-times"></i>
@@ -42,6 +41,8 @@
   <a *ngIf="renamable && ! tag.readOnly" data-tooltip="Rename" class="tag-action tag-action--rename" (click)="renameStart()"><i class="fa fa-pencil"></i></a>
   <a *ngIf="renamable && tag.isLibraryTag" data-tooltip="This is a Smart Tag Library tag and so can't be renamed" class="tag-action tag-action--rename is--disabled"><i class="fa fa-pencil"></i></a>
 </span>
+
+<span *ngIf="showCount && ! isNewTag" class="count">{{ tag.docs.length }}</span>
 
 <!-- We use `hovered` property toggled by JS in order to add delay and also want to use ngIf for tag-actions-dropdown cause it's a heavy component. -->
 <div class="tag-actions-dropdown" *ngIf="enableDropdown && hovered">

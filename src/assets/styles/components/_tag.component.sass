@@ -31,17 +31,9 @@ tag
   &.dropdown-enabled.hovered .tag-value-hover
     display: inline
 
-  .tag-actions
-    // @TODO/ece What's the tag action flow? must include easy toggle and remove from note
-    // @TODO/ece Still need a way to view all tags
+  .tag-actions // currently (jan 2017) only used for removing from note query or for renaming in tag browser
     display: none
-
-  &:hover .tag-actions
-    display: inline-block
-
-  // Hide, because any actions can be shown in the dropdown
-  &.dropdown-enabled .tag-actions
-    display: none
+    margin-left: 4px
 
   // Remove clipping name overflow in some situations:
   &.dropdown-disabled:hover,
@@ -85,19 +77,23 @@ tag
     color: $primary-color-light
     margin-left: 4px
 
-  note-query & .tag-action--remove
-    cursor: pointer
-    position: absolute
-    width: 100%
-    height: 100%
-    top: 0
-    left: 0
-    text-align: center
-    background-color: $white-overlay
-    color: $primary-color
+  note-query &
+    .tag-actions:hover
+      display: inline-block
 
-    &:hover
+    .tag-action--remove
+      cursor: pointer
+      position: absolute
+      width: 100%
+      height: 100%
+      top: 0
+      left: 0
+      text-align: center
+      background-color: $white-overlay
       color: $primary-color
+
+      &:hover
+        color: $primary-color
 
   .tag-actions-dropdown
     // @TODO/bug Dropdown can get hidden off right edgeof the screen (also making horizontal scrollbar appear)

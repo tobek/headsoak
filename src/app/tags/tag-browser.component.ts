@@ -26,6 +26,7 @@ export class TagBrowserComponent {
   tags: Tag[] = []; // Tags currently being displayed in the tag browser list
   activeTag: Tag; // Tag that's currently being show in details view
   hoveredTag?: Tag; // Tag that's currently hovered in the tag list (used to highlight tag in the visualization)
+  expandedTag?: Tag; // Tag that's currently expanded to show rename/delete/explore/etc
 
   /** Only show this many nuts at a time unless infinite scrolling. */
   limit: number = this.DEFAULT_TAGS_LIMIT;

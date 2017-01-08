@@ -27,6 +27,13 @@
   color: $primary-color-contrast
   background-color: $tag-color
 
+// To override `tag-chiclet-active` if necessary
+=tag-chiclet-reset
+  +tag-chiclet
+  color: $tag-color
+  background-color: transparent
+  box-shadow: none
+
 =text-link
   cursor: pointer
   color: $link-color

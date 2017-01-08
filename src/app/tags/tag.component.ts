@@ -120,7 +120,12 @@ export class TagComponent {
     this.removed.emit(this.tag);
   }
 
-  renameStart() {
+  // @TODO/polish If you get here by clicking on .name-wrapper, it would be cool if the cursor position was set properly!
+  renameStart(event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+
     this.renaming = true; // makes name element contenteditable
     setTimeout(() => {
       utils.placeCaretAtEnd(this.tagNameEl);
@@ -148,7 +153,7 @@ export class TagComponent {
     if (this.isNewTag) {
       this.isNewTag = false;
     }
-    
+
     this.renamingOver.emit();
   }
   renameCancel() {
