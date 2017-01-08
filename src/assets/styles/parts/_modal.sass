@@ -155,15 +155,13 @@ feedback
     margin-bottom: 20px
     color: $primary-color
 
+    // @TODO/ece Do we want this letter spacing? It was in the original designs and looks... better with it, but when you start typing you won't have the spacing (but that could be added). This same letter spacing is used in form fields and buttons (but not textareas right now).
     &::-webkit-input-placeholder
-      font-weight: bold
-      letter-spacing: 1.1px
+      letter-spacing: 1.2px
     &::-moz-placeholder
-      font-weight: bold
-      letter-spacing: 1.1px
+      letter-spacing: 1.2px
     &:-ms-input-placeholder  
-      font-weight: bold
-      letter-spacing: 1.1px
+      letter-spacing: 1.2px
 
 private-mode
   min-height: 320px // lazy shortsighted way to ensure modal stays same size in different states (private mode on/off)
