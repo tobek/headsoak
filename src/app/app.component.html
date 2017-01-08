@@ -78,7 +78,9 @@
   <main [hidden]="! dataService.user.loggedIn">
 
     <router-outlet></router-outlet>
-    <home *ngIf="dataService.isInitialized" [hidden]="router.url !== '/' && router.url !== '/focus' && router.url !== '/scroll' && router.url !== '/browse'"></home>
+
+    <home *ngIf="dataService.isInitialized" [hidden]="NOTE_BROWSER_ROUTES.indexOf(router.url) === -1"></home>
+    
     <tag-browser [hidden]="router.url.indexOf('/tags') !== 0" class="pane-layout"></tag-browser>
 
   </main>

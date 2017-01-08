@@ -8,7 +8,8 @@ import { EmptyComponent } from './utils';
 /** Routes which contain NoteBrowserComponent. */
 export const NOTE_BROWSER_ROUTES = [
   '/',
-  '/scroll',
+  // '/write',
+  // '/focus',
   '/browse',
 ];
 export const DEFAULT_NOTE_ROUTE = '/';
@@ -26,18 +27,18 @@ export const ROUTES: Routes = [
     component: EmptyComponent
   },
   {
-    path: '',
+    path: 'write',
     data: {
       name: 'Write',
       slug: 'write',
-      navSection: 'main',
+      // navSection: 'main', // hidden for now and probably forever except as an overkill option perhaps (could be good with a single-line-list version of browser)
       // iconSlug: 'th-large',
       iconSlug: 'columns',
     },
     component: EmptyComponent
   },
   {
-    path: 'scroll',
+    path: '',
     data: {
       name: 'Scroll',
       slug: 'scroll',

@@ -5,6 +5,7 @@ import {Setting, Shortcut} from './';
 import {ActiveUIsService} from '../active-uis.service';
 import {ModalService} from '../modals/modal.service';
 import {DataService} from '../data.service';
+import {NOTE_BROWSER_ROUTES} from '../app.routes';
 
 import {Logger, utils} from '../utils/';
 
@@ -220,7 +221,7 @@ export class SettingsService {
           this.activeUIs.home.goToNewNote();
         }
       },
-      routeTo: ['/', '/focus'], // @TODO In theory, if you're on the Browse or Scroll screens, it could open a new note there
+      routeTo: NOTE_BROWSER_ROUTES,
       ngZone: true,
       section: 'shortcuts',
     },
@@ -234,7 +235,7 @@ export class SettingsService {
           this.activeUIs.home.goToNewNoteAddTag();
         }
       },
-      routeTo: ['/', '/focus'],
+      routeTo: NOTE_BROWSER_ROUTES,
       ngZone: true,
       section: 'shortcuts',
     },
@@ -332,7 +333,7 @@ export class SettingsService {
         //   this.activeUIs.noteBrowser.noteComponents.first.bodyFocus();
         // }
       },
-      routeTo: ['/', /*'/scroll',*/ '/focus'],
+      routeTo: NOTE_BROWSER_ROUTES,
       section: 'shortcuts',
     },
     // @TODO/shortcuts Should 2-9 jump to appropriate note on note browser? Should 1 go to "open note", 2 go to first in browser, etc.? Or, 0 could be open note and diff shortcut for clear search, 1 could be first in browser, etc

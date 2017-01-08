@@ -11,7 +11,7 @@ import {DataService} from './data.service';
 import {SettingsService} from './settings/settings.service';
 import {Logger} from './utils/logger';
 
-import {ROUTES} from './app.routes';
+import {ROUTES, NOTE_BROWSER_ROUTES} from './app.routes';
 
 import {HomeComponent} from './home';
 
@@ -31,6 +31,7 @@ import * as _ from 'lodash';
   template: require('./app.component.html')
 })
 export class App {
+  NOTE_BROWSER_ROUTES = NOTE_BROWSER_ROUTES; // make available to template
   routes: Route[] = ROUTES;
   mainNavRoutes: Route[];
   menuNavSettingsRoutes: Route[];
