@@ -9,6 +9,7 @@ import {SettingsService} from '../settings/settings.service';
 // import {NoteComponent} from '../notes/note.component';
 // import {NotesService} from '../notes/notes.service';
 import {Tag, TagComponent} from './';
+import {TagDetailsComponent} from './tag-details.component'
 import {TagsService} from './tags.service'; // no idea why importing this separately is necessary
 import {Logger/*, ScrollMonitorService, AutocompleteService*/} from '../utils/';
 
@@ -35,11 +36,13 @@ export class TagBrowserComponent {
   sortOpt: Object = this.tagsService.sortOpts[0];
 
   activePane: 'viz' | 'library';
+  activeTagPane: string; // Which pane of the active tag is open - mirroed from tagDetailsComponent
 
   addingNewTag = false;
 
   @ViewChild('queryInput') queryInput: ElementRef;
   @ViewChildren(TagComponent) tagComponents: QueryList<TagComponent>;
+  @ViewChild(TagDetailsComponent) tagDetailsComponent: TagDetailsComponent;
 
   query = '';
   private queryUpdated$: Subject<void> = new Subject<void>();
@@ -138,9 +141,17 @@ export class TagBrowserComponent {
       this.activeTag = this.tagsService.tags[pathParts[2]];
       this.activePane = null;
       this.expandedTag = this.activeTag;
+
+      // This whole activeTagPane thing is a hack (reading tagDetailsComponent.activePane directly from template was causing that debug mode error where expression changed while checking it)
+      setTimeout(() => {
+        if (this.tagDetailsComponent) {
+          this.activeTagPane = this.tagDetailsComponent.activePane;
+        }
+      }, 0);
     }
     else {
       this.activeTag = null;
+      this.activeTagPane = null;
       this.expandedTag = null;
 
       if (event.url.indexOf('smart-tags/library') !== -1) {

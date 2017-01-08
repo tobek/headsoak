@@ -66,21 +66,22 @@
 
       <div class="tag-manager" *ngIf="expandedTag === tag">
         <ul class="menu">
-          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" [class.is--active]="activePane === 'explore'">
+          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" [class.is--active]="activeTagPane === 'explore'">
             <i class="fa fa-fw fa-lg fa-bar-chart"></i>
             Explore
           </li>
-          <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'smartness']" [class.is--active]="activePane === 'smartness'">
+          <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'smartness']" [class.is--active]="activeTagPane === 'smartness'">
             <i class="fa fa-fw fa-lg fa-bolt"></i>
             Smart tag
           </li>
           <!-- @TODO/tags @TODO/privacy
-          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'privacy']" [class.is--active]="activePane === 'privacy'">
+          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'privacy']" [class.is--active]="activeTagPane === 'privacy'">
             <i class="fa fa-fw fa-lg fa-lock"></i>
             Private tag
           </li>
           -->
-          <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'delete']" [class.is--active]="activePane === 'delete'">
+          <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'delete']" [class.is--active]="activeTagPane === 'delete'">
+            <!-- @TODO/tags @TODO/soon This should open up a modal -->
             <i class="fa fa-fw fa-lg fa-trash-o"></i>
             Delete
           </li>
@@ -107,7 +108,7 @@
       <!-- @TODO/refactor Copy-pasting from normal tags... but a little different, cause you can't rename, delete, or smart tag these -->
       <div class="tag-manager" *ngIf="expandedTag === tag">
         <ul class="menu">
-          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" [class.is--active]="activePane === 'explore'">
+          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" [class.is--active]="activeTagPane === 'explore'">
             <i class="fa fa-fw fa-lg fa-bar-chart"></i>
             Explore
           </li>
