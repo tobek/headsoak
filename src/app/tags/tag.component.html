@@ -1,8 +1,8 @@
 <span class="name-wrapper"
-  ><span class="name" placeholder="tag name"
+  ><span class="name" placeholder="tag name" spellcheck="false"
     ref-tagName
     [innerHTML]="tag.name"
-    [attr.contenteditable]="renaming"
+    [attr.contenteditable]="renaming || null"
     (click)="renaming && $event.stopPropagation()"
     (keydown.enter)="renameFinish($event)"
     (keydown.esc)="renameCancel()"

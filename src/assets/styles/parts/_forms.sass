@@ -3,12 +3,27 @@
   transition: border-color $transition-fast
 
 =input-underline-active
+  // @TODO/ece Should this go to 2px when focused?
   border-bottom-color: $secondary-color
 
 =input-underline
   +input-underline-base
   &:focus
     +input-underline-active
+
+
+// @TODO/rewrite check browser compability for this - last I remember it didn't work right in FF.
+[placeholder][contenteditable]:empty:before
+  cursor: text
+  content: attr(placeholder)
+  // font-style: italic
+  color: $input-stroke
+
+span[contenteditable]
+  display: inline-block // cursor doesn't display properly (in Chrome at least) on inline contenteditable elements
+  cursor: text
+  outline: 0
+  +input-underline
 
 
 input[type=text],

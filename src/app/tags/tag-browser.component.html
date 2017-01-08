@@ -32,6 +32,7 @@
       </div>
     </div>
 
+    <!-- @TODO/polish It would be slick if this had the exact same UI as adding a tag on a note, with the line sliding out etc. But that's harder. Prob would have to refactor stuff from NoteComponent into an AddTagComponent, or update how TagComponent handles its own new tag state so that it's always there and can morph into creating a tag, and then add that extra component to all notes and here, etc. -->
     <div class="add-new-tag" (click)="newTag()" *ngIf="! addingNewTag">
       <i class="fa fa-plus"></i>
       <span class="text">Add new tag</span>
