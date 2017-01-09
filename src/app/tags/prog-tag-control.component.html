@@ -3,6 +3,9 @@
 
   <span *ngIf="tag.isLibraryTag">It comes from the <a [routerLink]="['/tags/smart-tags/library']">smart tag library</a>, so it can't be modified. You can <a [routerLink]="['/tags/tag', tag.id, tag.name, 'delete']">delete</a> it though.</span>
 </p>
+<p *ngIf="! tag.isLibraryTag">
+  Smart tags let you write your own algorithms that determine which notes the tag is assigned to, and perform custom actions on those notes.
+</p>
 
 <button class="btn btn-secondary"
   *ngIf="tag.prog && ! tag.readOnly"
