@@ -31,6 +31,7 @@ export class NoteComponent {
 
   @HostBinding('class.is--expanded') isExpanded = false;
   @HostBinding('class.is--focused') isFocused = false;
+  @HostBinding('class.is--text-overflowing') isTextOverflowing = false;
   @HostBinding('class.show--explore') showExplore = false;
 
   private removePasteListener: Function;
@@ -60,6 +61,7 @@ export class NoteComponent {
 
   ngAfterViewInit() {
     this.checkTagOverflow();
+    setTimeout(this.checkTextOverflow.bind(this), 0); // otherwise we get expression changing after getting checked...
 
     this.removePasteListener = this.renderer.listen(
       this.bodyInputRef.nativeElement,
@@ -75,6 +77,10 @@ export class NoteComponent {
   //   debugger;
   //   this._logger.log('change detection');
   // }
+
+  checkTextOverflow(): void {
+    this.isTextOverflowing = this.bodyInputRef.nativeElement.scrollHeight > this.bodyInputRef.nativeElement.clientHeight;
+  }
 
   checkTagOverflow(): void {
     if (! this.note) {
@@ -147,6 +153,7 @@ export class NoteComponent {
     }
     this.note.blurred();
     this.isFocused = false;
+    this.checkTextOverflow();
   }
 
   addTagFocused() {

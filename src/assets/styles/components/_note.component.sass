@@ -236,12 +236,24 @@
     .body-input
       overflow: hidden
 
-      &:focus
-        overflow-y: auto
-
+    &.is--focused,
     &:hover
+      // Need to add scrollbar if needed, but don't want text to reflow with different line breaks when scrollbar takes up some width. This hack works on Chrome on Linux, needs browser testing (however even if it's a bit off and sometimes causes reflow, well that's the normal behavior, so as long as it's not that much worse...)
+
+      // We're assuming 12px scrollbar here
+
+      // padding-right: 22px // 12px more than normal note right padding
+      // padding-left: calc(#{gutter()} + 4px) // god this is just magic shit left and right
+
       .body-input
         overflow-y: auto
+
+      &.is--text-overflowing .body-input
+        overflow-y: scroll // force this otherwise sometimes the widening of the text will remove the need for a scroll bar and then it just inexplicably gets bigger!
+        width: calc(100% + 12px)
+        padding-right: 8px // 12px less than normal padding
+        margin-left: -12px
+        padding-left: 14px // 12px more than normal padding
 
 
   home &.open-note
@@ -254,3 +266,12 @@
         // These achieve a "max width" of 600px while filling the rest with padding. Additionally, it's aligned a little towards the left from centered
         padding-right: calc(75% - 450px)
         padding-left: calc(25% - 150px)
+
+    &.is--focused,
+    &:hover
+      &.is--text-overflowing .body-input
+        padding-left: 22px // 12px more than normal
+
+        +susy-breakpoint($screen-small, $susy)
+          padding-right: calc(75% - 450px - 12px)
+          padding-left: calc(25% - 150px + 12px)
