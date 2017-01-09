@@ -124,6 +124,7 @@ export class TagBrowserComponent {
     if (pathParts[0] !== 'tags') {
       this.activeTag = null;
       this.activePane = null;
+      this.activeTagPane = null;
       return;
     }
     
