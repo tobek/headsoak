@@ -133,6 +133,7 @@ export class Tag {
 
   /** Returns true if tag was deleted. */
   delete(noConfirm = false): boolean {
+    // @TODO/modals
     if (! noConfirm && ! confirm('Are you sure you want to delete the tag "' + this.name + '"? It will be removed from all notes which have this tag, but the notes will remain.\n\nThis can\'t be undone.')) {
       return false;
     }
@@ -273,6 +274,7 @@ export class Tag {
 
     // @TODO/prog
 
+    // @TODO/modals
     alert('Hey there was an unhandled error running smart tags, leave this page up and show toby please.');
 
     // // closeModal may have been just called, so open up new modal in a different tick:

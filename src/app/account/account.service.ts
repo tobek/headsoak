@@ -342,6 +342,7 @@ export class AccountService {
   deleteAccount(email: string, password: string, cb: Function) {
     this.checkPassword(password, (err) => {
       if (err) {
+        // @TODO/modals @TODO/tooltip Not sure which
         alert(err);
         cb(err)
         return;
@@ -361,6 +362,7 @@ export class AccountService {
       // Then delete account data
       this.ref.root().child('users/' + this.user.uid).set(null, (err) => {
         if (err) {
+          // @TODO/modals @TODO/tooltip Not sure which
           alert('Sorry, something went wrong when trying to delete your account: ' + (err.message || err.code || err) + '. Please try again later!'); // @TODO include support email here
           this.analytics.event('Account', 'delete_account.error_data', err.code);
           this._logger.error('Error deleting account data:', err);
@@ -373,6 +375,7 @@ export class AccountService {
         this.ref.removeUser({ email: email, password: password}, (err) => {
           if (err) {
             this.analytics.event('Account', 'delete_account.error_user', err.code);
+            // @TODO/modals @TODO/tooltip Not sure which
             alert('Sorry, something went wrong when trying to delete your account: ' + (err.message || err.code || err) + '. Please try again later!'); // @TODO include support email here
             this._logger.error('Error removing user account after successfully deleting all account data:', err);
             // @TODO THINGS ARE IN A REAL WEIRD STATE - DELETED USER INFO BUT NOT ACCOUNT. Now they can log in still with same account details (and can't make new account) but they'll have data. Let's act like everything was fine, and we'll have to go in manually and delete account.
@@ -383,6 +386,7 @@ export class AccountService {
 
           this._logger.info('Successfully deleted account with email', email);
 
+          // @TODO/modals Will this work with logout? Might need blocking modal
           alert('Your account was deleted successfully - thanks for using Headsoak!'); // @TODO Should give opportunity to leave feedback? We'd need to make modal (in this case) blocking, and to send additional data (that it was before deletion) and to loggout on cancel or successful submit. Maybe leave feedback before finishing account deletion because writing feedback and knowing we want it might change their mind?
           this.logout();
           cb();

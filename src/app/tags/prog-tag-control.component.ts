@@ -89,6 +89,7 @@ export class ProgTagControlComponent {
   makeSmart(): void {
     if (this.tag.docs.length) {
       const singular = this.tag.docs.length === 1;
+      // @TODO/modals
       if (! confirm('Warning: you currently have ' + this.tag.docs.length + ' note' + (singular ? '' : 's') + ' tagged as "' + this.tag.name + '". ' + (singular ? 'It' : 'They') + ' will be untagged if ' + (singular ? 'it doesn\'t' : 'they don\'t') + ' return true for the function you enter below.\n\nAre you sure you wish to continue?')) {
         return;
       }
@@ -105,7 +106,7 @@ export class ProgTagControlComponent {
   }
 
   makeDumb(): void {
-    // @TODO/now use modal yo
+    // @TODO/modals
     if (! confirm('Notes that are already tagged with this tag will remain tagged, but this tag will no longer be automatically added or removed from to notes.')) {
       return;
     }

@@ -165,6 +165,7 @@ export class SettingsComponent {
   }
 
   revert() {
+    // @TODO/modals
     if (! confirm('Are you sure you want to revert these ' + this.section + ' to their default values?\n\nThis can\'t be undone.')) {
       return;
     }

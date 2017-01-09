@@ -400,6 +400,7 @@ export class Note {
       confirmMessage += '"';
     }
 
+    // @TODO/modals
     if (! noConfirm && ! confirm(confirmMessage)) {
       return false;
     }
