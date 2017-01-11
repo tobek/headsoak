@@ -65,6 +65,7 @@
       ></tag><!-- checking tag.name in mouseenter to make sure it's not a new/unsaved tag -->
 
       <div class="tag-manager" *ngIf="expandedTag === tag">
+        <div *ngIf="tag.description" class="description">{{ tag.description }}</div>
         <ul class="menu">
           <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" [class.is--active]="activeTagPane === 'explore'">
             <i class="fa fa-fw fa-lg fa-bar-chart"></i>

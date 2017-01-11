@@ -51,6 +51,13 @@ tag-browser
     &:hover .fa
       color: $icon-hover
 
+  .description
+    +small
+    width: calc(100% + 40px) // matches pane layout menu
+    margin-left: -20px
+    padding: 8px gutter() * 5 16px // matches tag browser menu
+    font-style: italic
+
   .tag-wrapper
     position: relative
 
