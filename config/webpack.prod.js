@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const helpers = require('./helpers');
 const webpackMerge = require('webpack-merge'); // used to merge webpack configs
 const commonConfig = require('./webpack.common.js'); // the settings that are common to prod and dev
@@ -12,7 +13,7 @@ const LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
 const NormalModuleReplacementPlugin = require('webpack/lib/NormalModuleReplacementPlugin');
 const ProvidePlugin = require('webpack/lib/ProvidePlugin');
 const UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
-const WebpackMd5Hash = require('webpack-md5-hash');
+// const WebpackMd5Hash = require('webpack-md5-hash');
 const V8LazyParseWebpackPlugin = require('v8-lazy-parse-webpack-plugin');
 /**
  * Webpack Constants
@@ -91,7 +92,15 @@ module.exports = function (env) {
        *
        * See: https://www.npmjs.com/package/webpack-md5-hash
        */
-      new WebpackMd5Hash(),
+      // new WebpackMd5Hash(), // not needed anymore, using default webpack hashing with namedmodules below - see issues and discussion at https://github.com/webpack/webpack/issues/1315
+
+      /**
+       * Plugin: NamedModulesPlugin
+       * Description: Uses module paths instead of integers for identifying modules in builds. This way references between bundles don't get broken if one bundle changes but the other does not. More info at https://github.com/webpack/webpack/issues/1315
+       *
+       * This increased bundle size (because module ID becomes whole relative path name which could be longish) by about 10%, but gzipped bundles were anywhere from .5% *smaller* to 4% bigger. Another option is `webpack.HashedModuleIdsPlugin` which creates hashes of those module paths that are a few char long, making the un-gzipped bundles only a tiny bit bigger but for some reason making gzipped bundles quite a lot bigger - somehow perhaps the hashed names went under the radar and gzip doesn't try to compress them.
+       */
+      new webpack.NamedModulesPlugin(),
 
       /**
        * Plugin: DedupePlugin
