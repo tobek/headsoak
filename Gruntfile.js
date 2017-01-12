@@ -115,10 +115,20 @@ module.exports = function(grunt) {
                     {
                         expand: true,
                         cwd: '<%= distDir %>',
-                        src: ['**/*'],
+                        src: ['index.html.gz'],
                         dest: '/',
                         params: {
                             CacheControl: 'no-cache'
+                        }
+                    },
+                    {
+                        expand: true,
+                        cwd: '<%= distDir %>',
+                        src: ['**/*', '!index.html.gz'],
+                        dest: '/',
+                        params: {
+                            CacheControl: 'public, max-age=' + 60*60*24,
+                            Expires: new Date(Date.now() + 1000*60*60*24)
                         }
                     },
                 ]
