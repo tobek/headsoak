@@ -1,78 +1,72 @@
 home
 
-  note.open-note
-    +span(12 last)
+  // @REMOVED/write
+  // note.open-note
+  //   +span(12 last)
 
-    height: $full-height
+  //   height: $full-height
 
-    +susy-breakpoint($tablet-large, $susy)
-      +span(8)
+  //   +susy-breakpoint($tablet-large, $susy)
+  //     +span(8)
 
   note-browser
-    display: none
+    +span(8)
 
-    +susy-breakpoint($tablet-large, $susy)
-      +span(4 last)
-      display: block
-
-      .route--write & note
-        // We have to specify that the gutter is in a 4 column context, not the full container
-        padding-left: gutter(4)
-        // padding-right: gutter(4) // don't need this since right padding is hard-coded for purposes of positioning body input scrollbar
-        margin-bottom: gutter(4)
+    // @REMOVED/write
+    // +susy-breakpoint($tablet-large, $susy)
+    //   +span(4 last)
+    //   display: block
+    //   .route--write & note
+    //     // We have to specify that the gutter is in a 4 column context, not the full container
+    //     padding-left: gutter(4)
+    //     // padding-right: gutter(4) // don't need this since right padding is hard-coded for purposes of positioning body input scrollbar
+    //     margin-bottom: gutter(4)
 
   .route--browse &,
   .route--scroll &
-    note.open-note
-      display: none
+    tag-browser
+      +span(4 last)
 
-    note-browser
-      +span(12 last)
-      display: block
+      .overview
+        width: auto
+        float: none
+        margin: 0
+
+    // @REMOVED/write
+    // note.open-note
+    //   display: none
 
   .route--browse &
     note-browser
       note
-        +span(12 last)
+        +span(8 of 8)
 
-        +susy-breakpoint($tablet-small, $susy)
-          +gallery(6 of 12)
+        // +susy-breakpoint($tablet-small, $susy)
+        //   +gallery(6 of 8)
 
-        +susy-breakpoint($tablet-large, $susy)
-          +gallery(4 of 12)
+        // +susy-breakpoint($tablet-large, $susy)
+        //   +gallery(4 of 8)
 
         +susy-breakpoint($screen-small, $susy)
-          +gallery(3 of 12)
+          +gallery(4 of 8)
 
-      // 5 columns is a little tight... maybe on HUGE screens but nah for now
-      // +susy-breakpoint($screen-large, $susy)
-      //   +nested(10)
-      //   note
-      //     +gallery(2 of 10)
+        +susy-breakpoint($screen-large, $susy)
+          +gallery(2 of 8)
 
   .route--scroll &
     note-browser
       note
-        width: span(12)
+        width: span(8 of 8)
         margin-bottom: gutter() * 1.5 // @TODO/ece What do you think of this?
-        margin-left: auto
-        margin-right: auto
 
-        +susy-breakpoint($tablet-small, $susy)
-          width: span(10)
 
-        +susy-breakpoint($tablet-large, $susy)
-          width: span(8)
+  // @REMOVED/write
+  // .route--focus &
+  //   // @TODO/rewrite @TODO/redesign This should be a modal
+  //   note.open-note
+  //     +span(12 last)
 
-        +susy-breakpoint($screen-small, $susy)
-          width: span(7)
-
-  .route--focus &
-    // @TODO/rewrite @TODO/redesign This should be a modal
-    note.open-note
-      +span(12 last)
-
-    note-browser
-      display: none
+  //   note-browser
+  //     display: none
 
 

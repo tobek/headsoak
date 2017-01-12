@@ -50,7 +50,7 @@
     </div>
 
     <div *ngFor="let tag of (tags | arrayLimit:limit)" class="tag-wrapper" [class.is--expanded]="expandedTag === tag">
-      <span class="caret-wrapper" (click)="tagDropdownClick(tag)">
+      <span *ngIf="tag.name" class="caret-wrapper" (click)="tagDropdownClick(tag)">
         <!-- <span class="caret"></span> -->
         <i class="fa fa-chevron-down"></i>
       </span>
@@ -130,7 +130,7 @@
     </div>
   </div>
 
-  <div class="pane" *ngIf="activePane !== 'viz'">
+  <div class="pane" *ngIf="activePane === 'library' || activeTag">
     <prog-tag-library *ngIf="! activeTag && activePane === 'library'"></prog-tag-library>
 
     <tag-details

@@ -1,4 +1,5 @@
 import {Component, ViewChild/*, QueryList*/} from '@angular/core';
+import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 
 import {ActiveUIsService} from '../active-uis.service';
@@ -17,7 +18,7 @@ import {Tag, TagsService} from '../tags/';
   templateUrl: './home.component.html'
 })
 export class HomeComponent {
-  openNote: Note;
+  // openNote: Note; // @REMOVED/write
   newNote: Note;
 
   @ViewChild(NoteComponent) noteComponent: NoteComponent;
@@ -28,6 +29,7 @@ export class HomeComponent {
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
+    private router: Router,
     public activeUIs: ActiveUIsService,
     public analyticsService: AnalyticsService,
     public notesService: NotesService,
@@ -51,9 +53,10 @@ export class HomeComponent {
       this.activeUIs.home = null;
     }
 
-    if (this.activeUIs.openNoteComponent === this.noteComponent) {
-      this.activeUIs.openNoteComponent = null;
-    }
+    // @REMOVED/write
+    // if (this.activeUIs.openNoteComponent === this.noteComponent) {
+    //   this.activeUIs.openNoteComponent = null;
+    // }
   }
 
   init(): void {
@@ -62,7 +65,8 @@ export class HomeComponent {
     this.setUpNewNote();
 
     this.activeUIs.home = this;
-    this.activeUIs.openNoteComponent = this.noteComponent;
+    // @REMOVED/write
+    // this.activeUIs.openNoteComponent = this.noteComponent;
 
     this.activeUIs.noteQuery$.first().subscribe((noteQuery) => {
       this.queryTagsUpdatedSub = noteQuery.tagsUpdated$.subscribe(
@@ -82,7 +86,8 @@ export class HomeComponent {
       this.setUpNewNoteTags();
     }
 
-    this.noteOpened(this.newNote, thenFocus);
+    // @REMOVED/write
+    // this.noteOpened(this.newNote, thenFocus);
   }
 
   setUpNewNoteTags(): void {
@@ -102,45 +107,49 @@ export class HomeComponent {
     }
   }
 
-  noteOpened(note: Note, thenFocus = true): void {
-    this.openNote = note;
+  // @REMOVED/write
+  // noteOpened(note: Note, thenFocus = true): void {
+  //   this.openNote = note;
 
-    if (thenFocus) {
-      this.noteComponent.bodyFocus();
-    }
+  //   if (thenFocus) {
+  //     this.noteComponent.bodyFocus();
+  //   }
 
-    setTimeout(this.noteComponent.checkTagOverflow.bind(this.noteComponent));
-  }
+  //   setTimeout(this.noteComponent.checkTagOverflow.bind(this.noteComponent));
+  // }
 
-  closeNote(thenFocus = true): void {
-    this.openNote = null;
+  // @REMOVED/write
+  // closeNote(thenFocus = true): void {
+  //   this.openNote = null;
 
-    this.setUpNewNote(thenFocus);
+  //   this.setUpNewNote(thenFocus);
 
-    setTimeout(this.noteComponent.checkTagOverflow.bind(this.noteComponent));
-  }
+  //   setTimeout(this.noteComponent.checkTagOverflow.bind(this.noteComponent));
+  // }
 
   noteUpdated(note: Note): void {
-    if (note.deleted && this.openNote === note) {
-      this.closeNote();
-    }
+    // @REMOVED/write
+    // if (note.deleted && this.openNote === note) {
+    //   this.closeNote();
+    // }
   }
 
   goToNewNote(thenFocus = true): void {
-    if (! this.openNote.new) {
-      // We have a note open that is not new - it has changes/content
-      this.closeNote(); // will set up a new note
-    }
-    else if (this.openNote.new && this.openNote.body) {
-      // We have a note open that has yet to be saved. Blur it (which will save, set oldBody, etc.), then close it, ready for a truly new note.
-      this.openNote.blurred();
-      this.closeNote();
-    }
+    // @REMOVED/write
+    // if (! this.openNote.new) {
+    //   // We have a note open that is not new - it has changes/content
+    //   this.closeNote(); // will set up a new note
+    // }
+    // else if (this.openNote.new && this.openNote.body) {
+    //   // We have a note open that has yet to be saved. Blur it (which will save, set oldBody, etc.), then close it, ready for a truly new note.
+    //   this.openNote.blurred();
+    //   this.closeNote();
+    // }
 
-    // Now we have an untouched new note open
-    if (thenFocus) {
-      this.noteComponent.bodyFocus();
-    }
+    // // Now we have an untouched new note open
+    // if (thenFocus) {
+    //   this.noteComponent.bodyFocus();
+    // }
   }
 
   goToNewNoteAddTag(): void {

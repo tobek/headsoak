@@ -135,9 +135,17 @@
   &.is--focused .body-input
     max-height: calc(#{$full-height} - 100px) // magic numbers - 100px is about the vertical padding of note element plus a bit to spare
 
-  .route--browse & .body-input
-    max-height: none
-    height: 133px
+  .route--browse &
+    // Magic numbers just like in normal `note` padding
+    padding-top: 40px
+    padding-bottom: 32px
+
+    .body-input
+      max-height: none
+      height: 95px
+
+    .note-actions
+      bottom: -2px
 
 
   .note-actions
@@ -256,10 +264,8 @@
         padding-left: 14px // 12px more than normal padding
 
 
-  home &.open-note
+  .route--scroll &
     .body-input
-      max-height: none
-      height: 100%
       padding-left: 10px
 
       +susy-breakpoint($screen-small, $susy)

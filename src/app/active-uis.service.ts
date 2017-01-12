@@ -15,13 +15,16 @@ export class ActiveUIsService {
   private _focusedNoteComponent: NoteComponent;
 
   /** Note which is open in the main writing area. May be the same as focusedNoteComponent. */
-  private _openNoteComponent: NoteComponent;
+  // @REMOVED/write
+  // private _openNoteComponent: NoteComponent;
 
   private _home$ = new ReplaySubject<HomeComponent>(1);
   private _noteBrowser$ = new ReplaySubject<NoteBrowserComponent>(1);
   private _noteQuery$ = new ReplaySubject<NoteQueryComponent>(1);
   private _focusedNoteComponent$ = new ReplaySubject<NoteComponent>(1);
-  private _openNoteComponent$ = new ReplaySubject<NoteComponent>(1);
+
+  // @REMOVED/write
+  // private _openNoteComponent$ = new ReplaySubject<NoteComponent>(1);
 
   // The following can be subscribed to to be notified of updates to the active UI. If there is a current truthy value, any subscription will immediately be called with that value. Subscribing with `.first().subscribe(...)` will call immediately with current truthy value if any and then unsubscribe, otherwise will be called when there *is* a truthy value and then unsubscribe.
   // (Filtering the private subject in the following declarations is what ensures that if the active UI is set to null, it doesn't replay or emit a null value.)
@@ -29,7 +32,9 @@ export class ActiveUIsService {
   public noteBrowser$ = this._noteBrowser$.filter(val => !! val);
   public noteQuery$ = this._noteQuery$.filter(val => !! val);
   public focusedNoteComponent$ = this._focusedNoteComponent$.filter(val => !! val);
-  public openNoteComponent$ = this._openNoteComponent$.filter(val => !! val);
+  
+  // @REMOVED/write
+  // public openNoteComponent$ = this._openNoteComponent$.filter(val => !! val);
 
   constructor(
   ) {
@@ -47,9 +52,10 @@ export class ActiveUIsService {
   get focusedNoteComponent(): NoteComponent{
     return this._focusedNoteComponent;
   }
-  get openNoteComponent(): NoteComponent {
-    return this._openNoteComponent;
-  }
+  // @REMOVED/write
+  // get openNoteComponent(): NoteComponent {
+  //   return this._openNoteComponent;
+  // }
 
   set home(newVal: HomeComponent) {
     this._home = newVal;
@@ -67,8 +73,9 @@ export class ActiveUIsService {
     this._focusedNoteComponent = newVal;
     this._focusedNoteComponent$.next(newVal);
   }
-  set openNoteComponent(newVal: NoteComponent) {
-    this._openNoteComponent = newVal;
-    this._openNoteComponent$.next(newVal);
-  }
+  // @REMOVED/write
+  // set openNoteComponent(newVal: NoteComponent) {
+  //   this._openNoteComponent = newVal;
+  //   this._openNoteComponent$.next(newVal);
+  // }
 }

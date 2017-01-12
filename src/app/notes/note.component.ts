@@ -100,11 +100,13 @@ export class NoteComponent {
   }
 
   openNote() {
-    this.noteOpened.emit(this.note);
+    // @REMOVED/write
+    // this.noteOpened.emit(this.note);
   }
 
   closeNote() {
-    this.noteClosed.emit(this.note);
+    // @REMOVED/write
+    // this.noteClosed.emit(this.note);
   }
 
   /** Have had some issue with deleted or non-existent tag IDs showing up on notes, here we can debug it. */
@@ -153,7 +155,9 @@ export class NoteComponent {
     }
     this.note.blurred();
     this.isFocused = false;
-    this.checkTextOverflow();
+
+    // Wait for max-height transition to finish
+    setTimeout(this.checkTextOverflow.bind(this), 250);
   }
 
   addTagFocused() {

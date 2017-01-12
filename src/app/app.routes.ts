@@ -31,7 +31,7 @@ export const ROUTES: Routes = [
     data: {
       name: 'Write',
       slug: 'write',
-      // navSection: 'main', // hidden for now and probably forever except as an overkill option perhaps (could be good with a single-line-list version of browser)
+      // navSection: 'main', // @REMOVED/write Hidden for now and probably forever except as an overkill option perhaps (could be good with a single-line-list version of browser)
       // iconSlug: 'th-large',
       iconSlug: 'columns',
     },

@@ -6,7 +6,7 @@
 
   <div class="note-count-heading">{{ tag.docs.length }} Note{{ tag.docs.length !== 1 ? 's' : '' }}</div>
   
-  <tag-visualization [centralTag]="tag" [highlightedTag]="hoveredTag"></tag-visualization>
+  <tag-visualization *ngIf="tag.docs.length" [centralTag]="tag" [highlightedTag]="hoveredTag"></tag-visualization>
 
   <p *ngIf="! exploreComputed">
     <i class="fa fa-spin fa-cube"></i>&nbsp;
