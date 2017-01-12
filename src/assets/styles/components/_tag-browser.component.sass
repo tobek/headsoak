@@ -51,13 +51,6 @@ tag-browser
     &:hover .fa
       color: $icon-hover
 
-  .description
-    +small
-    width: calc(100% + 40px) // matches pane layout menu
-    margin-left: -20px
-    padding: 8px gutter() * 5 16px // matches tag browser menu
-    font-style: italic
-
   .tag-wrapper
     position: relative
 
@@ -74,6 +67,13 @@ tag-browser
         max-width: 260px
         .route--browse &
           max-width: 180px
+
+    .description
+      +small
+      width: calc(100% + 40px) // matches pane layout menu
+      margin-left: -20px
+      padding: 8px gutter() * 5 16px // matches tag browser menu
+      font-style: italic
 
     // @TODO/now Caret should change when it's open, and it should be the same
     // @TODO/now @TODO/ece Too intense? Should it be tag color? Maybe light gray?
