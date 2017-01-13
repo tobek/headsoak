@@ -1,4 +1,8 @@
-<note class="note-{{ note.id }}"
+<note class="note note-{{ newNote.id }}"
+  [note]="newNote"
+></note>
+
+<note class="note note-{{ note.id }}"
   *ngFor="let note of (notes | arrayLimit:limit)"
   [note]="note"
 ></note>

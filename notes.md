@@ -1,17 +1,31 @@
 # TODO
 
-for ece, about tag browser: When looking at notes, obviously clicking on tag text filters by that tag, and dropdown arrow opens dropdown. What about if you're on the full-page tags screen - does clicking on a tag name open up the tag explore pane and/or dropdown, or does it take you back to notes and search for that tag? If the former, then should the dropdown arrow also open up explore pane so you can browse around tags with one click?
+- active tag in query should have its dropdown open 
 
-### layout updates
+### layout updates ~5h
 
-- single column (5m)
-- add new tag (with note behavior) on top (15m)
-- dropdown arrow (10m)
-- dropdown arrow opens up headings (15m)
-- headings change route (and un-highlight "explore tags") (30m)
-- style search/sort (30m)
+- update nav (15m)
+- support new note in scroll mode (60m)
+    - UI for new -> no longer new
+        - PROBLEMS
+            - when body has focus and you go to add tag, note saves and moves into tag list and you're in add tag field of a *new* new note
+            - if you add a tag straight onto a new note, it basically goes into the no-longer-new note in the note list, and leaves you still in a new new note
+        - on blur (what about adding tag?) slide new one in
+            - new `newNote` gets absolute position and opacity 0 so we can get height
+            - note browser gets animated downwards by necessary amount
+            - new note is faded in (`note-browser` needs relative position)
+            - new note absolute position and note browser offset are removed simultaneously
+        - as soon as you type or hit anything, another new note appears (preferably sliding in)
+            - challenge is to "preserve" the component as it becomes one with the note list
+                - maybe if it's in the new note component we filter it out of the note list?
+                - might need a way to programmatically add new note components
+    - check stuff in shortcuts too, like new note and `sGoToFirstNote`
+    - focus on page load
 
+### focused note
 
+- search for `@REMOVED/write`
+- search for `openNote` and stuff like that
 
 ### misc
 

@@ -18,14 +18,16 @@ import {Tag, TagsService} from '../tags/';
   templateUrl: './home.component.html'
 })
 export class HomeComponent {
-  // openNote: Note; // @REMOVED/write
-  newNote: Note;
+  // @REMOVED/write
+  // openNote: Note;
 
-  @ViewChild(NoteComponent) noteComponent: NoteComponent;
+  // @REMOVED/write
+  // @ViewChild(NoteComponent) noteComponent: NoteComponent;
 
   @HostBinding('class.is--tag-browser-collapsed') tagBrowserCollapsed = false
 
-  private noteUpdatedSub: Subscription;
+  // @REMOVED/write
+  // private noteUpdatedSub: Subscription;
   private queryTagsUpdatedSub: Subscription;
 
   private _logger: Logger = new Logger(this.constructor.name);
@@ -48,7 +50,9 @@ export class HomeComponent {
   }
 
   ngOnDestroy() {
-    this.noteUpdatedSub.unsubscribe();
+    // @REMOVED/write
+    // this.noteUpdatedSub.unsubscribe();
+
     this.queryTagsUpdatedSub.unsubscribe();
 
     if (this.activeUIs.home === this) {
@@ -62,51 +66,11 @@ export class HomeComponent {
   }
 
   init(): void {
-    this.noteUpdatedSub = this.notesService.noteUpdated$.subscribe(this.noteUpdated.bind(this));
+    // @REMOVED/write
+    // this.noteUpdatedSub = this.notesService.noteUpdated$.subscribe(this.noteUpdated.bind(this));
 
-    this.setUpNewNote();
-
-    this.activeUIs.home = this;
     // @REMOVED/write
     // this.activeUIs.openNoteComponent = this.noteComponent;
-
-    this.activeUIs.noteQuery$.first().subscribe((noteQuery) => {
-      this.queryTagsUpdatedSub = noteQuery.tagsUpdated$.subscribe(
-        this.setUpNewNoteTags.bind(this)
-       );
-    });
-  }
-
-  setUpNewNote(thenFocus = true): void {
-    // This is a blank new note for the user to be able to use as soon as they open the app. We pass `init` true to `createNote` so that the note isn't saved to data store. As soon as they make anything that calls`note.update` (editing text, adding tag, sharing), it'll get saved to data store.
-
-    if (! this.newNote || ! this.newNote.new){
-      // Never made a new note, or made one and it's no longer new (was updated/edited) - either way create a new one:
-      this._logger.log('Setting up new unsaved note');
-      this.newNote = this.notesService.createNote({});
-      this.newNote.new = true;
-      this.setUpNewNoteTags();
-    }
-
-    // @REMOVED/write
-    // this.noteOpened(this.newNote, thenFocus);
-  }
-
-  setUpNewNoteTags(): void {
-    if (! this.newNote.new) {
-      return;
-    }
-
-    if (! this.settings.get('addQueryTagsToNewNuts')) {
-      this.newNote.tags = [];
-      return;
-    }
-
-    if (this.activeUIs.noteQuery) {
-      this.newNote.tags = this.activeUIs.noteQuery.tags
-        .filter((tag: Tag) => ! tag.prog && ! tag.readOnly)
-        .map((tag: Tag) => tag.id);
-    }
   }
 
   // @REMOVED/write
@@ -155,17 +119,21 @@ export class HomeComponent {
   }
 
   goToNewNoteAddTag(): void {
-    this.goToNewNote(false);
-    this.noteComponent.initializeAddTag();
+    // @REMOVED/write
+    // this.goToNewNote(false);
+    // this.noteComponent.initializeAddTag();
+
     // this.noteComponent.cdrRef.detectChanges(); // this was necessary when new note happened in/from note browser but no longer seems necessary, but keeping it here for reference.
   }
 
   goToNewNoteWithSameTags(note: Note): void {
-    this.goToNewNote();
+    // @REMOVED/write
     
-    this.newNote.tags = note.tags.filter((tagId: string) => {
-      const tag = this.tagsService.tags[tagId];
-      return ! tag.prog && ! tag.readOnly;
-    });
+    // this.goToNewNote();
+    
+    // this.newNote.tags = note.tags.filter((tagId: string) => {
+    //   const tag = this.tagsService.tags[tagId];
+    //   return ! tag.prog && ! tag.readOnly;
+    // });
   }
 }

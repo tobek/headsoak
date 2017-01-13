@@ -48,7 +48,7 @@ export class NoteComponent {
 
   constructor(
     // public cdrRef: ChangeDetectorRef,
-    private el: ElementRef,
+    public el: ElementRef,
     private renderer: Renderer,
     private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
