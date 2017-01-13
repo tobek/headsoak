@@ -1,4 +1,4 @@
-import {Inject, forwardRef, Component, EventEmitter, ElementRef, Input, Output, ViewChild, HostBinding, Renderer/*, ChangeDetectorRef*/} from '@angular/core';
+import {Inject, forwardRef, Component, EventEmitter, ElementRef, Input, Output, ViewChild, HostBinding, HostListener, Renderer/*, ChangeDetectorRef*/} from '@angular/core';
 import {SafeHtml} from '@angular/platform-browser';
 
 import {ActiveUIsService} from '../active-uis.service';
@@ -37,6 +37,11 @@ export class NoteComponent {
   // @REMOVED/note text overflow
   // @HostBinding('class.is--text-overflowing') isTextOverflowing = false;
   @HostBinding('class.show--explore') showExplore = false;
+
+  /** Catch any "background" clicks that bubble up to the host element and focus on the body. @NOTE This means that anything in this component that shouldn't lead to body being focused needs `event.stopPropagation`. */
+  @HostListener('click') noteClick() {
+    this.bodyFocus();
+  }
 
   private removePasteListener: Function;
 
@@ -133,6 +138,7 @@ export class NoteComponent {
   }
 
   toggleTag(tagId: string, event: MouseEvent) {
+    event.stopPropagation();
     if (this.activeUIs.noteQuery) {
       this.activeUIs.noteQuery.tagToggled(tagId, event && event.shiftKey);
     }
@@ -228,7 +234,8 @@ export class NoteComponent {
     }
   }
 
-  newTagClick(): void {
+  newTagClick(event: MouseEvent): void {
+    event.stopPropagation();
     if (! this.addingTag) {
       this.initializeAddTag();
     }
