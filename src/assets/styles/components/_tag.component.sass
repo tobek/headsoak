@@ -78,8 +78,8 @@ tag
     margin-left: 4px
 
   note-query &
-    .tag-actions:hover
-      display: inline-block
+    &:hover .tag-actions
+      display: block
 
     .tag-action--remove
       cursor: pointer
@@ -88,6 +88,7 @@ tag
       height: 100%
       top: 0
       left: 0
+      padding: 2px 0 // matches vertical padding on root tag element so that icon remains centered
       text-align: center
       background-color: $white-overlay
       color: $primary-color
