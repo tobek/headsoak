@@ -89,12 +89,22 @@ tag-browser
       +base-line-height
       padding-left: gutter() * 5
 
-    &.is--expanded tag
-      +tag-chiclet-reset
-      cursor: default
+    // On full page tag browser you can click anywhere in the row
+    .route--tags & .tag-header
+      cursor: pointer
+      &:hover
+        tag
+          +tag-chiclet-active
+        .caret-wrapper
+          color: $icon-hover
 
-      .name-wrapper
-        cursor: text // cause you can rename just by clicking on it
+    &.is--expanded tag
+      .route--tags &
+        // On full page tag browser you can rename just by clicking on tag name when it's expanded, so don't use the active chiclet style. (when *not* on full page tag browser, clicking on tag itself will toggle tag in query so we still want cursor pointer and active chiclet style)
+        +tag-chiclet-reset
+        cursor: default
+        .name-wrapper
+          cursor: text
 
       .tag-actions
         display: inline-block

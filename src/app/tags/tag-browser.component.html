@@ -49,22 +49,27 @@
       <span class="text">Add new tag</span>
     </div>
 
-    <div *ngFor="let tag of (tags | arrayLimit:limit)" class="tag-wrapper" [class.is--expanded]="expandedTag === tag">
-      <span *ngIf="tag.name" class="caret-wrapper" (click)="tagDropdownClick(tag)">
-        <!-- <span class="caret"></span> -->
-        <i class="fa fa-chevron-down"></i>
-      </span>
+    <div class="tag-wrapper"
+      *ngFor="let tag of (tags | arrayLimit:limit)"
+      [class.is--expanded]="expandedTag === tag"
+    >
+      <div class="tag-header" (click)="tagHeaderClick(tag)">
+        <span *ngIf="tag.name" class="caret-wrapper" (click)="tagDropdownCaretClick(tag)">
+          <!-- <span class="caret"></span> -->
+          <i class="fa fa-chevron-down"></i>
+        </span>
 
-      <tag class="tag tag-{{ tag.id }}"
-        [tag]="tag"
-        [renamable]="expandedTag === tag"
-        [renamableOnNameClick]="! inSidebar"
-        showCount=1
-        context="tagBrowser"
-        (click)="tagClick(tag, $event)"
-        (mouseenter)="hoveredTag = tag.name ? tag : null"
-        (mouseleave)="hoveredTag = null"
-      ></tag><!-- checking tag.name in mouseenter to make sure it's not a new/unsaved tag -->
+        <tag class="tag tag-{{ tag.id }}"
+          [tag]="tag"
+          [renamable]="expandedTag === tag"
+          [renamableOnNameClick]="! inSidebar"
+          showCount=1
+          context="tagBrowser"
+          (click)="tagClick(tag, $event)"
+          (mouseenter)="hoveredTag = tag.name ? tag : null"
+          (mouseleave)="hoveredTag = null"
+        ></tag><!-- checking tag.name in mouseenter to make sure it's not a new/unsaved tag -->
+      </div>
 
       <div class="tag-manager" *ngIf="expandedTag === tag">
         <div *ngIf="tag.description" class="description">{{ tag.description }}</div>
@@ -94,20 +99,26 @@
 
     <hr style="width: 100%">
     <h4>System Tags</h4>
-    <div *ngFor="let tag of tagsService.internalTags" class="tag-wrapper">
+    <div class="tag-wrapper"
+      *ngFor="let tag of tagsService.internalTags"
+      [class.is--expanded]="expandedTag === tag"
+    >
       <!-- @TODO/refactor Copy-pasting from normal tags... -->
-      <span class="caret-wrapper" (click)="tagDropdownClick(tag)">
-        <span class="caret"></span>
-      </span>
+      <div class="tag-header" (click)="tagHeaderClick(tag)">
+        <span class="caret-wrapper" (click)="tagDropdownCaretClick(tag)">
+          <!-- <span class="caret"></span> -->
+          <i class="fa fa-chevron-down"></i>
+        </span>
 
-      <tag class="tag tag-{{ tag.id }}"
-        [tag]="tag"
-        showCount=1
-        context="tagBrowser"
-        (click)="tagClick(tag, $event)"
-        (mouseenter)="hoveredTag = tag"
-        (mouseleave)="hoveredTag = null"
-      ></tag>
+        <tag class="tag tag-{{ tag.id }}"
+          [tag]="tag"
+          showCount=1
+          context="tagBrowser"
+          (click)="tagClick(tag, $event)"
+          (mouseenter)="hoveredTag = tag"
+          (mouseleave)="hoveredTag = null"
+        ></tag>
+      </div>
 
       <!-- @TODO/refactor Copy-pasting from normal tags... but a little different, cause you can't rename, delete, or smart tag these -->
       <div class="tag-manager" *ngIf="expandedTag === tag">

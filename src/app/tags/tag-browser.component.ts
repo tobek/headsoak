@@ -200,20 +200,6 @@ export class TagBrowserComponent {
     );
   }
 
-  tagClick(tag: Tag, event: MouseEvent): void {
-    if (! tag.name) {
-      // crappy shorthand for new tag
-      return;
-    }
-
-    if (this.inSidebar && this.activeUIs.noteQuery) {
-      this.activeUIs.noteQuery.tagToggled(tag.id, event && event.shiftKey);
-    }
-    else {
-      tag.goTo();
-    }
-  }
-
   newTag(): void {
     this.addingNewTag = true;
 
@@ -237,17 +223,49 @@ export class TagBrowserComponent {
     this.tags = _.filter(this.tags, (tag: Tag) => tag.id !== deletedTag.id);
   }
 
-  tagDropdownClick(tag: Tag): void {
-    // @TODO/ece @TODO/now If we're in full screen tag browser, should this behavior be different? The commented out version is an option
-    if (this.expandedTag !== tag) {
-      // tag.goTo();
-      this.expandedTag = tag;
+  tagClick(tag: Tag, event: MouseEvent): void {
+    if (! tag.name) {
+      // crappy shorthand for new tag
+      return;
+    }
 
-      // @TODO/tags What if `this.activeTag !== tag`? They've expanded a different tag than the one that's currently open - should we just make this new one the active tag? If we don't, then since we currently only allow one expanded tag at a time, we'll end up in an odd state where the expanded tag doesn't match what's open!
+    if (! this.inSidebar) {
+      // In full-screen tag browser we just use the single tagHeaderClick for both tag and caret
+      return;
+    }
+
+    if (this.activeUIs.noteQuery) {
+      this.activeUIs.noteQuery.tagToggled(tag.id, event && event.shiftKey);
+    }
+  }
+
+  tagHeaderClick(tag: Tag): void {
+    if (this.inSidebar) {
+      // In the side bar we separate out clicks on tag vs caret
+      return;
+    }
+
+    if (this.expandedTag !== tag) {
+      tag.goTo();
+      this.expandedTag = tag;
     }
     else {
-      // this.activeTag = null;
-      // this.router.navigateByUrl('/tags');
+      this.activeTag = null;
+      this.router.navigateByUrl('/tags');
+      this.expandedTag = null
+    }
+  }
+
+  tagDropdownCaretClick(tag: Tag): void {
+    if (! this.inSidebar) {
+      // In full-screen tag browser we just use the single tagHeaderClick for both tag and caret
+      return;
+    }
+
+    if (this.expandedTag !== tag) {
+      this.expandedTag = tag;
+    }
+    else {
       this.expandedTag = null
     }
   }
