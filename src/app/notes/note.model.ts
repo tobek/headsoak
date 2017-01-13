@@ -184,6 +184,12 @@ export class Note {
 
     if (updateModified && this.dataService.settings.get('nutChangesChangeTagModifiedTimestamp')) {
       this.tags.forEach((tagId: string) => {
+        if (! this.dataService.tags.tags[tagId]) {
+          this._logger.warn('Looks like we have tag ID', tagId, 'but that tag does not exist');
+          // @TODO Should we delete it? See similar error in NoteComponent
+          return;
+        }
+
         this.dataService.tags.tags[tagId].updated();          
       });
     }
