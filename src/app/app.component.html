@@ -73,12 +73,12 @@
         ></li
 
         ><li [class.is--active]="! tagBrowserCollapsed"
-          ><a class="nav-link" (click)="tagBrowserCollapsed = ! tagBrowserCollapsed">
+          ><a class="nav-link" (click)="homeComponent.tagBrowserCollapsed = ! homeComponent.tagBrowserCollapsed">
             <!-- @TODO/ece Presumably when you're on the tags screen, clicking on this should do nothing? Or go back to notes? -->
             <div><i class="fa fa-lg fa-hashtag"></i></div>
             Tags
           </a
-        ></li>
+        ></li
       ></ul>
     </nav>
   </div>
@@ -89,7 +89,6 @@
 
     <home
       *ngIf="dataService.isInitialized"
-      [class.is--tag-browser-collapsed]="tagBrowserCollapsed"
       [hidden]="NOTE_BROWSER_ROUTES.indexOf(router.url) === -1 && router.url.indexOf('/tags') !== 0"
     ></home>
 

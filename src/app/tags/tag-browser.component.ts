@@ -270,6 +270,28 @@ export class TagBrowserComponent {
     }
   }
 
+  openToSearch(): void {
+    if (this.activeUIs.home) {
+      this.activeUIs.home.tagBrowserCollapsed = false;
+
+      // Wait for this to take effect
+      setTimeout(() => {
+        this.queryInput.nativeElement.focus();
+      }, 0);
+    }
+  }
+
+  openToAddTag(): void {
+    if (this.activeUIs.home) {
+      this.activeUIs.home.tagBrowserCollapsed = false;
+
+      // Wait for this to take effect
+      setTimeout(() => {
+        this.newTag();
+      }, 0);
+    }
+  }
+
   // // @TODO/polish Copied infinite scroll code from notes - we might want this eventually
   // infiniteScrollCheck(): void {
   //   if (! this.notes || this.limit >= this.notes.length) {

@@ -1,4 +1,4 @@
-import {Component, ViewChild/*, QueryList*/} from '@angular/core';
+import {Component, ViewChild, HostBinding} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 
@@ -22,6 +22,8 @@ export class HomeComponent {
   newNote: Note;
 
   @ViewChild(NoteComponent) noteComponent: NoteComponent;
+
+  @HostBinding('class.is--tag-browser-collapsed') tagBrowserCollapsed = false
 
   private noteUpdatedSub: Subscription;
   private queryTagsUpdatedSub: Subscription;

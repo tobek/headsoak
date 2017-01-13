@@ -1,10 +1,27 @@
-<div class="pane-layout">
+<div class="collapsed-browser pane-layout">
+  <ul class="menu">
+    <li class="item" data-tooltip-place="left" data-tooltip="Explore tags" [routerLink]="['/tags']">
+      <i class="fa fa-fw fa-lg fa-connectdevelop"></i>
+    </li>
+    <li class="item" data-tooltip-place="left" data-tooltip="Smart Tag Library" [routerLink]="['/tags/smart-tags/library']">
+      <i class="fa fa-fw fa-lg fa-book"></i>
+    </li>
+    <li class="item" data-tooltip-place="left" data-tooltip="Search tags" (click)="openToSearch()">
+      <i class="fa fa-fw fa-lg fa-search"></i>
+    </li>
+    <li class="item" data-tooltip-place="left" data-tooltip="New tag" (click)="openToAddTag()">
+      <i class="fa fa-fw fa-lg fa-plus"></i>
+    </li>
+  </ul>
+</div>
+
+<div class="main-browser pane-layout">
   <div class="overview tag-list">
     <ul class="menu menu--tag-home">
       <li class="item" [routerLink]="['/tags']" [class.is--active]="activePane === 'viz'">
         <i class="fa fa-fw fa-lg fa-connectdevelop"></i>
         Explore your tags
-        <!-- @TODO/ece Capitalzation of side menu. We have "Private Mode" in settings, but "Smart tag" in tag details. -->
+        <!-- @TODO/ece Capitalzation of side menu (and tooltips in collapsed menu). We have "Private Mode" in settings, but "Smart tag" in tag details. -->
       </li>
       <li class="item" [routerLink]="['/tags/smart-tags/library']" [class.is--active]="activePane === 'library'">
         <i class="fa fa-fw fa-lg fa-book"></i>

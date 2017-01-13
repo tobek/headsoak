@@ -42,8 +42,6 @@ export class App {
 
   @ViewChild(HomeComponent) homeComponent: HomeComponent;
 
-  tagBrowserCollapsed = false;
-
   private initializiationSub: Subscription;
   private routerSub: Subscription;
 
