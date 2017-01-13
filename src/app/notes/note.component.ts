@@ -20,9 +20,12 @@ export class NoteComponent {
   @HostBinding('class.is--adding-tag') addingTag = false;
 
   @Input() note: Note;
-  @Input() opened = false;
-  @Output() noteOpened = new EventEmitter<Note>();
-  @Output() noteClosed = new EventEmitter<Note>();
+
+  // @REMOVED/write
+  // @Input() opened = false;
+  // @Output() noteOpened = new EventEmitter<Note>();
+  // @Output() noteClosed = new EventEmitter<Note>();
+
   @ViewChild('bodyInput') bodyInputRef: ElementRef;
   @ViewChild('addTagInput') addTagInputRef: ElementRef;
 
@@ -102,15 +105,13 @@ export class NoteComponent {
     }
   }
 
-  openNote() {
-    // @REMOVED/write
-    // this.noteOpened.emit(this.note);
-  }
-
-  closeNote() {
-    // @REMOVED/write
-    // this.noteClosed.emit(this.note);
-  }
+  // @REMOVED/write
+  // openNote() {
+  //   this.noteOpened.emit(this.note);
+  // }
+  // closeNote() {
+  //   this.noteClosed.emit(this.note);
+  // }
 
   /** Have had some issue with deleted or non-existent tag IDs showing up on notes, here we can debug it. */
   getTagById(tagId: string) {

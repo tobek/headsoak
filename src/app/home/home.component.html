@@ -11,8 +11,11 @@
 <note-browser
   ref-noteBrowser
   [hidden]="router.url.indexOf('/tags') === 0"
+></note-browser>
+<!--
+  @REMOVED/write Removed following from <note-browser>:
   (noteOpened)="noteOpened($event)"
   (noteClosed)="closeNote(false)"
-></note-browser>
+-->
 
 <tag-browser [class.pane-layout]="router.url.indexOf('/tags') === 0"></tag-browser>

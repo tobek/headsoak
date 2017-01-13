@@ -27,8 +27,9 @@ export class NoteBrowserComponent {
   /** Only show this many nuts at a time unless infinite scrolling. */
   limit: number = this.DEFAULT_NOTES_LIMIT;
 
-  @Output() noteOpened = new EventEmitter<Note>();
-  @Output() noteClosed = new EventEmitter<Note>();
+  // @REMOVED/write
+  // @Output() noteOpened = new EventEmitter<Note>();
+  // @Output() noteClosed = new EventEmitter<Note>();
 
   @ViewChildren(NoteComponent) noteComponents: QueryList<NoteComponent>;
 
@@ -93,27 +94,29 @@ export class NoteBrowserComponent {
     }
   }
 
-  _noteOpened(note: Note): void {
-    // @TODO If we have to do this again (we do something very similar in Shortcut model) we should wrap a service around the Router and have a `routeThenDo` function.
-    if (this.router.url !== '/') {
-      this.router.events
-        .filter(event => event instanceof NavigationEnd)
-        .first().subscribe((event) => {
-          // @HACK Not sure why but this additional setTimeout is necessary to focus to work, it seems
-          setTimeout(() => {
-            this.noteOpened.emit(note);
-          });
-        });
-      this.router.navigateByUrl('/');
-    }
-    else {
-      this.noteOpened.emit(note);
-    }
-  }
+  // @REMOVED/write
+  // _noteOpened(note: Note): void {
+  //   // @TODO If we have to do this again (we do something very similar in Shortcut model) we should wrap a service around the Router and have a `routeThenDo` function.
+  //   if (this.router.url !== '/') {
+  //     this.router.events
+  //       .filter(event => event instanceof NavigationEnd)
+  //       .first().subscribe((event) => {
+  //         // @HACK Not sure why but this additional setTimeout is necessary to focus to work, it seems
+  //         setTimeout(() => {
+  //           this.noteOpened.emit(note);
+  //         });
+  //       });
+  //     this.router.navigateByUrl('/');
+  //   }
+  //   else {
+  //     this.noteOpened.emit(note);
+  //   }
+  // }
 
-  _noteClosed(note: Note): void {
-    this.noteClosed.emit(note);
-  }
+  // @REMOVED/write
+  // _noteClosed(note: Note): void {
+  //   this.noteClosed.emit(note);
+  // }
 
   // @TODO/optimization I think this is triggering change detection? Only should if we actually update stuff. (scrollmonitor itself might be the culprit)
   infiniteScrollCheck(): void {

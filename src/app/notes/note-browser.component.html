@@ -1,10 +1,10 @@
 <note class="note-{{ note.id }}"
   *ngFor="let note of (notes | arrayLimit:limit)"
   [note]="note"
-  (noteOpened)="_noteOpened($event)"
-  (noteClosed)="_noteClosed($event)"
 ></note>
 <!--
-@REMOVED/write Removed following attribute from <note>:
+@REMOVED/write Removed following from <note>:
+  (noteOpened)="_noteOpened($event)"
+  (noteClosed)="_noteClosed($event)"
   [class.is-\-open]="activeUIs.home && activeUIs.home.openNote === note"
 -->
