@@ -85,7 +85,8 @@ export class NoteBrowserComponent {
       // Wait a sec til new section's all sorted out
       setTimeout(() => {
         this.noteComponents.forEach((noteComponent) => {
-          noteComponent.checkTextOverflow();
+          // @REMOVED/note text overflow
+          // noteComponent.checkTextOverflow();
           noteComponent.checkTagOverflow();
         });
       });
