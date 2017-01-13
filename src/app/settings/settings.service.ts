@@ -323,15 +323,15 @@ export class SettingsService {
       name: 'Go to first note',
       default: '1',
       fn: () => {
-        if (this.activeUIs.home) {
-          this._logger.log('active home');
-          this.activeUIs.home.noteComponent.bodyFocus();
+        if (this.activeUIs.noteBrowser) {
+          // Get the second cause the first is the new note
+          const secondNoteComponent = this.activeUIs.noteBrowser.noteComponents
+            .find((item, i) => i === 1);
+
+          if (secondNoteComponent) {
+            secondNoteComponent.bodyFocus();
+          }
         }
-        // @TODO/shortcuts This doesn't work cause home component is "active" even when, on /scroll, it's not visible
-        // else if (this.activeUIs.noteBrowser) {
-        //   this._logger.log('active note browser');
-        //   this.activeUIs.noteBrowser.noteComponents.first.bodyFocus();
-        // }
       },
       routeTo: NOTE_BROWSER_ROUTES,
       section: 'shortcuts',
