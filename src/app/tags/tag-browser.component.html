@@ -56,10 +56,12 @@
       </span>
 
       <tag class="tag tag-{{ tag.id }}"
-        [routerLink]="['/tags/tag', tag.id, tag.name]"
         [tag]="tag"
         [renamable]="expandedTag === tag"
+        [renamableOnNameClick]="! inSidebar"
         showCount=1
+        context="tagBrowser"
+        (click)="tagClick(tag, $event)"
         (mouseenter)="hoveredTag = tag.name ? tag : null"
         (mouseleave)="hoveredTag = null"
       ></tag><!-- checking tag.name in mouseenter to make sure it's not a new/unsaved tag -->
@@ -99,9 +101,10 @@
       </span>
 
       <tag class="tag tag-{{ tag.id }}"
-        [routerLink]="['/tags/tag', tag.id, tag.name]"
         [tag]="tag"
         showCount=1
+        context="tagBrowser"
+        (click)="tagClick(tag, $event)"
         (mouseenter)="hoveredTag = tag"
         (mouseleave)="hoveredTag = null"
       ></tag>

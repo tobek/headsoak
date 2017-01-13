@@ -4,6 +4,7 @@ import {Subject, Subscription} from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
 
 import {AnalyticsService} from '../analytics.service';
+import {ActiveUIsService} from '../active-uis.service';
 import {SettingsService} from '../settings/settings.service';
 // import {Note} from '../notes/note.model';
 // import {NoteComponent} from '../notes/note.component';
@@ -35,7 +36,10 @@ export class TagBrowserComponent {
   /** How tags in this list component are sorted on init. */
   sortOpt: Object = this.tagsService.sortOpts[0];
 
-  activePane: 'viz' | 'library';
+  /** Whether tag browser is shown alongside notes as a sidebar (`true`) or we're in full-page browsing of tags (`false`). */
+  inSidebar = true;
+
+  activePane: 'tagDetails' | 'viz' | 'library';
   activeTagPane: string; // Which pane of the active tag is open - mirroed from tagDetailsComponent
 
   addingNewTag = false;
@@ -60,6 +64,7 @@ export class TagBrowserComponent {
     private router: Router,
     private elRef: ElementRef,
     private analyticsService: AnalyticsService,
+    private activeUIs: ActiveUIsService,
     @Inject(forwardRef(() => SettingsService)) private settings: SettingsService,
     // private autocompleteService: AutocompleteService,
     // private scrollMonitor: ScrollMonitorService,
@@ -122,13 +127,21 @@ export class TagBrowserComponent {
     const pathParts = event.url.substring(1).split('/');
 
     if (pathParts[0] !== 'tags') {
+      this.inSidebar = true;
       this.activeTag = null;
       this.activePane = null;
       this.activeTagPane = null;
       return;
     }
+
+    this.inSidebar = false;
     
     if (pathParts[1] === 'tag') {
+      // We're browsing details of a specific tag
+      this.activeTag = this.tagsService.tags[pathParts[2]];
+      this.activePane = 'tagDetails';
+      this.expandedTag = this.activeTag;
+
       // @HACK @TODO/tags @TODO/polish @TODO/soon This REALLY shouldn't be necessary, but for now, especially e.g. if you scroll to bottom of notes or tag list and then click on a tag, you don't see shit. They need to scroll independently. It also means you lose your place in your notes when you go back. Bah.
       if (this.activeTag || this.activePane) {
         // We were already looking at tags, so animate scroll so you don't lose your place
@@ -139,10 +152,6 @@ export class TagBrowserComponent {
         document.querySelector('main').scrollTop = 0;
       }
 
-      this.activeTag = this.tagsService.tags[pathParts[2]];
-      this.activePane = null;
-      this.expandedTag = this.activeTag;
-
       // This whole activeTagPane thing is a hack (reading tagDetailsComponent.activePane directly from template was causing that debug mode error where expression changed while checking it)
       setTimeout(() => {
         if (this.tagDetailsComponent) {
@@ -151,6 +160,7 @@ export class TagBrowserComponent {
       }, 0);
     }
     else {
+      // We're in a tag-related page other than details of a specific tag
       this.activeTag = null;
       this.activeTagPane = null;
       this.expandedTag = null;
@@ -188,6 +198,20 @@ export class TagBrowserComponent {
       this.tagsService.sortTags(this.sortOpt),
       (tag) => ! tag.internal
     );
+  }
+
+  tagClick(tag: Tag, event: MouseEvent): void {
+    if (! tag.name) {
+      // crappy shorthand for new tag
+      return;
+    }
+
+    if (this.inSidebar && this.activeUIs.noteQuery) {
+      this.activeUIs.noteQuery.tagToggled(tag.id, event && event.shiftKey);
+    }
+    else {
+      tag.goTo();
+    }
   }
 
   newTag(): void {

@@ -1,5 +1,5 @@
 <span class="name-wrapper"
-  (click)="renamable && ! renaming && renameStart($event)"
+  (click)="renamable && renamableOnNameClick && ! renaming && renameStart($event)"
   ><span class="name" placeholder="tag name" spellcheck="false"
     ref-tagName
     [innerHTML]="tag.name"

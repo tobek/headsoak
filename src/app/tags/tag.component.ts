@@ -22,6 +22,8 @@ export class TagComponent {
   /** Optional, supplied if this tag component is being shown on a specific note. */
   @Input() ofNoteId?: string;
 
+  @Input() context?: 'note' | 'noteQuery' | 'tagBrowser';
+
   /** If this is a new tag not yet saved to data store but just created for the user to type new tag name into. */
   isNewTag = false;
 
@@ -34,10 +36,11 @@ export class TagComponent {
   @ViewChild('tagName') tagNameRef: ElementRef;
   tagNameEl: HTMLInputElement; // Not actually, but contenteditable so it behaves as such
 
-  @Input() renamable: boolean;
-  @Input() inlineRemovable: boolean;
-  @Input() showCount: boolean;
-  @HostBinding('class.dropdown-enabled') @Input() enableDropdown: boolean;
+  @Input() renamable?: boolean;
+  @Input() renamableOnNameClick?: boolean;
+  @Input() inlineRemovable?: boolean;
+  @Input() showCount?: boolean;
+  @HostBinding('class.dropdown-enabled') @Input() enableDropdown?: boolean;
   @HostBinding('class.dropdown-disabled') disableDropdown = true;
 
   @HostBinding('class.hovered') hovered = false;
@@ -87,7 +90,7 @@ export class TagComponent {
     if (! this.tag) {
       // throw new Error('Can\'t set up TagComponent: value passed as @Input `tag` was falsey.');
       this._logger.error('Can\'t set up TagComponent: value passed as @Input `tag` was falsey. Hiding component.');
-      // 
+
       this.tag = <Tag> {};
       this.hidden = true;
       return;
@@ -100,9 +103,9 @@ export class TagComponent {
 
     this.tagNameEl = this.tagNameRef.nativeElement;
 
-    if (this.ofNoteId) {
+    if (this.ofNoteId || this.context === 'tagBrowser') {
       this.queryTagsUpdatedSub = this.activeUIs.noteQuery.tagsUpdated$.subscribe((tags) => {
-        // @TODO/tags/subtags @HACK Since on notes we show Tag instances but sort of hack to show subtag stuff if relelvant, but in note query we can get actual SubTag instances, we need to check base tag ID.
+        // @TODO/tags/subtags @HACK Since on notes we show Tag instances but sort of hack to show subtag stuff if relevant, but in note query we can get actual SubTag instances, we need to check base tag ID.
         this.isActive = !! _.find(tags, (tag) => tag.baseTagId === this.tag.id);
       });
     }
