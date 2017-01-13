@@ -7,9 +7,9 @@
   transition: box-shadow $transition-gonzales, border $transition-med
 
   note-browser &
-    margin-bottom: gutter()
+    margin-bottom: 1rem
 
-  padding: 54px 10px 35px gutter() // More magic numbers (correctly vertically positions header and note actions). Also, +card above has gutter-based left/right padding, but we need body input scrollbar to not be flush against body text nor flush against edge of note, which is hard to do with %-based gutters. 10px and 20px right padding (on .body-input) are close enough on all browser widths it seems, especially since right edge of text isn't clear because of non-justified left-alignment.
+  padding: 54px 10px 35px 1rem // More magic numbers (correctly vertically positions header and note actions). Left padding is needed in order for body input scrollbar to not be flush against body text nor flush against edge of note. These values (+ right padding on .body-input) are close enough on all browser widths it seems, especially since right edge of text isn't clear because of non-justified left-alignment.
 
   .note-wrapper
     height: 100%

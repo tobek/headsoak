@@ -62,7 +62,7 @@ export const ROUTES: Routes = [
     data: {
       name: 'Tags',
       slug: 'tags',
-      navSection: 'main',
+      // navSection: 'main', // removed from here since we have a toggle not a normal route in our main nav
       iconSlug: 'hashtag',
     },
     component: EmptyComponent,

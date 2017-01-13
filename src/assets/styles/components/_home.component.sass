@@ -37,27 +37,25 @@ home
     //   display: none
 
   .route--browse &
-    note-browser
-      note
-        +span(8 of 8)
+    note
+      +span(8 of 8)
 
-        // +susy-breakpoint($tablet-small, $susy)
-        //   +gallery(6 of 8)
+      // +susy-breakpoint($tablet-small, $susy)
+      //   +gallery(6 of 8)
 
-        // +susy-breakpoint($tablet-large, $susy)
-        //   +gallery(4 of 8)
+      // +susy-breakpoint($tablet-large, $susy)
+      //   +gallery(4 of 8)
 
-        +susy-breakpoint($screen-small, $susy)
-          +gallery(4 of 8)
+      +susy-breakpoint($screen-small, $susy)
+        +gallery(4 of 8)
 
-        +susy-breakpoint($screen-large, $susy)
-          +gallery(2 of 8)
+      +susy-breakpoint($screen-large, $susy)
+        +gallery(2 of 8)
 
   .route--scroll &
-    note-browser
-      note
-        width: span(8 of 8)
-        margin-bottom: gutter() * 1.5 // @TODO/ece What do you think of this?
+    note
+      width: span(8 of 8)
+      margin-bottom: gutter() * 1.5 // @TODO/ece What do you think of this?
 
 
   // @REMOVED/write
@@ -68,5 +66,18 @@ home
 
   //   note-browser
   //     display: none
+
+  &.is--tag-browser-collapsed
+    .route--scroll &,
+    .route--browse &
+      tag-browser
+        +span(1 last)
+
+    .route--browse &
+      note-browser
+        +span(11)
+
+        note
+          +gallery(2 of 11)
 
 
