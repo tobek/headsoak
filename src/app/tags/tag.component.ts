@@ -104,10 +104,13 @@ export class TagComponent {
     this.tagNameEl = this.tagNameRef.nativeElement;
 
     if (this.ofNoteId || this.context === 'tagBrowser') {
-      this.queryTagsUpdatedSub = this.activeUIs.noteQuery.tagsUpdated$.subscribe((tags) => {
-        // @TODO/tags/subtags @HACK Since on notes we show Tag instances but sort of hack to show subtag stuff if relevant, but in note query we can get actual SubTag instances, we need to check base tag ID.
-        this.isActive = !! _.find(tags, (tag) => tag.baseTagId === this.tag.id);
-      });
+      this.queryTagsUpdatedSub = this.activeUIs.noteQuery.tagsUpdated$.subscribe(
+        this.queryTagsUpdated.bind(this)
+      );
+
+      // And run it once at first to get us started:
+
+      this.queryTagsUpdated(this.activeUIs.noteQuery.tags);
     }
 
     this.disableDropdown = ! this.enableDropdown;
@@ -117,6 +120,11 @@ export class TagComponent {
     if (this.queryTagsUpdatedSub) {
       this.queryTagsUpdatedSub.unsubscribe();
     }
+  }
+
+  queryTagsUpdated(tags: Tag[]): void {
+    // @TODO/tags/subtags @HACK Since on notes we show Tag instances but sort of hack to show subtag stuff if relevant, but in note query we can get actual SubTag instances, we need to check base tag ID.
+    this.isActive = !! _.find(tags, (tag) => tag.baseTagId === this.tag.id);
   }
 
   remove() {

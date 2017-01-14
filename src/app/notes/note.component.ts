@@ -319,8 +319,8 @@ export class NoteComponent {
   }
 
   newNoteWithSameTags() {
-    if (this.activeUIs.home) {
-      this.activeUIs.home.goToNewNoteWithSameTags(this.note);
+    if (this.activeUIs.noteBrowser) {
+      this.activeUIs.noteBrowser.goToNewNoteWithSameTags(this.note);
     }
   }
 

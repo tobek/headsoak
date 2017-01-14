@@ -217,8 +217,8 @@ export class SettingsService {
       name: 'New note',
       default: 'n',
       fn: () => {
-        if (this.activeUIs.home) {
-          this.activeUIs.home.goToNewNote();
+        if (this.activeUIs.noteBrowser) {
+          this.activeUIs.noteBrowser.goToNewNote();
         }
       },
       routeTo: NOTE_BROWSER_ROUTES,
@@ -231,8 +231,8 @@ export class SettingsService {
       description: 'Create a new note and immediately open the input field to add a tag to that note.',
       default: 'shift+n',
       fn: () => {
-        if (this.activeUIs.home) {
-          this.activeUIs.home.goToNewNoteAddTag();
+        if (this.activeUIs.noteBrowser) {
+          this.activeUIs.noteBrowser.goToNewNoteAddTag();
         }
       },
       routeTo: NOTE_BROWSER_ROUTES,
@@ -324,12 +324,21 @@ export class SettingsService {
       default: '1',
       fn: () => {
         if (this.activeUIs.noteBrowser) {
-          // Get the second cause the first is the new note
-          const secondNoteComponent = this.activeUIs.noteBrowser.noteComponents
-            .find((item, i) => i === 1);
+          const noteComponents = this.activeUIs.noteBrowser.noteComponents;
+          let noteComponent = noteComponents.first;
 
-          if (secondNoteComponent) {
-            secondNoteComponent.bodyFocus();
+          if (! noteComponent) {
+            // No notes
+            return;
+          }
+
+          if (noteComponent.note.new || ! noteComponent.note.body) {
+            // Get the second cause the first is an empmty new note
+            noteComponent = noteComponents.find((item, i) => i === 1);
+          }
+
+          if (noteComponent) {
+            noteComponent.bodyFocus();
           }
         }
       },

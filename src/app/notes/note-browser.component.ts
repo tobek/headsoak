@@ -13,6 +13,8 @@ import {Logger} from '../utils/';
 import {ScrollMonitorService} from '../utils/scroll-monitor.service';
 import {NOTE_BROWSER_ROUTES} from '../app.routes';
 
+import * as _ from 'lodash';
+
 @Component({
   selector: 'note-browser',
   template: require('./note-browser.component.html')
@@ -69,13 +71,9 @@ export class NoteBrowserComponent {
   }
 
   init(noteQueryComponent): void {
-    this.subscriptions.push(noteQueryComponent.queriedNotes$.subscribe((notes: Note[]) => {
-      this.notes = notes;
-      // Wait for these notes to get set up and then see if this.limit needs changing
-      setTimeout(this.infiniteScrollCheck.bind(this), 0);
-
-      this.ensureNewNoteSetUp();
-    }));
+    this.subscriptions.push(noteQueryComponent.queriedNotes$.subscribe(
+      this.queriedNotesUpdated.bind(this)
+    ));
 
     this.subscriptions.push(this.router.events
       .filter(event => event instanceof NavigationEnd)
@@ -86,9 +84,32 @@ export class NoteBrowserComponent {
     this.ensureNewNoteSetUp();
     this.activeUIs.noteQuery$.first().subscribe((noteQuery) => {
       this.subscriptions.push(noteQuery.tagsUpdated$.subscribe(
-        this.setUpNewNoteTags.bind(this)
+        this.queriedNoteTagsUpdated.bind(this)
        ));
     });
+
+    this.subscriptions.push(this.notesService.noteUpdated$.subscribe(
+      this.noteUpdated.bind(this)
+    ));
+  }
+
+  queriedNotesUpdated(notes: Note[]): void {
+    if (this.newNote) {
+      this.notes = _.filter(notes, (note) => note.id !== this.newNote.id);
+    }
+    else {
+      this.notes = notes;
+    }
+
+    // Wait for these notes to get set up and then see if this.limit needs changing
+    setTimeout(this.infiniteScrollCheck.bind(this), 0);
+
+    this.ensureNewNoteSetUp();
+  }
+
+  queriedNoteTagsUpdated(): void {
+    // Since the UI is changing anyway, take this as an opportunity to make sure a new note is set up, shifting out existing "new" note if necessary
+    this.ensureNewNoteSetUp(true, true);
   }
 
   routeUpdated(event: NavigationEnd) {
@@ -102,24 +123,39 @@ export class NoteBrowserComponent {
         });
       });
     }
+
+    // Since the UI is changing anyway, take this as an opportunity to make sure a new note is set up, shifting out existing "new" note if necessary
+    this.ensureNewNoteSetUp(true, true);
   }
 
-  ensureNewNoteSetUp(thenFocus = true): void {
-    // This is a blank new note for the user to be able to use as soon as they open the app. We pass no second argument to `createNote` so that the note isn't saved to data store. As soon as they make anything that calls `note.update` (editing text, adding tag, sharing), it'll get saved to data store.
+  /** Makes sure we have set up a blank new note for the user to be able to use as soon as they open the app. Optionally can replace the existing "new" note, shunting that into `this.notes` if desired.
+   *
+   * We pass no second argument to `createNote` so that the note isn't saved to data store. As soon as they make anything that calls `note.update` (editing text, adding tag, sharing), it'll get saved to data store. */
+  ensureNewNoteSetUp(forceNewNote = false, preserveExisting = false): void {
+    if (this.newNote && this.newNote.new && ! this.newNote.body) {
+      // Untouched new note in here so no need to do anything, let's just make sure it has the right tags
+      this.setUpNewNoteTags();
+      return;
+    }
 
-    if (! this.newNote || ! this.newNote.new){
-      // Never made a new note, or made one and it's no longer new (was updated/edited) - either way create a new one:
+    if (this.newNote && forceNewNote && preserveExisting) {
+      // We're making a new note and keeping the note that *used* to be the new note, cause it has changes
+      this.newNote.blurred(); // ensures that full update is called etc.
+      this.notes = [this.newNote].concat(this.notes);
+    }
+
+    if (! this.newNote || forceNewNote) {
       this._logger.log('Setting up new unsaved note');
       this.newNote = this.notesService.createNote({});
       this.newNote.new = true;
       this.setUpNewNoteTags();
 
-      // Wait til the note component actually exists
-      setTimeout(() => {
-        const newNoteEl = this.noteComponents.first.el.nativeElement;
-        const newNoteVertOffset = jQuery(newNoteEl).outerHeight(true); // includes padding, border, and margin
-        console.log('new note offset!', newNoteVertOffset);
-      }, 0);
+      // // Wait til the note component actually exists
+      // setTimeout(() => {
+      //   const newNoteEl = this.noteComponents.first.el.nativeElement;
+      //   const newNoteVertOffset = jQuery(newNoteEl).outerHeight(true); // includes padding, border, and margin
+      //   console.log('new note offset!', newNoteVertOffset);
+      // }, 0);
     }
   }
 
@@ -138,6 +174,47 @@ export class NoteBrowserComponent {
         .filter((tag: Tag) => ! tag.prog && ! tag.readOnly)
         .map((tag: Tag) => tag.id);
     }
+  }
+
+  noteUpdated(note: Note): void {
+    if (note.deleted && note === this.newNote) {
+      this.ensureNewNoteSetUp(true);
+    }
+  }
+
+  goToNewNote(thenFocus = true): void {
+    this.ensureNewNoteSetUp(true, true);
+
+    // Now we have an untouched new note open
+    if (thenFocus) {
+      // Wait for component to get set up
+      setTimeout(() => {
+        this.noteComponents.first.bodyFocus();
+
+        // There's something weird with the `HostBinding`s not firing properly on this new component, so uh just add this manually:
+        this.noteComponents.first.el.nativeElement['classList'].add('is--focused');
+      }, 0);
+    }
+  }
+
+  goToNewNoteAddTag(): void {
+    this.goToNewNote(false);
+
+    // Wait for component to get set up
+    setTimeout(() => {
+      this.noteComponents.first.initializeAddTag();
+    }, 0);
+
+    // this.noteComponent.cdrRef.detectChanges(); // this was necessary when new note happened in/from note browser but no longer seems necessary, but keeping it here for reference.
+  }
+
+  goToNewNoteWithSameTags(note: Note): void {
+    this.goToNewNote();
+    
+    this.newNote.tags = note.tags.filter((tagId: string) => {
+      const tag = this.notesService.dataService.tags.tags[tagId];
+      return ! tag.prog && ! tag.readOnly;
+    });
   }
 
 

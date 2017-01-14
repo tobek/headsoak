@@ -45,7 +45,7 @@
   ></div>
   <!-- @TODO/rewrite/sharing Better to put read-only class and disabled attribute on above textarea so reference is preserved <textarea class="body read-only" disabled="disabled" tabindex=2 *ngIf="note.sharedBody">{{ note.sharedBody }}</textarea> -->
 
-  <div class="note-actions" *ngIf="! note.new">
+  <div class="note-actions">
     <!--
     @REMOVED/write
     <a data-tooltip="Expand note" class="note-action note-action--open" *ngIf="! opened" (click)="openNote()"><i class="fa fa-fw fa-pencil-square-o"></i></a
@@ -66,21 +66,23 @@
       (click)="note.togglePrivate(); tooltipService.reloadOnClick($event); $event.stopPropagation()"
     ><i class="fa fa-fw fa-lock locked"></i><i class="fa fa-fw fa-unlock-alt unlocked"></i></a
 
-    ><!--
-       <a (click)="newNoteWithSameTags()">NNST</a>
+    ><span *ngIf="! note.new"
+      ><!--
+         <a (click)="newNoteWithSameTags()">NNST</a>
 
-    --><a class="note-action"
-      data-tooltip="Explore note"
-      (click)="toggleExplore(); $event.stopPropagation()"
-    ><i class="fa fa-fw fa-bar-chart"></i></a
+      --><a class="note-action"
+        data-tooltip="Explore note"
+        (click)="toggleExplore(); $event.stopPropagation()"
+      ><i class="fa fa-fw fa-bar-chart"></i></a
 
-    ><a class="note-action"
-      [class.is--active]="note.archived"
-      [attr.data-tooltip]="(note.archived ? 'Un-archive' : 'Archive') + ' this note'"
-      (click)="note.archived = ! note.archived; tooltipService.reloadOnClick($event); $event.stopPropagation()"
-    ><i class="fa fa-fw fa-archive"></i></a
+      ><a class="note-action"
+        [class.is--active]="note.archived"
+        [attr.data-tooltip]="(note.archived ? 'Un-archive' : 'Archive') + ' this note'"
+        (click)="note.archived = ! note.archived; tooltipService.reloadOnClick($event); $event.stopPropagation()"
+      ><i class="fa fa-fw fa-archive"></i></a
 
-    ><a data-tooltip="Delete note" class="note-action" (click)="delete($event); ; $event.stopPropagation()"><i class="fa fa-fw fa-trash-o"></i></a
+      ><a data-tooltip="Delete note" class="note-action" (click)="delete($event); ; $event.stopPropagation()"><i class="fa fa-fw fa-trash-o"></i></a
+    ></span
   ></div>
 </div>
 
