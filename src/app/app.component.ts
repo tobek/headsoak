@@ -131,4 +131,18 @@ export class App {
     this.settings.data['sNewNote']['_fn']();
   }
 
+  tagNavClick(): void {
+    // @TODO/polish @TODO/tags Would be cool if on tags pages it also collapsed the tag browser - this would let you go full screen on things like the visualizations, and also smart tag creation page (allowing for documentation in the sidebar?) On the other hand, maybe an explicit "full screen" link in those places would be better (it could do the same thing though.)
+
+    if (NOTE_BROWSER_ROUTES.indexOf(this.router.url) !== -1) {
+      this.homeComponent.tagBrowserCollapsed = ! this.homeComponent.tagBrowserCollapsed;
+    }
+    else if (this.router.url === '/tags') {
+      // Base tags page, do nothing, just stay here
+    }
+    else {
+      this.router.navigateByUrl('/tags');
+    }
+  }
+
 }

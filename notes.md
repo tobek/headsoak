@@ -1,26 +1,6 @@
 # TODO
 
-- active tag in query should have its dropdown open 
-
-### layout updates ~5h
-
-- update nav (15m)
-- support new note in scroll mode (60m)
-    - UI for new -> no longer new
-        - PROBLEMS
-            - when body has focus and you go to add tag, note saves and moves into tag list and you're in add tag field of a *new* new note
-            - if you add a tag straight onto a new note, it basically goes into the no-longer-new note in the note list, and leaves you still in a new new note
-        - on blur (what about adding tag?) slide new one in
-            - new `newNote` gets absolute position and opacity 0 so we can get height
-            - note browser gets animated downwards by necessary amount
-            - new note is faded in (`note-browser` needs relative position)
-            - new note absolute position and note browser offset are removed simultaneously
-        - as soon as you type or hit anything, another new note appears (preferably sliding in)
-            - challenge is to "preserve" the component as it becomes one with the note list
-                - maybe if it's in the new note component we filter it out of the note list?
-                - might need a way to programmatically add new note components
-    - check stuff in shortcuts too, like new note and `sGoToFirstNote`
-    - focus on page load
+- active tag in query should have its dropdown open?
 
 ### focused note
 
