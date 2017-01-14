@@ -88,6 +88,10 @@ export class NoteBrowserComponent {
        ));
     });
 
+    if (NOTE_BROWSER_ROUTES.indexOf(this.router.url) !== -1) {
+      this.goToNewNote();
+    }
+
     this.subscriptions.push(this.notesService.noteUpdated$.subscribe(
       this.noteUpdated.bind(this)
     ));
