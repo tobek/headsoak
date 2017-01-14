@@ -44,6 +44,8 @@ export class TagBrowserComponent {
 
   addingNewTag = false;
 
+  searchBarFocused = false;
+
   @ViewChild('queryInput') queryInput: ElementRef;
   @ViewChildren(TagComponent) tagComponents: QueryList<TagComponent>;
   @ViewChild(TagDetailsComponent) tagDetailsComponent: TagDetailsComponent;

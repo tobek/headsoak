@@ -30,10 +30,12 @@
     </ul>
 
     <div class="tag-query">
-      <div class="search-bar">
+      <div class="search-bar" [class.is--focused]="searchBarFocused">
         <input class="text-input" tabindex=1 type="text" placeholder="Search tags"
           ref-queryInput [(ngModel)]="query"
           (ngModelChange)="queryUpdated()"
+          (focus)="searchBarFocused = true"
+          (blur)="searchBarFocused = false"
         >
 
         <span class="query-controls">

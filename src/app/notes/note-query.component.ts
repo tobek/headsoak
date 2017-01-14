@@ -1,4 +1,4 @@
-import {Component, ViewChild, ElementRef} from '@angular/core';
+import {Component, ViewChild, HostBinding, ElementRef} from '@angular/core';
 import {ReplaySubject, Subject, Subscription} from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
 
@@ -27,6 +27,8 @@ export class NoteQueryComponent {
   sortOpt: Object = this.notesService.sortOpts[0];
 
   queriedNotes$ = new ReplaySubject<Note[]>(1);
+
+  @HostBinding('class.is--focused') hasFocus = false;
 
   @ViewChild('textInput') textInput: ElementRef;
 
@@ -100,12 +102,14 @@ export class NoteQueryComponent {
     this.textInput.nativeElement.focus();
   }
   focused(): void {
+    this.hasFocus = true;
     this.active();
   }
   isFocused(): boolean {
     return document.activeElement === this.textInput.nativeElement;
   }
   blurred(): void {
+    this.hasFocus = false;
     this.maybeInactive();
   }
 
