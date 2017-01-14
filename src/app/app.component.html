@@ -58,12 +58,14 @@
     </header>
 
     <nav class="app-nav" *ngIf="dataService.user.loggedIn">
-      <a class="new-note" (click)="newNote()">
-        <i class="fa fa-lg fa-pencil-square-o"></i>
-        New Note
-      </a>
-
       <ul
+        ><li
+          ><a class="nav-link" (click)="newNote()">
+            <div><i class="fa fa-lg fa-pencil-square-o"></i></div>
+            <span class="nav-link-text--new-note">New Note</span>
+          </a
+        ></li
+
         ><li *ngFor="let route of mainNavRoutes" [class.is--active]="route.path ? router.url.indexOf('/' + route.path) === 0 : router.url === '/'"
           ><a class="nav-link" [routerLink]="[route.path]">
             <!-- @TODO/optimization These could be a one time binding -->
@@ -72,7 +74,7 @@
           </a
         ></li
 
-        ><li [class.is--active]="! tagBrowserCollapsed"
+        ><li [class.is--active]="! homeComponent || ! homeComponent.tagBrowserCollapsed"
           ><a class="nav-link" (click)="homeComponent.tagBrowserCollapsed = ! homeComponent.tagBrowserCollapsed">
             <!-- @TODO/ece Presumably when you're on the tags screen, clicking on this should do nothing? Or go back to notes? -->
             <div><i class="fa fa-lg fa-hashtag"></i></div>
