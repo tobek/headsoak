@@ -30,7 +30,7 @@
 
       <span class="tag-like note-id" data-tooltip="Note ID" *ngIf="settings.get('showNoteIds')">{{ note.id }}</span>
 
-      <span class="tag-like expand-tags" [attr.data-tooltip]="isExpanded ? 'Collapse tags' : 'Show all tags'" (click)="isExpanded = ! isExpanded; tooltipService.reloadOnClick($event); $event.stopPropagation()"><i class="fa fa-chevron-up go-up"></i><i class="fa fa-chevron-down go-down"></i></span>
+      <span class="tag-like expand-tags" [attr.data-tooltip]="hasExpandedTags ? 'Collapse tags' : 'Show all tags'" (click)="hasExpandedTags = ! hasExpandedTags; tooltipService.reloadOnClick($event); $event.stopPropagation()"><i class="fa fa-chevron-up go-up"></i><i class="fa fa-chevron-down go-down"></i></span>
     </div>
   </div>
 
@@ -72,7 +72,8 @@
 
       --><a class="note-action"
         data-tooltip="Explore note"
-        (click)="toggleExplore(); $event.stopPropagation()"
+        (mousedown)="$event.stopPropagation(); throttledToggleExplore()"
+        (touchstart)="$event.stopPropagation(); throttledToggleExplore()"
       ><i class="fa fa-fw fa-bar-chart"></i></a
 
       ><a class="note-action"

@@ -32,7 +32,7 @@ export class NoteComponent {
   /** We want to use `.note` selector to style notes so that we can have a "fake" note using same styles in homepage demo. Set that class here so we don't have to remember to do so whenever using <note>. */
   @HostBinding('class.note') thisIsUnusedAndAlwaysTrue = true;
 
-  @HostBinding('class.is--expanded') isExpanded = false;
+  @HostBinding('class.is--expanded') hasExpandedTags = false;
   @HostBinding('class.is--focused') isFocused = false;
   // @REMOVED/note text overflow
   // @HostBinding('class.is--text-overflowing') isTextOverflowing = false;
@@ -48,6 +48,9 @@ export class NoteComponent {
   private rawDataHtml: SafeHtml;
 
   private boundCloseAddTagFieldHandler = this.closeAddTagFieldHandler.bind(this);
+
+  /** So that we can listen on mousedown and touchstart (because normal click fires after blurring of text input removes focused state). */
+  private throttledToggleExplore = _.throttle(this.toggleExplore.bind(this), 100);
 
   private _logger: Logger;
 
@@ -106,7 +109,7 @@ export class NoteComponent {
     }
     else {
       this.el.nativeElement.classList.remove('has--tag-overflow');
-      this.isExpanded = false;
+      this.hasExpandedTags = false;
     }
   }
 
