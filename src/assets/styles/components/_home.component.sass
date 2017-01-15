@@ -22,6 +22,7 @@ home
     //     // padding-right: gutter(4) // don't need this since right padding is hard-coded for purposes of positioning body input scrollbar
     //     margin-bottom: gutter(4)
 
+  .route--list &,
   .route--browse &,
   .route--scroll &
     tag-browser
@@ -35,6 +36,11 @@ home
     // @REMOVED/write
     // note.open-note
     //   display: none
+
+  .route--list &
+    note
+      +span(8 of 8)
+      margin-bottom: 8px
 
   .route--browse &
     note
@@ -68,6 +74,7 @@ home
   //     display: none
 
   &.is--tag-browser-collapsed
+    .route--list &,
     .route--scroll &,
     .route--browse &
       tag-browser
@@ -80,11 +87,20 @@ home
         .main-browser
           display: none
 
+    .route--list &,
     .route--browse &
       note-browser
         +span(11)
 
+    .route--browse &
+      note-browser
         note
           +gallery(2 of 11)
+
+    .route--list &,
+      note-browser
+        note
+          +span(11 of 11)
+
 
 

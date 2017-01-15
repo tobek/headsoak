@@ -134,17 +134,45 @@
   &.is--focused .body-input
     max-height: calc(#{$full-height} - 100px) // magic numbers - 100px is about the vertical padding of note element plus a bit to spare
 
+  .route--list &,
   .route--browse &
     // Magic numbers just like in normal `note` padding
     padding-top: 40px
     padding-bottom: 32px
 
+    .note-actions
+      bottom: -2px
+
+  .route--browse &
     .body-input
       max-height: none
       height: 95px
 
+  .route--list &
+    margin-bottom: 0.5rem
+    padding-bottom: 0.5rem
+
+    .body-input
+      text-overflow: ellipsis
+
+      // @TODO/style @TODO/polish Would be nice if we could replace <br>s with some character orsomething. For now just limit with height instead. See also in _forms.sass
+      // +single-line-contenteditable
+      // // @TODO/now @TODO/hack This should come in from `single-line-contenteditable`
+      // br
+      //   display: none
+      //   &:after// not in single-line-contenteditable, but maybe it should be?
+      // *
+      //   display: inline
+      //   white-space: nowrap
+
+      height: #{$base-line-height-multiple}rem
+
     .note-actions
-      bottom: -2px
+      width: auto
+      right: 0
+      bottom: 2px
+      left: auto
+      background-color: $menu-dropdown-bg-color
 
 
   .note-actions

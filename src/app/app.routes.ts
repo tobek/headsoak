@@ -11,6 +11,7 @@ export const NOTE_BROWSER_ROUTES = [
   // '/write',
   // '/focus',
   '/browse',
+  '/list',
 ];
 export const DEFAULT_NOTE_ROUTE = '/';
 
@@ -54,6 +55,16 @@ export const ROUTES: Routes = [
       slug: 'browse',
       navSection: 'main',
       iconSlug: 'th',
+    },
+    component: EmptyComponent
+  },
+  {
+    path: 'list',
+    data: {
+      name: 'List',
+      slug: 'list',
+      navSection: 'main',
+      iconSlug: 'list',
     },
     component: EmptyComponent
   },
