@@ -31,16 +31,16 @@
         />
       </div>
 
-      <button class="btn btn-default"
+      <button class="btn btn-secondary"
         ref-okButton
         [class.is--loading]="okButtonIsLoading"
         [disabled]="okButtonIsLoading"
         (click)="ok()"
       >{{ config.okButtonText || 'OK' }}</button>
-      <button *ngIf="config.cancelButton" class="btn btn-default" (click)="cancel()">Cancel</button>
+      <button *ngIf="config.cancelButton" class="btn btn-secondary" (click)="cancel()">Cancel</button>
 
       <span class="additional-buttons" *ngIf="config.additionalButtons && config.additionalButtons.length">
-        <button class="btn btn-default" *ngFor="let button of config.additionalButtons" (click)="close(); button.cb()">{{ button.text }}</button>
+        <button class="btn btn-secondary" *ngFor="let button of config.additionalButtons" (click)="close(); button.cb()">{{ button.text }}</button>
       </span>
     </div>
   </div>
