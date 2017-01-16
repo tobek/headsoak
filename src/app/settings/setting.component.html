@@ -1,10 +1,12 @@
-<td>
+<div class="heading">
   <label [attr.for]="'setting-' + setting.id">
     {{ setting.name }}
     <i class="fa fa-question-circle" [attr.data-tooltip]="setting.description" *ngIf="setting.description"></i>
   </label>
-</td>
-<td>
+  <i class="fa fa-cube save-notice" [class.fa-spin]="dataService.isUnsaved(setting)"></i>
+</div>
+
+<div>
   <span class="smod" *ngIf="setting.section === 'shortcuts' && settings.get('sMod')">{{ settings.get('sMod') }}+</span>
   <input
     *ngIf="setting.type === 'boolean'"
@@ -22,7 +24,4 @@
     (blur)="settingUpdated(setting)"
   />
   <div class="notes" *ngIf="setting.postSettingHtml" [innerHTML]="setting.postSettingHtml"></div>
-</td>
-<td>
-  <i class="fa fa-cube save-notice" [class.fa-spin]="dataService.isUnsaved(setting)"></i>
-</td>
+</div>

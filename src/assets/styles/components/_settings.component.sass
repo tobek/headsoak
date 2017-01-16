@@ -2,30 +2,32 @@ settings
   .logo h1
     margin-top: 15px
 
-  table
-    border-collapse: collapse
-    width: 100%
-    margin-bottom: 25px
-
-  td
-    height: 25px // on table elements this is like min-height
-    vertical-align: top
+  .heading
+    +setting-heading
+    margin-bottom: 0.5rem
 
   input[type=text],
   input[type=email],
   input[type=password]
     width: 100%
-    margin-bottom: 5px
-    padding-bottom: 3px
+    margin-bottom: 0.5rem
+    padding-bottom: 2px
     text-overflow: ellipsis
+
+  input
+    & + input[type=text],
+    & + input[type=email],
+    & + input[type=password]
+      margin-top: 0.25rem
 
   .notes
     +small
     text-align: right
     color: $primary-color
 
-    a
-      +text-link
+  .text-link,
+  .danger-link
+    +small
 
   &.settings--shortcuts
     table
@@ -50,11 +52,8 @@ settings
       width: 300px
 
   .avatar
-    position: absolute
-    top: 15px
-    right: 15px
-    width: 100px
-    height: 100px
+    width: 120px
+    height: 120px
 
   feedback,
   private-mode
@@ -65,10 +64,13 @@ settings
 
   setting,
   .setting
-    display: table-row
+    @extend .clearfix
+    display: block
+    max-width: 400px
+    margin: 1rem 0
 
-  .setting--account td
-    padding-top: 25px
+    .btn
+      float: right
 
   .smod
     opacity: 0.5
@@ -79,3 +81,6 @@ settings
 
     &.fa-spin // template triggers this class when saving
       +faded-in
+
+  h4
+    +pane-subheading

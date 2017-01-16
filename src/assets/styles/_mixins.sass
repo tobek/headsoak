@@ -39,6 +39,8 @@ $tag-hash-opacity: 0.33
 =text-link
   cursor: pointer
   color: $link-color
+  text-decoration: underline
+
   transition: color $transition-fast
   &:hover
     color: $link-hover
@@ -48,6 +50,18 @@ $tag-hash-opacity: 0.33
     opacity: $btn-disabled-opacity
     &:hover
       color: $link-color
+
+.text-link
+  +text-link
+
+=danger-link
+  +text-link
+  color: $danger-color
+  letter-spacing: 0.9px
+  text-transform: uppercase
+
+.danger-link
+  +danger-link
 
 =menu-dropdown
   +box-shadowed

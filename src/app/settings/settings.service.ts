@@ -113,7 +113,7 @@ export class SettingsService {
         // 'https://upload.wikimedia.org/wikipedia/commons/8/8a/Darvasa_gas_crater_panorama.jpg',
         // 'https://upload.wikimedia.org/wikipedia/commons/6/69/MarsSunset.jpg',
       ],
-      postSettingHtml: '<a class="random">random background</a>',
+      postSettingHtml: '<a class="text-link random">Random background</a>',
     },
 
     {
@@ -200,7 +200,7 @@ export class SettingsService {
         'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Bacon_by_Gray_257.jpg/192px-Bacon_by_Gray_257.jpg',
         'https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Jan_van_Eyck_-_Kardinal_Niccol%C3%B2_Albergati_-_Google_Art_Project.jpg/187px-Jan_van_Eyck_-_Kardinal_Niccol%C3%B2_Albergati_-_Google_Art_Project.jpg',
       ],
-      postSettingHtml: '<a class="random">random avatar</a>',
+      postSettingHtml: '<a class="text-link random">Random avatar</a>',
     },
   ];
 
