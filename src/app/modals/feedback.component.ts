@@ -52,7 +52,6 @@ export class FeedbackComponent {
       name: this.dataService.user.displayName,
       email: this.dataService.user.email
     }, (err) => {
-      debugger;
       this.isLoading = false;
 
       if (err) {
