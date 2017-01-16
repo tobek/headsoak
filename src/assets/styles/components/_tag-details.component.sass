@@ -39,3 +39,13 @@
     li
       display: block
       padding: 10px 0 0
+
+    .common-notes-link
+      +text-link
+      +small
+
+      // @TODO/tags Since you can't click these yet, make them seem not clickable:
+      cursor: default
+      text-decoration: none
+      &:hover
+        color: $input-stroke
