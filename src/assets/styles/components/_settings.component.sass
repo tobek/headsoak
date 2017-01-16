@@ -73,16 +73,21 @@ settings
 
   .heading
     position: relative
-
-  .setting--type-string
-    .heading
-      +setting-heading
-      margin-bottom: 0.5rem
+    +setting-heading
+    margin-bottom: 0.5rem
 
   .setting--type-boolean
     margin: 0.5rem 0
 
     .heading
+      // Override +setting-heading
+      margin: 0
+      +base-font-size
+      font-weight: normal
+      color: $primary-color
+      text-transform: none
+      letter-spacing: normal
+
       +checkbox-wrapper
 
   .revert
