@@ -374,7 +374,9 @@ export class ForceGraphComponent {
         // return d.size <= 1 && this.pairCount[d.id])
         return d.size <=1;
       })
-      .text(function(d) { return d.name; });
+      .html(function(d) {
+        return '<tspan class="hash">#</tspan>' + d.name;
+      });
 
     this.simulation.on('tick', ticked.bind(this));
 
@@ -545,7 +547,7 @@ export class ForceGraphComponent {
 
     // In current font size we average 5.2px/char. Calculated using the following in console on tag browser page:
     //   _.mean(_.map(document.querySelectorAll('svg text'), function(node) { return (parseInt(window.getComputedStyle(node).width)/node.innerHTML.length) }))
-    const textWidth = node.name.length * 5.2;
+    const textWidth = (node.name.length + 1) * 5.2; // +1 to account for `#` symbol
 
     return _.assign(node, {
       radius: radius,

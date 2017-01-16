@@ -9,6 +9,8 @@ import {Note} from './note.model';
 
 import {Logger, AutocompleteService, AutocompleteSuggestion, SyntaxService, TooltipService} from '../utils/';
 
+import * as _ from 'lodash';
+
 @Component({
   selector: 'note',
   template: require('./note.component.html')
