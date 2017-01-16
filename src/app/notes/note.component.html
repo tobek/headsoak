@@ -30,7 +30,7 @@
 
       <span class="tag-like note-id" data-tooltip="Note ID" *ngIf="settings.get('showNoteIds')">{{ note.id }}</span>
 
-      <span class="tag-like expand-tags" [attr.data-tooltip]="hasExpandedTags ? 'Collapse tags' : 'Show all tags'" (click)="hasExpandedTags = ! hasExpandedTags; tooltipService.reloadOnClick($event); $event.stopPropagation()"><i class="fa fa-chevron-up go-up"></i><i class="fa fa-chevron-down go-down"></i></span>
+      <span class="tag-like expand-tags" [attr.data-tooltip]="hasExpandedTags ? 'Collapse tags' : 'Show all tags'" (click)="hasExpandedTags = ! hasExpandedTags; tooltipService.reloadOnClick($event); $event.stopPropagation()"><i class="fa fa-caret-up go-up"></i><i class="fa fa-caret-down go-down"></i></span>
     </div>
   </div>
 
