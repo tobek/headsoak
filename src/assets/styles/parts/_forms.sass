@@ -1,10 +1,12 @@
+$active-form-stroke: $highlight-color
+
 =input-underline-base
   border-bottom: 1px solid $input-stroke
   transition: border-color $transition-fast
 
 =input-underline-active
   // @TODO/ece Should this go to 2px when focused?
-  border-bottom-color: $secondary-color
+  border-bottom-color: $active-form-stroke
 
 =input-underline
   +input-underline-base
@@ -63,7 +65,7 @@ textarea,
 
   &:focus,
   &:active
-    border-color: $secondary-color
+    border-color: $active-form-stroke
 
 
 .btn
