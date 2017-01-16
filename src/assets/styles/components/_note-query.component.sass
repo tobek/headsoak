@@ -17,12 +17,19 @@ note-query
     transition: opacity $transition-fast
     opacity: 0
 
+  .caret
+    transition: border-color $transition-fast
+    border-color: transparent
+
   &:hover,
   &.is--active
     +input-underline
     color: $primary-color
     .text-input
       opacity: 1
+
+    .caret
+      border-top-color: $accent-color
   // End active/inactive styles
 
   &.is--focused

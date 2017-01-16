@@ -63,7 +63,7 @@ tag-browser
       color: $input-stroke
 
     .fa
-      color: $icon-color
+      color: $accent-color
     &:hover .fa
       color: $icon-hover
 
@@ -93,8 +93,9 @@ tag-browser
     // @TODO/now @TODO/ece Too intense? Should it be tag color? Maybe light gray?
     .caret-wrapper
       +icon-button
+      color: $accent-color
       position: absolute
-      top: 5px // magic number to center align with tag
+      top: 7px // magic number to center align with tag
       right: 0
 
     // @TODO/ece @TODO/now How's the styling here? It's identical to the dropdown menus elsewhere
