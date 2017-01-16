@@ -19,9 +19,9 @@
 >
 
 <span class="query-controls">
-  <span class="count">
-    {{ notes.length }} NOTE{{ notes.length !== 1 ? 'S' : '' }}
-  </span>
+  <span class="count"
+    >{{ notes.length }} NOTE{{ notes.length !== 1 ? 'S' : '' }}</span
+  >
   <ng-select class="sort-dropdown"
     [items]="notesService.sortOpts"
     [active]="[sortOpt]"

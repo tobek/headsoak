@@ -11,25 +11,26 @@ note-query
   transition: color $transition-fast, border-color $transition-fast
   border-bottom: 1px solid transparent
   color: transparent
+
+  .count,
+  .sort-dropdown,
   .text-input
-    border: 0
-    padding: 2px 0 0 // nudge down to align nicely with bottom border and tag chiclet
     transition: opacity $transition-fast
     opacity: 0
 
-  .caret
-    transition: border-color $transition-fast
-    border-color: transparent
+  .text-input
+    border: 0
+    padding: 2px 0 0 // nudge down to align nicely with bottom border and tag chiclet
 
   &:hover,
   &.is--active
     +input-underline
     color: $primary-color
+
+    .count,
+    .sort-dropdown,
     .text-input
       opacity: 1
-
-    .caret
-      border-top-color: $accent-color
   // End active/inactive styles
 
   &.is--focused

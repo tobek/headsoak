@@ -158,9 +158,15 @@ textarea,
 
 .query-controls
   .count
-    margin-right: 4px
-    font-weight: bold
-    letter-spacing: 1.2px
+    color: $input-stroke
+    letter-spacing: 1px
+
+    &:after
+      content: '|'
+      position: relative
+      top: -1px
+      margin-left: 0.25rem
+      color: $accent-color
 
   .control-icon
     +icon-button
