@@ -1,6 +1,13 @@
 <div class="heading">
-  <label [attr.for]="'setting-' + setting.id">
-    {{ setting.name }}
+  <input
+    *ngIf="setting.type === 'boolean'"
+    type="checkbox"
+    id="setting-{{ setting.id }}"
+    [ngModel]="setting.value"
+    (ngModelChange)="settingUpdated(setting, $event)"
+
+  /><label [attr.for]="'setting-' + setting.id"
+    >{{ setting.name }}
     <i class="fa fa-question-circle" [attr.data-tooltip]="setting.description" *ngIf="setting.description"></i>
   </label>
   <i class="fa fa-cube save-notice" [class.fa-spin]="dataService.isUnsaved(setting)"></i>
@@ -8,13 +15,6 @@
 
 <div>
   <span class="smod" *ngIf="setting.section === 'shortcuts' && settings.get('sMod')">{{ settings.get('sMod') }}+</span>
-  <input
-    *ngIf="setting.type === 'boolean'"
-    type="checkbox"
-    id="setting-{{ setting.id }}"
-    [ngModel]="setting.value"
-    (ngModelChange)="settingUpdated(setting, $event)"
-  />
   <input
     *ngIf="setting.type === 'string'"
     type="text"

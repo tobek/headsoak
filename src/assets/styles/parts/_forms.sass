@@ -154,7 +154,49 @@ textarea,
   +warning-style
 .btn-danger
   +danger-style
-  
+
+
+// Must contain a checkbox input immediately followed by a label
+=checkbox-wrapper
+  position: relative
+
+  label
+    cursor: pointer
+
+  input[type=checkbox]
+    display: none
+
+    & + label:before
+      display: inline-block
+      position: relative
+      width: 1.25rem
+      height: 1.25rem
+      top: -2px
+      vertical-align: middle
+      margin-right: 0.5rem
+      border: 1px solid $input-stroke
+      content: ''
+
+    & + label:after
+      position: absolute
+      top: -18px
+      left: 0
+      // content: '\f00c'
+      // font-family: FontAwesome
+      content: '\2713'
+      font-size: 2rem
+      color: transparent
+      transition: color $transition-fast, opacity $transition-fast
+
+    &:checked + label:after
+      color: $secondary-color
+
+    & + label:hover:after
+      opacity: 0.5
+      color: $input-stroke
+    &:checked + label:hover:after
+        color: $highlight-color
+
 
 .query-controls
   .count

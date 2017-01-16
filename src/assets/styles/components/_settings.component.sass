@@ -5,10 +5,6 @@ settings
   .logo h1
     margin-top: 15px
 
-  .heading
-    +setting-heading
-    margin-bottom: 0.5rem
-
   input[type=text],
   input[type=email],
   input[type=password]
@@ -75,12 +71,38 @@ settings
     .btn
       float: right
 
+  .heading
+    position: relative
+
+  .setting--type-string
+    .heading
+      +setting-heading
+      margin-bottom: 0.5rem
+
+  .setting--type-boolean
+    margin: 0.5rem 0
+
+    .heading
+      +checkbox-wrapper
+
+  .revert
+    display: inline-block
+    margin-top: 1.5rem
+
+  // @HACK To make the spacing look good on Settings screen for now
+  .setting-bgImageUrl
+    margin-bottom: 2.5rem
+
   .smod
     opacity: 0.5
 
   .save-notice
     +fadeable
     +faded-out
+    position: absolute
+    left: -1.5rem
+    top: 2px
+    color: $primary-color
 
     &.fa-spin // template triggers this class when saving
       +faded-in

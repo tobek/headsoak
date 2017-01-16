@@ -19,50 +19,6 @@ export class SettingsService {
 
   private settingsSourceData = [
     {
-      id: 'addQueryTagsToNewNuts',
-      default: false,
-      name: 'Add filtered tags to new notes',
-      description: 'If this is checked, new notes created while searching for certain tags will have those tags too.',
-      type: 'boolean', // only boolean supported for now
-      section: 'settings'
-    },
-
-    {
-      id: 'nutChangesChangeTagModifiedTimestamp',
-      default: true,
-      name: 'Editing notes updates tag timestamps',
-      description: 'If this is checked then whenever you edit a note, it will change the "modified" timestamp (used e.g. to sort by \'recently used\') of all tags on that note.',
-      type: 'boolean',
-      section: 'settings'
-    },
-
-    {
-      id: 'tagChangesChangeNutModifiedTimestamp',
-      default: false,
-      name: 'Tagging updates note timestamps',
-      description: 'If this is checked then adding or removing a tag to/from a note will update the "modified" timestamp of that note.',
-      type: 'boolean',
-      section: 'settings'
-    },
-
-    {
-      id: 'addAnotherTag',
-      default: true,
-      name: 'Add another tag by default',
-      description: 'If this setting is enabled, then when you have added a new tag to a note, your cursor will remain in the tag area in order to continue adding tags. Holding ctrl or shift while pressing enter will add the tag and move your cursor to the note text instead.\n\nIf this option is disabled, the behavior is reversed: hold shift or ctrl in order to remain in the add tag area.',
-      type: 'boolean',
-      section: 'settings'
-    },
-
-    {
-      id: 'showNoteIds',
-      default: false,
-      name: 'Show note IDs',
-      type: 'boolean',
-      section: 'settings'
-    },
-
-    {
       id: 'bgImageUrl',
       default: null,
       name: 'Background image URL',
@@ -115,6 +71,51 @@ export class SettingsService {
       ],
       postSettingHtml: '<a class="text-link random">Random background</a>',
     },
+
+    {
+      id: 'addQueryTagsToNewNuts',
+      default: false,
+      name: 'Add filtered tags to new notes',
+      description: 'If this is checked, new notes created while searching for certain tags will have those tags too.',
+      type: 'boolean', // only boolean supported for now
+      section: 'settings'
+    },
+
+    {
+      id: 'nutChangesChangeTagModifiedTimestamp',
+      default: true,
+      name: 'Editing notes updates tag timestamps',
+      description: 'If this is checked then whenever you edit a note, it will change the "modified" timestamp (used e.g. to sort by \'recently used\') of all tags on that note.',
+      type: 'boolean',
+      section: 'settings'
+    },
+
+    {
+      id: 'tagChangesChangeNutModifiedTimestamp',
+      default: false,
+      name: 'Tagging updates note timestamps',
+      description: 'If this is checked then adding or removing a tag to/from a note will update the "modified" timestamp of that note.',
+      type: 'boolean',
+      section: 'settings'
+    },
+
+    {
+      id: 'addAnotherTag',
+      default: true,
+      name: 'Add another tag by default',
+      description: 'If this setting is enabled, then when you have added a new tag to a note, your cursor will remain in the tag area in order to continue adding tags. Holding ctrl or shift while pressing enter will add the tag and move your cursor to the note text instead.\n\nIf this option is disabled, the behavior is reversed: hold shift or ctrl in order to remain in the add tag area.',
+      type: 'boolean',
+      section: 'settings'
+    },
+
+    {
+      id: 'showNoteIds',
+      default: false,
+      name: 'Show note IDs',
+      type: 'boolean',
+      section: 'settings'
+    },
+
 
     {
       id: 'maxHistory',
