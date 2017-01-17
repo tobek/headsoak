@@ -48,6 +48,7 @@ export class NoteComponent {
   private removePasteListener: Function;
 
   private boundCloseAddTagFieldHandler = this.closeAddTagFieldHandler.bind(this);
+  private boundCollapseTagsHandler = this.collapseTagsHandler.bind(this);
 
   private _logger: Logger;
 
@@ -289,6 +290,26 @@ export class NoteComponent {
     this.note.removeTagId(tagId);
 
     setTimeout(this.checkTagOverflow.bind(this), 0);
+  }
+
+  toggleExpandTags() {
+    this.hasExpandedTags = ! this.hasExpandedTags;
+
+    window.removeEventListener('click', this.boundCollapseTagsHandler);
+
+    if (this.hasExpandedTags) {
+      window.addEventListener('click', this.boundCollapseTagsHandler);
+    }
+  }
+
+  collapseTagsHandler(event: MouseEvent) {
+    const clickedEl = <HTMLElement> event.target;
+    if (this.el.nativeElement.querySelector('.header').contains(clickedEl)) {
+      return;
+    }
+
+    this.hasExpandedTags = false;
+    window.removeEventListener('click', this.boundCollapseTagsHandler);
   }
 
   bodyPaste(event): void {
