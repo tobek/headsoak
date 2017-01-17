@@ -218,29 +218,29 @@
       .unlocked
         display: inline-block
 
-  .explore
-    z-index: 1
-    position: absolute
-    top: 100%
-    left: 5px
-    width: calc(100% - 10px)
-    height: 0
-    padding: 0 15px
-    overflow-y: auto
-    background: fade-out($primary-color, 0.05)
-    color: $primary-color-contrast
+  // .explore
+  //   z-index: 1
+  //   position: absolute
+  //   top: 100%
+  //   left: 5px
+  //   width: calc(100% - 10px)
+  //   height: 0
+  //   padding: 0 15px
+  //   overflow-y: auto
+  //   background: fade-out($primary-color, 0.05)
+  //   color: $primary-color-contrast
 
-    transition: opacity $transition-fast, visibility $transition-fast, max-height $transition-fast ease-in, padding $transition-fast ease-out
-    +faded-out
+  //   transition: opacity $transition-fast, visibility $transition-fast, max-height $transition-fast ease-in, padding $transition-fast ease-out
+  //   +faded-out
 
-  &.show--explore
-    .explore
-      +faded-in
-      height: calc(100vh - #{$header-height} - 100% - 15px) // 100% to get note height, 15px to give a bit of breathing room
-      padding: 15px
+  // &.show--explore
+  //   .explore
+  //     +faded-in
+  //     height: calc(100vh - #{$header-height} - 100% - 15px) // 100% to get note height, 15px to give a bit of breathing room
+  //     padding: 15px
 
-      @media (max-height: 600px)
-        height: 300px
+  //     @media (max-height: 600px)
+  //       height: 300px
 
 
   .note-action
@@ -310,3 +310,17 @@
     //     +susy-breakpoint($screen-small, $susy)
     //       padding-right: calc(75% - 450px - 12px)
     //       padding-left: calc(25% - 150px + 12px)
+
+
+// This actually gets shunted into ModalComponent but let's style it here
+// @TODO/ece What do you think of this whole thing?
+.explore-note
+  .time-chunk
+    display: inline-block
+    width: 50%
+    min-width: 120px // magic number that looks about right for room for splitting date/time onto two lines but no more
+    margin-bottom: 2rem
+
+  h5
+    +setting-heading
+    margin: 0.5rem 0

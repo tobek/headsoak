@@ -1,15 +1,15 @@
 import {Injectable} from '@angular/core';
-import {SafeHtml, DomSanitizer} from '@angular/platform-browser';
+// import {SafeHtml, DomSanitizer} from '@angular/platform-browser';
 
 @Injectable()
 export class SyntaxService {
 
   constructor(
-    private sanitizer: DomSanitizer
+    // private sanitizer: DomSanitizer
   ) {}
 
   /** Adapted from http://stackoverflow.com/a/7220510/458614 */
-  prettyPrintJson(obj: Object | string): SafeHtml {
+  prettyPrintJson(obj: Object | string): string {
     let json = typeof obj !== 'string' ? JSON.stringify(obj, null, 2) : obj;
 
     json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -39,6 +39,7 @@ export class SyntaxService {
         return '<span class="' + cls + '">' + match + '</span>';
     });
 
-    return this.sanitizer.bypassSecurityTrustHtml(json);
+    // return this.sanitizer.bypassSecurityTrustHtml(json);
+    return json;
   }
 }

@@ -72,6 +72,7 @@ const APP_DIRECTIVES = [
 ];
 
 
+import {DatePipe} from '@angular/common'; // since we want to actually use this as a service (outside of templates) we need to add it to the providers
 import {ActiveUIsService} from './active-uis.service';
 import {AnalyticsService} from './analytics.service';
 import {DataService} from './data.service';
@@ -86,7 +87,7 @@ import {AutocompleteService, ScrollMonitorService, SyntaxService, ToasterService
 
 // Application wide providers - all services used in the application have to go here (from where they're injected into the main App componenet) or else DI can't find providers for them
 const APP_PROVIDERS = [
-
+  DatePipe,
   ActiveUIsService,
   AnalyticsService,
   DataService,

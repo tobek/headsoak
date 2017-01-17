@@ -73,8 +73,7 @@
 
       --><a class="note-action"
         data-tooltip="Explore note"
-        (mousedown)="$event.stopPropagation(); throttledToggleExplore()"
-        (touchstart)="$event.stopPropagation(); throttledToggleExplore()"
+        (click)="$event.stopPropagation(); showExplore()"
       ><i class="fa fa-fw fa-bar-chart"></i></a
 
       ><a class="note-action"
@@ -86,16 +85,6 @@
       ><a data-tooltip="Delete note" class="note-action" (click)="delete($event); ; $event.stopPropagation()"><i class="fa fa-fw fa-trash-o"></i></a
     ></span
   ></div>
-</div>
-
-<div class="explore" (click)="$event.stopPropagation()">
-  <div *ngIf="showExplore">
-    Created: {{ note.created | date:'medium' }}<br>
-    Modified: {{ note.modified | date:'medium' }}
-
-    <h4>Raw data:</h4>
-    <pre class="syntax" [innerHTML]="rawDataHtml"></pre>
-  </div>
 </div>
 
 <!-- @REMOVED/write

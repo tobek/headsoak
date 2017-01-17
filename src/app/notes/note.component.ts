@@ -1,5 +1,5 @@
 import {Inject, forwardRef, Component, EventEmitter, ElementRef, Input, Output, ViewChild, HostBinding, HostListener, Renderer/*, ChangeDetectorRef*/} from '@angular/core';
-import {SafeHtml} from '@angular/platform-browser';
+import {DatePipe} from '@angular/common';
 
 import {ActiveUIsService} from '../active-uis.service';
 import {AnalyticsService} from '../analytics.service';
@@ -7,6 +7,7 @@ import {SettingsService} from '../settings/settings.service';
 import {NotesService} from './notes.service';
 import {Note} from './note.model';
 
+import {ModalService} from '../modals/modal.service';
 import {Logger, AutocompleteService, AutocompleteSuggestion, SyntaxService, TooltipService} from '../utils/';
 
 import * as _ from 'lodash';
@@ -38,7 +39,6 @@ export class NoteComponent {
   @HostBinding('class.is--focused') isFocused = false;
   // @REMOVED/note text overflow
   // @HostBinding('class.is--text-overflowing') isTextOverflowing = false;
-  @HostBinding('class.show--explore') showExplore = false;
 
   /** Catch any "background" clicks that bubble up to the host element and focus on the body. @NOTE This means that anything in this component that shouldn't lead to body being focused needs `event.stopPropagation`. */
   @HostListener('click') noteClick() {
@@ -47,12 +47,7 @@ export class NoteComponent {
 
   private removePasteListener: Function;
 
-  private rawDataHtml: SafeHtml;
-
   private boundCloseAddTagFieldHandler = this.closeAddTagFieldHandler.bind(this);
-
-  /** So that we can listen on mousedown and touchstart (because normal click fires after blurring of text input removes focused state). */
-  private throttledToggleExplore = _.throttle(this.toggleExplore.bind(this), 100);
 
   private _logger: Logger;
 
@@ -60,10 +55,12 @@ export class NoteComponent {
     // public cdrRef: ChangeDetectorRef,
     public el: ElementRef,
     private renderer: Renderer,
+    private datePipe: DatePipe,
     private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
     private autocompleteService: AutocompleteService,
     private tooltipService: TooltipService,
+    private modalService: ModalService,
     private syntaxService: SyntaxService,
     private settings: SettingsService,
     private notesService: NotesService
@@ -331,15 +328,23 @@ export class NoteComponent {
     }
   }
 
-  toggleExplore() {
-    this.showExplore = ! this.showExplore;
+  /** @HACK Too lazy to modify ModalComponent template and support passing in a Note intstance through rxjs Subject in ModalService etc... so just ridiculously building the HTML as a string here and passing it in as a generic modal. */
+  showExplore() {
+    const rawDataHtml = this.syntaxService.prettyPrintJson(this.note.forDataStore());
 
-    if (this.showExplore) {
-      this.rawDataHtml = this.syntaxService.prettyPrintJson(this.note.forDataStore());
-    }
+    let html = '<div class="explore-note">';
 
-    // @TODO/polish Could have a button to refresh the data if you've since typed stuff?
+      html += '<div class="time-chunk"><h5>Created</h5> '
+        html += this.datePipe.transform(this.note.created, 'medium');
+      html += '</div>';
+      html += '<div class="time-chunk"><h5>Modified</h5> '
+        html += this.datePipe.transform(this.note.modified, 'medium');
+      html += '</div>';
 
-    // @TODO/now Click out (anywhere except explore or explore button) should close
+      html += '<h5>Raw data</h5><pre class="syntax">' + rawDataHtml + '</pre>';
+
+    html += '</div>';
+
+    this.modalService.alert(html, true, 'Looks good');
   }
 }
