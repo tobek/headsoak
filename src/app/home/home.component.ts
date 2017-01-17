@@ -66,6 +66,8 @@ export class HomeComponent {
   }
 
   init(): void {
+    this.activeUIs.home = this;
+
     // @REMOVED/write
     // this.activeUIs.openNoteComponent = this.noteComponent;
   }
