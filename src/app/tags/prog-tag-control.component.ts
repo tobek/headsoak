@@ -118,12 +118,20 @@ export class ProgTagControlComponent {
   }
 
   revertChanges(): void {
+    if (! this.changed) {
+      return;
+    }
+
     this.editor.setValue(this.tag.progFuncString || '');
     this.editor.gotoLine(0, 0); // deselect and go to beginning (setValue sometimes selects all and/or puts cursor at end)
     this.editorUnchanged();
   }
 
   saveAndRun(): void {
+    if (! this.changed) {
+      return;
+    }
+    
     this.tag.updateProgFuncString(this.editor.getValue());
     this.editorUnchanged();
 

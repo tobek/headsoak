@@ -150,7 +150,9 @@ export class LoginComponent {
   }
 
   resetPassword() {
-    if (! this.email) return false;
+    if (! this.email) {
+      return false;
+    }
 
     this.accountService.passwordReset(this.email, (err) => {
       if (err) {

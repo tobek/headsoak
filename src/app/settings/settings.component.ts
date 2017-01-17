@@ -35,6 +35,7 @@ export class SettingsComponent {
 
   @HostBinding('class') hostClass: string;
 
+  @ViewChild('changeEmailInput') changeEmailInput: ElementRef;
   @ViewChild('currentPasswordInput') currentPasswordInput: ElementRef;
   @ViewChild('changePasswordButton') changePasswordButton: ElementRef;
 
@@ -184,6 +185,23 @@ export class SettingsComponent {
   }
 
   changeEmail(): void {
+    if (! this.emailAddress.trim()) {
+      this.tooltipService.justTheTip(
+        'What\'s your email?',
+        this.changeEmailInput.nativeElement,
+        'error'
+      );
+      return;
+    }
+    if (this.emailAddress === this.dataService.user.email) {
+      this.tooltipService.justTheTip(
+        'Email hasn\'t changed',
+        this.changeEmailInput.nativeElement,
+        'warning'
+      );
+      return;
+    }
+
     this.changeEmailIsLoading = true;
     this.dataService.accountService.changeEmail(this.emailAddress, () => {
       this.changeEmailIsLoading = false;
@@ -193,6 +211,11 @@ export class SettingsComponent {
   changePassword(): void {
     if (! this.oldPass || ! this.newPass.trim()) {
       // @TODO/account Should have some password requirements? Like min length, and not "password" or "12345" or other number sequence or all spaces?
+      this.tooltipService.justTheTip(
+        'Please fill in old and new password fields',
+        this.currentPasswordInput.nativeElement,
+        'error'
+      );
       return;
     }
 

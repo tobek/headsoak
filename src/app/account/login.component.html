@@ -83,7 +83,7 @@
 
     <input name="email" type="email" placeholder="E-mail address" autocomplete="email" required ngControl="email" [(ngModel)]="email">
 
-    <button class="btn btn-primary" type="submit" [disabled]="! resetPasswordForm.valid || passwordResetSuccess">Reset password</button>
+    <button class="btn btn-primary" type="submit" [disabled]="passwordResetSuccess">Reset password</button>
   </form>
 
   <aside class="switch-sign-up-in">

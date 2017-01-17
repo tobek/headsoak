@@ -17,7 +17,7 @@
     [(ngModel)]="password"
   />
 
-  <button class="btn btn-secondary enable-button" type="submit" [class.is--loading]="isLoading" [disabled]="isLoading || ! privateModeForm.valid">Turn private mode on</button>
+  <button class="btn btn-secondary enable-button" type="submit" [class.is--loading]="isLoading" [disabled]="isLoading">Turn private mode on</button>
 </form>
 
 <button *ngIf="dataService.accountService.privateMode" class="btn btn-secondary" (click)="disable()">Turn private mode off</button>

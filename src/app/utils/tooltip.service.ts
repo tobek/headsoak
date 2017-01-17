@@ -56,7 +56,7 @@ export class TooltipService {
   }
 
   /** Spawns one tooltip with given content on given element. Any user activity on the page (click, touch, keyboard) will make the tooltip disappear. */
-  justTheTip(content: string, el: HTMLElement, typeClass?: string) {
+  justTheTip(content: string, el: HTMLElement, typeClass?: 'success' | 'info' | 'warning' | 'error') {
     let placement = 'top-right';
     if (el['type'] === 'submit' || el.nodeName.toLowerCase() === 'button') {
       placement = 'top';

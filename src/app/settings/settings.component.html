@@ -78,10 +78,10 @@
 
         <div>
           <form ref-changeEmailForm="ngForm" (ngSubmit)="changeEmail()">
-            <input id="change-email-input" type="email" name="email" placeholder="Your email" required [(ngModel)]="emailAddress">
+            <input id="change-email-input" type="email" name="email" placeholder="Your email" required ref-changeEmailInput [(ngModel)]="emailAddress">
             <button class="btn btn-secondary" type="submit"
               [class.is--loading]="changeEmailIsLoading"
-              [disabled]="! emailAddress.trim() || emailAddress === dataService.user.email || changeEmailIsLoading"
+              [disabled]="changeEmailIsLoading"
             >Change email</button>
           </form>
         </div>
@@ -99,7 +99,7 @@
             <button class="btn btn-secondary" type="submit"
               ref-changePasswordButton
               [class.is--loading]="changePasswordIsLoading"
-              [disabled]="! oldPass || ! newPass || changePasswordIsLoading"
+              [disabled]="changePasswordIsLoading"
             >Change password</button>
             <!-- @TODO/ece This page looks a bit weird with all the buttons disabled. Might be better when overall style changed, but maybe we don't disable the button, in which case if they try to submit with, say, nothing in the new password field, either nothing happens or an alert pops up. -->
           </form>
