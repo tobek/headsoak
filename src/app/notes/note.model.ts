@@ -392,25 +392,38 @@ export class Note {
     }
   }
 
-  /** Returns true if note was deleted. */
-  delete(noConfirm = false): boolean {
-    let confirmMessage = 'Are you sure you want to delete this note? This can\'t be undone.';
+  /** Confirms that the user wants to delete the note, and if so, runs `actuallyDelete`. */
+  delete(noConfirm = false): void {
+    let confirmMessage = '<p>Are you sure you want to delete this note? This can\'t be undone.</p>';
     if (this.body) {
-      confirmMessage += '\n\nIt\'s the note that goes like this: "';
+      confirmMessage += '<p>It\'s the note that goes like this: "';
       if (this.body.length > 100) {
         confirmMessage += this.body.substr(0, 100) + '...';
       }
       else {
         confirmMessage += this.body;
       }
-      confirmMessage += '"';
+      confirmMessage += '"</p>';
     }
 
-    // @TODO/modals
-    if (! noConfirm && ! confirm(confirmMessage)) {
-      return false;
+    if (noConfirm) {
+      this.actuallyDelete();
+      return;
     }
 
+    this.dataService.modalService.confirm(
+      confirmMessage,
+      (confirmed) => {
+        if (confirmed) {
+          this.actuallyDelete();
+        }
+      },
+      true,
+      'Delete',
+    );
+  }
+
+  actuallyDelete(): void {
     this.deleted = true;
 
     if (this.tags) {
@@ -432,8 +445,6 @@ export class Note {
     // $s.q.doQuery();
 
     this._logger.log('Deleted');
-
-    return true;
   }
 
   runProgTags(): void {

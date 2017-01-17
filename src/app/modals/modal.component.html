@@ -31,7 +31,8 @@
         />
       </div>
 
-      <button class="btn btn-secondary"
+      <!-- @TODO/ece So right now we use primary button if there's other buttons, but otherwise we just do secondary, cause maybe primary is too intense for a little alert? What do you think? -->
+      <button class="btn btn-{{ (config.cancelButton || config.additionalButtons) ? 'primary' : 'secondary' }}"
         ref-okButton
         [class.is--loading]="okButtonIsLoading"
         [disabled]="okButtonIsLoading"

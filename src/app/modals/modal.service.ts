@@ -64,6 +64,16 @@ export class ModalService {
     });
   }
 
+  confirm(message: string, cb: (accepted: boolean) => any, trustAsHtml = false, okButtonText?: string): void {
+    this.modal.generic({
+      message: trustAsHtml ? this.sanitizer.bypassSecurityTrustHtml(message) : message,
+      okButtonText: okButtonText,
+      cancelButton: true,
+      okCb: () => { cb(true) },
+      cancelCb: () => { cb(false) },
+    });
+  }
+
   prompt(
     message: string | SafeHtml,
     cb: (result: string, showLoadingState?: Function, hideLoadingState?: Function) => any,
