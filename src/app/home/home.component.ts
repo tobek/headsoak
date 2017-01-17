@@ -37,7 +37,7 @@ export class HomeComponent {
 
   // @REMOVED/write
   // private noteUpdatedSub: Subscription;
-  private queryTagsUpdatedSub: Subscription;
+  // private queryTagsUpdatedSub: Subscription;
 
   private _logger: Logger = new Logger(this.constructor.name);
 
@@ -61,8 +61,7 @@ export class HomeComponent {
   ngOnDestroy() {
     // @REMOVED/write
     // this.noteUpdatedSub.unsubscribe();
-
-    this.queryTagsUpdatedSub.unsubscribe();
+    // this.queryTagsUpdatedSub.unsubscribe();
 
     if (this.activeUIs.home === this) {
       this.activeUIs.home = null;
