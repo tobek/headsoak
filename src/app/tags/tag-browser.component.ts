@@ -238,6 +238,8 @@ export class TagBrowserComponent {
 
     if (this.activeUIs.noteQuery) {
       this.activeUIs.noteQuery.tagToggled(tag.id, event && event.shiftKey);
+      this.expandedTag = tag;
+      // @TODO/polish @TODO/tag browser It should probably get closed again if the tag is removed from NoteQuery
     }
   }
 
