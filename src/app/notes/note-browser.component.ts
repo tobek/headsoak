@@ -118,18 +118,23 @@ export class NoteBrowserComponent {
 
   routeUpdated(event: NavigationEnd) {
     if (NOTE_BROWSER_ROUTES.indexOf(event.url) !== -1) {
-      // Wait a sec til new section's all sorted out
-      setTimeout(() => {
-        this.noteComponents.forEach((noteComponent) => {
-          // @REMOVED/note text overflow
-          // noteComponent.checkTextOverflow();
-          noteComponent.checkTagOverflow();
-        });
-      });
+      this.notesGeometryChanged();
     }
 
     // Since the UI is changing anyway, take this as an opportunity to make sure a new note is set up, shifting out existing "new" note if necessary
     this.ensureNewNoteSetUp(true, true);
+  }
+
+  /** Call this whenever the notes' geometry has changed so that we can check some stuff. */
+  notesGeometryChanged(): void {
+    // Wait a sec til new change has actually been rendered in view
+    setTimeout(() => {
+      this.noteComponents.forEach((noteComponent) => {
+        // @REMOVED/note text overflow
+        // noteComponent.checkTextOverflow();
+        noteComponent.checkTagOverflow();
+      });
+    }, 0);
   }
 
   /** Makes sure we have set up a blank new note for the user to be able to use as soon as they open the app. Optionally can replace the existing "new" note, shunting that into `this.notes` if desired.

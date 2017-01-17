@@ -8,7 +8,7 @@ import {DataService} from '../data.service';
 import {SettingsService} from '../settings/settings.service';
 import {Logger} from '../utils/logger';
 
-import {Note, NoteComponent, NotesService} from '../notes/';
+import {Note, NoteComponent, NoteBrowserComponent, NotesService} from '../notes/';
 import {Tag, TagsService} from '../tags/';
 
 
@@ -24,7 +24,16 @@ export class HomeComponent {
   // @REMOVED/write
   // @ViewChild(NoteComponent) noteComponent: NoteComponent;
 
-  @HostBinding('class.is--tag-browser-collapsed') tagBrowserCollapsed = false
+  @ViewChild(NoteBrowserComponent) noteBrowserComponent: NoteBrowserComponent;
+
+  _tagBrowserCollapsed = false;
+  @HostBinding('class.is--tag-browser-collapsed') get tagBrowserCollapsed(): boolean {
+    return this._tagBrowserCollapsed
+  }
+  set tagBrowserCollapsed(newVal: boolean) {
+    this._tagBrowserCollapsed = newVal;
+    this.noteBrowserComponent.notesGeometryChanged();
+  }
 
   // @REMOVED/write
   // private noteUpdatedSub: Subscription;
