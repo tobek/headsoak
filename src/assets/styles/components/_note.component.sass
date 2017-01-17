@@ -21,16 +21,18 @@
     height: 30px
 
   .header
-    top: 7px
+    top: 0
     left: 0
 
   .tags
     overflow: hidden
     width: 100%
-    max-height: 40px
-    padding: 0 10px
-    // background-color: white
-    border-bottom: 1px solid transparent
+    max-height: 2.5rem
+    padding: 0.25rem 0.5rem 0.5rem
+    // background-color: transparent
+    // background-color: rgba($highlight-color, 0.25)
+    background-color: $menu-dropdown-bg-color // @TODO/ece Should the entire tag browser be like this too?
+    border-bottom: 2px solid transparent
 
     // @TODO/animation Animation looks weird cause either max-height has to be huge or be smaller but scrollable. If scrollable then scroll bar shows during animation. For now doing max-height none and no animatino
     // transition: max-height $transition-fast, padding $transition-fast, border-color $transition-fast
@@ -112,13 +114,12 @@
         +faded-in
 
     .tags
+      +menu-dropdown
       // overflow-y: auto
       // max-height: 200px // should be more than enough, and in case not, we can scroll
       // @TODO/animation Just snapping to this for now, see note on .tags above
       max-height: none
       padding-bottom: 10px
-      border-color: $shadow-border
-      background-color: $primary-color-contrast
 
 
   .body-input
@@ -138,8 +139,8 @@
 
   .route--list &,
   .route--browse &
-    // Magic numbers just like in normal `note` padding
-    padding-top: 40px
+    // Magic numbers just like in normal `note` padding. Top padding should mirror distance from bottom of tags header to tag text itself.
+    padding-top: 46px
     padding-bottom: 32px
 
     .note-actions
