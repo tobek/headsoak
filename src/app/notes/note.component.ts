@@ -175,6 +175,8 @@ export class NoteComponent {
     this.note.blurred();
     this.isFocused = false;
 
+    // @BUG @TODO/polish In Chrome, red squiggly underlines persist after blurring even though `spellcheck` gets set to false, because of this bug: <https://bugs.chromium.org/p/chromium/issues/detail?id=155781>. A fix would be to reassign `innerHTML`, but that a) will be slow for lots of text, b) will lose caret position (lost anyway on blur right now in Chrome), and c) break any references to any elements inside it (of which there are none right now). More discussion: <http://stackoverflow.com/questions/12812348/red-spellcheck-squiggles-remain-in-chrome-after-editing-is-disabled>
+
     // @REMOVED/note text overflow
     // // Wait for max-height transition to finish
     // setTimeout(this.checkTextOverflow.bind(this), 250);

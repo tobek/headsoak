@@ -37,6 +37,7 @@
   <div class="body-input" tabindex=0 contenteditable 
     ref-bodyInput
     *ngIf="! note.sharedBody"
+    [attr.spellcheck]="isFocused"
     [attr.placeholder]="note.new ? 'Enter a new note' : 'This note has no text'"
     [contenteditableModel]="note.body"
     (contenteditableModelChange)="note.body = $event; note.changed()"
