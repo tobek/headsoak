@@ -23,8 +23,11 @@ export class Setting {
   default: any;
   value: any; // current value used in app
 
-  /** Function called to make setting take effect - e.g. called when setting first initialized and every time it's updated. */
+  /** Custom function called to make setting take effect - e.g. called when setting first initialized and every time it's updated. */
   enact = () => {};
+
+  /** The <body> element will be classed with `'setting--' + setting.id` when `setting.value === true`. */
+  bodyClass: boolean;
 
   /** Raw HTML spit out after setting label. @TODO/settings There is a much better way to do this. Setting should be a componenton its own with its own instantiations and views and actions. **/
   postSettingHtml = '';
@@ -45,7 +48,7 @@ export class Setting {
 
     this.savedValue = this.value;
 
-    this.enact();
+    this._enact();
 
     this._logger = new Logger('Setting ' + this.id);
   }
@@ -59,9 +62,24 @@ export class Setting {
     this._logger.log('Updating to', newVal);
     this.savedValue = this.value = newVal;
 
-    this.enact();
+    this._enact();
 
     this.dataService.digest$.emit(this);
+  }
+
+  /** Function called to make setting take effect - e.g. called when setting first initialized and every time it's updated. */
+  _enact(): void {
+    if (this.bodyClass) {
+      if (this.value === true) {
+        window.document.body.classList.add('setting--' + this.id);
+      }
+      else {
+        window.document.body.classList.remove('setting--' + this.id);
+      }
+    }
+
+    // Call any custom `enact` function we have
+    this.enact();
   }
 
   /** Outputs rendition of setting that we want to save to the data store. */

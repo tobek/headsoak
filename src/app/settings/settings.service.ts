@@ -109,6 +109,16 @@ export class SettingsService {
     },
 
     {
+      id: 'minimalistHeader',
+      default: false,
+      name: 'Minimalist header',
+      description: 'Hide the note search bar unless it\'s in use.',
+      type: 'boolean',
+      bodyClass: true,
+      section: 'settings'
+    },
+
+    {
       id: 'showNoteIds',
       default: false,
       name: 'Show note IDs',

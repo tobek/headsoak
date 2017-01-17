@@ -6,35 +6,36 @@ note-query
 
   padding: 2px 15px 1px
 
-
-  // Active/inactive styles
-  transition: color $transition-fast, border-color $transition-fast
-  border-bottom: 1px solid transparent
-  color: transparent
-
-  .count,
-  .sort-dropdown,
-  .text-input
-    transition: opacity $transition-fast
-    opacity: 0
+  +input-underline
+  &.is--focused
+    +input-underline-active
 
   .text-input
     border: 0
     padding: 2px 0 0 // nudge down to align nicely with bottom border and tag chiclet
 
-  &:hover,
-  &.is--active
-    +input-underline
-    color: $primary-color
+  // Active/inactive styles
+  .setting--minimalistHeader &
+    transition: color $transition-fast, border-color $transition-fast
+    border-bottom-color: transparent
+    color: transparent
 
     .count,
     .sort-dropdown,
     .text-input
-      opacity: 1
-  // End active/inactive styles
+      transition: opacity $transition-fast
+      opacity: 0
 
-  &.is--focused
-    +input-underline-active
+    &:hover,
+    &.is--active
+      +input-underline
+      color: $primary-color
+
+      .count,
+      .sort-dropdown,
+      .text-input
+        opacity: 1
+  // End active/inactive styles
 
   .tags
   .query-controls
