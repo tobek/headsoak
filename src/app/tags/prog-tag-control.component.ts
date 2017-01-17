@@ -118,7 +118,7 @@ export class ProgTagControlComponent {
   }
 
   revertChanges(): void {
-    this.editor.setValue(this.tag.progFuncString);
+    this.editor.setValue(this.tag.progFuncString || '');
     this.editor.gotoLine(0, 0); // deselect and go to beginning (setValue sometimes selects all and/or puts cursor at end)
     this.editorUnchanged();
   }
@@ -134,7 +134,7 @@ export class ProgTagControlComponent {
         this.tag.runProgOnAllNotes();
         this.isRunning = false;
         this.tag.updated();
-        // @TODO/prog Should show the results of running it here! Like # of notes it was tagged on. And a success message.
+        // @TODO/prog Should show the results of running it here! Like # of notes it was tagged on. And a success message. Tooltip or toaster?
       }, 200);
     }
     else {
