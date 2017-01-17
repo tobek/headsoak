@@ -9,7 +9,9 @@
   note-browser &
     margin-bottom: 1rem
 
-  padding: 54px 10px 35px 1rem // More magic numbers (correctly vertically positions header and note actions). Left padding is needed in order for body input scrollbar to not be flush against body text nor flush against edge of note. These values (+ right padding on .body-input) are close enough on all browser widths it seems, especially since right edge of text isn't clear because of non-justified left-alignment.
+  &,
+  homepage .demo-container & // extra specificity for homepage to override route class that might be there e.g. if you're in route--browse and logout
+    padding: 54px 10px 35px 1rem // More magic numbers (correctly vertically positions header and note actions). Left padding is needed in order for body input scrollbar to not be flush against body text nor flush against edge of note. These values (+ right padding on .body-input) are close enough on all browser widths it seems, especially since right edge of text isn't clear because of non-justified left-alignment.
 
   .note-wrapper
     height: 100%
