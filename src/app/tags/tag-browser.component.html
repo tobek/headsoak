@@ -73,10 +73,10 @@
       [class.is--expanded]="expandedTag === tag"
     >
       <div class="tag-header" (click)="tagHeaderClick(tag)">
-        <span *ngIf="tag.name" class="caret-wrapper" (click)="tagDropdownCaretClick(tag)">
-          <!-- <span class="caret"></span> -->
-          <i class="fa fa-caret-down"></i>
-        </span>
+        <span *ngIf="tag.name" class="caret-wrapper" (click)="tagDropdownCaretClick(tag)"
+          ><i class="fa fa-caret-up go-up"></i
+          ><i class="fa fa-caret-down go-down"></i
+        ></span>
 
         <tag class="tag tag-{{ tag.id }}"
           [tag]="tag"
@@ -124,10 +124,10 @@
     >
       <!-- @TODO/refactor Copy-pasting from normal tags... -->
       <div class="tag-header" (click)="tagHeaderClick(tag)">
-        <span class="caret-wrapper" (click)="tagDropdownCaretClick(tag)">
-          <!-- <span class="caret"></span> -->
-          <i class="fa fa-caret-down"></i>
-        </span>
+        <span class="caret-wrapper" (click)="tagDropdownCaretClick(tag)"
+          ><i class="fa fa-caret-down go-down"></i
+          ><i class="fa fa-caret-up go-up"></i
+        ></span>
 
         <tag class="tag tag-{{ tag.id }}"
           [tag]="tag"
