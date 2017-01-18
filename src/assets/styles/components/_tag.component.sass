@@ -50,6 +50,11 @@ tag
     +tag-face
     border-color: $menu-dropdown-bg-color
 
+    // Magic numbers to make it the full height of the note tag bar
+    padding: 11px 4px;
+    margin-top: -8px;
+    // @TODO/tags @TODO/soon .tag-actions-dropdown should be pushed down more but it's not really going as planned. Also, go over the transitions for hovering here especially hovering over an active tag.
+
     // @TODO/now This fixes the problem of a now-expanded tag overflowing tags container and going into new line, but it cause subsequent tags to up. Proper solution would maybe be to use JS to fix the tag width at its current value, but have the contents be absolutely positioned so it overflows. When this is fixed, it can happen on :hover instead of .hovered
     // position: absolute
     // z-index: 1
