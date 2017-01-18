@@ -3,13 +3,13 @@
 $primary-color: #424242 // e.g. body text, icons
 $primary-color-light: #bcc2c7 // used e.g. for tag count, active icon hover, note action icons
 $primary-color-contrast: rgba(255, 255, 255, 0.925) // e.g. card bg, text background
-$secondary-color: #c3521b // e.g. tag text, button stuff, "active color"
-$highlight-color: #50e3c2 // e.g. hover states, "hover color"
+$secondary-color: #c3521b // e.g. tag text, button stuff
+$highlight-color: #50e3c2 // e.g. logo, hover states
 
-$input-stroke: #989898 // @TODO/ece This is used for input placeholder text, input borders/underlines, logo slogan, minor text on login (forgot password, T&Cs), text links
+$input-stroke: #989898 // This is used for input placeholder text, input borders/underlines, logo slogan, minor text on login (forgot password, T&Cs), text links @TODO/rename
 
 // $accent-color: #4f54e2 // used for tag-related action icons (add, expand, etc., but *not* shared/programmatic state). @TODO/ece Should the rename pencil and/or remove X (from tag in note search bar) be this color too?
-$accent-color: $input-stroke // eh this looked gaudy, let's just use this for now
+$accent-color: $input-stroke // eh that looked gaudy, let's just use this for now
 
 
 // OTHER COLORS
@@ -23,20 +23,8 @@ $success-color: #71b72b
 $warning-color: #edc23a
 $danger-color: #c33132
 
-$btn-disabled-opacity: 0.5
 
-$shadow-color: rgba(0, 0, 0, 0.5) // e.g. card box-shadow, text shadow
-$shadow-color-light: rgba(0, 0, 0, 0.1) // Only used (tentatively) for note tag list
-// $shadow-border: rgba(0, 0, 0, 0.1) // we use box shadows everywhere but someshapes like the shape of account menu you can't really do box shadow, but a border with this color kind of approximates it // NO LONGER NEEDED
-// @TODO/ece Could be fun to do something like this, which takes $primary-color and makes it translucent. That way these box shadows will match changing theme
-// $shadow-border: rgba(74, 74, 74, 0.5)
-
-$modal-backdrop: rgba(0, 0, 0, 0.7)
-$white-overlay: rgba(255,255,255,0.75)
-
-
-
-// ASSIGNED COLORS
+// ASSIGNED/DERIVED COLORS
 
 $link-color: $input-stroke
 $link-hover: $highlight-color
@@ -49,5 +37,19 @@ $icon-hover: $highlight-color
 $icon-active: $secondary-color
 $icon-active-hover: $primary-color-light
 
-$menu-dropdown-bg-color: rgba($primary-color-contrast, 1)
-$pane-bar-bg-color: $menu-dropdown-bg-color // used for tag list on notes, and for the tags/settings sidebar
+$menu-dropdown-bg-color: rgba($primary-color-contrast, 1) // used for menus and dropdowns like autocomplete, expanded tag list, individual tag dropdown, sort dropdown, etc.
+$pane-bar-bg-color: $menu-dropdown-bg-color // used for tag list on notes, and for the tags/settings sidebar, and for the header
+
+
+// SHADING AND MASKS
+
+$btn-disabled-opacity: 0.5
+
+$shadow-color: rgba(0, 0, 0, 0.5) // e.g. card box-shadow, text shadow
+$shadow-color-light: rgba(0, 0, 0, 0.1) // Only used (tentatively) for note tag list
+// $shadow-border: rgba(0, 0, 0, 0.1) // we use box shadows everywhere but someshapes like the shape of account menu you can't really do box shadow, but a border with this color kind of approximates it // NO LONGER NEEDED
+// @TODO/ece Could be fun to do something like this, which takes $primary-color and makes it translucent. That way these box shadows will match changing theme
+// $shadow-color: rgba(74, 74, 74, 0.5)
+
+$modal-backdrop: rgba(0, 0, 0, 0.7)
+$white-overlay: rgba(255,255,255,0.75)
