@@ -64,6 +64,13 @@ export class LoginComponent {
           }
       });
     });
+
+    // @TODO/soon Temporary function to let us create accounts!
+    if (! this.accountService['dataService']['createAccount']) {
+      this.accountService['dataService']['createAccount'] = () => {
+        this.view = 'create-account';
+      }
+    }
   }
 
   ngOnDestroy() {
