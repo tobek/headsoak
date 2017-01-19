@@ -57,10 +57,12 @@ export class ModalService {
     this.activeModal$.next('loading');
   }
 
-  alert(message: string, trustAsHtml = false, okButtonText?: string): void {
+  alert(message: string, trustAsHtml = false, okButtonText?: string, cb = () => {}): void {
     this.modal.generic({
       message: trustAsHtml ? this.sanitizer.bypassSecurityTrustHtml(message) : message,
       okButtonText: okButtonText,
+      okCb: cb,
+      cancelCb: cb,
     });
   }
 

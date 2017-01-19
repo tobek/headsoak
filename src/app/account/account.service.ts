@@ -25,6 +25,8 @@ export class AccountService {
   /** By default we show sign up screen on first visit. If they're logged in and then they sign out, we should show the login view instead - this is how we keep track. */
   wasLoggedIn = false;
 
+  loggedInWithTemporaryPassword = false;
+
   rootChangeDetector: ChangeDetectorRef;
 
   ref: Firebase;
@@ -162,6 +164,10 @@ export class AccountService {
     }
     // Otherwise (e.g. they were logged in on page load so we never had to show login modal) let's just leave the non-modal, pre-initialization loader visible until everything is initialized.
 
+    if (authData.password && authData.password.isTemporaryPassword) {
+      this.loggedInWithTemporaryPassword = true;
+    }
+
     this.user.setData({
       uid: authData.uid,
       email: authData.provider && authData[authData.provider] && authData[authData.provider].email,
@@ -229,8 +235,6 @@ export class AccountService {
       }
 
       cb(errMessage);
-
-      // @TODO: firebase lets you detect if user logged in with temporary token. should do so, and alert user to change password
     });
   }
 

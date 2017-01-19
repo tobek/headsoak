@@ -94,7 +94,20 @@ export class App {
   appInitialization(isInitialized: boolean): void {
     if (isInitialized) {
       setTimeout(() => {
-        this.modalService.close();
+        if (this.accountService.loggedInWithTemporaryPassword) {
+          this.modalService.alert(
+            'You have logged in with a temporary password that is only valid for 24 hours. Please change your password now.',
+            undefined,
+            undefined,
+            () => {
+              this.router.navigateByUrl('/settings/account');
+            }
+          );
+          // @TODO/polish The transition from loading/login screen to `modalService.close` looks nice, but transitioning to alert not so much. We could either handle it specially, or once queuing up modals works we could maybe call the alert right after closing.
+        }
+        else {
+          this.modalService.close();
+        }
       }, 0);
     }
 
