@@ -51,7 +51,7 @@ ref.child('feedback').limitToLast(1).on('child_added', function(child) {
 
   let body = '<p>A user has just left some feedback for Headsoak, and here is what they said:</p>';
 
-  body += '<blockquote><p>' + feedback.feedback.replace('\n\n', '<br><br>') + '</p></blockquote>';
+  body += '<blockquote><p>' + feedback.feedback.replace(/\n/g, '<br>') + '</p></blockquote>';
 
   body += '<p>';
   body += '<b>Email:</b> <a href="mailto:' + feedback.email + '">' + feedback.email + '</a><br>';
