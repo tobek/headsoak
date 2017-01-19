@@ -153,11 +153,11 @@ export class LoginComponent {
 
     this.isLoading = true;
 
-    this.accountService.passwordReset(this.email, (err) => {
+    this.accountService.passwordReset(this.email, (errMessage?: string) => {
       this.isLoading = false;
 
-      if (err) {
-        // @TODO/rewrite Handle this better, right now accountService just pops up an alert
+      if (errMessage) {
+        this.tooltipService.justTheTip(errMessage, this.resetPasswordButton.nativeElement, 'error');
         return;
       }
 

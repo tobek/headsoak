@@ -122,7 +122,7 @@ export class AccountService {
   }
 
   /** User has initiated login attempt. */
-  login(email: string, password: string, errCb: Function) {
+  login(email: string, password: string, errCb: (errMessage: string) => void) {
     this.analytics.event('Account', 'login.attempt');
 
     this.ref.authWithPassword({
@@ -206,12 +206,11 @@ export class AccountService {
     this.modalService.login();
   }
 
-  passwordReset(email: string, cb: Function) {
+  passwordReset(email: string, cb: (errMessage?: string) => void) {
     this.analytics.event('Account', 'password_reset.attempt');
-    // $s.m.working = true;
 
     this.ref.resetPassword({ email: email }, (err) => {
-      // $s.m.working = false;
+      let errMessage = null;
 
       if (err) {
         this.analytics.event('Account', 'password_reset.error', err.code);
@@ -220,11 +219,8 @@ export class AccountService {
             // For security purposes this should be indistinguishable from successful password reset
             break;
           default:
-            // @TODO/tooltip @TODO/firebase
-            alert('Sorry, something went wrong when trying to reset your password: ' + (err.message || err.code || err) + '. Please try again later!'); // @TODO include support email here
+            errMessage = 'Sorry, something went wrong when trying to reset your password:<br><br><code>[' + (err.message || err.code || err) + ']</code><br><br>Please try again later or get in touch at <a href="mailto:support@headsoak.com">support@headsoak.com</a>.';
             this._logger.error('Error resetting password:', err);
-            cb(err);
-            return;
         }
       }
 
@@ -232,13 +228,13 @@ export class AccountService {
         this.analytics.event('Account', 'password_reset.success');
       }
 
-      cb();
+      cb(errMessage);
 
       // @TODO: firebase lets you detect if user logged in with temporary token. should do so, and alert user to change password
     });
   }
 
-  createAccount(email: string, password: string, errCb: Function) {
+  createAccount(email: string, password: string, errCb: (errMessage: string) => void) {
     this.analytics.event('Account', 'create_account.attempt');
 
     this.ref.createUser({ email: email, password: password}, (err, userData) => {
@@ -252,7 +248,7 @@ export class AccountService {
             errCb('There\'s already an account with that email! Please sign in.');
             break;
           default:
-            errCb('Sorry, something went wrong trying to create your account. Please try again!<br><br>[' + (err.message || err.code || err) + ']'); // @TODO include support email here
+            errCb('Sorry, something went wrong trying to create your account. Please try again!<br><br><code>[' + (err.message || err.code || err) + ']</code><br><br>Please try again later or get in touch at <a href="mailto:support@headsoak.com">support@headsoak.com</a>.');
             this._logger.error('Error creating account:', err);
         }
 
@@ -268,7 +264,7 @@ export class AccountService {
     });
   }
 
-  changeEmail(newEmail: string, doneCb: Function): void {
+  changeEmail(newEmail: string, doneCb: () => void): void {
     // @TODO/account Should check valid email, OR confirm that Firebase does
 
     this.modalService.prompt(
@@ -315,7 +311,7 @@ export class AccountService {
       }
       else {
         this.tooltipService.justTheTip(
-          'Sorry, try again!<br><br>[' + (err.message || err.code || err) + ']',
+          'Sorry, try again!<br><br><code>[' + (err.message || err.code || err) + ']</code>',
           this.modalService.modal.okButton.nativeElement,
           'error'
         );
@@ -363,7 +359,7 @@ export class AccountService {
       this.ref.root().child('users/' + this.user.uid).set(null, (err) => {
         if (err) {
           // @TODO/modals @TODO/tooltip Not sure which
-          alert('Sorry, something went wrong when trying to delete your account: ' + (err.message || err.code || err) + '. Please try again later!'); // @TODO include support email here
+          alert('Sorry, something went wrong when trying to delete your account: [' + (err.message || err.code || err) + ']. Please try again later or get in touch at support@headsoak.com');
           this.analytics.event('Account', 'delete_account.error_data', err.code);
           this._logger.error('Error deleting account data:', err);
 
@@ -376,7 +372,7 @@ export class AccountService {
           if (err) {
             this.analytics.event('Account', 'delete_account.error_user', err.code);
             // @TODO/modals @TODO/tooltip Not sure which
-            alert('Sorry, something went wrong when trying to delete your account: ' + (err.message || err.code || err) + '. Please try again later!'); // @TODO include support email here
+            alert('Sorry, something went wrong when trying to delete your account: [' + (err.message || err.code || err) + ']. Please try again later or get in touch at support@headsoak.com');
             this._logger.error('Error removing user account after successfully deleting all account data:', err);
             // @TODO THINGS ARE IN A REAL WEIRD STATE - DELETED USER INFO BUT NOT ACCOUNT. Now they can log in still with same account details (and can't make new account) but they'll have data. Let's act like everything was fine, and we'll have to go in manually and delete account.
           }
