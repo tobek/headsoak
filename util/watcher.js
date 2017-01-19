@@ -45,14 +45,27 @@ ref.child('feedback').limitToLast(1).on('child_added', function(child) {
     return;
   }
 
-  logger.log('Received feedback:', JSON.stringify(child.val()));
+  const feedback = child.val();
+
+  logger.log('Received feedback:', JSON.stringify(feedback));
+
+  let body = '<p>A user has just left some feedback for Headsoak, and here is what they said:</p>';
+
+  body += '<blockquote><p>' + feedback.feedback.replace('\n\n', '<br><br>') + '</p></blockquote>';
+
+  body += '<p>';
+  body += '<b>Email:</b> <a href="mailto:' + feedback.email + '">' + feedback.email + '</a><br>';
+  body += '<b>User ID:</b> ' + feedback.uid + '<br>';
+  body += '<b>Display name:</b> ' + feedback.name + '<br>';
+  body += '<b>Timestamp:</b> ' + feedback.timestamp + '<br>';
+  body += '</p>';
 
   emailer.send({
     to: 'tobyfox@gmail.com',
     toName: 'Toby Fox',
     cc: [{ email: 'ecedogrucu@gmail.com', name: 'Ece Dogrucu' }],
     subject: 'New feedback!',
-    body: '<p>A user has just left some feedback for Headsoak:</p><pre>' + JSON.stringify(child.val(), null, 2) + '</pre>',
+    body: body,
     subManagement: false,
   });
 
