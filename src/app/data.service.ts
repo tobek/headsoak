@@ -228,10 +228,17 @@ export class DataService {
   initNewUser() {
     this._logger.info('Initializing data for new user');
 
-    this.ref.child('user').update({
-      email: this.user.email,
-      provider: this.user.provider,
-      idsMigrated2016: true,
+    const userSinceTimestamp = Date.now();
+
+    this.ref.update({
+      userSince: userSinceTimestamp, // we have to put this here at top level to be able to do `orderByChild('userSince')` in our Firebase watcher
+      user: {
+        email: this.user.email,
+        provider: this.user.provider,
+        idsMigrated2016: true,
+        userSince: userSinceTimestamp,
+      },
+      featuresSeen: this.NEW_FEATURE_COUNT
     }, (err) => {
       if (err) {
         this._logger.error('Error setting new user info:', err);
@@ -240,8 +247,6 @@ export class DataService {
     });
 
     this.ref.root().child('emailToId/' + utils.formatForFirebase(this.user.email)).set(this.user.uid);
-
-    this.ref.child('featuresSeen').set(this.NEW_FEATURE_COUNT);
 
 
     this.initialized$.filter(val => !! val).first().subscribe(this.newUserPostInit.bind(this));
@@ -285,6 +290,8 @@ export class DataService {
   }
 
   newUserPostInit() {
+    // Sync starter tags and notes to data store for this new user
+
     _.each(
       _.filter(this.notes.notes, note => ! note.new),
       note => note.updated(false, false)

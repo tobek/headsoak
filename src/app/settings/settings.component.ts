@@ -256,6 +256,7 @@ export class SettingsComponent {
 
   deleteAccount(): void {
     // @TODO/modals Use non-native prompt when sequential modals is done
+    // @TODO/polish We should ask for password first and then for REALLY REALLY SURE
     var answer = prompt('Are you really really sure you want to delete the account belonging to ' + this.dataService.user.email + '? All of your data will be deleted. This can\'t be undone.\n\nType "I\'M REALLY REALLY SURE" (yes, all caps) to proceed:');
 
     if (answer !== 'I\'M REALLY REALLY SURE') {

@@ -20,11 +20,13 @@ const config = require('../config.json');
 const firebaseTokenGenerator = new FirebaseTokenGenerator(config.FIREBASE_SECRET);
 const firebaseToken = firebaseTokenGenerator.createToken({uid: 'toby-admin'}, {admin: true});
 
+
 process.on('uncaughtException', function(err) {
   // Override the default behavior of printing stack trace and exiting
 
   ohShit('Uncaught exception', err);
 });
+
 
 const ref = new Firebase('https://nutmeg.firebaseio.com/');
 ref.authWithCustomToken(firebaseToken, function(err, authData) {
@@ -37,8 +39,6 @@ ref.authWithCustomToken(firebaseToken, function(err, authData) {
 
 // @Hack `child_added` is normally called for all existing children, we can work around this with `limiToLast` - via <https://gist.github.com/katowulf/6383103> via <http://stackoverflow.com/questions/11788902/firebase-child-added-only-get-child-added>
 let firstFeedback = true;
-let firstUser = true;
-
 ref.child('feedback').limitToLast(1).on('child_added', function(child) {
   if (firstFeedback) {
     firstFeedback = false;
@@ -51,33 +51,41 @@ ref.child('feedback').limitToLast(1).on('child_added', function(child) {
     to: 'tobyfox@gmail.com',
     toName: 'Toby Fox',
     subject: 'New feedback!',
-    body: '<p>A user has just left some feedback for Headsoak:</p><pre>' + JSON.stringify(child.val(), null, 2) + '</pre>'
+    body: '<p>A user has just left some feedback for Headsoak:</p><pre>' + JSON.stringify(child.val(), null, 2) + '</pre>',
+    subManagement: false,
   });
 
 }, function(err) {
   ohShit('Feedback listener cancelled', err);
 });
 
-// ref.child('users').limitToLast(1).on('child_added', function(child) {
-//   if (firstUser) {
-//     firstUser = false;
-//     return;
-//   }
 
-//   newUserAdded(child.val());
+// Since we don't use Firebase push for adding user data like we do for feedback, we can rely on ordering used by `limitToLast`. We still want to avoid downloading the entire data store whenever we run this, so we can use `userSince` to order them
+ref.child('users').orderByChild('userSince').startAt(Date.now()).on('child_added', function(child) {
+  const user = child.val().user;
 
-// }, function(err) {
-//  ohShit('New user listener cancelled', err);
-// });
+  logger.log('New user signed up:', user)
 
-// function newUserAdded(user) {
-//   emailer.send({
-//     subject: 'New user signed up!',
-//     body: 'New user:\n\n' + JSON.stringify(user.user, null, 2)
-//   });
+  // Notify us
+  emailer.send({
+    to: 'tobyfox@gmail.com',
+    toName: 'Toby Fox',
+    subject: 'New user signed up!',
+    body: '<p>This is wonderful news</p><p>Here\'s their info:</p><pre>' + JSON.stringify(user, null, 2) + '</pre>',
+    subManagement: false,
+  });
 
-//   // TODO send them welcome email
-// }
+  // Notify *them*
+  emailer.send({
+    to: user.email,
+    templateId: '00d5673d-9573-4d71-bbda-4118869c2570',
+    body: '.', // unused for this template, but sendgrid requires we include something
+  });
+
+}, function(err) {
+ ohShit('New user listener cancelled', err);
+});
+
 
 
 function ohShit(fuck, err) {
@@ -99,7 +107,8 @@ function ohShit(fuck, err) {
     to: 'tobyfox@gmail.com',
     toName: 'Toby Fox',
     subject: 'Headsoak Firebase watcher down: ' + fuck,
-    body: '<p>Hey Toby,</p><p>There\'s a problem, and the problem is that the Headsoak Firebase watcher has crashed. Here\'s the error:</p><pre>' + (err.stack ? err.stack : JSON.stringify(err, null, 2)) + '</pre>' + antiSpamQuote
+    body: '<p>Hey Toby,</p><p>There\'s a problem, and the problem is that the Headsoak Firebase watcher has crashed. Here\'s the error:</p><pre>' + (err.stack ? err.stack : JSON.stringify(err, null, 2)) + '</pre>' + antiSpamQuote,
+    subManagement: false,
   }, function() {
     logger.error('Exiting...');
     process.exit(1);
