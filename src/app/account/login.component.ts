@@ -18,10 +18,9 @@ export class LoginComponent {
   pass2: string = '';
   _view: ViewType;
 
-  passwordResetSuccess = false;
-
   @ViewChild('signInButton') signInButton: ElementRef;
   @ViewChild('signUpButton') signUpButton: ElementRef;
+  @ViewChild('resetPasswordButton') resetPasswordButton: ElementRef;
 
   private SENDGRID_DATA_TOKEN = 'GToz%2FEw5QP9JUKCujIHPy3uDXh8mcHwhIymBkDxrMpP5rzzMvgY6EHjUBqPVOkfv%2Fydfh8p7VoOBnGyYPQDgmcy5t%2BiHV%2B7u71%2F0tMVNo%2FU%3D';
 
@@ -76,9 +75,7 @@ export class LoginComponent {
     return this._view;
   }
   set view(newView: ViewType) {
-    // Reset any state variables:
-    this.passwordResetSuccess = false;
-
+    this.isLoading = false;
     this._view = newView;
 
     if (newView === 'email-signup') {
@@ -154,13 +151,23 @@ export class LoginComponent {
       return false;
     }
 
+    this.isLoading = true;
+
     this.accountService.passwordReset(this.email, (err) => {
+      this.isLoading = false;
+
       if (err) {
         // @TODO/rewrite Handle this better, right now accountService just pops up an alert
         return;
-      }      
+      }
 
-      this.passwordResetSuccess = true;
+      this.tooltipService.justTheTip(
+        'If there\'s an account registered under <b>' + this.email + '</b>, then an email is on its way!',
+        this.resetPasswordButton.nativeElement,
+        'success',
+        null // don't fade until they click
+      );
+      this.email = '';
     });
   }
 

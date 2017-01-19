@@ -55,8 +55,11 @@ export class TooltipService {
     this.reloadOnEvent(event, false, 500);
   }
 
-  /** Spawns one tooltip with given content on given element. Any user activity on the page (click, touch, keyboard) will make the tooltip disappear. */
-  justTheTip(content: string, el: HTMLElement, typeClass?: 'success' | 'info' | 'warning' | 'error') {
+  /**
+    * Spawns one tooltip with given content on given element. Any user activity on the page (click, touch, keyboard) will make the tooltip disappear.
+    *
+    * By default, tooltip won't fade automatically unless it's a `success` tooltip, in which case it starts to fades in 5000ms. (Pass explicit `null` to `fadeTimeout` to prevent automatic fade out for `success` tooltips.) */
+  justTheTip(content: string, el: HTMLElement, typeClass?: 'success' | 'info' | 'warning' | 'error', fadeTimeout?: number) {
     let placement = 'top-right';
     if (el['type'] === 'submit' || el.nodeName.toLowerCase() === 'button') {
       placement = 'top';
@@ -79,12 +82,16 @@ export class TooltipService {
     }
     jQuery(window).on('mousedown touchstart keydown', offFunc);
 
-    // Success tooltips fade away on their own
-    if (typeClass === 'success') {
+    // Success tooltips fade away on their own by default
+    if (typeClass === 'success' && typeof fadeTimeout === 'undefined') {
+      fadeTimeout = 5000;
+    }
+    
+    if (typeof fadeTimeout !== 'undefined' && fadeTimeout !== null) {
       setTimeout(function() {
         jQuery(tip.element).fadeOut(2000);
         // We can still leave the event handler above to actually dispose of the tooltip instance
-      }, 5000);
+      }, fadeTimeout);
     }
   }
 

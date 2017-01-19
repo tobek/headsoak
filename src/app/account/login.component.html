@@ -77,21 +77,16 @@
   </div>
 </div>
 
-<div class="reset-password-form" *ngIf="view === 'reset-password'" [class.is--success]="passwordResetSuccess">
+<div class="reset-password-form" *ngIf="view === 'reset-password'">
   <form class="reset-password-form" ref-resetPasswordForm="ngForm" (ngSubmit)="resetPassword()">
     <!-- @TODO/ece Should we have like "enter your email address and we'll send you a new password" or something? -->
 
     <input name="email" type="email" placeholder="E-mail address" autocomplete="email" required ngControl="email" [(ngModel)]="email">
 
-    <button class="btn btn-primary" type="submit" [disabled]="passwordResetSuccess">Reset password</button>
+    <button ref-resetPasswordButton class="btn btn-primary" type="submit" [class.is--loading]="isLoading">Reset password</button>
   </form>
 
   <aside class="switch-sign-up-in">
     <a (click)="view = 'login'">&laquo; Back to sign in</a>
   </aside>
-
-  <div *ngIf="passwordResetSuccess" class="alert alert-success">
-    <!-- @TODO/tooltip @TODO/ece This message -->
-    Password reset email successfully sent to {{ email }}! (Unless there is no account for email {{ email }}, in which case nothing's been sent, but we're not telling you which cause that would be a tiny security hole.) Anyway, please check your email.
-  </div>
 </div>
