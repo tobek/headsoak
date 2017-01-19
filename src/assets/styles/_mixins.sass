@@ -115,6 +115,13 @@ $tag-hash-opacity: 0.33
 =alert-style
   color: white
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15) // @TODO/ece What do you think of this? Look at toasters and primary and other buttons
+
+  a
+    color: white
+    text-decoration: underline
+    &:hover
+      color: $highlight-color
+
 =success-style
   +alert-style
   background-color: $success-color
