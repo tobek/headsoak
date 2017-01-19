@@ -50,6 +50,7 @@ ref.child('feedback').limitToLast(1).on('child_added', function(child) {
   emailer.send({
     to: 'tobyfox@gmail.com',
     toName: 'Toby Fox',
+    cc: [{ email: 'ecedogrucu@gmail.com', name: 'Ece Dogrucu' }],
     subject: 'New feedback!',
     body: '<p>A user has just left some feedback for Headsoak:</p><pre>' + JSON.stringify(child.val(), null, 2) + '</pre>',
     subManagement: false,
@@ -71,6 +72,7 @@ ref.child('users').orderByChild('userSince').startAt(Date.now()).on('child_added
     to: 'tobyfox@gmail.com',
     toName: 'Toby Fox',
     subject: 'New user signed up!',
+    cc: [{ email: 'ecedogrucu@gmail.com', name: 'Ece Dogrucu' }],
     body: '<p>This is wonderful news</p><p>Here\'s their info:</p><pre>' + JSON.stringify(user, null, 2) + '</pre>',
     subManagement: false,
   });

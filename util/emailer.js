@@ -11,6 +11,7 @@ const defaultOptions = {
   fromName: 'Headsoak',
   to: 'tobyfox@gmail.com',
   toName: null,
+  cc: null,
   subject: 'Headsoak notification',
   isHtml: true,
   templateId: null,
@@ -22,6 +23,7 @@ const defaultOptions = {
 function sendMail(opts, cb) {
   opts = _.defaults(opts, defaultOptions);
 
+  // Overview of properties here: https://sendgrid.com/docs/API_Reference/Web_API_v3/Mail/index.html
   const mailData = {
     from: {
       email: opts.from,
@@ -45,6 +47,10 @@ function sendMail(opts, cb) {
       }
     ],
   };
+
+  if (opts.cc) {
+    mailData.personalizations[0].cc = opts.cc;
+  }
 
   if (opts.templateId) {
     mailData.template_id = opts.templateId;
