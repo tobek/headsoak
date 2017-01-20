@@ -3,10 +3,23 @@ prog-tag-control
     position: relative
     margin-top: 25px
 
+    .code-editor
+      height: 300px
+
     .btn
       margin: 0 25px 2px 1px // 2px and 1px are to make sure the .disabled-cover covers the box shadows too
       &:last-of-type
         margin-right: 0
+
+    pre
+      padding: 0
+      background: none
+
+    .function-wrapper
+      &:first-of-type
+        margin-bottom: -10px
+      &:last-of-type
+        margin-top: -10px
 
   .disabled-cover
     z-index: 100
@@ -23,15 +36,6 @@ prog-tag-control
     opacity: 1
     visibility: visible
 
-  .function-wrapper
-    &:first-of-type
-      margin-bottom: -10px
-    &:last-of-type
-      margin-top: -10px
-
-  .code-editor
-    height: 300px
-
   .documentation
     +card
     margin-top: 50px
@@ -40,10 +44,3 @@ prog-tag-control
 
     pre
       margin-left: 2em
-      padding: 10px
-      background: $primary-color-contrast
-
-    code
-      background: $primary-color-contrast
-      padding: 2px 4px
-      color: $secondary-color
