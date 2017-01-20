@@ -38,6 +38,7 @@ export class SettingsComponent {
   @ViewChild('changeEmailInput') changeEmailInput: ElementRef;
   @ViewChild('currentPasswordInput') currentPasswordInput: ElementRef;
   @ViewChild('changePasswordButton') changePasswordButton: ElementRef;
+  @ViewChild('modKeyHeading') modKeyHeading: ElementRef;
 
   private emailAddress: string = '';
   private oldPass: string = '';
@@ -48,7 +49,7 @@ export class SettingsComponent {
   private syncDebounced = _.debounce(this.dataService.sync.bind(this.dataService), 1000);
   private checkEmptyModKeyDebounced = _.debounce(this.checkEmptyModKey.bind(this), 1000);
 
-  private modKeyError = '';
+  private _modKeyError = '';
 
   private displayedSettings: Setting[] = [];
 
@@ -77,6 +78,7 @@ export class SettingsComponent {
 
   ngOnDestroy() {
     this.routeDataSub.unsubscribe();
+    delete window['headsoakRidicModKeyRevert'];
   }
 
   init(): void {
@@ -89,6 +91,8 @@ export class SettingsComponent {
     this.initialized = true;
 
     if (this.section === 'shortcuts') {
+      window['headsoakRidicModKeyRevert'] = this.revertModKey.bind(this); // @HACK so that we can trigger from dynamically created tooltip...
+
       this.checkEmptyModKey();
     }
     else if (this.section === 'account') {
@@ -134,7 +138,7 @@ export class SettingsComponent {
     else {
       setting.value.split('+').forEach((modKey) => {
         if (Shortcut.VALID_MOD_KEYS.indexOf(modKey) === -1) {
-          this.modKeyError = '"' + modKey + '" is not a valid modifier key. Valid modifier keys are: ' + Shortcut.VALID_MOD_KEYS.join(', ') + '.';
+          this.modKeyError = '<code>' + _.escape(modKey) + '</code> is not a valid modifier key.<br><br>Valid modifier keys are: <code>' + Shortcut.VALID_MOD_KEYS.join('</code>, <code>') + '</code>.';
           allGood = false;
         }
       });
@@ -145,6 +149,11 @@ export class SettingsComponent {
     }
 
     return allGood;
+  }
+
+  revertModKey() {
+    this.settings.data['sMod'].value = this.settings.data['sMod'].default;
+    this.settingUpdated(this.settings.data['sMod']);
   }
 
   /** Check if a) no global modKey, and b) at least one shortcut also has no modifier. This makes an aggressive shortcut! So warn the user. */
@@ -158,11 +167,33 @@ export class SettingsComponent {
     });
 
     if (modlessShortcut) {
-      this.modKeyError = 'Warning: You have entered no global modifier key and your shortcut for "' + modlessShortcut.name + '" is "' + modlessShortcut.value + '".\n\nThis means that whenever you press "' + modlessShortcut.value + '" anywhere in Headsoak, that shortcut will be run.';
+      // @TODO/polish @TODO/ece How's this? And the other warning above
+      this.modKeyError = '<b>Warning:</b> You have entered no global modifier key and your shortcut for "' + modlessShortcut.name + '" is <code>' + _.escape(modlessShortcut.value) + '</code>.<br><br>This means that whenever you press <code>' + _.escape(modlessShortcut.value) + '</code> anywhere in Headsoak, that shortcut will be run.';
     }
     else {
       this.modKeyError = '';
     }
+  }
+
+  get modKeyError(): string {
+    return this._modKeyError;
+  }
+  set modKeyError(newVal: string) {
+    this._modKeyError = newVal;
+
+    if (newVal) {
+      this.settings.initialized$.first().subscribe(() => {
+        setTimeout(this.modKeyErrorTooltip.bind(this), 0);
+      });
+    }
+  }
+
+  modKeyErrorTooltip() {
+    this.tooltipService.justTheTip(
+      this.modKeyError + '<br><br><a class="mod-key-revert-link" onclick="window.headsoakRidicModKeyRevert()">Revert to default</a>',
+      this.modKeyHeading.nativeElement,
+      'error', null, 'right'
+    );
   }
 
   revert() {

@@ -37,17 +37,28 @@
     <private-mode *ngIf="section === 'privateMode'"></private-mode>
 
     <div *ngIf="initialized && section === 'shortcuts'">
-      <label>
-        Modifier key(s):
-        <input type="text"
+      <div class="heading">
+        <label for="modKeyInput" ref-modKeyHeading>
+          Modifier key(s)
+          <i class="fa fa-question-circle" data-tooltip="This will prefix all of your shortcuts. Your options are:&lt;br&gt;&lt;br&gt;- 'ctrl'&lt;br&gt;- 'shift'&lt;br&gt;- 'alt'&lt;br&gt;- 'option'&lt;br&gt;- 'command' (only on Mac)&lt;br&gt;- 'meta' (doesn't work?)&lt;br&gt;- 'mod' ('ctrl' on a PC, 'command' on a Mac).&lt;br&gt;&lt;br&gt;You can also combine them, e.g. 'ctrl+shift', or leave blank to control different shortcuts separately."></i>
+        </label>
+        <i class="fa fa-cube save-notice" [class.fa-spin]="dataService.isUnsaved(settings.data['sMod'])"></i>
+      </div>
+
+      <div>
+        <input type="text" id="modKeyInput"
           [(ngModel)]="settings.data['sMod'].value"
           (blur)="settingUpdated(settings.data['sMod'])"
           (keyup.enter)="settingUpdated(settings.data['sMod'])"
         />
-        <i class="fa fa-question-circle" data-tooltip="This will prefix all of these shortcuts. Your options are:&lt;br&gt;&lt;br&gt;- 'ctrl'&lt;br&gt;- 'shift'&lt;br&gt;- 'alt'&lt;br&gt;- 'option'&lt;br&gt;- 'command' (only on Mac)&lt;br&gt;- 'meta' (doesn't work?)&lt;br&gt;- 'mod' ('ctrl' on a PC, 'command' on a Mac).&lt;br&gt;&lt;br&gt;You can also combine them, e.g. 'ctrl+shift', or leave blank to control different shortcuts separately."></i>
-      </label>
-      <i class="fa fa-cube save-notice" [class.fa-spin]="dataService.isUnsaved(settings.data['sMod'])"></i>
-      <span style="color: red">{{ modKeyError }}</span>
+
+        <i class="fa fa-exclamation-triangle danger-text"
+          *ngIf="modKeyError"
+          [attr.data-tooltip]="modKeyError"
+          data-tooltip-place="right"
+          data-tooltip-type="error"
+        ></i>
+      </div>
     </div>
 
     <div *ngIf="section === 'shortcuts'">
