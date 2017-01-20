@@ -1,4 +1,4 @@
-import {Inject, forwardRef, Component, EventEmitter, ElementRef, Input, Output, ViewChild, HostBinding, HostListener, Renderer/*, ChangeDetectorRef*/} from '@angular/core';
+import {Inject, forwardRef, Component, EventEmitter, ElementRef, Input, Output, ViewChild, HostBinding, HostListener, Renderer, SimpleChanges/*, ChangeDetectorRef*/} from '@angular/core';
 import {DatePipe} from '@angular/common';
 
 import {ActiveUIsService} from '../active-uis.service';
@@ -37,6 +37,7 @@ export class NoteComponent {
 
   @HostBinding('class.is--expanded') hasExpandedTags = false;
   @HostBinding('class.is--focused') isFocused = false;
+  @HostBinding('class.is--textless') isTextless = false;
   // @REMOVED/note text overflow
   // @HostBinding('class.is--text-overflowing') isTextOverflowing = false;
 
@@ -83,6 +84,12 @@ export class NoteComponent {
     );
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['note']) {
+      this.checkTextlessness();
+    }
+  }
+
   ngOnDestroy() {
     this.removePasteListener();
   }
@@ -110,6 +117,16 @@ export class NoteComponent {
     else {
       this.el.nativeElement.classList.remove('has--tag-overflow');
       this.hasExpandedTags = false;
+    }
+  }
+
+  checkTextlessness() {
+    if (this.isTextless !== ! this.note.body) {
+      setTimeout(() => {
+        if (this.isTextless !== ! this.note.body) {
+          this.isTextless = ! this.note.body;
+        }
+      }, 0);
     }
   }
 
@@ -172,6 +189,8 @@ export class NoteComponent {
     }
     this.note.blurred();
     this.isFocused = false;
+
+    this.checkTextlessness();
 
     // @BUG @TODO/polish In Chrome, red squiggly underlines persist after blurring even though `spellcheck` gets set to false, because of this bug: <https://bugs.chromium.org/p/chromium/issues/detail?id=155781>. A fix would be to reassign `innerHTML`, but that a) will be slow for lots of text, b) will lose caret position (lost anyway on blur right now in Chrome), and c) break any references to any elements inside it (of which there are none right now). More discussion: <http://stackoverflow.com/questions/12812348/red-spellcheck-squiggles-remain-in-chrome-after-editing-is-disabled>
 
