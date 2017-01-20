@@ -17,7 +17,8 @@
     [(ngModel)]="password"
   />
 
-  <button class="btn btn-secondary enable-button" type="submit" [class.is--loading]="isLoading" [disabled]="isLoading">Turn private mode on</button>
+  <!-- @TODO/ece This one is secondary and the one on feedback is primary. Which should they be and what's the general rule, like should account settings one be primary too? Maybe rule could be "it's the most important thing to click that you can see right now" and "no more than one primary button visible at once" -->
+  <button class="btn btn-secondary" type="submit" [class.is--loading]="isLoading" [disabled]="isLoading">Turn private mode on</button>
 </form>
 
 <button *ngIf="dataService.accountService.privateMode" class="btn btn-secondary" (click)="disable()">Turn private mode off</button>

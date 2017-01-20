@@ -98,7 +98,7 @@ export class App {
           this.modalService.alert(
             'You have logged in with a temporary password that is only valid for 24 hours. Please change your password now.',
             undefined,
-            undefined,
+            'Got it',
             () => {
               this.router.navigateByUrl('/settings/account');
             }

@@ -78,11 +78,14 @@ textarea,
 
   position: relative
   display: inline-block
-  height: 2.25rem
-  line-height: 2.25rem
-  padding: 1px 1rem 0 // 1px top padding to counter the font being a little off-kilter
   margin-bottom: 0
   vertical-align: middle
+
+  // @REMOVED button sizing See other comment
+  // @TODO/ece These might be too big, like look at buttons on account settings page... but this looks good on login page
+  height: 2.75rem
+  line-height: 2.75rem
+  padding: 1px 1.5rem 0 // 1px top padding to counter the font being a little off-kilter
 
   font-weight: 400
   letter-spacing: 1.2px
@@ -125,10 +128,11 @@ textarea,
       color: $primary-color-contrast
 
 .btn-primary
-  height: 2.75rem
-  line-height: 2.75rem
-  padding-right: 2.5rem
-  padding-left: 2.5rem
+  // @REMOVED button sizing Used to be just ehse that were this size, now they're all the same size
+  // height: 2.75rem
+  // line-height: 2.75rem
+  // padding-right: 2.5rem
+  // padding-left: 2.5rem
 
   background-color: $secondary-color
   color: $primary-color-contrast

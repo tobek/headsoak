@@ -19,6 +19,7 @@ export class FeedbackComponent {
   isLoading = false;
 
   @ViewChild('submitButton') submitButton: ElementRef;
+  @ViewChild('feedbackInput') feedbackInput: ElementRef;
 
   // @HostBinding('class.on') visible = false;
 
@@ -31,6 +32,14 @@ export class FeedbackComponent {
    ) {}
 
   ngOnInit() {
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      if (this.feedbackInput) {
+        this.feedbackInput.nativeElement.focus();
+      }
+    }, 100);
   }
 
   ngOnDestroy() {

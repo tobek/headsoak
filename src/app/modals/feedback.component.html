@@ -2,7 +2,7 @@
 
 <form ref-feedbackForm="ngForm" (ngSubmit)="submit()">
   <!-- @TODO/ece Not sure about placeholder text. Previously was "Bug reports and suggestions are eagerly awaited. You'll hear from me personally." which isn't great either. -->
-  <textarea name="feedbackText"
+  <textarea name="feedbackText" ref-feedbackInput
     placeholder="Give us your feedback! We're happy to hear from you whether it's big or small."
     required
     [(ngModel)]="feedbackText"

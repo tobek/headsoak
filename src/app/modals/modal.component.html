@@ -31,18 +31,24 @@
         />
       </div>
 
-      <!-- @TODO/ece So right now we use primary button if there's other buttons, but otherwise we just do secondary, cause maybe primary is too intense for a little alert? What do you think? -->
-      <button class="btn btn-{{ (config.cancelButton || config.additionalButtons) ? 'primary' : 'secondary' }}"
-        ref-okButton
-        [class.is--loading]="okButtonIsLoading"
-        [disabled]="okButtonIsLoading"
-        (click)="ok()"
-      >{{ config.okButtonText || 'OK' }}</button>
-      <button *ngIf="config.cancelButton" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+      <!--
+        @TODO/ece Is primary button all the time (as opposed to only when there are other buttons) too intense for a little alert sometimes?
 
-      <span class="additional-buttons" *ngIf="config.additionalButtons && config.additionalButtons.length">
-        <button class="btn btn-secondary" *ngFor="let button of config.additionalButtons" (click)="close(); button.cb()">{{ button.text }}</button>
-      </span>
+        Class used to be `"btn btn-{{ (config.cancelButton || config.additionalButtons) ? 'primary' : 'secondary' }}"`
+      -->
+      <div class="buttons">
+        <button class="btn btn-primary"
+          ref-okButton
+          [class.is--loading]="okButtonIsLoading"
+          [disabled]="okButtonIsLoading"
+          (click)="ok()"
+        >{{ config.okButtonText || 'OK' }}</button>
+        <button *ngIf="config.cancelButton" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+
+        <span class="additional-buttons" *ngIf="config.additionalButtons && config.additionalButtons.length">
+          <button class="btn btn-secondary" *ngFor="let button of config.additionalButtons" (click)="close(); button.cb()">{{ button.text }}</button>
+        </span>
+      </div>
     </div>
   </div>
 

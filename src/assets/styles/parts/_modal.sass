@@ -115,12 +115,13 @@ modal
       input
         width: 100%
 
-    .additional-buttons
-      margin-left: 25px      
-    .btn
-      margin-right: 25px      
-      &:last-of-type
-        margin-right: 0
+    .buttons
+      @extend .clearfix
+      text-align: right
+
+      .btn-primary
+        float: right
+        margin-left: 1rem
 
 
 .loading-modal
@@ -148,6 +149,9 @@ private-mode
   display: block
   padding-bottom: 80px
 
+  .btn
+    float: right
+
 feedback
   textarea
     +base-font-size
@@ -172,6 +176,3 @@ private-mode
     width: 100%
     margin-bottom: 15px
     padding: 0 15px 5px 15px
-
-  .enable-button
-    float: right
