@@ -37,48 +37,54 @@
     <private-mode *ngIf="section === 'privateMode'"></private-mode>
 
     <div *ngIf="initialized && section === 'shortcuts'">
-      <div class="heading">
-        <label for="modKeyInput" ref-modKeyHeading>
-          Modifier key(s)
-          <i class="fa fa-question-circle" data-tooltip="This will prefix all of your shortcuts. Your options are:&lt;br&gt;&lt;br&gt;- 'ctrl'&lt;br&gt;- 'shift'&lt;br&gt;- 'alt'&lt;br&gt;- 'option'&lt;br&gt;- 'command' (only on Mac)&lt;br&gt;- 'meta' (doesn't work?)&lt;br&gt;- 'mod' ('ctrl' on a PC, 'command' on a Mac).&lt;br&gt;&lt;br&gt;You can also combine them, e.g. 'ctrl+shift', or leave blank to control different shortcuts separately."></i>
-        </label>
-        <i class="fa fa-cube save-notice" [class.fa-spin]="dataService.isUnsaved(settings.data['sMod'])"></i>
-      </div>
-
-      <div>
-        <input type="text" id="modKeyInput"
-          [(ngModel)]="settings.data['sMod'].value"
-          (blur)="settingUpdated(settings.data['sMod'])"
-          (keyup.enter)="settingUpdated(settings.data['sMod'])"
-        />
-
-        <i class="fa fa-exclamation-triangle danger-text"
-          *ngIf="modKeyError"
-          [attr.data-tooltip]="modKeyError"
-          data-tooltip-place="right"
-          data-tooltip-type="error"
-        ></i>
-      </div>
-    </div>
-
-    <div *ngIf="section === 'shortcuts'">
-      <span data-tooltip="Type in a letter or symbol, or write out one of the following keys: backspace, tab, enter, return, capslock, esc, escape, space, pageup, pagedown, end, home, left, up, right, down, ins, del&lt;br&gt;&lt;br&gt;You may include modifier keys in here too, e.g. 'shift+alt+backspace'">
-        What can I type in for shortcuts? 
+      <a class="valid-shortcuts-info" (click)="validShortcutInfo()">
+        What can I enter for shortcuts?
         <i class="fa fa-question-circle" ></i>
-      </span>
+      </a>
+
+      <div class="setting setting--shortcuts setting--type-string">
+        <div class="heading">
+          <label for="modKeyInput" ref-modKeyHeading>
+            Modifier key(s)
+            <i class="fa fa-question-circle" data-tooltip="This will prefix all of your shortcuts. Your options are:&lt;br&gt;&lt;br&gt;&lt;code&gt;ctrl&lt;/code&gt;&lt;br&gt;&lt;code&gt;shift&lt;/code&gt;&lt;br&gt;&lt;code&gt;alt&lt;/code&gt;&lt;br&gt;&lt;code&gt;option&lt;/code&gt;&lt;br&gt;&lt;code&gt;command&lt;/code&gt; (only on Mac)&lt;br&gt;&lt;code&gt;meta&lt;/code&gt; (doesn't work?)&lt;br&gt;&lt;code&gt;mod&lt;/code&gt; (&lt;code&gt;ctrl&lt;/code&gt; on a PC, &lt;code&gt;command&lt;/code&gt; on a Mac).&lt;br&gt;&lt;br&gt;You can also combine them, e.g. &lt;code&gt;ctrl+shift&lt;/code&gt;, or leave blank to control different shortcuts separately."></i>
+          </label>
+          <i class="fa fa-cube save-notice" [class.fa-spin]="dataService.isUnsaved(settings.data['sMod'])"></i>
+        </div>
+
+        <div>
+          <input type="text" id="modKeyInput"
+            [(ngModel)]="settings.data['sMod'].value"
+            (blur)="settingUpdated(settings.data['sMod'])"
+            (keyup.enter)="settingUpdated(settings.data['sMod'])"
+          />
+
+          <i class="fa fa-exclamation-triangle danger-text"
+            *ngIf="modKeyError"
+            [attr.data-tooltip]="modKeyError"
+            data-tooltip-place="right"
+            data-tooltip-type="error"
+          ></i>
+        </div>
+      </div>
     </div>
 
     <div *ngIf="initialized && section === 'account'">
       <img class="avatar" src="{{ settings.get('profileImageUrl', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7') }}" />
     </div>
 
-    <setting
-      *ngFor="let setting of displayedSettings"
-      [setting]="setting"
-      [settings]="settings"
-      class="setting-{{ setting.id }} setting--type-{{ setting.type }}"
-      (updated)="settingUpdatedProxy($event)"
-    ></setting>
+    <div *ngFor="let subSection of subSections" [class.is--subsection]="subSection">
+      <div *ngIf="subSection" class="subsection-heading">{{ subSection }}</div>
+
+      <div class="subsection-group">
+        <setting
+          *ngFor="let setting of subSectionedSettings[subSection]"
+          [setting]="setting"
+          [settings]="settings"
+          class="setting-{{ setting.id }} setting--type-{{ setting.type }}"
+          (updated)="settingUpdatedProxy($event)"
+        ></setting>
+      </div>
+    </div>
 
     <!-- These are specific to account settings and hard to squish into reusable SettingComponent format, so: -->
     <div *ngIf="section === 'account'">
@@ -124,13 +130,12 @@
 
         <p>Remove all trace of your stuff from Headsoak.</p>
         <a class="danger-link" (click)="deleteAccount()">Delete account</a>
-        <div>
+      </div>
     </div>
 
-    <p *ngIf="section === 'shortcuts'"><i>Note: Different browsers and operating systems handle web site shortcuts differently. You might find that some combinations don't work. (For example, <code>ctrl+n</code> will be overridden by "new window" in Chrome on Windows.)</i></p>
+    <p class="bottom-info" *ngIf="section !== 'account' && section !== 'feedback' && section !== 'privateMode'"><a class="danger-link" (click)="revert()">Revert to default {{ section }}</a></p>
 
-    <!-- @TODO/ece What style should this button be? Could be danger but might be too intense and eye catching. Maybe warning? Or just default but pops up alert. -->
-    <a *ngIf="section !== 'account' && section !== 'feedback' && section !== 'privateMode'" class="revert danger-link" (click)="revert()">Revert to default {{ section }}</a>
+    <p class="bottom-info" *ngIf="section === 'shortcuts'"><i>Note: Different browsers and operating systems handle web site shortcuts differently. You might find that some combinations don't work. (For example, <code>ctrl+n</code> will be overridden by "new window" in Chrome on Windows.)</i></p>
 
   </div>
 </div>

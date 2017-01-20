@@ -235,6 +235,7 @@ export class SettingsService {
       routeTo: NOTE_BROWSER_ROUTES,
       ngZone: true,
       section: 'shortcuts',
+      subSection: 'Notes',
     },
     {
       id: 'sNewNoteAddTag',
@@ -249,6 +250,7 @@ export class SettingsService {
       routeTo: NOTE_BROWSER_ROUTES,
       ngZone: true,
       section: 'shortcuts',
+      subSection: 'Notes',
     },
     {
       id: 'sDupeNoteTag',
@@ -262,6 +264,7 @@ export class SettingsService {
       },
       ngZone: true,
       section: 'shortcuts',
+      subSection: 'Notes',
     },
     {
       id: 'sDeleteNote',
@@ -275,6 +278,7 @@ export class SettingsService {
       },
       // ngZone: true, // not needed cause of the confirmation prompt?
       section: 'shortcuts',
+      subSection: 'Notes',
     },
     {
       id: 'sDeleteNoteNoConfirm',
@@ -289,6 +293,7 @@ export class SettingsService {
       overkill: true,
       ngZone: true,
       section: 'shortcuts',
+      subSection: 'Notes',
     },
     {
       id: 'sAddTag',
@@ -301,6 +306,7 @@ export class SettingsService {
         }
       },
       section: 'shortcuts',
+      subSection: 'Notes',
     },
 
     {
@@ -314,6 +320,7 @@ export class SettingsService {
       },
       // @TODO/shortcuts Ideally this should work in tag browser and highlight that search field instead. Would need a more complicated `routeTo` implementation, and check route and find tag browser in activeUIs instead. Also, the constant SEARCHABLE_ROUTES in NoteQueryComponent would have to be updated too.
       section: 'shortcuts',
+      subSection: 'Search',
     },
     {
       id: 'sClearSearch',
@@ -327,6 +334,7 @@ export class SettingsService {
       // @TODO/shortcuts Ditto note on `sSearch`
       ngZone: true,
       section: 'shortcuts',
+      subSection: 'Search',
     },
 
     {
@@ -355,6 +363,7 @@ export class SettingsService {
       },
       routeTo: NOTE_BROWSER_ROUTES,
       section: 'shortcuts',
+      subSection: 'Notes',
     },
     // @TODO/shortcuts Should 2-9 jump to appropriate note on note browser? Should 1 go to "open note", 2 go to first in browser, etc.? Or, 0 could be open note and diff shortcut for clear search, 1 could be first in browser, etc
 

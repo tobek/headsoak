@@ -13,7 +13,7 @@
   <i class="fa fa-cube save-notice" [class.fa-spin]="dataService.isUnsaved(setting)"></i>
 </div>
 
-<div>
+<div class="body">
   <span class="smod" *ngIf="setting.section === 'shortcuts' && settings.get('sMod')">{{ settings.get('sMod') }}+</span>
   <input
     *ngIf="setting.type === 'string'"

@@ -29,26 +29,27 @@ settings
     +small
 
   &.settings--shortcuts
-    table
-      max-width: 500px
-
-    thead td
-      +h4
-
-    td
-      height: 35px
-
     input
       max-width: 100px
 
-  &.settings--account
-    td:first-child
-      // Currently, account settings are set up sort of heading in first column, actions in left
-      +h4
-      width: 250px
+    .subsection-group
+      display: table
 
-    td:nth-child(2) // i.e. the column with inputs
-      width: 300px
+      setting
+        display: table-row
+        max-width: none
+
+        .heading,
+        .body
+          display: table-cell
+
+        .heading
+          // @HACK @TODO/settings This is so that separate subsections (which are separate `table`-style elements) have the same column widths. Proper fix would be to have them alll be one table, but that requires a little reorganization of the markup here
+          width: 150px
+          min-width: 150px
+
+        .body
+          padding-left: 2rem
 
   .avatar
     width: 120px
@@ -71,7 +72,8 @@ settings
     .btn
       float: right
 
-  .heading
+  .heading,
+  .subsection-heading
     position: relative
     +setting-heading
     margin-bottom: 0.5rem
@@ -79,6 +81,11 @@ settings
   .setting--type-boolean
     margin: 0.5rem 0
 
+    .heading
+      +checkbox-wrapper
+
+  .setting--type-boolean,
+  .is--subsection
     .heading
       // Override +setting-heading
       margin: 0
@@ -88,11 +95,8 @@ settings
       text-transform: none
       letter-spacing: normal
 
-      +checkbox-wrapper
-
-  .revert
-    display: inline-block
-    margin-top: 1.5rem
+  .is--subsection
+    margin: 1rem 0
 
   // @HACK To make the spacing look good on Settings screen for now
   .setting-bgImageUrl
@@ -100,6 +104,15 @@ settings
 
   .smod
     opacity: 0.5
+
+  .valid-shortcuts-info
+    float: right
+
+    i.fa
+      text-decoration: underline // otherwise it doesn't match up with rest of link
+
+  .bottom-info
+    margin-top: 2rem
 
   .save-notice
     +fadeable

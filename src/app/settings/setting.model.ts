@@ -12,8 +12,11 @@ export class Setting {
   /** Type of value the setting supports. Only 'boolean' and 'string' supported so far in UI. */
   type: string;
 
-  /** Where thissetting belongs to. 'settings' | 'shortcuts' for now. */
-  section: string;
+  /** Where this setting belongs. */
+  section: 'settings' | 'shortcuts' | 'account';
+
+  /** Settings are displayed grouped according to subsections, each with a heading. Settings with no subsections are shown first. */
+  subSection?: string;
 
   /** For power users - don't display by default. */
   overkill = false;

@@ -52,6 +52,8 @@ export class SettingsComponent {
   private _modKeyError = '';
 
   private displayedSettings: Setting[] = [];
+  private subSections: string[] = [];
+  private subSectionedSettings: { [key: string]: Setting[] } = {};
 
   private routeDataSub: Subscription;
 
@@ -85,7 +87,18 @@ export class SettingsComponent {
     this._logger.log('`Settings` component initialized');
 
     this.displayedSettings = _.filter(this.settings.data, (setting) => {
-      return setting.section === this.section && ! setting.overkill && ! setting.internal;
+      if (setting.section === this.section && ! setting.overkill && ! setting.internal) {
+        const subSection = setting.subSection || ''; // otherwise we get `'undefined'` as key and as subsection - this way we can get a falsey value to exclude from template
+
+        if (! this.subSectionedSettings[subSection]) {
+          this.subSectionedSettings[subSection] = [];
+          this.subSections.push(subSection);
+        }
+
+        this.subSectionedSettings[subSection].push(setting);
+
+        return true;
+      }
     });
 
     this.initialized = true;
@@ -193,6 +206,15 @@ export class SettingsComponent {
       this.modKeyError + '<br><br><a class="mod-key-revert-link" onclick="window.headsoakRidicModKeyRevert()">Revert to default</a>',
       this.modKeyHeading.nativeElement,
       'error', null, 'right'
+    );
+  }
+
+  validShortcutInfo() {
+    // @TODO/shortcuts @TODO/soon @TODO/ece Whatdo you think of this? Maybe gray instead of orange for <code> here - and in smart tag documentation? Also look at the "Modifier Keys" heading tooltip (this is hard on gray text) AND mod key error tooltip.
+    this.modalService.alert(
+      '<p>Type in a letter or symbol (e.g. <code>n</code> or <code>#</code>), or write out one of the following keys:</p><ul><li><code>backspace</code></li><li><code>tab</code></li><li><code>enter</code></li><li><code>return</code></li><li><code>capslock</code></li><li><code>esc</code></li><li><code>escape</code></li><li><code>space</code></li><li><code>pageup</code></li><li><code>pagedown</code></li><li><code>end</code></li><li><code>home</code></li><li><code>left</code></li><li><code>up</code></li><li><code>right</code></li><li><code>down</code></li><li><code>ins</code></li><li><code>del</code></li></ul><p>You may include modifier keys in here too, e.g. <code>shift+alt+n</code>.</p>',
+      true,
+      'OK Thanks'
     );
   }
 
