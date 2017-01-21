@@ -33,7 +33,7 @@ import * as _ from 'lodash';
 export class App {
   NOTE_BROWSER_ROUTES = NOTE_BROWSER_ROUTES; // make available to template
   routes: Route[] = ROUTES;
-  mainNavRoutes: Route[];
+  noteToggleNavRoutes: Route[];
   menuNavSettingsRoutes: Route[];
   closeMenu = false;
 
@@ -61,9 +61,9 @@ export class App {
     public settings: SettingsService,
     public dataService: DataService
    ) {
-    this.mainNavRoutes = _.filter(
+    this.noteToggleNavRoutes = _.filter(
       this.routes,
-      { data: { navSection: 'main' } }
+      { data: { navSection: 'note-toggle' } }
     );
     this.menuNavSettingsRoutes = _.filter(
       _.find(

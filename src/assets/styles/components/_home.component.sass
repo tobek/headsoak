@@ -46,16 +46,10 @@ home
     note
       +span(8 of 8)
 
-      // +susy-breakpoint($tablet-small, $susy)
-      //   +gallery(6 of 8)
-
-      // +susy-breakpoint($tablet-large, $susy)
-      //   +gallery(4 of 8)
-
-      +susy-breakpoint($screen-small, $susy)
+      +susy-breakpoint($tablet-large, $susy)
         +gallery(4 of 8)
 
-      +susy-breakpoint($screen-large, $susy)
+      +susy-breakpoint($screen-small, $susy)
         +gallery(2 of 8)
 
   .route--scroll &
@@ -95,7 +89,13 @@ home
     .route--browse &
       note-browser
         note
-          +gallery(2 of 11)
+          +gallery(11 of 11)
+
+          +susy-breakpoint($tablet-large, $susy)
+            +gallery(3 of 11)
+
+          +susy-breakpoint($screen-small, $susy)
+            +gallery(2 of 11)
 
     .route--list &,
       note-browser
@@ -103,4 +103,20 @@ home
           +span(11 of 11)
 
 
+  @media (max-width: $tablet-large - 1px)
+    &,
+    &.is--tag-browser-collapsed
+      .route--list &,
+      .route--browse &,
+      .route--scroll &
+        note-browser
+          +span(12)
+
+        tag-browser
+          display: none
+
+      .route--browse &,
+        note-browser
+          note
+            +gallery(6 of 12)
 

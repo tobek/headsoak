@@ -22,7 +22,7 @@ export const ROUTES: Routes = [
     data: {
       name: 'Focus',
       slug: 'focus',
-      // navSection: 'main', // @TODO/rewrite Hidden entirely for now - we'll support it from elsewhere? Menu or as a note action?
+      // navSection: 'note-toggle', // @TODO/rewrite Hidden entirely for now - we'll support it from elsewhere? Menu or as a note action?
       iconSlug: 'square',
     },
     component: EmptyComponent
@@ -32,7 +32,7 @@ export const ROUTES: Routes = [
     data: {
       name: 'Write',
       slug: 'write',
-      // navSection: 'main', // @REMOVED/write Hidden for now and probably forever except as an overkill option perhaps (could be good with a single-line-list version of browser)
+      // navSection: 'note-toggle', // @REMOVED/write Hidden for now and probably forever except as an overkill option perhaps (could be good with a single-line-list version of browser)
       // iconSlug: 'th-large',
       iconSlug: 'columns',
     },
@@ -43,7 +43,7 @@ export const ROUTES: Routes = [
     data: {
       name: 'Scroll',
       slug: 'scroll',
-      navSection: 'main',
+      navSection: 'note-toggle',
       iconSlug: 'bars',
     },
     component: EmptyComponent
@@ -53,7 +53,7 @@ export const ROUTES: Routes = [
     data: {
       name: 'Browse',
       slug: 'browse',
-      navSection: 'main',
+      navSection: 'note-toggle',
       iconSlug: 'th',
     },
     component: EmptyComponent
@@ -63,7 +63,7 @@ export const ROUTES: Routes = [
     data: {
       name: 'List',
       slug: 'list',
-      navSection: 'main',
+      navSection: 'note-toggle',
       iconSlug: 'list',
     },
     component: EmptyComponent

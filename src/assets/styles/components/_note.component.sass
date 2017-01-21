@@ -22,6 +22,9 @@
     width: 100%
     height: 30px
 
+  .note-actions
+    white-space: nowrap
+
   .header
     top: 0
     left: 0
@@ -162,7 +165,7 @@
     padding-bottom: 0.5rem
 
     .body-input
-      +single-line-truncate
+      +single-line-truncate // @TODO/soon @TODO/polish On chrome with the spellcheck issue, `white-space: nowrap` here is one thing that makes or breaks red line at end of everything if there's *any* wrong spellcheck in body
 
       // @TODO/style @TODO/polish Would be nice if we could replace <br>s with some character orsomething. For now just limit with height instead. See also in _forms.sass
       // +single-line-contenteditable
@@ -177,7 +180,7 @@
       height: ($base-line-height-multiple + 0.05) * 1rem // seems like if we don't add a little, then when you focus it gets that much bigger
       min-height: ($base-line-height-multiple + 0.05) * 1rem // for animation for small notes
 
-      padding-right: 55px // magic number to make room for up to two active note action icons @TODO/polish ideally this would depend on exact number of active icons (which in the future could be 3 - shared, private, archived/pinned)
+      padding-right: 50px // magic number to make room for up to two active note action icons @TODO/polish ideally this would depend on exact number of active icons (which in the future could be 3 - shared, private, archived/pinned)
 
     .note-actions
       width: auto

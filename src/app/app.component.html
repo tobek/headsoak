@@ -70,7 +70,7 @@
           ><a class="nav-link nav-link--note-views" [routerLink]="[lastNoteRoute]">
             <span class="note-views"
               ><span
-                *ngFor="let route of mainNavRoutes"
+                *ngFor="let route of noteToggleNavRoutes"
                 class="note-view"
                 [class.is--active]="('/' + route.path) === lastNoteRoute"
                 [routerLink]="[route.path]"
