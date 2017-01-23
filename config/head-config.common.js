@@ -35,11 +35,14 @@ module.exports = {
     { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/assets/icon/favicon-16x16.png' },
 
     /** <link> tags for a Web App Manifest **/
-    { rel: 'manifest', href: '/assets/manifest.json' }
+    { rel: 'manifest', href: '/assets/manifest.json' },
   ],
   meta: [
-    { name: 'msapplication-TileColor', content: '#00bcd4' },
+    { name: 'msapplication-TileColor', content: '#30302f' },
     { name: 'msapplication-TileImage', content: '/assets/icon/ms-icon-144x144.png', '=content': true },
-    { name: 'theme-color', content: '#00bcd4' }
+    { name: 'theme-color', content: '#30302f' }, // @TODO/styles This should match $pane-bar-bg-color or something! (and the one above too). Also it's not working at all anyways?
+
+    { name: 'apple-mobile-web-app-capable', content: 'yes' },
+    { name: 'mobile-web-app-capable', content: 'yes' },
   ]
 };
