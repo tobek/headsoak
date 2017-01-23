@@ -68,6 +68,9 @@ modal
       margin-left: auto
       margin-right: auto
 
+    @media (max-width: $mobile)
+      +span(12)
+
     @media (max-height: 700px)
       padding-top: 25px
       padding-bottom: 25px
@@ -118,6 +121,10 @@ modal
     .buttons
       @extend .clearfix
       text-align: right
+      margin-bottom: -1rem // so that the margin-bottom on the buttons doesn't actually add spacing to the bottom of the modal
+
+      .btn
+        margin-bottom: 1rem // in case the buttons break onto multiple lines
 
       .btn-primary
         float: right
