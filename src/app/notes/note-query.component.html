@@ -32,11 +32,11 @@
   </span>
 
   <span class="control-icon control-icon--clear"
-    *ngIf="queryText || tags.length"
+    [hidden]="! queryText && ! tags.length"
     (click)="clear()"
   ><i class="fa fa-times"></i></span>
   <span class="control-icon control-icon--search"
-    *ngIf="! queryText && ! tags.length"
+    [hidden]="queryText || tags.length"
     (click)="focus()"
   ><i class="fa fa-search"></i></span>
 </span>

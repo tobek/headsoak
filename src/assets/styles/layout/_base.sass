@@ -82,6 +82,11 @@ main
   @media (max-width: $tablet-large - 1px)
     height: $mobile-full-height
     // padding: 0 // @TODO/soon @TODO/ece What's the final call on this?
+    
+    transition: height $transition-fast
+
+    .is--note-query-visible &
+      height: $mobile-full-height--with-note-query
 
 .app-wrapper
   opacity: 1

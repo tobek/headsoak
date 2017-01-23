@@ -112,8 +112,11 @@ note-query
     .query-controls
       flex: 0.1
 
+    // Search icon is always in header, and we want clear always visible in note query so you can close out
     .control-icon--search
-      opacity: 0 // still want it there cause its vertical height sets the spacing correctly for when the clear icon is there, but we don't need it cause we have a search icon in the top header
+      display: none
+    .control-icon--clear
+      display: inline
 
     .query-info
       position: absolute

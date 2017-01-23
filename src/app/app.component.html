@@ -4,7 +4,7 @@
 
 <modal></modal>
 
-<div class="app-wrapper" [class.uninitialized]="! initialized">
+<div class="app-wrapper" [class.uninitialized]="! initialized" [class.is--note-query-visible]="isNoteQueryVisible">
   <div class="app-top">
     <header class="app-header">
       <div class="inner">
@@ -12,7 +12,7 @@
           <h1 (click)="logoClick()" title="Headsoak"><i class="fa fa-circle"></i><span class="text">Headsoak</span></h1>
         </div>
 
-        <note-query [hidden]="! dataService.user.loggedIn"></note-query>
+        <note-query [hidden]="! dataService.user.loggedIn" (clearedWhileEmpty)="isNoteQueryVisible = false"></note-query>
 
         <div class="private-mode-indicator"
           data-tooltip="Private mode is enabled. Click to disable."
@@ -24,10 +24,9 @@
         </div>
 
         <div class="search-mode-indicator"
-          [class.is--active]="noteQueryComponent.queryText || noteQueryComponent.tags.length"
-          (click)="noteQueryComponent.focus()"
+          [class.is--active]="isNoteQueryVisible"
+          (click)="searchModeClick()"
         ><i class="fa fa-search"></i></div>
-        <!-- @TODO/now Collapsing thing -->
 
         <div class="menu-wrapper" [class.is--force-closed]="closeMenu" (mouseenter)="closeMenu = false">
           <div class="menu status--{{ dataService.status }}" [hidden]="! dataService.user.loggedIn">

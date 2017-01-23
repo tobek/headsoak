@@ -41,6 +41,8 @@ export class App {
   /** The most recently-visited note-related route. */
   lastNoteRoute = '/';
 
+  isNoteQueryVisible = false;
+
   initialized = false;
   @HostBinding('class') hostClass = '';
 
@@ -150,6 +152,13 @@ export class App {
     else {
       this.router.navigateByUrl('/');
     }
+  }
+
+  searchModeClick(): void {
+    this.isNoteQueryVisible = ! this.isNoteQueryVisible;
+    setTimeout(() => {
+      this.noteQueryComponent.focus();
+    }, 0);
   }
 
   newNote(thenFocus = true): void {

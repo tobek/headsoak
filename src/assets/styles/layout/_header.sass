@@ -222,15 +222,25 @@
 
 @media (max-width: $tablet-large - 1px)
   .app-header
-    padding-bottom: 3.5rem // to provide space (with background and box shadow) for now-absolute note-query
     margin-bottom: $mobile-header-margin
+    transition: padding $transition-fast
+
+    .is--note-query-visible &
+      padding-bottom: $mobile-note-query-height // to provide space (with background and box shadow) for now-absolute note-query nav header
 
     note-query
       position: absolute
       width: 100% - gutter() * 2
       margin: 0 gutter();
-      top: $inner-header-height
+      top: 0
       left: 0
+
+      transition: opacity $transition-fast, visibility $transition-fast, transform $transition-fast
+      +faded-out
+
+      .is--note-query-visible &
+        +faded-in
+        transform: translateY($inner-header-height)
 
     .search-mode-indicator
       display: block

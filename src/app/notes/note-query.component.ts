@@ -1,4 +1,4 @@
-import {Component, ViewChild, HostBinding, ElementRef} from '@angular/core';
+import {Component, Output, EventEmitter, ViewChild, HostBinding, ElementRef} from '@angular/core';
 import {ReplaySubject, Subject, Subscription} from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
 
@@ -27,6 +27,9 @@ export class NoteQueryComponent {
   sortOpt: Object = this.notesService.sortOpts[0];
 
   queriedNotes$ = new ReplaySubject<Note[]>(1);
+
+  /** Called when the clear button is pressed while there is nothing in here already. Currently (Jan 2017) only used on mobile (on desktop the clear button disappears when it's empty) to signal to parent component that search bar should be hidden. */
+  @Output() clearedWhileEmpty = new EventEmitter<void>();
 
   @HostBinding('class.is--focused') hasFocus = false;
 
@@ -233,6 +236,11 @@ export class NoteQueryComponent {
   }
 
   clear(thenFocus = true): void {
+    if (! _.size(this.tags) && ! this.queryText) {
+      this.clearedWhileEmpty.emit();
+      return;
+    }
+
     this.tags = [];
     this.tagsUpdated$.next(this.tags);
 
