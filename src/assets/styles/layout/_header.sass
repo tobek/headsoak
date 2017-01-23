@@ -245,6 +245,13 @@
     .search-mode-indicator
       display: block
 
+    // @TODO/ece How are these values? Should they be applied to all menus, like autocomplete and sort dropdown? @TODO/QA Should test tap target on small phone for those (and this)
+    .menu-body
+      width: 16rem
+      li a
+        +h4
+        padding: 1rem
+
   .app-nav
     position: fixed
     bottom: 0
