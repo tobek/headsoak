@@ -9,7 +9,7 @@ import {AccountService} from './account/account.service';
 import {AnalyticsService} from './analytics.service';
 import {DataService} from './data.service';
 import {SettingsService} from './settings/settings.service';
-import {Logger} from './utils/logger';
+import {Logger} from './utils/';
 
 import {ROUTES, NOTE_BROWSER_ROUTES} from './app.routes';
 

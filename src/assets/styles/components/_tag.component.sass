@@ -1,3 +1,6 @@
+$tag-name-max-width: 150px
+$tag-name-max-width--browse: 80px // @TODO/ece What do you think about shrinking it for this view?
+
 .tag-like
   +tag-chiclet
   +tag-face
@@ -20,11 +23,11 @@ tag
   .name-wrapper
     +single-line-truncate
     display: inline-block
-    max-width: 150px
+    max-width: $tag-name-max-width
     vertical-align: top
 
     .route--browse &
-      max-width: 80px // @TODO/ece What do you think about shrinking it for this view?
+      max-width: $tag-name-max-width--browse
 
   .tag-value-hover
     display: none

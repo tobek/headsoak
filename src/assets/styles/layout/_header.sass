@@ -10,7 +10,7 @@
   .inner
     +outer-container
     display: flex
-    height: 48px
+    height: $inner-header-height
     align-items: center
 
   .logo,
@@ -140,6 +140,7 @@
 .app-nav
   +outer-container
   white-space: nowrap
+  height: $nav-header-height
   padding-top: 8px
   padding-bottom: 6px
 
@@ -204,3 +205,27 @@
         &.is--active
           color: $highlight-color
 
+
+@media (max-width: 900px) // @HACK Kind of arbitrary but it works?
+  .app-header
+    .logo .text
+        display: none
+
+    note-query
+      margin-left: 0
+
+@media (max-width: $tablet-large - 1px)
+  .app-header
+    padding-bottom: 2.5rem // to provide space (with background and box shadow) for now-absolute note-query
+    margin-bottom: $mobile-header-margin
+
+    note-query
+      +outer-container
+      position: absolute
+      width: 100%
+      top: $inner-header-height
+      left: 0
+
+  .app-nav
+    position: fixed
+    bottom: 0

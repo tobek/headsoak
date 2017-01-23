@@ -83,7 +83,7 @@ import {TagsService} from './tags/';
 import {ProgTagApiService} from './tags/prog-tag-api.service';
 import {ProgTagLibraryService} from './tags/';
 import {SettingsService} from './settings/settings.service';
-import {AutocompleteService, ScrollMonitorService, SyntaxService, ToasterService, TooltipService} from './utils/';
+import {AutocompleteService, /*ResizeMonitorService, */ScrollMonitorService, SyntaxService, ToasterService, TooltipService} from './utils/';
 
 // Application wide providers - all services used in the application have to go here (from where they're injected into the main App componenet) or else DI can't find providers for them
 const APP_PROVIDERS = [
@@ -103,6 +103,7 @@ const APP_PROVIDERS = [
   ProgTagLibraryService,
   SettingsService,
   AutocompleteService,
+  // ResizeMonitorService,
   ScrollMonitorService,
 ];
 

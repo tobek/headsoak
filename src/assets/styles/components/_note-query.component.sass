@@ -37,15 +37,25 @@ note-query
         opacity: 1
   // End active/inactive styles
 
-  .tags
+  .tags,
   .query-controls
     flex: 1
     white-space: nowrap
+
+  .tags:empty
+    flex: 0
 
   tag
     position: relative
     margin-top: -10px // @TODO Magic number to make note-query bottom border not move down when tags are visible
     margin-bottom: 0
+
+    .name-wrapper
+      max-width: 100px
+
+    &:hover .name-wrapper
+      white-space: nowrap !important // meh, overriding detailed rules for tag component
+      max-width: none
 
   .text-input
     flex: 5

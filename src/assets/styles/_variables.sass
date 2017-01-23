@@ -1,7 +1,14 @@
 @import 'colors'
 
-$header-height: 102px
-$full-height: calc(100vh - #{$header-height}) // @NOTE 114px is a magic number: the header height
+$inner-header-height: 3rem
+$nav-header-height: 3.5rem
+
+$header-height: $inner-header-height + $nav-header-height
+$full-height: calc(100vh - #{$header-height})
+
+$mobile-header-height: 5.5rem // header + search bar on mobile
+$mobile-header-margin: 1rem
+$mobile-full-height: calc(100vh - #{$mobile-header-height + $mobile-header-margin + $nav-header-height})
 
 
 $transition-gonzales: 0.1s
