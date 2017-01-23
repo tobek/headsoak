@@ -25,6 +25,7 @@ import 'brace/mode/javascript';
 import 'd3';
 import 'd3-bboxCollide';
 import 'firebase';
+import 'hammer-timejs';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
 import 'jquery';

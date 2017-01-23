@@ -82,6 +82,7 @@
     "d3-bboxCollide": "^1.0.3",
     "firebase": "~2.4.2",
     "firebase-token-generator": "^2.0.0",
+    "hammer-timejs": "^1.1.0",
     "http-server": "^0.9.0",
     "ie-shim": "^0.1.0",
     "intl": "^1.2.4",

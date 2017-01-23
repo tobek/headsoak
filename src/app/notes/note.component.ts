@@ -8,7 +8,7 @@ import {NotesService} from './notes.service';
 import {Note} from './note.model';
 
 import {ModalService} from '../modals/modal.service';
-import {Logger, AutocompleteService, AutocompleteSuggestion, SyntaxService, TooltipService} from '../utils/';
+import {Logger, AutocompleteService, AutocompleteSuggestion, SizeMonitorService, SyntaxService, TooltipService} from '../utils/';
 
 import * as _ from 'lodash';
 
@@ -61,6 +61,7 @@ export class NoteComponent {
     private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
     private autocompleteService: AutocompleteService,
+    private sizeMonitorService: SizeMonitorService,
     private tooltipService: TooltipService,
     private modalService: ModalService,
     private syntaxService: SyntaxService,
@@ -157,8 +158,18 @@ export class NoteComponent {
     return tag;
   }
 
-  toggleTag(tagId: string, event: MouseEvent) {
-    event.stopPropagation();
+  /** `wholeTagClick` refers to whether this click is coming from the <tag> element or from inside the tag actions dropdown. */
+  toggleTag(tagId: string, event: MouseEvent, wholeTagClick = false) {
+    if (event) {
+      event.stopPropagation();
+    }
+
+    if (wholeTagClick && this.sizeMonitorService.isMobile) {
+      // On mobile, click on the whole (unhovered) tag pops up dropdown, and then you have to click inside the dropdown to toggle the tag
+      // @TODO/polish What should happen when you click on the tag itself while it *does* have hover dropdown open? Currently nothing. It could, instead, toggle it or close dropdown.
+      return;
+    }
+
     if (this.activeUIs.noteQuery) {
       this.activeUIs.noteQuery.tagToggled(tagId, event && event.shiftKey);
     }

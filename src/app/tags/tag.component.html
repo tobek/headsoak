@@ -46,7 +46,7 @@
 
 <!-- We use `hovered` property toggled by JS in order to add delay and also want to use ngIf for tag-actions-dropdown cause it's a heavy component. -->
 <div class="tag-actions-dropdown" *ngIf="enableDropdown && hovered">
-  <a class="tag-action">
+  <a class="tag-action" style="touch-action: none" (click)="_toggled(); $event.stopPropagation()">
     <i class="fa fa-fw fa-eye"></i>
     <span *ngIf="isActive">
       Clear from search

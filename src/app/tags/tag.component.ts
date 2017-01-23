@@ -7,6 +7,7 @@ import {Tag} from './tag.model';
 import {TagsService} from './tags.service';
 
 import {Logger, utils} from '../utils/';
+import {SizeMonitorService} from '../utils/size-monitor.service';
 
 import * as _ from 'lodash';
 
@@ -45,13 +46,14 @@ export class TagComponent {
 
   @HostBinding('class.hovered') hovered = false;
 
+  @Output() toggled= new EventEmitter<Tag>(); // view/clear from search clicked
   @Output() removed = new EventEmitter<Tag>(); // removed from given context (e.g. note, search query)
   @Output() deleted = new EventEmitter<Tag>(); // deleted entirely
   @Output() renamingOver = new EventEmitter<void>(); // renaming completed or canceled
 
   @HostListener('mouseover') onMouseover() {
-    if (this.ofNoteId) {
-      // Wait a moment before showing dropdown or else they go flying willy-nilly as you mousearound the notes
+    if (this.ofNoteId && ! this.sizeMonitorService.isMobile) {
+      // On desktop, wait a moment before showing dropdown or else they go flying willy-nilly as you mousearound the notes
       if (! this.hoveredTimeout) {
         this.hoveredTimeout = setTimeout(() => {
           this.hovered = true;
@@ -82,6 +84,7 @@ export class TagComponent {
 
   constructor(
     private analyticsService: AnalyticsService,
+    private sizeMonitorService: SizeMonitorService,
     private activeUIs: ActiveUIsService,
     private tagsService: TagsService
   ) {}
@@ -125,6 +128,11 @@ export class TagComponent {
   queryTagsUpdated(tags: Tag[]): void {
     // @TODO/tags/subtags @HACK Since on notes we show Tag instances but sort of hack to show subtag stuff if relevant, but in note query we can get actual SubTag instances, we need to check base tag ID.
     this.isActive = !! _.find(tags, (tag) => tag.baseTagId === this.tag.id);
+  }
+
+  _toggled() {
+    this.toggled.emit(this.tag);
+    this.hovered = false;
   }
 
   remove() {
