@@ -24,6 +24,7 @@
 
   .note-actions
     white-space: nowrap
+    overflow: hidden
 
   .header
     top: 0
@@ -316,7 +317,7 @@
         overflow-y: auto
 
       // Need to add scrollbar if needed, but don't want text to reflow with different line breaks when scrollbar takes up some width. This hack works on Chrome on Linux, needs browser testing (however even if it's a bit off and sometimes causes reflow, well that's the normal behavior, so as long as it's not that much worse...)
-      // @REMOVED/note text overflow Turns out the assumption of 12px scrollbar (and/or the general method) is not x-browser friendly, so disabling
+      // @REMOVED/note text overflow Turns out the assumption of 12px scrollbar (and/or the general method) is not x-browser friendly, so disabling - we could use <https://davidwalsh.name/detect-scrollbar-width> to work out scrollbar width and set up a CSS class at runtime
       // &.is--text-overflowing .body-input
       //   overflow-y: scroll // force this otherwise sometimes the widening of the text will remove the need for a scroll bar and then it just inexplicably gets bigger!
       //   width: calc(100% + 12px)

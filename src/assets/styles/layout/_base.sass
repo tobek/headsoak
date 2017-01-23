@@ -69,17 +69,18 @@ main
   height: $full-height
   overflow-y: auto
 
-  @media (max-width: $tablet-large - 1px)
-    height: $mobile-full-height
-
   // This is the container in the app that will scroll, so we'd like to have the scrollbar at the far right. So onstead of grid container with max width and margins on either side and gutter-width padding, here we try to pad it out to the full width of the viewport
   max-width: 100%
-  padding-right: calc(50vw - #{$screen-large / 2} + #{gutter()} - 15px) // 15px to give room for scrollbar
+  padding-right: calc(50vw - #{$screen-large / 2} + #{gutter()} - 20px) // 20px to give room for scrollbar
   padding-left: calc(50vw - #{$screen-large / 2} + #{gutter()})
 
   @media (max-width: $screen-large)
-    padding-right: calc(#{gutter()} - 5px)
+    padding-right: gutter()
     padding-left: gutter()
+
+  @media (max-width: $tablet-large - 1px)
+    height: $mobile-full-height
+    // padding: 0 // @TODO/soon @TODO/ece What's the final call on this?
 
 .app-wrapper
   opacity: 1
