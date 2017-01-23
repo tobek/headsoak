@@ -109,6 +109,7 @@ export class SettingsService {
     },
 
     {
+      // @TODO/polish @TODO/settings This should be hidden on mobile as it has no effect there!
       id: 'minimalistHeader',
       default: false,
       name: 'Minimalist header',

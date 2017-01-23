@@ -19,21 +19,23 @@
 >
 
 <span class="query-controls">
-  <span class="count"
-    >{{ notes.length }} NOTE{{ notes.length !== 1 ? 'S' : '' }}</span
-  >
-  <ng-select class="sort-dropdown"
-    [items]="notesService.sortOpts"
-    [active]="[sortOpt]"
-    (selected)="ngSelectSelected($event)"
-    placeholder="{{ sortOpt.text }}"
-  ></ng-select>
+  <span class="query-info">
+    <span class="count"
+      >{{ notes.length }} NOTE{{ notes.length !== 1 ? 'S' : '' }}</span
+    >
+    <ng-select class="sort-dropdown"
+      [items]="notesService.sortOpts"
+      [active]="[sortOpt]"
+      (selected)="ngSelectSelected($event)"
+      placeholder="{{ sortOpt.text }}"
+    ></ng-select>
+  </span>
 
-  <span class="control-icon"
+  <span class="control-icon control-icon--clear"
     *ngIf="queryText || tags.length"
     (click)="clear()"
   ><i class="fa fa-times"></i></span>
-  <span class="control-icon"
+  <span class="control-icon control-icon--search"
     *ngIf="! queryText && ! tags.length"
     (click)="focus()"
   ><i class="fa fa-search"></i></span>

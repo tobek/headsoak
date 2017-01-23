@@ -14,6 +14,7 @@ import {Logger} from './utils/';
 import {ROUTES, NOTE_BROWSER_ROUTES} from './app.routes';
 
 import {HomeComponent} from './home';
+import {NoteQueryComponent} from './notes/';
 
 import * as _ from 'lodash';
 
@@ -44,6 +45,7 @@ export class App {
   @HostBinding('class') hostClass = '';
 
   @ViewChild(HomeComponent) homeComponent: HomeComponent;
+  @ViewChild(NoteQueryComponent) noteQueryComponent: NoteQueryComponent;
 
   private initializiationSub: Subscription;
   private routerSub: Subscription;

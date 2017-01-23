@@ -15,26 +15,27 @@ note-query
     padding: 2px 0 0 // nudge down to align nicely with bottom border and tag chiclet
 
   // Active/inactive styles
-  .setting--minimalistHeader &
-    transition: color $transition-fast, border-color $transition-fast
-    border-bottom-color: transparent
-    color: transparent
-
-    .count,
-    .sort-dropdown,
-    .text-input
-      transition: opacity $transition-fast
-      opacity: 0
-
-    &:hover,
-    &.is--active
-      +input-underline
-      color: $primary-color
+  @media (min-width: $tablet-large)
+    .setting--minimalistHeader &
+      transition: color $transition-fast, border-color $transition-fast
+      border-bottom-color: transparent
+      color: transparent
 
       .count,
       .sort-dropdown,
       .text-input
-        opacity: 1
+        transition: opacity $transition-fast
+        opacity: 0
+
+      &:hover,
+      &.is--active
+        +input-underline
+        color: $primary-color
+
+        .count,
+        .sort-dropdown,
+        .text-input
+          opacity: 1
   // End active/inactive styles
 
   .tags,
@@ -66,3 +67,55 @@ note-query
   .sort-dropdown
     width: 150px;
     margin-right: 4px
+
+
+  @media (max-width: $tablet-large - 1px)
+    .tags
+      margin-left: -8px
+      &:empty
+        margin-left: 0
+
+    .text-input
+      min-width: 0
+
+    .sort-dropdown
+      margin-right: 0
+      margin-left: -95px // Magic number - this is basically "width of longest item in menu" - "width of 'sort' text" - we replace the selected menu item with "sort" and align right, and here we want to push whatever's on the left of it over enough to sit next to "sort".
+
+      .ui-select-toggle
+        // Replace whatever the selected item is with simply the text "sort"
+        .ui-select-match-text
+          display: none
+
+        &:before
+          content: 'Sort'
+
+          // dropdown library makes this a .btn so we need to override the styles we have for loading button
+          font-family: inherit
+          visibility: visible
+          opacity: 1
+          font-size: inherit
+          position: static
+          display: inline
+
+      .ui-select-match
+        text-align: right
+
+      // @TODO/styles @TODO/polish The above changes mean that there's no way to see what the current sort is. When you open the dropdown, the highlighted item is determined only by the hover, by the component adding a `.active` class to the last hovered item. On mobile, it just highlights the first one! Doesn't look like there's any class to identify selected option. Fix would be to run some JS after opening (a recent commit adds an `(opened)` angular output) and manually set up some class.
+      // FOR NOW: Hiding the active style altogether, unless they're *actually* hovering
+      .ui-select-choices.dropdown-menu .ui-select-choices-row // extra specificity to override their styles
+        &.active .dropdown-item
+          +menu-link-unhovered
+        &.active:hover .dropdown-item
+          +menu-link-hover
+
+    .query-controls
+      flex: 0.1
+
+    .control-icon--search
+      opacity: 0 // still want it there cause its vertical height sets the spacing correctly for when the clear icon is there, but we don't need it cause we have a search icon in the top header
+
+    .query-info
+      position: absolute
+      right: 0
+      bottom: -1.5rem

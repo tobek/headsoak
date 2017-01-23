@@ -23,6 +23,12 @@
           <i class="fa fa-unlock-alt unlocked"></i>
         </div>
 
+        <div class="search-mode-indicator"
+          [class.is--active]="noteQueryComponent.queryText || noteQueryComponent.tags.length"
+          (click)="noteQueryComponent.focus()"
+        ><i class="fa fa-search"></i></div>
+        <!-- @TODO/now Collapsing thing -->
+
         <div class="menu-wrapper" [class.is--force-closed]="closeMenu" (mouseenter)="closeMenu = false">
           <div class="menu status--{{ dataService.status }}" [hidden]="! dataService.user.loggedIn">
             <img class="avatar" src="{{ settings.get('profileImageUrl', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7') }}" />

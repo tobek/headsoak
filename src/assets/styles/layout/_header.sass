@@ -113,11 +113,17 @@
     flex: 10
     margin: 0 5px 0 30px
 
+  .search-mode-indicator,
   .private-mode-indicator
     +icon-button
     +h3 // same as control icons in note-query
     margin-right: 3px
     padding-top: 2px // same as padding in note-query
+
+  .search-mode-indicator
+    display: none // mobile only
+
+  .private-mode-indicator
     color: $danger-color
 
     .unlocked
@@ -216,16 +222,27 @@
 
 @media (max-width: $tablet-large - 1px)
   .app-header
-    padding-bottom: 2.5rem // to provide space (with background and box shadow) for now-absolute note-query
+    padding-bottom: 3.5rem // to provide space (with background and box shadow) for now-absolute note-query
     margin-bottom: $mobile-header-margin
 
     note-query
-      +outer-container
       position: absolute
-      width: 100%
+      width: 100% - gutter() * 2
+      margin: 0 gutter();
       top: $inner-header-height
       left: 0
+
+    .search-mode-indicator
+      display: block
 
   .app-nav
     position: fixed
     bottom: 0
+
+// .mobile-only
+//   display: none !important
+// @media (max-width: $tablet-large - 1px)
+//   .mobile-only
+//     display: inline-block !important // @NOTE Obviously not the right value for lots of things, so will need overriding
+//   .desktop-only
+//     display: none !important
