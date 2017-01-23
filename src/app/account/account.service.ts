@@ -400,6 +400,7 @@ export class AccountService {
 
     // lastLogin changed!
     this._logger.warn('Headsoak session started from elsewhere at ' + newUserChild.val() + '!');
+    // @TODO/polish Since this is coming back in from unzoned firebase call, this should be run in zone in order for modal service to show up right away
 
     // @TODO/modals Need a way to queue up modals, what happens if this gets hit when another modal is open? Especially could be weird when the close listener to refresh fires too soon.
 
