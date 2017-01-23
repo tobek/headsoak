@@ -142,48 +142,64 @@
   padding-top: 8px
   padding-bottom: 6px
 
-  text-align: right
-
   .new-note
-    float: left
     margin-top: 13px // @HACK Magic number to vertically align. Lazy.
+
+  .tag-nav-link
+    float: right
 
   ul
     +plain-list
- 
-  a
-    +h4
-    text-decoration: none
-    color: $primary-color-contrast
-    letter-spacing: 1.2px
-    text-shadow: 0 1px 4px $shadow-color
 
-    &.nav-link
+  .nav-link
+    +menu-link
+    +menu-dropdown
+    display: inline-block
+    white-space: nowrap
+    width: auto
+    margin-right: gutter()
+    padding: 9px 1rem 7px // we want 0.5rem vertical padding, but vertical shit is offset as always...
+    letter-spacing: 1px
+    text-transform: uppercase
+
+    .nav-link-text,
+    .fa
+      vertical-align: middle
+
+    .fa
+      +h4
       display: inline-block
-      width: span(1)
-      min-width: 60px
-      margin-right: gutter()
-      text-align: center
-
-      .fa
-        +h3
-        display: inline-block
-        margin-bottom: -1px
-        padding: 0 5px
-        transition: border-color $transition-fast
-        border-bottom: 4px solid transparent
-
-      .nav-link-text--new-note
-        // It overflows, so let's make space for it
-        display: inline-block
-        width: 150%
-        margin-left: -25%
-        white-space: nowrap
+      transition: border-color $transition-fast
+      // border-bottom: 4px solid transparent // for old active style
 
   li:last-of-type a.nav-link
     margin-right: 0
 
-  .is--active a .fa
-    border-color: $primary-color-contrast
-  .is--active a:hover .fa
-    border-color: $highlight-color
+  // @TODO/styles @TODO/ece Active styles for nav!
+  // .is--active a .fa
+  //   border-color: $primary-color-contrast
+  // .is--active a:hover .fa
+  //   border-color: $highlight-color
+
+  .note-view
+    display: none
+
+    &.is--active
+      display: inline
+
+    &:hover
+      color: $highlight-color
+
+    .fa-bars
+      transform: translateY(-0.5px) // no idea why this is necessary but it bothers me that it's off...
+
+  .route--list &,
+  .route--scroll &,
+  .route--browse &
+    .nav-link--note-views:hover
+      .note-view
+        display: inline
+
+        &.is--active
+          color: $highlight-color
+

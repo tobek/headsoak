@@ -37,6 +37,9 @@ export class App {
   menuNavSettingsRoutes: Route[];
   closeMenu = false;
 
+  /** The most recently-visited note-related route. */
+  lastNoteRoute = '/';
+
   initialized = false;
   @HostBinding('class') hostClass = '';
 
@@ -74,7 +77,7 @@ export class App {
 
     this.routerSub = router.events
       .filter(event => event instanceof NavigationEnd)
-      .subscribe(this.setRouteClass.bind(this));
+      .subscribe(this.routeUpdated.bind(this));
   }
 
   ngOnInit() {
@@ -121,6 +124,14 @@ export class App {
     }
 
     this.initialized = isInitialized;
+  }
+
+  routeUpdated(event: NavigationEnd) {
+    if (NOTE_BROWSER_ROUTES.indexOf(event.url) !== -1) {
+      this.lastNoteRoute = event.url;
+    }
+
+    this.setRouteClass(event);
   }
 
   /** Sets class on component host element to reflect current route. @NOTE Right now only supporting "root" routes e.g. /home or /tags. This is because if we get a route like `/tags/199` it's less trivial to match that to the `/tags/:tagId` route, so we'll just match it  to `/tags`. */
