@@ -90,7 +90,13 @@
     position: absolute
     top: 0
     right: 0
-    color: $accent-color
+    padding-bottom: 5px // magic number that makes this the full height of the tags header, for increasing click target size
+
+    .tag-like
+      color: $accent-color
+      margin-left: 5px // matches tag margins (which exclude left margin) for the purpose of increasing click target size of parent
+    &:hover .tag-like
+      color: $icon-hover
 
     .go-up,
     .go-down
@@ -99,12 +105,12 @@
     .go-down
       +faded-in
       position: relative
-      top: 0.25rem
+      top: 4px
 
     .go-up
       +faded-out
       position: absolute
-      top: 0.5rem
+      top: 14px
 
   &.has--tag-overflow
     .tags
