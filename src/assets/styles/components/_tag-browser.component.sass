@@ -88,18 +88,22 @@ tag-browser
       padding: 0.5rem gutter() * 5 1rem // matches tag browser menu
       font-style: italic
 
+    .tag-header
+      position: relative
+
     // @TODO/now Caret should change when it's open, and it should be the same
     // @TODO/now @TODO/ece Too intense? Should it be tag color? Maybe light gray?
     .caret-wrapper
       +icon-button
       color: $accent-color
       position: absolute
-      top: 7px // magic number to center align with tag
+      top: 0
       right: 0
+      height: 100%
 
       // Bigger click target
-      margin-right: -0.5rem
-      padding: 0 0.5rem
+      margin-right: -0.75rem
+      padding: 7px 0.75rem // 7px top is a magic number to center align with tag
 
       .go-up,
       .go-down
@@ -108,12 +112,11 @@ tag-browser
       .go-down
         +faded-in
         position: relative
-        top: 0.25rem
 
       .go-up
         +faded-out
         position: absolute
-        top: 7px
+        margin-top: 2px
 
     // @TODO/ece @TODO/now How's the styling here? It's identical to the dropdown menus elsewhere
     // @TODO/polish This should slide down all nice, but right now it just jumps into place because it's done with *ngIf
