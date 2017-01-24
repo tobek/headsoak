@@ -36,7 +36,9 @@ export class App {
   routes: Route[] = ROUTES;
   noteToggleNavRoutes: Route[];
   menuNavSettingsRoutes: Route[];
-  closeMenu = false;
+
+  /** Used to make on-hover menu go away when clicking on a menu item. */
+  forceMenuClosed = false;
 
   /** The most recently-visited note-related route. */
   lastNoteRoute = '/';
