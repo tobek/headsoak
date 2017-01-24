@@ -3,6 +3,7 @@ import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {Subject, ReplaySubject} from 'rxjs';
 
 import {ModalComponent} from './modal.component';
+import {Note} from '../notes/';
 
 import * as _ from 'lodash';
 
@@ -96,5 +97,10 @@ export class ModalService {
   }
   privateMode(): void {
     this.activeModal$.next('privateMode');
+  }
+
+  note(note: Note): void {
+    this.modal.note = note;
+    this.activeModal$.next('note');
   }
 }

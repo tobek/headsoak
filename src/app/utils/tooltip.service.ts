@@ -24,6 +24,10 @@ export class TooltipService {
     });
   }
 
+  closeTooltip(event: Event) {
+    this._tips.hide(event.currentTarget);
+  }
+
   /** Destroys and re-creates tooltip associated with an element. This is needed for tooltips whose `data-tooltip` attributes are dynamic - once the tooltip is created, it doesn't update when the attribute updates, so we need to do this. It's kind of a hack. */
   reloadTooltip(el: HTMLElement) {
     return this._tips.remove(el).add(el);

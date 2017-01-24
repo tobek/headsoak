@@ -7,7 +7,9 @@ import {AnalyticsService} from '../analytics.service';
 import {SettingsService} from '../settings/settings.service';
 import {Logger} from '../utils/logger';
 
-type ModalType = null | 'loading' | 'login' | 'feedback' | 'privateMode' | 'generic';
+import {Note} from '../notes/';
+
+type ModalType = null | 'loading' | 'login' | 'feedback' | 'privateMode' | 'note' | 'generic';
 
 export interface ModalConfig {
   okCb?: (result?: any, showLoadingState?: Function, hideLoadingState?: Function) => any, // Called when OK is pressed (or enter in prompt), just before modal is closed. If it's a prompt and not cancelled, prompt contents is passed in, otherwise falsey value passed. Return explicit false to prevent modal from being closed. Callback is also passed two functions that control loading state of button.
@@ -61,6 +63,8 @@ export class ModalComponent {
   @ViewChild('okButton') okButton: ElementRef;
   @ViewChild('promptInput') promptInput: ElementRef;
   promptValue = '';
+
+  note?: Note;
 
   private activeModalSub: Subscription;
 
@@ -123,6 +127,8 @@ export class ModalComponent {
     this.config = {};
 
     this.promptValue = '';
+
+    delete this.note;
   }
 
   okButtonShowLoading() {

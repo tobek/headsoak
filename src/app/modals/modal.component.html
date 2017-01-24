@@ -14,6 +14,7 @@
 
     <feedback *ngIf="activeModal === 'feedback'"></feedback>
     <private-mode *ngIf="activeModal === 'privateMode'" isModal=1></private-mode>
+    <note *ngIf="activeModal === 'note'" [note]="note" isOpened=1></note>
 
     <div class="generic" *ngIf="activeModal === 'generic'">
       <!-- @TODO/ece Style of this? Currently only used for progTagCantChangeAlert and simultaneous editing warning, but prob will be used elsewhere -->

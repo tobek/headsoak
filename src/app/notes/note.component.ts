@@ -24,6 +24,8 @@ export class NoteComponent {
 
   @Input() note: Note;
 
+  @Input() isOpened = false;
+
   // @REMOVED/write
   // @Input() opened = false;
   // @Output() noteOpened = new EventEmitter<Note>();
@@ -36,10 +38,17 @@ export class NoteComponent {
   @HostBinding('class.note') thisIsUnusedAndAlwaysTrue = true;
 
   @HostBinding('class.is--expanded') hasExpandedTags = false;
-  @HostBinding('class.is--focused') isFocused = false;
   @HostBinding('class.is--textless') isTextless = false;
   // @REMOVED/note text overflow
   // @HostBinding('class.is--text-overflowing') isTextOverflowing = false;
+
+  _isFocused = false;
+  @HostBinding('class.is--focused') get isFocused(): boolean {
+    return this._isFocused || this.isOpened;
+  }
+  set isFocused(newVal: boolean) {
+    this._isFocused = newVal;
+  }
 
   /** Catch any "background" clicks that bubble up to the host element and focus on the body. @NOTE This means that anything in this component that shouldn't lead to body being focused needs `event.stopPropagation`. */
   @HostListener('click') noteClick() {
@@ -131,10 +140,9 @@ export class NoteComponent {
     }
   }
 
-  // @REMOVED/write
-  // openNote() {
-  //   this.noteOpened.emit(this.note);
-  // }
+  openNote() {
+    this.modalService.note(this.note);
+  }
   // closeNote() {
   //   this.noteClosed.emit(this.note);
   // }
