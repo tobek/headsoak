@@ -17,7 +17,7 @@
         <div class="private-mode-indicator"
           data-tooltip="Private mode is enabled. Click to disable."
           [class.is--private]="accountService.privateMode"
-          (click)="accountService.disablePrivateMode()"
+          (touchOrClick)="accountService.disablePrivateMode()"
         >
           <i class="fa fa-lock locked"></i>
           <i class="fa fa-unlock-alt unlocked"></i>

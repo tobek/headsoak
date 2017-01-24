@@ -65,10 +65,11 @@ const APP_COMPONENTS = [
 ];
 
 
-import {ContenteditableModel} from './directives';
+import {ContenteditableModel, TouchOrClick} from './directives';
 
 const APP_DIRECTIVES = [
   ContenteditableModel,
+  TouchOrClick,
 ];
 
 

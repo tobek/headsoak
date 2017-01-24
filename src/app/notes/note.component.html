@@ -35,13 +35,8 @@
 
       <span class="expand-tags"
         [attr.data-tooltip]="hasExpandedTags ? 'Collapse tags' : 'Show all tags'"
-        (click)="toggleExpandTags(); tooltipService.reloadOnClick($event); $event.stopPropagation()"
-        (touchend)="toggleExpandTags(); $event.cancelable !== false ? $event.preventDefault() : true"
-      ><!--
-        @TODO/note Using `$event.preventDefault()` allows us to prevent tap from popping up tooltip (if we did it on touchstart we could prevent activating hover state on the element too - see below)
-        @TODO/QA Test this
-        @TODO/polish Using `touchend` above means that if the user starts scrolling on this button, then when they're done and lift up, the handler fires and tags are expanded/collapse. Could be odd but not that crazy. If we use `touchstart` instead, we get to prevent hover state but we also simply prevent all scrolling that starts from that point - since there isn't much room on the screen on mobile let's not take this away from the user. Tried using `hammerjs`'s `tap` event but that didn't let us preventDefault. Another option would be to do something like add `data-tooltip-type="not-on-mobile"` and style that class to hide it on mobile, but that's not a very nuanced way to handle touch, and doesn't prevent note hover.
-      --><span class="tag-like"><i class="fa fa-caret-up go-up"></i><i class="fa fa-caret-down go-down"></i></span></span>
+        (touchOrClick)="toggleExpandTags(); $event.event.stopPropagation(); $event.wasClick && tooltipService.reloadOnClick($event.event)"
+      ><span class="tag-like"><i class="fa fa-caret-up go-up"></i><i class="fa fa-caret-down go-down"></i></span></span>
     </div>
   </div>
 
