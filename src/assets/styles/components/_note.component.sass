@@ -119,6 +119,7 @@
     .expand-tags
       display: inline-block
 
+  modal &,
   &.is--adding-tag,
   &.is--focused
     box-shadow: 0px 6px 10px 5px $shadow-color
@@ -152,6 +153,7 @@
 
     transition: min-height $transition-fast, max-height $transition-fast, padding $transition-fast
 
+  modal & .body-input,
   &.is--adding-tag .body-input,
   &.is--focused .body-input
     max-height: calc(#{$full-height} - 100px) // magic numbers - 100px is about the vertical padding of note element plus a bit to spare
@@ -201,7 +203,7 @@
     &:hover
       .body-input
         overflow: hidden // repeat of normal `.route--list .body-input` but added here too for specificity
-        padding-right: 130px // magic number to make room for ALL note-actions
+        padding-right: 155px // magic number to make room for ALL note-actions
 
     &.is--adding-tag,
     &.is--focused
@@ -240,7 +242,8 @@
     &:last-child
       margin-right: 0
 
-  .note-action--open
+  .note-action--open,
+  .note-action--close
     float: left
 
   .note-action--private
@@ -354,6 +357,16 @@
     //       padding-right: calc(75% - 450px - 12px)
     //       padding-left: calc(25% - 150px + 12px)
 
+  modal &
+    // @TODO/ece What do you think of this? Random but looks okay? Also the body input padding (should it be the same as route--scroll?)
+    padding-top: 4rem
+    padding-bottom: 3rem
+
+    .body-input
+      overflow-y: auto
+      height: 80vh // @TODO/now @TODO/mobile
+      padding-left: 2rem
+      padding-right: 2rem
 
 // This actually gets shunted into ModalComponent but let's style it here
 // @TODO/ece What do you think of this whole thing?

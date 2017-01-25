@@ -4,7 +4,7 @@
 
 <modal></modal>
 
-<div class="app-wrapper" [class.uninitialized]="! initialized" [class.is--note-query-visible]="isNoteQueryVisible">
+<div class="app-wrapper" ref-appWrapperRef [class.uninitialized]="! initialized" [class.is--note-query-visible]="isNoteQueryVisible">
   <div class="app-top">
     <header class="app-header">
       <div class="inner">

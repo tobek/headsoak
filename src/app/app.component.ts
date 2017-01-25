@@ -1,4 +1,4 @@
-import {Component, ViewChild, ViewEncapsulation, HostBinding, ChangeDetectorRef} from '@angular/core';
+import {Component, ViewChild, ViewEncapsulation, HostBinding, ChangeDetectorRef, ElementRef} from '@angular/core';
 import {Route, Router, NavigationEnd} from '@angular/router';
 import {Subscription} from 'rxjs';
 
@@ -46,8 +46,8 @@ export class App {
   isNoteQueryVisible = false;
 
   initialized = false;
-  @HostBinding('class') hostClass = '';
 
+  @ViewChild('appWrapperRef') appWrapperRef: ElementRef;
   @ViewChild(HomeComponent) homeComponent: HomeComponent;
   @ViewChild(NoteQueryComponent) noteQueryComponent: NoteQueryComponent;
 
@@ -140,11 +140,22 @@ export class App {
     this.setRouteClass(event);
   }
 
-  /** Sets class on component host element to reflect current route. @NOTE Right now only supporting "root" routes e.g. /home or /tags. This is because if we get a route like `/tags/199` it's less trivial to match that to the `/tags/:tagId` route, so we'll just match it  to `/tags`. */
+  /** Sets class on app wrapper element to reflect current route. @NOTE Right now only supporting "root" routes e.g. /home or /tags. This is because if we get a route like `/tags/199` it's less trivial to match that to the `/tags/:tagId` route, so we'll just match it  to `/tags`. */
   setRouteClass(event: NavigationEnd): void {
     const path = event.url.substring(1).split('/')[0];
     const routeInfo = _.find(this.routes, { path: path });
-    this.hostClass = 'route--' + routeInfo.data['slug'];
+
+    const className = this.appWrapperRef.nativeElement.className;
+
+    // We don't want to add the class to the host element because it would be nice for the modal to be independent of route classes. So we'll add it to app wrapper, which has various classes bound to variables already, so we have to play nicely with them:
+
+    if (className.indexOf('route--') === -1) {
+      this.appWrapperRef.nativeElement.className += ' route--' + routeInfo.data['slug'];
+    }
+    else {
+      this.appWrapperRef.nativeElement.className = className
+        .replace(/route--[^ $]*/, 'route--' + routeInfo.data['slug']);
+    }
   }
 
   logoClick(): void {

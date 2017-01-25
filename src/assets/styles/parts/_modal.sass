@@ -1,5 +1,5 @@
 modal
-  z-index: 100000
+  z-index: $z-modal
   overflow: auto // Not sure why, but saw this in Vex modal
 
   visibility: hidden
@@ -86,6 +86,19 @@ modal
 
   &.full-height .modal-content
     height: 100%
+
+  &.dark-solo
+    .modal-backdrop
+      background: $modal-backdrop--dark
+
+    .modal-content
+      float: none
+      width: 100%
+      max-width: 50rem
+      margin: auto
+      background: none
+      box-shadow: none
+      padding: 0
 
   .modal-close
     +icon-button

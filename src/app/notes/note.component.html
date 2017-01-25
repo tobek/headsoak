@@ -43,7 +43,7 @@
   <div class="body-input" tabindex=0 contenteditable 
     ref-bodyInput
     *ngIf="! note.sharedBody"
-    [attr.spellcheck]="isFocused"
+    [attr.spellcheck]="isFocused || isOpen"
     [attr.placeholder]="note.new ? 'Enter a new note' : 'This note has no text'"
     [contenteditableModel]="note.body"
     (contenteditableModelChange)="note.body = $event; note.changed()"
@@ -55,13 +55,13 @@
   <!-- @TODO/rewrite/sharing Better to put read-only class and disabled attribute on above textarea so reference is preserved <textarea class="body read-only" disabled="disabled" tabindex=2 *ngIf="note.sharedBody">{{ note.sharedBody }}</textarea> -->
 
   <div class="note-actions">
-    <!-- @TODO/ece Expand? Focus? Open? -->
+    <!-- @TODO/ece Expand? Focus? Open? Also shortcut name. -->
     <!-- @TODO/polish On desktop tooltip is still visible behind modal on click until you mouse away - should make something similar -->
     <a data-tooltip="Expand note" class="note-action note-action--open" *ngIf="! isOpened" (click)="openNote(); $event.stopPropagation(); tooltipService.closeTooltip($event)"><i class="fa fa-fw fa-pencil-square-o"></i></a
 
-    ><!-- @TODO/ece Let's just rely on the modal's own close button, right? <a data-tooltip="Close note" class="note-action" *ngIf="isOpened" (click)="closeNote()"><i class="fa fa-fw fa-close"></i></a
+    ><a data-tooltip="Close note" class="note-action note-action--close" *ngIf="isOpened" (click)="closeNote()"><i class="fa fa-fw fa-close"></i></a
 
-    > --><a class="note-action"
+    ><a class="note-action"
       [class.is--active]="note.pinned"
       [attr.data-tooltip]="(note.pinned ? 'Un-pin' : 'Pin') + ' this note'"
       (click)="note.pinned = ! note.pinned; tooltipService.reloadOnClick($event); $event.stopPropagation()"

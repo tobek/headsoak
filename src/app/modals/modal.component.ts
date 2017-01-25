@@ -5,6 +5,7 @@ import {Subscription} from 'rxjs';
 import {ModalService} from './modal.service';
 import {AnalyticsService} from '../analytics.service';
 import {SettingsService} from '../settings/settings.service';
+import {DataService} from '../data.service';
 import {Logger} from '../utils/logger';
 
 import {Note} from '../notes/';
@@ -45,10 +46,16 @@ export class ModalComponent {
     'loading',
   ];
 
+  /** Displayed with dark backdrop and no border. */
+  DARK_SOLO_MODALS = [
+    'note'
+  ];
+
   // @ViewChild(NoteComponent) noteComponent: NoteComponent;
 
   @HostBinding('class.full-height') fullHeight = false;
   @HostBinding('class.windowed') windowed = true;
+  @HostBinding('class.dark-solo') darkSolo = false;
   @HostBinding('class.on') visible = false;
   @HostBinding('class.cancellable') cancellable = true;
 
@@ -67,6 +74,7 @@ export class ModalComponent {
   note?: Note;
 
   private activeModalSub: Subscription;
+  private noteUpdatedSub: Subscription;
 
   private closeTimeout;
 
@@ -75,6 +83,7 @@ export class ModalComponent {
   constructor(
     private modalService: ModalService,
     private analyticsService: AnalyticsService,
+    private dataService: DataService,
     private settings: SettingsService
    ) {}
 
@@ -89,11 +98,14 @@ export class ModalComponent {
         this.activeModal = activeModal;
       }, 0);
     });
+
+    this.noteUpdatedSub = this.dataService.notes.noteUpdated$.subscribe(this.noteUpdated.bind(this));
   }
 
   /** Not sure why this would ever happen as this is a singleton service that's always around, just visible or not visible, but putting this here anyway. */
   ngOnDestroy() {
     this.activeModalSub.unsubscribe();
+    this.noteUpdatedSub.unsubscribe();
 
     if (this.modalService.modal === this) {
       this.modalService.modal = null;
@@ -115,6 +127,7 @@ export class ModalComponent {
     this.cancellable = this.UNCANCELLABLE_MODALS.indexOf(modalName) === -1;
     this.fullHeight = this.FULL_HEIGHT_MODALS.indexOf(modalName) !== -1;
     this.windowed = ! this.fullHeight;
+    this.darkSolo = this.DARK_SOLO_MODALS.indexOf(modalName) !== -1;
 
     this.visible = !! modalName;
   }
@@ -190,6 +203,12 @@ export class ModalComponent {
       }, 100);
     }
     // @TODO/modal Should focus on "ok" button if no prompt, so they can accept with enter/space
+  }
+
+  noteUpdated(note: Note): void {
+    if (note.deleted && note === this.note) {
+      this.close();
+    }
   }
 
 }

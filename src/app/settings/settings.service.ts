@@ -254,6 +254,21 @@ export class SettingsService {
       subSection: 'Notes',
     },
     {
+      id: 'sOpenNote',
+      // @TODO/ece Expand? Focus? Open? Also note action icon.
+      name: 'Expand note',
+      description: 'Opens note in full screen no-distractions mode',
+      default: 'o',
+      fn: () => {
+        if (this.activeUIs.focusedNoteComponent) {
+          this.activeUIs.focusedNoteComponent.openNote();
+        }
+      },
+      ngZone: true,
+      section: 'shortcuts',
+      subSection: 'Notes',
+    },
+    {
       id: 'sDupeNoteTag',
       name: 'Duplicate note tags',
       description: 'Create a new note with the same tags as the currently focused note',
