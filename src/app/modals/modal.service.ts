@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {Subject, ReplaySubject} from 'rxjs';
 
-import {ModalComponent} from './modal.component';
+import {ModalComponent, ModalType, ModalConfig} from './modal.component';
 import {Note} from '../notes/';
 
 import * as _ from 'lodash';
@@ -11,8 +11,12 @@ import * as _ from 'lodash';
 export class ModalService {
   modal: ModalComponent;
 
+  /** Used for when we need modals... on top of other modals. @NOTE This has not been extensively tested and is just for simple modals like alerts and prompts, and might break when used for other stuff (e.g. account service has a complex prompt where it references elements in the modal in order to display error messages - not ideal - which wouldn't work if it used `modal2`). Also, anything checking visibility/cancellability/active modal will just get regular `modal`, but that should be okay if `modal2` is only ever used if `modal` is in effect (in theory something could close `modal` and `modal2` would remain open, but not sure if that's currently possible and is an edge case anyway, but if we wanted we could auto close `modal2` if `modal` closes - but we might not want that).  */
+  modal2: ModalComponent;
+
   /** Emits changes in which modal is active. */
-  activeModal$ = new ReplaySubject<string>(1);
+  activeModal$ = new ReplaySubject<ModalType>(1);
+  activeModal2$ = new ReplaySubject<ModalType>(1);
 
   closed$ = new Subject<void>();
 
@@ -59,7 +63,9 @@ export class ModalService {
   }
 
   alert(message: string, trustAsHtml = false, okButtonText?: string, cb = () => {}): void {
-    this.modal.generic({
+    const component = this.modal.visible ? this.modal2 : this.modal;
+
+    component.generic({
       message: trustAsHtml ? this.sanitizer.bypassSecurityTrustHtml(message) : message,
       okButtonText: okButtonText,
       okCb: cb,
@@ -68,7 +74,9 @@ export class ModalService {
   }
 
   confirm(message: string, cb: (accepted: boolean) => any, trustAsHtml = false, okButtonText?: string): void {
-    this.modal.generic({
+    const component = this.modal.visible ? this.modal2 : this.modal;
+
+    component.generic({
       message: trustAsHtml ? this.sanitizer.bypassSecurityTrustHtml(message) : message,
       okButtonText: okButtonText,
       cancelButton: true,
@@ -80,15 +88,21 @@ export class ModalService {
   prompt(
     message: string | SafeHtml,
     cb: (result: string, showLoadingState?: Function, hideLoadingState?: Function) => any,
-    opts? // @TODO/refactor This should be of type ModalConfigType from ModalComponent
+    opts: ModalConfig
   ): void {
-    const config = _.defaults({
+    const component = this.modal.visible ? this.modal2 : this.modal;
+
+    const config: ModalConfig = _.defaults({
       message: message,
       prompt: true,
       cancelButton: true,
       okCb: cb,
     }, opts);
 
+    component.generic(config);
+  }
+
+  generic(config: ModalConfig) {
     this.modal.generic(config);
   }
 

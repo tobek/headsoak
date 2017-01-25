@@ -346,7 +346,7 @@ export class Note {
   }
 
   progTagCantChangeAlert(tag: Tag): void {
-    this.dataService.modalService.modal.generic({
+    this.dataService.modalService.generic({
       message: 'The tag <span class="static-tag">' + tag.name + '</span> is a smart tag, so it can\'t be added or removed manually.',
       additionalButtons: [
         {

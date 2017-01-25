@@ -1,4 +1,4 @@
-import {Component, ViewChild, ElementRef, HostBinding} from '@angular/core';
+import {Component, Input, ViewChild, ElementRef, HostBinding} from '@angular/core';
 import {SafeHtml} from '@angular/platform-browser';
 import {Subscription} from 'rxjs';
 
@@ -10,7 +10,7 @@ import {Logger} from '../utils/logger';
 
 import {Note} from '../notes/';
 
-type ModalType = null | 'loading' | 'login' | 'feedback' | 'privateMode' | 'note' | 'generic';
+export type ModalType = null | 'loading' | 'login' | 'feedback' | 'privateMode' | 'note' | 'generic';
 
 export interface ModalConfig {
   okCb?: (result?: any, showLoadingState?: Function, hideLoadingState?: Function) => any, // Called when OK is pressed (or enter in prompt), just before modal is closed. If it's a prompt and not cancelled, prompt contents is passed in, otherwise falsey value passed. Return explicit false to prevent modal from being closed. Callback is also passed two functions that control loading state of button.
@@ -53,6 +53,8 @@ export class ModalComponent {
 
   // @ViewChild(NoteComponent) noteComponent: NoteComponent;
 
+  @Input('second') second = false;
+
   @HostBinding('class.full-height') fullHeight = false;
   @HostBinding('class.windowed') windowed = true;
   @HostBinding('class.dark-solo') darkSolo = false;
@@ -90,25 +92,26 @@ export class ModalComponent {
   ngOnInit() {
     this._logger.log('Component initializing');
 
-    this.modalService.modal = this;
+    this.modalService['modal' + (this.second ? '2' : '')] = this;
 
-    this.modalService.activeModal$.subscribe((activeModal: ModalType) => {
-      // setTimeout or else initial animation doesn't seem to work
-      setTimeout(() => {
-        this.activeModal = activeModal;
-      }, 0);
-    });
+    this.activeModalSub = this.modalService['activeModal' + (this.second ? '2$' : '$')]
+      .subscribe((activeModal: ModalType) => {
+        // setTimeout or else initial animation doesn't seem to work
+        setTimeout(() => {
+          this.activeModal = activeModal;
+        }, 0);
+      });
 
     this.noteUpdatedSub = this.dataService.notes.noteUpdated$.subscribe(this.noteUpdated.bind(this));
   }
 
-  /** Not sure why this would ever happen as this is a singleton service that's always around, just visible or not visible, but putting this here anyway. */
+  /** Not sure why this would ever happen as this is a singleton component that's always around, just visible or not visible, but putting this here anyway. */
   ngOnDestroy() {
     this.activeModalSub.unsubscribe();
     this.noteUpdatedSub.unsubscribe();
 
-    if (this.modalService.modal === this) {
-      this.modalService.modal = null;
+    if (this.modalService['modal' + (this.second ? '2' : '')] === this) {
+      this.modalService['modal' + (this.second ? '2' : '')] = null;
     }
   }
 
@@ -182,7 +185,9 @@ export class ModalComponent {
 
 
   close() {
-    this.modalService.closed$.next(null);
+    if (! this.second) {
+      this.modalService.closed$.next(null);
+    }
 
     // Start the whole thing fading
     this.visible = false;
