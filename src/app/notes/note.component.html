@@ -40,9 +40,10 @@
     </div>
   </div>
 
-  <div class="body-input" tabindex=0 contenteditable 
+  <div class="body-input" tabindex=0 
     ref-bodyInput
     *ngIf="! note.sharedBody"
+    [attr.contenteditable]="! sizeMonitorService.isMobile || this.isOpened"
     [attr.spellcheck]="isFocused || isOpen"
     [attr.placeholder]="note.new ? 'Enter a new note' : 'This note has no text'"
     [contenteditableModel]="note.body"

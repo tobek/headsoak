@@ -16,7 +16,7 @@
     <private-mode *ngIf="activeModal === 'privateMode'" isModal=1></private-mode>
     <note *ngIf="activeModal === 'note'"
       [note]="note"
-      isOpened=1
+      isOpened=true
       (noteClosed)="close()"
     ></note>
 
