@@ -281,7 +281,7 @@ export class NoteComponent {
       this.activeUIs.focusedNoteComponent = null;
     }
 
-    if (focusOnBody) {
+    if (focusOnBody && ! this.sizeMonitorService.isMobile) {
       this.bodyFocus();
     }
   }
@@ -325,7 +325,7 @@ export class NoteComponent {
       this.checkTagOverflow();
     }
 
-    if (addAnother) {
+    if (addAnother && ! this.sizeMonitorService.isMobile) {
       setTimeout(() => {
         this.addTagSetUpAutocomplete();
         this.initializeAddTag();
