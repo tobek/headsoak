@@ -3,9 +3,11 @@
 ></note>
 
 <note class="note note-{{ note.id }}"
+  style="touch-action: manipulation"
   *ngFor="let note of (notes | arrayLimit:limit)"
   [note]="note"
 ></note>
+<!-- @NOTE touch-action style has to be hardcoded/inlined in order for hammertime to successfully polyfill the reduction of click delay. -->
 <!--
 @REMOVED/write Removed following from <note>:
   (noteOpened)="_noteOpened($event)"

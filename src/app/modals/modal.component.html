@@ -15,6 +15,7 @@
     <feedback *ngIf="activeModal === 'feedback'"></feedback>
     <private-mode *ngIf="activeModal === 'privateMode'" isModal=1></private-mode>
     <note *ngIf="activeModal === 'note'"
+      style="touch-action: manipulation"
       [note]="note"
       isOpened=true
       (noteClosed)="close()"
