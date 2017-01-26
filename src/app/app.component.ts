@@ -10,7 +10,7 @@ import {DataService} from './data.service';
 import {SettingsService} from './settings/settings.service';
 import {Logger, SizeMonitorService, TooltipService} from './utils/';
 
-import {ROUTES, NOTE_BROWSER_ROUTES} from './app.routes';
+import {ROUTES, NOTE_BROWSER_ROUTES, routingInfo} from './app.routes';
 
 import {HomeComponent} from './home';
 import {NoteQueryComponent} from './notes/';
@@ -35,14 +35,15 @@ export class App {
   routes: Route[] = ROUTES;
   noteToggleNavRoutes: Route[];
   menuNavSettingsRoutes: Route[];
+  routingInfo = routingInfo;
 
   /** Used to make on-hover menu go away when clicking on a menu item. */
   forceMenuClosed = false;
 
-  /** The most recently-visited note-related route. */
-  lastNoteRoute = '/';
-
   isNoteQueryVisible = false;
+
+  /** Whether we are on a route such that we should show the back button. */
+  isBackable = false;
 
   initialized = false;
 
@@ -134,9 +135,13 @@ export class App {
 
   routeUpdated(event: NavigationEnd) {
     if (NOTE_BROWSER_ROUTES.indexOf(event.url) !== -1) {
-      this.lastNoteRoute = event.url;
+      this.isBackable = false;
+
+      this.routingInfo.lastNoteRoute = event.url;
     }
     else {
+      this.isBackable = true;
+
       if (this.modalService.activeModal === 'note') {
         this.modalService.close();
       }
@@ -163,13 +168,62 @@ export class App {
     }
   }
 
+  // @TODO/ece Should this maybe do the same thing as back button?
   logoClick(): void {
     if (this.activeUIs.noteQuery) {
       this.activeUIs.noteQuery.clearAndEnsureRoute();
     }
     else {
-      this.router.navigateByUrl('/');
+      this.router.navigateByUrl(this.routingInfo.lastNoteRoute);
     }
+  }
+
+  // @TODO/refactor This is nasty and requires in-depth knowledge about how parts of the app structure their routes. Ideally this could be baked into either the components running the navigation, OR we just store a `parent` path in each route in app routes data. However, it seems impossible to get data from the current route unless you're injecting `ActivatedRoute` *into the component being used for the route*.
+  backClick(): void {
+    if (NOTE_BROWSER_ROUTES.indexOf(this.router.url) !== -1) {
+      return;
+    }
+
+    const pathParts = this.router.url.split('/');
+    // Since routes start with '/', first element will be ''
+
+    if (pathParts.length === 1) {
+      return;
+    }
+
+    if (pathParts[1] === 'settings') {
+      this.router.navigateByUrl(this.routingInfo.lastNoteRoute);
+      return;
+    }
+
+    if (pathParts[1] === 'tags') {
+      if (pathParts.length === 2) { // just '/tags'
+        this.router.navigateByUrl(this.routingInfo.lastNoteRoute);
+      }
+      else {
+        if (pathParts[2] === 'tag') { // details for specific tag
+          if (pathParts.length === 5) { // e.g. '/tags/tag/<id>/<name>'
+            this.router.navigateByUrl('/tags');
+          }
+          else { // e.g. '/tags/tag/<id>/<name>/smartness' - go up a level
+            // pathParts.pop();
+            // this.router.navigateByUrl(pathParts.join('/'));
+            // ACTUALLY Since the "root" tag details page doesn't have any navigation, and you have to go up to tag browser to navigate, we should just pop them back there.
+            // @TODO/mobile @TODO/polish @TODO/route We should probably scroll them to the expanded tag dropdown
+            this.router.navigateByUrl('/tags');
+          }
+        }
+        else {
+          // some other tag page
+          this.router.navigateByUrl('/tags');
+        }
+      }
+
+      return;
+    }
+
+    this._logger.error('Unhandled route:', this.router.url);
+    this.router.navigateByUrl(this.routingInfo.lastNoteRoute);
   }
 
   // @TODO/mobile @TODO/polish @TODO/ece Right now you can close the search bar even while there's something being searched for. Auto-clearing the search when closing it seems draconic, but the way it is there's no indication you're searching for something, could be surprising. I think the magnifier glass should be highlighted if a) there's a search query, and b) the search query is closed.

@@ -7,8 +7,13 @@
 
 <div class="app-wrapper" ref-appWrapperRef [class.uninitialized]="! initialized" [class.is--note-query-visible]="isNoteQueryVisible">
   <div class="app-top">
-    <header class="app-header">
+    <header class="app-header" [class.is--backable]="isBackable">
       <div class="inner">
+        <div class="back-button" (click)="backClick()">
+          <!-- @TODO/ece @TODO/mobile Chevron? Arrow? Something else? -->
+          <i class="fa fa-chevron-left"></i>
+        </div>
+
         <div class="logo">
           <h1 (click)="logoClick()" title="Headsoak"><i class="fa fa-circle"></i><span class="text">Headsoak</span></h1>
         </div>
@@ -75,14 +80,14 @@
         ></li
 
         ><li class="notes-nav-link"
-          ><a class="nav-link nav-link--note-views" [routerLink]="[lastNoteRoute]">
+          ><a class="nav-link nav-link--note-views" [routerLink]="[routingInfo.lastNoteRoute]">
             <!-- @TODO/mobile @TODO/polish Ideally this would have a special behavior on mobile where it normally goes to last note route and does NOT show the notes views, unless already on a note route, in which case it force-shows the note views but without the current bug of hitting one while you tap. -->
             <span class="note-views"
               ><span
                 *ngFor="let route of noteToggleNavRoutes"
                 class="note-view"
                 [routerLink]="[route.path]"
-                [class.is--active]="('/' + route.path) === lastNoteRoute" 
+                [class.is--active]="('/' + route.path) === routingInfo.lastNoteRoute" 
               ><!-- @TODO/optimization These could be a one time binding
                 --><i class="fa fa-lg fa-{{ route.data.iconSlug }}"></i
               ></span

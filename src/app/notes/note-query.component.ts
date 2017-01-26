@@ -10,7 +10,7 @@ import {Note} from './note.model';
 import {NotesService} from './notes.service';
 import {Tag, SubTag, TagsService} from '../tags';
 import {Logger, AutocompleteService, AutocompleteSuggestion, ToasterService} from '../utils/';
-import {NOTE_BROWSER_ROUTES, DEFAULT_NOTE_ROUTE} from '../app.routes';
+import {NOTE_BROWSER_ROUTES, routingInfo} from '../app.routes';
 
 import * as _ from 'lodash';
 
@@ -21,6 +21,7 @@ import * as _ from 'lodash';
 export class NoteQueryComponent {
   _notes: Array<Note> = [];
 
+  routingInfo = routingInfo;
   ensureCorrectRoute = _.throttle(this._ensureCorrectRoute, 1000);
 
   /** How notes in this list component are sorted on init. */
@@ -362,7 +363,7 @@ export class NoteQueryComponent {
 
   private _ensureCorrectRoute() {
     if (! _.includes(NOTE_BROWSER_ROUTES, this.notesService.dataService.router.url)) {
-      this.notesService.dataService.router.navigateByUrl(DEFAULT_NOTE_ROUTE);
+      this.notesService.dataService.router.navigateByUrl(this.routingInfo.lastNoteRoute);
     }
   }
 

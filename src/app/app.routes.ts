@@ -15,6 +15,11 @@ export const NOTE_BROWSER_ROUTES = [
 ];
 export const DEFAULT_NOTE_ROUTE = '/';
 
+export const routingInfo = {
+  /** The most recently-visited note-related route. */
+  lastNoteRoute: DEFAULT_NOTE_ROUTE,
+};
+
 export const ROUTES: Routes = [
   {
     // @TODO/rewrite This should be hidden on mobile
