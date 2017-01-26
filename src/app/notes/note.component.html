@@ -59,7 +59,7 @@
     <!-- @TODO/polish On desktop tooltip is still visible behind modal on click until you mouse away - should make something similar -->
     <a data-tooltip="Expand note" class="note-action note-action--open" *ngIf="! isOpened" (click)="openNote(); $event.stopPropagation(); tooltipService.closeTooltip($event)"><i class="fa fa-fw fa-pencil-square-o"></i></a
 
-    ><a data-tooltip="Close note" class="note-action note-action--close" *ngIf="isOpened" (click)="closeNote(); tooltipService.closeTooltip($event)"><i class="fa fa-fw fa-close"></i></a
+    ><a data-tooltip="Close note" class="note-action note-action--close" *ngIf="isOpened" (click)="closeNote(); tooltipService.closeTooltip($event); $event.stopPropagation()"><i class="fa fa-fw fa-close"></i></a
 
     ><a class="note-action"
       [class.is--active]="note.pinned"
