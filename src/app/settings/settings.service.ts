@@ -292,7 +292,7 @@ export class SettingsService {
           this.activeUIs.focusedNoteComponent.delete();
         }
       },
-      // ngZone: true, // not needed cause of the confirmation prompt?
+      ngZone: true,
       section: 'shortcuts',
       subSection: 'Notes',
     },
