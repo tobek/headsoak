@@ -174,7 +174,7 @@ export class App {
     }, 0);
   }
 
-  newNote(thenFocus = true): void {
+  newNote(): void {
     // @HACK: Make this work on all routes by hijacking the shortcut for this, which includes `routeTo` logic to make sure we're in the right place.
     this.settings.data['sNewNote']['_fn']();
   }

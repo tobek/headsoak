@@ -48,7 +48,7 @@
     [contenteditableModel]="note.body"
     (contenteditableModelChange)="note.body = $event; note.changed()"
     (keydown)="isTextless = false; true"
-    (focus)="bodyFocused()"
+    (focus)="bodyFocused($event)"
     (blur)="bodyBlurred()"
   ></div>
   <!-- @NOTE Setting `isTextless` to false on keydown - it's fast, and nice to see note expand as you touch. If you delete down to an empty note, there's no need to recollapse it. Have to do `; true` or else it stops the actual keydown. @TODO/optimization Should check if this is slowing down typing experience. -->

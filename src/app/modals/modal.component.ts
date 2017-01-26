@@ -137,7 +137,7 @@ export class ModalComponent {
     this.visible = !! modalName;
 
     if (modalName === 'note' && this.note) {
-      if (! this.sizeMonitorService.isMobile) {
+      if (! this.sizeMonitorService.isMobile || ! this.note.body) {
         setTimeout(() => {
           if (this.noteComponent) {
             this.noteComponent.bodyFocus();

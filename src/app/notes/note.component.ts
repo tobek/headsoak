@@ -195,7 +195,17 @@ export class NoteComponent {
     }
   }
 
-  bodyFocused() {
+  bodyFocused(event: Event) {
+    if (this.sizeMonitorService.isMobile && ! this.isOpened) {
+      this.openNote();
+
+      if (event) {
+        event.preventDefault();
+      }
+
+      return false;
+    }
+
     this.activeUIs.focusedNoteComponent = this;
     this.note.focused();
     this.isFocused = true;
