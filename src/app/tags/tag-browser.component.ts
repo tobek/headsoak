@@ -13,6 +13,7 @@ import {Tag, TagComponent} from './';
 import {TagDetailsComponent} from './tag-details.component'
 import {TagsService} from './tags.service'; // no idea why importing this separately is necessary
 import {Logger/*, ScrollMonitorService, AutocompleteService*/} from '../utils/';
+import {SizeMonitorService} from '../utils/size-monitor.service';
 
 import * as _ from 'lodash';
 
@@ -65,6 +66,7 @@ export class TagBrowserComponent {
   constructor(
     private router: Router,
     private elRef: ElementRef,
+    private sizeMonitorService: SizeMonitorService,
     private analyticsService: AnalyticsService,
     private activeUIs: ActiveUIsService,
     @Inject(forwardRef(() => SettingsService)) private settings: SettingsService,
@@ -171,7 +173,13 @@ export class TagBrowserComponent {
         this.activePane = 'library';
       }
       else {
-        this.activePane = 'viz';
+        if (! this.sizeMonitorService.isMobile) {
+          this.activePane = 'viz';
+        }
+        else {
+          // On mobile we default to just the tag browser tag list itself
+          this.activePane = null;
+        }
       }
     }
   }

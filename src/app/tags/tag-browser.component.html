@@ -15,10 +15,10 @@
   </ul>
 </div>
 
-<div class="main-browser pane-layout">
+<div class="main-browser pane-layout" [class.is--home]="! activePane">
   <div class="overview tag-list">
     <ul class="menu menu--tag-home">
-      <li class="item" [routerLink]="['/tags']" routerLinkActive="is--active" [routerLinkActiveOptions]="{ exact: true }">
+      <li class="item" [routerLink]="['/tags']" [class.is--active]="activePane === 'viz'">
         <i class="fa fa-fw fa-lg fa-connectdevelop"></i>
         Explore your tags
         <!-- @TODO/ece Capitalzation of side menu (and tooltips in collapsed menu). We have "Private Mode" in settings, but "Smart tag" in tag details. -->

@@ -86,9 +86,12 @@ $tag-hash-opacity: 0.33
   .fa
     margin-right: 0.25rem
 
-  &:hover,
   &.is--active
     +menu-link-hover
+
+  @media (min-width: $tablet-large)
+    &:hover
+      +menu-link-hover
 
 =menu-link-unhovered
   color: $primary-color

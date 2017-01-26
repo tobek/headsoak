@@ -4,12 +4,11 @@ import {Subscription} from 'rxjs';
 
 import {ActiveUIsService} from './active-uis.service';
 import {ModalService} from './modals/modal.service';
-import {TooltipService} from './utils/tooltip.service';
 import {AccountService} from './account/account.service';
 import {AnalyticsService} from './analytics.service';
 import {DataService} from './data.service';
 import {SettingsService} from './settings/settings.service';
-import {Logger} from './utils/';
+import {Logger, SizeMonitorService, TooltipService} from './utils/';
 
 import {ROUTES, NOTE_BROWSER_ROUTES} from './app.routes';
 
@@ -59,6 +58,7 @@ export class App {
   constructor(
     private activeUIs: ActiveUIsService,
     private modalService: ModalService,
+    private sizeMonitorService: SizeMonitorService,
     private tooltipService: TooltipService,
     private router: Router,
     public changeDetector: ChangeDetectorRef,
@@ -186,6 +186,11 @@ export class App {
   }
 
   tagNavClick(): void {
+    if (this.sizeMonitorService.isMobile) {
+      this.router.navigateByUrl('/tags');
+      return;
+    }
+
     // @TODO/polish @TODO/tags Would be cool if on tags pages it also collapsed the tag browser - this would let you go full screen on things like the visualizations, and also smart tag creation page (allowing for documentation in the sidebar?) On the other hand, maybe an explicit "full screen" link in those places would be better (it could do the same thing though.)
 
     if (NOTE_BROWSER_ROUTES.indexOf(this.router.url) !== -1) {
