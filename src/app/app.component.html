@@ -82,8 +82,7 @@
                 *ngFor="let route of noteToggleNavRoutes"
                 class="note-view"
                 [routerLink]="[route.path]"
-                routerLinkActive="is--active"
-                [routerLinkActiveOptions]="{ exact: true }"
+                [class.is--active]="('/' + route.path) === lastNoteRoute" 
               ><!-- @TODO/optimization These could be a one time binding
                 --><i class="fa fa-lg fa-{{ route.data.iconSlug }}"></i
               ></span
