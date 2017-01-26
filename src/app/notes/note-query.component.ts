@@ -28,8 +28,8 @@ export class NoteQueryComponent {
 
   queriedNotes$ = new ReplaySubject<Note[]>(1);
 
-  /** Called when the clear button is pressed while there is nothing in here already. Currently (Jan 2017) only used on mobile (on desktop the clear button disappears when it's empty) to signal to parent component that search bar should be hidden. */
-  @Output() clearedWhileEmpty = new EventEmitter<void>();
+  /** On mobile this query bar is only visible sometimes. With this we can signal to parent whether it should be visible. */
+  @Output() setVisibility = new EventEmitter<boolean>();
 
   @HostBinding('class.is--focused') hasFocus = false;
 
@@ -128,6 +128,10 @@ export class NoteQueryComponent {
     (<HTMLElement> this.elementRef.nativeElement).classList.remove('is--active');
   }
 
+  isEmpty(): boolean {
+    return ! _.size(this.tags) && ! this.queryText;
+  }
+
   setUpAutocomplete(): void {
     this.autocompleteService.autocompleteTags({
       context: 'query',
@@ -224,6 +228,11 @@ export class NoteQueryComponent {
 
     if (this.tags.indexOf(tag) !== -1) {
       this.removeTag(tag);
+
+      if (this.isEmpty()) {
+        this.setVisibility.emit(false);
+      }
+
       return;
     }
 
@@ -233,11 +242,15 @@ export class NoteQueryComponent {
     }
 
     this.addTag(tag);
+
+    if (! this.isEmpty()) {
+      this.setVisibility.emit(true);
+    }
   }
 
   clear(thenFocus = true): void {
-    if (! _.size(this.tags) && ! this.queryText) {
-      this.clearedWhileEmpty.emit();
+    if (this.isEmpty()) {
+      this.setVisibility.emit(false);
       return;
     }
 

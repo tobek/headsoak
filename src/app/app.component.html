@@ -13,7 +13,7 @@
           <h1 (click)="logoClick()" title="Headsoak"><i class="fa fa-circle"></i><span class="text">Headsoak</span></h1>
         </div>
 
-        <note-query [hidden]="! dataService.user.loggedIn" (clearedWhileEmpty)="isNoteQueryVisible = false"></note-query>
+        <note-query [hidden]="! dataService.user.loggedIn" (setVisibility)="isNoteQueryVisible = $event"></note-query>
 
         <div class="private-mode-indicator"
           data-tooltip="Private mode is enabled. Click to disable."

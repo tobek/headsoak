@@ -172,6 +172,7 @@ export class App {
     }
   }
 
+  // @TODO/mobile @TODO/polish @TODO/ece Right now you can close the search bar even while there's something being searched for. Auto-clearing the search when closing it seems draconic, but the way it is there's no indication you're searching for something, could be surprising. I think the magnifier glass should be highlighted if a) there's a search query, and b) the search query is closed.
   searchModeClick(): void {
     this.isNoteQueryVisible = ! this.isNoteQueryVisible;
     setTimeout(() => {
