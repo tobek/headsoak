@@ -45,6 +45,7 @@
 <span *ngIf="showCount && ! isNewTag" class="count">{{ tag.docs.length }}</span>
 
 <!-- We use `hovered` property toggled by JS in order to add delay and also want to use ngIf for tag-actions-dropdown cause it's a heavy component. -->
+<!-- @TODO/mobile @TODO/polish On mobile you might want click out some random place to close dropdown, and then you end up e.g. opening a note. Maybe should have window touch listener to cancel next click. -->
 <div class="tag-actions-dropdown" *ngIf="enableDropdown && hovered">
   <a class="tag-action" style="touch-action: none" (click)="_toggled(); $event.stopPropagation()">
     <i class="fa fa-fw fa-eye"></i>

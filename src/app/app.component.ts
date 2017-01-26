@@ -136,6 +136,11 @@ export class App {
     if (NOTE_BROWSER_ROUTES.indexOf(event.url) !== -1) {
       this.lastNoteRoute = event.url;
     }
+    else {
+      if (this.modalService.activeModal === 'note') {
+        this.modalService.close();
+      }
+    }
 
     this.setRouteClass(event);
   }

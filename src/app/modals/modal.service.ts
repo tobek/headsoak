@@ -25,7 +25,7 @@ export class ModalService {
   ) {
   }
 
-  get activeModal(): string {
+  get activeModal(): ModalType {
     return this.modal ? this.modal.activeModal : undefined;
   }
 

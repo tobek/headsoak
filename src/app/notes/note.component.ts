@@ -188,6 +188,8 @@ export class NoteComponent {
       return;
     }
 
+    this.unopenNote();
+
     if (this.activeUIs.noteQuery) {
       this.activeUIs.noteQuery.tagToggled(tagId, event && event.shiftKey);
     }
