@@ -129,11 +129,12 @@ tag-browser
     // On full page tag browser you can click anywhere in the row
     .route--tags & .tag-header
       cursor: pointer
-      &:hover
-        tag
-          +tag-chiclet-active
-        .caret-wrapper
-          color: $icon-hover
+      @media (min-width: $tablet-large)
+        &:hover
+          tag
+            +tag-chiclet-active
+          .caret-wrapper
+            color: $icon-hover
 
     &.is--expanded
       tag
@@ -166,6 +167,13 @@ tag-browser
 
 
   @media (max-width: $tablet-large - 1px)
+    .pane-layout
+      .fixed-pane-wrapper
+        +span(12 last)
+
+      .overview
+        display: none
+
     .pane-layout.is--home
       .overview
-        +span(12 last)
+        display: block

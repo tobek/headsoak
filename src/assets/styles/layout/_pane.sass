@@ -63,3 +63,11 @@ $pane-horizontal-padding: 60px
       &:hover
         +menu-link-hover
         cursor: default
+
+  @media (max-width: $tablet-large - 1px)
+    .overview,
+    .pane
+      +span(12 last)
+
+    .pane
+      padding: 1.5rem

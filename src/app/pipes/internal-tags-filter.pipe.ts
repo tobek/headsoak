@@ -18,6 +18,7 @@ export class InternalTagsFilterPipe implements PipeTransform {
     }
     else {
       // these are Tag instances
+      // @TODO/now Sometimes tag is undefined in here, is that a bug or something we should handle? This happened on ece's account when going into private mode (or was it going into private mode and then hitting `successes` tag?)
       return _.filter(arr, (tag: Tag) => ! tag.internal);
     }
   }

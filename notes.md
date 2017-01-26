@@ -1,6 +1,27 @@
 # TODO
 
-- active tag in query should have its dropdown open?
+- intense spellcheck red line in list mode
+- marker of where you last edited
+    - constantly save cursor position, save to data store
+    - little arrow (with tooltip) on right side?
+- ECE: should buttons be disabled while loading?
+- browse could have two lines of smaller font tags?
+- bug with logging in (saw with regular login *sometimes* and with new account theonetime i did that - may only happen when on no route or something) where seems like change detection isn't run after final initialization. same with account deletion? it's cause firebase is outside the zone!
+- SYNC BUG, also ran into possibly related issue with spinner spinning forever when updating profile image
+- layout
+    - minimum height for focused/editing note should be same on scroll view?
+    - adjust padding on list view?
+
+### mobile responsive
+
+- hitting magnifying
+- there should be a way to hit note actions without focusing note? like a little menu thing that expands them all
+- on android seems like you can have multiple notes focused at the same time - click on one add tag field then another. will focus mode for note fix this?
+- sort shouldn't drop you to focus on search bar
+- maybe notes on mobile have a menu icon to pop up note actions *without* expanding the note?
+    - right-padding on hover in list mode is maybe too much, too (especially with unclear hover - but still have to show active icons...)
+- check that on iOS safari you can un-click stuff by clicking on background somewhere (<https://developer.mozilla.org/en-US/docs/Web/Events/click#Safari_Mobile>) - actually, check that click events fire everywhere needed! (find a typically non-clickable element and see if it works)
+- check that things with tooltips don't require double click to open, like expand tags
 
 ### focused note
 
@@ -18,6 +39,7 @@
 - shortcuts align mod key with other ones
 - tag data like sentiment value - show in dropdown
 - make all bg images and profile images https
+- clicking on an note action (or add tag button) while note is expanded - blur happens first. note actions need to happen on mousedown/touchstart but not double doing it - should prob make a directive to handle this? (basically just throttles the function and doesn't call on trailing edge). and then test
 
 
 AMAZING. run `node --debug-brk --inspect=9222 /usr/lib/node_modules/webpack-dev-server/bin/webpack-dev-server.js --config config/webpack.dev.js --progress --profile --watch --content-base src/` then open up the URL in browser, it'll be stopped on first line and then you can continue!
