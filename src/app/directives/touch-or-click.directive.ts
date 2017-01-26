@@ -1,7 +1,7 @@
 import {Directive, ElementRef, Output, EventEmitter, HostListener} from '@angular/core';
 
 /**
- * This directive lets you bind an event to either touch or click. If a touchend event is registered, then the click event that mobile browsers emulate will NOT be fired, via `event.preventDefault()`. This prevents things like active/hover state being applied to the element (and, for example, popping up a tooltip).
+ * This directive lets you bind an event to either touch or click. If a touchend event is registered, then the click event that mobile browsers emulate will NOT be fired, via `event.preventDefault()`. This prevents things like active/focus/hover state being applied to the element (changing style and, for example, popping up a tooltip).
  *
  * Using `touchend` means that if the user starts scrolling on a component with this directive, then when they're done and lift up, the handler still fires. Could be odd but not that crazy. If we use `touchstart` instead, we also simply all scrolling that starts from that point - since there isn't much room on the screen on mobile let's not take this away from the user.
  *

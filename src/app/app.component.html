@@ -68,7 +68,7 @@
     <nav class="app-nav" *ngIf="dataService.user.loggedIn">
       <ul
         ><li
-          ><a class="nav-link" (click)="newNote()">
+          ><a class="nav-link" (touchOrClick)="newNote()">
             <i class="fa fa-lg fa-pencil-square-o"></i>
             <span class="nav-link-text">New</span>
           </a
@@ -76,6 +76,7 @@
 
         ><li class="notes-nav-link"
           ><a class="nav-link nav-link--note-views" [routerLink]="[lastNoteRoute]">
+            <!-- @TODO/mobile @TODO/polish Ideally this would have a special behavior on mobile where it normally goes to last note route and does NOT show the notes views, unless already on a note route, in which case it force-shows the note views but without the current bug of hitting one while you tap. -->
             <span class="note-views"
               ><span
                 *ngFor="let route of noteToggleNavRoutes"
@@ -93,7 +94,7 @@
         ></li
 
         ><li class="tag-nav-link" [class.is--active]="! homeComponent || ! homeComponent.tagBrowserCollapsed"
-          ><a class="nav-link" (click)="tagNavClick()">
+          ><a class="nav-link" (touchOrClick)="tagNavClick()">
           <i class="fa fa-lg fa-hashtag"></i>
             <span class="nav-link-text">Tags</span>
           </a
