@@ -7,23 +7,23 @@
     </div>
 
     <ul class="menu">
-      <li class="item" [routerLink]="['/settings', 'account']" [class.is--active]="section === 'account'">
+      <li class="item" [routerLink]="['/settings', 'account']" routerLinkActive="is--active">
         <i class="fa fa-fw fa-lg fa-smile-o"></i>
         Account
       </li>
-      <li class="item" [routerLink]="['/settings']" [class.is--active]="section === 'settings'">
+      <li class="item" [routerLink]="['/settings']" routerLinkActive="is--active" [routerLinkActiveOptions]="{ exact: true }">
         <i class="fa fa-fw fa-lg fa-sliders"></i>
         Settings
       </li>
-      <li class="item" [routerLink]="['/settings', 'shortcuts']" [class.is--active]="section === 'shortcuts'">
+      <li class="item" [routerLink]="['/settings', 'shortcuts']" routerLinkActive="is--active">
         <i class="fa fa-fw fa-lg fa-fighter-jet"></i>
         Shortcuts
       </li>
-      <li class="item" [routerLink]="['/settings', 'private-mode']" [class.is--active]="section === 'privateMode'">
+      <li class="item" [routerLink]="['/settings', 'private-mode']" routerLinkActive="is--active">
         <i class="fa fa-fw fa-lg fa-user-secret"></i>
         Private Mode
       </li>
-      <li class="item" [routerLink]="['/settings', 'feedback']" [class.is--active]="section === 'feedback'">
+      <li class="item" [routerLink]="['/settings', 'feedback']" routerLinkActive="is--active">
         <i class="fa fa-fw fa-lg fa-comment-o"></i>
         Feedback
       </li>

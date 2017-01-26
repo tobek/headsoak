@@ -133,7 +133,10 @@ const APP_PIPES = [
     BrowserModule,
     FormsModule,
     HttpModule,
-    RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules }),
+    RouterModule.forRoot(ROUTES, {
+      useHash: true, // @TODO/polish Would be nice to set this to false, but then refreshing in AWS cloudfront-deployed page leads to a 404 - prob some config will fix this.
+      preloadingStrategy: PreloadAllModules,
+    }),
 
     SelectModule,
   ],

@@ -18,12 +18,12 @@
 <div class="main-browser pane-layout">
   <div class="overview tag-list">
     <ul class="menu menu--tag-home">
-      <li class="item" [routerLink]="['/tags']" [class.is--active]="activePane === 'viz'">
+      <li class="item" [routerLink]="['/tags']" routerLinkActive="is--active" [routerLinkActiveOptions]="{ exact: true }">
         <i class="fa fa-fw fa-lg fa-connectdevelop"></i>
         Explore your tags
         <!-- @TODO/ece Capitalzation of side menu (and tooltips in collapsed menu). We have "Private Mode" in settings, but "Smart tag" in tag details. -->
       </li>
-      <li class="item" [routerLink]="['/tags/smart-tags/library']" [class.is--active]="activePane === 'library'">
+      <li class="item" [routerLink]="['/tags/smart-tags/library']" routerLinkActive="is--active">
         <i class="fa fa-fw fa-lg fa-book"></i>
         Smart Tag Library
       </li>
@@ -93,21 +93,21 @@
       <div class="tag-manager" *ngIf="expandedTag === tag">
         <div *ngIf="tag.description" class="description">{{ tag.description }}</div>
         <ul class="menu">
-          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" [class.is--active]="activeTagPane === 'explore'">
+          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" routerLinkActive="is--active" [routerLinkActiveOptions]="{ exact: true }">
             <i class="fa fa-fw fa-lg fa-bar-chart"></i>
             Explore
           </li>
-          <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'smartness']" [class.is--active]="activeTagPane === 'smartness'">
+          <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'smartness']" routerLinkActive="is--active">
             <i class="fa fa-fw fa-lg fa-bolt"></i>
             Smart tag
           </li>
           <!-- @TODO/tags @TODO/privacy
-          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'privacy']" [class.is--active]="activeTagPane === 'privacy'">
+          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'privacy']" routerLinkActive="is--active">
             <i class="fa fa-fw fa-lg fa-lock"></i>
             Private tag
           </li>
           -->
-          <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'delete']" [class.is--active]="activeTagPane === 'delete'">
+          <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'delete']" routerLinkActive="is--active">
             <!-- @TODO/tags @TODO/soon This should open up a modal -->
             <i class="fa fa-fw fa-lg fa-trash-o"></i>
             Delete
@@ -142,12 +142,12 @@
       <!-- @TODO/refactor Copy-pasting from normal tags... but a little different, cause you can't rename, delete, or smart tag these -->
       <div class="tag-manager" *ngIf="expandedTag === tag">
         <ul class="menu">
-          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" [class.is--active]="activeTagPane === 'explore'">
+          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" routerLinkActive="is--active" [routerLinkActiveOptions]="{ exact: true }">
             <i class="fa fa-fw fa-lg fa-bar-chart"></i>
             Explore
           </li>
           <!-- @TODO/tags @TODO/privacy
-          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'privacy']" [class.is--active]="activePane === 'privacy'">
+          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'privacy']" routerLinkActive="is--active">
             <i class="fa fa-fw fa-lg fa-lock"></i>
             Private tag
           </li>
