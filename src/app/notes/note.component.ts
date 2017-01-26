@@ -124,6 +124,10 @@ export class NoteComponent {
   }
 
   checkTextlessness() {
+    if (! this.note) {
+      return;
+    }
+    
     if (this.isTextless !== ! this.note.body) {
       setTimeout(() => {
         if (this.isTextless !== ! this.note.body) {

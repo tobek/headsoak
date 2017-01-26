@@ -6,9 +6,9 @@ import {ModalService} from './modal.service';
 import {AnalyticsService} from '../analytics.service';
 import {SettingsService} from '../settings/settings.service';
 import {DataService} from '../data.service';
-import {Logger} from '../utils/logger';
+import {Logger, SizeMonitorService} from '../utils/';
 
-import {Note} from '../notes/';
+import {Note, NoteComponent} from '../notes/';
 
 export type ModalType = null | 'loading' | 'login' | 'feedback' | 'privateMode' | 'note' | 'generic';
 
@@ -74,6 +74,7 @@ export class ModalComponent {
   promptValue = '';
 
   note?: Note;
+  @ViewChild(NoteComponent) noteComponent: NoteComponent;
 
   private activeModalSub: Subscription;
   private noteUpdatedSub: Subscription;
@@ -84,6 +85,7 @@ export class ModalComponent {
 
   constructor(
     private modalService: ModalService,
+    private sizeMonitorService: SizeMonitorService,
     private analyticsService: AnalyticsService,
     private dataService: DataService,
     private settings: SettingsService
@@ -133,6 +135,16 @@ export class ModalComponent {
     this.darkSolo = this.DARK_SOLO_MODALS.indexOf(modalName) !== -1;
 
     this.visible = !! modalName;
+
+    if (modalName === 'note' && this.note) {
+      if (! this.sizeMonitorService.isMobile) {
+        setTimeout(() => {
+          if (this.noteComponent) {
+            this.noteComponent.bodyFocus();
+          }
+        }, 200);
+      }
+    }
   }
 
   clear() {
