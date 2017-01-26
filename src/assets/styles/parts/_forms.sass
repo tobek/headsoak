@@ -193,11 +193,12 @@ textarea,
     &:checked + label:after
       color: $secondary-color
 
-    & + label:hover:after
-      opacity: 0.5
-      color: $input-stroke
-    &:checked + label:hover:after
-        color: $highlight-color
+    @media (min-width: $tablet-large)
+      & + label:hover:after
+        opacity: 0.5
+        color: $input-stroke
+      &:checked + label:hover:after
+          color: $highlight-color
 
 
 .query-controls

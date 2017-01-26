@@ -9,6 +9,13 @@ $pane-horizontal-padding: 60px
     +card
     min-height: $full-height
 
+    @media (max-width: $tablet-large - 1px)
+      min-height: $mobile-full-height
+      transition: min-height $transition-fast
+
+      .is--note-query-visible &
+        min-height: $mobile-full-height--with-note-query
+
   .overview
     +span(4)
     position: relative

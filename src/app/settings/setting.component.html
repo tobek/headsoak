@@ -8,7 +8,11 @@
 
   /><label [attr.for]="'setting-' + setting.id"
     >{{ setting.name }}
-    <i class="fa fa-question-circle" [attr.data-tooltip]="setting.description" *ngIf="setting.description"></i>
+    <i class="fa fa-question-circle"
+      *ngIf="setting.description"
+      [attr.data-tooltip]="setting.description"
+      (click)="false"
+    ></i>
   </label>
   <i class="fa fa-cube save-notice" [class.fa-spin]="dataService.isUnsaved(setting)"></i>
 </div>

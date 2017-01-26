@@ -66,7 +66,7 @@ settings
   .setting
     @extend .clearfix
     display: block
-    max-width: span(5 of 8) // @TODO/responsiveness
+    max-width: 28rem
     margin: 1rem 0
 
     .btn
@@ -127,3 +127,11 @@ settings
 
   h4
     +pane-subheading
+
+  @media (max-width: $tablet-large - 1px)
+    .pane-layout
+      .overview
+        display: none
+      .pane
+        +span(12 last)
+        padding: 1.5rem
