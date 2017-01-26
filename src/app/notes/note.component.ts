@@ -111,6 +111,8 @@ export class NoteComponent {
       return;
     }
 
+    // @TODO/polish We could totally find the last note that is on the first line, and absolutely position an ellipsis after it
+
     const tagEls = this.el.nativeElement.querySelectorAll('tag');
     if (tagEls.length > 1 && tagEls[0].offsetTop !== tagEls[tagEls.length - 1].offsetTop) {
       // If the last tag has a different vertical position than the first tag, they must have broken onto separate lines

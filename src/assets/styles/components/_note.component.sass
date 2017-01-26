@@ -153,7 +153,6 @@
 
     transition: min-height $transition-fast, max-height $transition-fast, padding $transition-fast
 
-  modal & .body-input,
   &.is--adding-tag .body-input,
   &.is--focused .body-input
     max-height: calc(#{$full-height} - 100px) // magic numbers - 100px is about the vertical padding of note element plus a bit to spare
@@ -358,15 +357,28 @@
     //       padding-left: calc(25% - 150px + 12px)
 
   modal &
-    // @TODO/ece What do you think of this? Random but looks okay? Also the body input padding (should it be the same as route--scroll?)
+    // @TODO/ece What do you think of this? Random but looks okay? Also the body input padding and mobile sizing (should it be the same as route--scroll?)
+    height: 90vh
     padding-top: 4rem
     padding-bottom: 3rem
 
     .body-input
       overflow-y: auto
-      height: 80vh // @TODO/now @TODO/mobile
+      height: 100%
+      max-height: none !important // override focus state
       padding-left: 2rem
       padding-right: 2rem
+
+    @media (max-width: $tablet-large - 1px)
+      // @TODO/mobile @TODO/polish Possibly a better version would still show header (with back button) and maybe nav footer (scrolling away as normal), and then doing away with modal backdrop entirely (and going full width)
+      height: 97vh
+      padding-top: 3.5rem
+      padding-bottom: 2.5rem
+
+      .body-input
+        padding-left: 0.5rem
+        padding-right: 0.5rem
+
 
 // This actually gets shunted into ModalComponent but let's style it here
 // @TODO/ece What do you think of this whole thing?
