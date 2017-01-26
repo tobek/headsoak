@@ -199,28 +199,29 @@
       bottom: 2px
       left: auto
 
-    &:hover
-      .body-input
-        overflow: hidden // repeat of normal `.route--list .body-input` but added here too for specificity
-        padding-right: 155px // magic number to make room for ALL note-actions
-
-    &.is--adding-tag,
-    &.is--focused
-      .body-input
-        overflow-y: auto
-        white-space: pre-wrap
-
-        // @TODO/polish Cause we set max-height to none not a specific value, it won't animate the expansion without some JS. However it *does* animate expanding short notes with min-height, and animates a bit when the thing is being unfocused. @TODO/ece Should it be all or nothing?
-        height: auto
-
-        // Back to normal since when expanded, we make room for note actions at the bottom
-        padding-right: 20px // @NOTE This reflects default value defined for `.note .body-input`
-
-      &:not(.is--textless)
-        padding-bottom: 2rem // make room for note actions at the bottom
-
+    @media (min-width: $tablet-large)
+      &:hover
         .body-input
-          min-height: 95px
+          overflow: hidden // repeat of normal `.route--list .body-input` but added here too for specificity
+          padding-right: 155px // magic number to make room for ALL note-actions
+
+      &.is--adding-tag,
+      &.is--focused
+        .body-input
+          overflow-y: auto
+          white-space: pre-wrap
+
+          // @TODO/polish Cause we set max-height to none not a specific value, it won't animate the expansion without some JS. However it *does* animate expanding short notes with min-height, and animates a bit when the thing is being unfocused. @TODO/ece Should it be all or nothing?
+          height: auto
+
+          // Back to normal since when expanded, we make room for note actions at the bottom
+          padding-right: 20px // @NOTE This reflects default value defined for `.note .body-input`
+
+        &:not(.is--textless)
+          padding-bottom: 2rem // make room for note actions at the bottom
+
+          .body-input
+            min-height: 95px
         
 
 
@@ -313,12 +314,14 @@
       +faded-out
       width: 0
 
-    &.is--adding-tag,
-    &.is--focused,
-    &:hover
-      .note-action .fa
-        +faded-in
-        width: 1.3em // just copied from what font-awesome gives to fixed width icons
+    @media (min-width: $tablet-large)
+      &.is--adding-tag,
+      &.is--focused,
+      &:hover
+        .note-action .fa
+          +faded-in
+          width: 1.3em // just copied from what font-awesome gives to fixed width icons
+    // On mobile we don't have the above effect in note browser - we hide all note actions (except active ones) all the time unless they open the note up in the modal
 
     .note-action.is--active,
       .fa
@@ -329,19 +332,20 @@
     .body-input
       overflow: hidden
 
-    &.is--focused,
-    &:hover
-      .body-input
-        overflow-y: auto
+    @media (min-width: $tablet-large)
+      &.is--focused,
+      &:hover
+        .body-input
+          overflow-y: auto
 
-      // Need to add scrollbar if needed, but don't want text to reflow with different line breaks when scrollbar takes up some width. This hack works on Chrome on Linux, needs browser testing (however even if it's a bit off and sometimes causes reflow, well that's the normal behavior, so as long as it's not that much worse...)
-      // @REMOVED/note text overflow Turns out the assumption of 12px scrollbar (and/or the general method) is not x-browser friendly, so disabling - we could use <https://davidwalsh.name/detect-scrollbar-width> to work out scrollbar width and set up a CSS class at runtime
-      // &.is--text-overflowing .body-input
-      //   overflow-y: scroll // force this otherwise sometimes the widening of the text will remove the need for a scroll bar and then it just inexplicably gets bigger!
-      //   width: calc(100% + 12px)
-      //   padding-right: 8px // 12px less than normal padding
-      //   margin-left: -12px
-      //   padding-left: 14px // 12px more than normal padding
+        // Need to add scrollbar if needed, but don't want text to reflow with different line breaks when scrollbar takes up some width. This hack works on Chrome on Linux, needs browser testing (however even if it's a bit off and sometimes causes reflow, well that's the normal behavior, so as long as it's not that much worse...)
+        // @REMOVED/note text overflow Turns out the assumption of 12px scrollbar (and/or the general method) is not x-browser friendly, so disabling - we could use <https://davidwalsh.name/detect-scrollbar-width> to work out scrollbar width and set up a CSS class at runtime
+        // &.is--text-overflowing .body-input
+        //   overflow-y: scroll // force this otherwise sometimes the widening of the text will remove the need for a scroll bar and then it just inexplicably gets bigger!
+        //   width: calc(100% + 12px)
+        //   padding-right: 8px // 12px less than normal padding
+        //   margin-left: -12px
+        //   padding-left: 14px // 12px more than normal padding
 
 
   .route--scroll &
