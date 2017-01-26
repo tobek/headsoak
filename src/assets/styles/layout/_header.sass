@@ -209,7 +209,16 @@
         display: inline
 
         &.is--active
-          color: $highlight-color
+          color: $icon-hover
+
+      // While actually hovering over the choices, don't highlight the currently active one
+      .note-views:hover
+        .note-view.is--active
+          cursor: default
+          color: inherit
+
+          &:hover
+            color: $icon-hover
 
 
 @media (max-width: 900px) // @HACK Kind of arbitrary but it works?
