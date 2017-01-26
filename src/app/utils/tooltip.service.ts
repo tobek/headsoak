@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
 
+import {SizeMonitorService} from '../utils/';
+
 const Tooltips = require('app/vendor/darsain-tooltips.js');
 
 @Injectable()
@@ -8,6 +10,7 @@ export class TooltipService {
   private _tips;
 
   constructor(
+    private sizeMonitorService: SizeMonitorService,
   ) {
   }
 
@@ -42,7 +45,8 @@ export class TooltipService {
       this.reloadTooltip(el);
 
       // Check if document contains element cause it may have since been removed in which case tooltip appears at top left of page and won't go away.
-      if (show && document.body.contains(el)) {
+      // If we're on mobile, don't re-show it, because it won't go away until tapping elsewhere, cause there's no mouseleave.
+      if (show && document.body.contains(el) && ! this.sizeMonitorService.isMobile) {
         this._tips.show(el);
       }
     }, timeout);

@@ -20,6 +20,7 @@
           [class.is--private]="accountService.privateMode"
           (touchOrClick)="accountService.disablePrivateMode()"
         >
+          <!-- @TODO/soon I don't think touchOrClick is necessary... -->
           <i class="fa fa-lock locked"></i>
           <i class="fa fa-unlock-alt unlocked"></i>
         </div>

@@ -35,7 +35,7 @@
 
       <span class="expand-tags"
         [attr.data-tooltip]="hasExpandedTags ? 'Collapse tags' : 'Show all tags'"
-        (touchOrClick)="toggleExpandTags(); $event.event.stopPropagation(); $event.wasClick && tooltipService.reloadOnClick($event.event)"
+        (click)="toggleExpandTags($event)"
       ><span class="tag-like"><i class="fa fa-caret-up go-up"></i><i class="fa fa-caret-down go-down"></i></span></span>
     </div>
   </div>
@@ -58,14 +58,14 @@
   <div class="note-actions">
     <!-- @TODO/ece Expand? Focus? Open? Also shortcut name. -->
     <!-- @TODO/polish On desktop tooltip is still visible behind modal on click until you mouse away - should make something similar -->
-    <a data-tooltip="Expand note" class="note-action note-action--open" *ngIf="! isOpened" (click)="openNote(); $event.stopPropagation(); tooltipService.closeTooltip($event)"><i class="fa fa-fw fa-pencil-square-o"></i></a
+    <a data-tooltip="Expand note" class="note-action note-action--open" *ngIf="! isOpened" (click)="openNote($event)"><i class="fa fa-fw fa-pencil-square-o"></i></a
 
-    ><a data-tooltip="Close note" class="note-action note-action--close" *ngIf="isOpened" (click)="closeNote(); tooltipService.closeTooltip($event); $event.stopPropagation()"><i class="fa fa-fw fa-close"></i></a
+    ><a data-tooltip="Close note" class="note-action note-action--close" *ngIf="isOpened" (click)="unopenNote($event)"><i class="fa fa-fw fa-close"></i></a
 
     ><a class="note-action"
       [class.is--active]="note.pinned"
       [attr.data-tooltip]="(note.pinned ? 'Un-pin' : 'Pin') + ' this note'"
-      (click)="note.pinned = ! note.pinned; tooltipService.reloadOnClick($event); $event.stopPropagation()"
+      (click)="togglePinned($event)"
     ><i class="fa fa-fw fa-thumb-tack"></i></a
 
     ><!--<a data-tooltip="Share settings" class="note-action" (click)="note.showShareSettings()"><i class="fa fa-fw fa-users"></i></a
@@ -73,7 +73,7 @@
     >--><a class="note-action note-action--private"
       [class.is--active]="note.private"
       [attr.data-tooltip]="'Make this note' + (note.private ? ' not' : '') + ' private'"
-      (click)="note.togglePrivate(); tooltipService.reloadOnClick($event); $event.stopPropagation()"
+      (click)="togglePrivate($event)"
     ><i class="fa fa-fw fa-lock locked"></i><i class="fa fa-fw fa-unlock-alt unlocked"></i></a
 
     ><span *ngIf="! note.new"
@@ -82,16 +82,16 @@
 
       --><a class="note-action"
         data-tooltip="Explore note"
-        (click)="$event.stopPropagation(); showExplore()"
+        (click)="showExplore($event)"
       ><i class="fa fa-fw fa-bar-chart"></i></a
 
       ><a class="note-action"
         [class.is--active]="note.archived"
         [attr.data-tooltip]="(note.archived ? 'Un-archive' : 'Archive') + ' this note'"
-        (click)="note.archived = ! note.archived; tooltipService.reloadOnClick($event); $event.stopPropagation()"
+        (click)="toggleArchived($event)"
       ><i class="fa fa-fw fa-archive"></i></a
 
-      ><a data-tooltip="Delete note" class="note-action" (click)="delete($event); ; $event.stopPropagation()"><i class="fa fa-fw fa-trash-o"></i></a
+      ><a data-tooltip="Delete note" class="note-action" (click)="delete($event)"><i class="fa fa-fw fa-trash-o"></i></a
     ></span
   ></div>
 </div>
@@ -100,6 +100,6 @@
 @TODO/rewrite/notes Obvs this should be better, and maybe have link to close it, or "show here anyway"?
 <div class="open-note-indicator">
   <== note opened over there
-  <button (click)="closeNote()">close note</button>
+  <button (click)="unopenNote()">close note</button>
 </div>
 -->

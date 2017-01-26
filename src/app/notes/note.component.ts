@@ -139,10 +139,21 @@ export class NoteComponent {
     }
   }
 
-  openNote() {
+  openNote(event?: MouseEvent) {
+    if (event) {
+      event.stopPropagation();
+      this.tooltipService.closeTooltip(event);
+    }
+
     this.modalService.note(this.note);
   }
-  closeNote() {
+  /** Basically just closes it if it's open e.g. in a modal. Otherwise does nothing. */
+  unopenNote(event?: MouseEvent) {
+    if (event) {
+      event.stopPropagation();
+      this.tooltipService.closeTooltip(event);
+    }
+
     this.noteClosed.emit(this.note);
   }
 
@@ -339,7 +350,10 @@ export class NoteComponent {
     setTimeout(this.checkTagOverflow.bind(this), 0);
   }
 
-  toggleExpandTags() {
+  toggleExpandTags(event: MouseEvent) {
+    event.stopPropagation();
+    this.tooltipService.reloadOnClick(event)
+
     this.hasExpandedTags = ! this.hasExpandedTags;
 
     window.removeEventListener('click', this.boundCollapseTagsHandler);
@@ -379,13 +393,49 @@ export class NoteComponent {
     event.preventDefault();
   }
 
+
+  toggleArchived(event: MouseEvent) {
+    this.note.archived = ! this.note.archived;
+    this.tooltipService.reloadOnClick(event);
+    event.stopPropagation();
+
+    if (this.note.archived) {
+      this.unopenNote();
+    }
+  }
+  togglePinned(event: MouseEvent) {
+    this.note.pinned = ! this.note.pinned;
+    this.tooltipService.reloadOnClick(event);
+    event.stopPropagation()
+  }
+  togglePrivate(event: MouseEvent) {
+    this.note.togglePrivate();
+    this.tooltipService.reloadOnClick(event);
+    event.stopPropagation()
+
+    if (this.note.private && ! this.notesService.dataService.accountService.privateMode) {
+      this.unopenNote(); // @TODO/ece Is this (and same with archiving note) the right behavior?
+    }
+  }
+
+
   delete(eventOrNoConfirm?: MouseEvent | boolean) {
     if (this.note.new) {
       // Deleting this note doesn't make sense, as it would immediately be replaced with another blank new note.
       return;
     }
 
-    const noConfirm = (eventOrNoConfirm instanceof MouseEvent) ? eventOrNoConfirm.shiftKey : eventOrNoConfirm;
+    let noConfirm;
+
+    if (eventOrNoConfirm instanceof MouseEvent) {
+      eventOrNoConfirm.stopPropagation();
+      this.tooltipService.closeTooltip(eventOrNoConfirm);
+
+      noConfirm = eventOrNoConfirm.shiftKey;
+    }
+    else {
+      noConfirm = eventOrNoConfirm
+    }
 
     this.note.delete(noConfirm);
   }
@@ -397,7 +447,10 @@ export class NoteComponent {
   }
 
   /** @HACK Too lazy to modify ModalComponent template and support passing in a Note intstance through rxjs Subject in ModalService etc... so just ridiculously building the HTML as a string here and passing it in as a generic modal. */
-  showExplore() {
+  showExplore(event: MouseEvent) {
+    event.stopPropagation();
+    this.tooltipService.closeTooltip(event);
+
     const rawDataHtml = this.syntaxService.prettyPrintJson(this.note.forDataStore());
 
     let html = '<div class="explore-note">';
