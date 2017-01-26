@@ -9,8 +9,7 @@ import {Note} from './note.model';
 import {NoteComponent} from './note.component';
 import {NotesService} from './notes.service';
 import {Tag} from '../tags/';
-import {Logger} from '../utils/';
-import {ScrollMonitorService} from '../utils/scroll-monitor.service';
+import {Logger, SizeMonitorService, ScrollMonitorService} from '../utils/';
 import {NOTE_BROWSER_ROUTES} from '../app.routes';
 
 import * as _ from 'lodash';
@@ -49,6 +48,7 @@ export class NoteBrowserComponent {
     private analyticsService: AnalyticsService,
     private settings: SettingsService,
     private scrollMonitor: ScrollMonitorService,
+    private sizeMonitorService: SizeMonitorService,
     private notesService: NotesService,
   ) {
     this.el = elRef.nativeElement;
@@ -88,7 +88,7 @@ export class NoteBrowserComponent {
        ));
     });
 
-    if (NOTE_BROWSER_ROUTES.indexOf(this.router.url) !== -1) {
+    if (NOTE_BROWSER_ROUTES.indexOf(this.router.url) !== -1 && ! this.sizeMonitorService.isMobile) {
       this.goToNewNote();
     }
 
