@@ -25,9 +25,6 @@ import * as _ from 'lodash';
   selector: 'app',
   providers: [ ],
   encapsulation: ViewEncapsulation.None,
-  styles: [
-    require('../assets/styles/_main.sass'),
-  ],
   template: require('./app.component.html')
 })
 export class App {

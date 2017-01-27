@@ -72,6 +72,25 @@ interface GlobalEnvironment {
   System: SystemJS;
 }
 
+interface Es6PromiseLoader {
+  (id: string): (exportName?: string) => Promise<any>;
+}
+
+type FactoryEs6PromiseLoader = () => Es6PromiseLoader;
+type FactoryPromise = () => Promise<any>;
+
+type AsyncRoutes = {
+  [component: string]: Es6PromiseLoader |
+                               Function |
+                FactoryEs6PromiseLoader |
+                         FactoryPromise
+};
+
+type IdleCallbacks = Es6PromiseLoader |
+                             Function |
+              FactoryEs6PromiseLoader |
+                       FactoryPromise ;
+
 interface WebpackModule {
   hot: {
     data?: any,
@@ -88,7 +107,6 @@ interface WebpackModule {
   };
 }
 
-
 interface WebpackRequire {
     (id: string): any;
     (paths: string[], callback: (...modules: any[]) => void): void;
@@ -103,7 +121,6 @@ interface WebpackContext extends WebpackRequire {
 interface ErrorStackTraceLimit {
   stackTraceLimit: number;
 }
-
 
 // Extend typings
 interface NodeRequire extends WebpackRequire {}

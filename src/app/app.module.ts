@@ -1,9 +1,14 @@
-import { NgModule, ApplicationRef } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { RouterModule, PreloadAllModules } from '@angular/router';
-import { removeNgStyles, createNewHosts, createInputTransfer } from '@angularclass/hmr';
+import {
+  NgModule,
+  ApplicationRef
+} from '@angular/core';
+import {
+  RouterModule,
+  PreloadAllModules
+} from '@angular/router';
 
 import {SelectModule} from 'ng2-select';
 
@@ -119,6 +124,10 @@ const APP_PIPES = [
 ];
 
 
+
+import '../styles/main.sass';
+
+
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
  */
@@ -149,4 +158,3 @@ export class AppModule {
   constructor(public appRef: ApplicationRef) {}
 
 }
-

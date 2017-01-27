@@ -2,7 +2,7 @@ import {Injectable, Inject, forwardRef} from '@angular/core';
 
 import {SizeMonitorService} from '../utils/';
 
-const Tooltips = require('app/vendor/darsain-tooltips.js');
+import * as Tooltips from '../vendor/darsain-tooltips';
 
 @Injectable()
 export class TooltipService {
