@@ -89,8 +89,6 @@ export class App {
 
     // @HACK Passing change detector through the app is annoying but it can't be added to a Service and DataService needs to call it, so...
     this.accountService.init(this.changeDetector);
-
-    this.tooltipService.init();
   }
   ngOnDestroy() {
     this.initializiationSub.unsubscribe();
@@ -100,6 +98,11 @@ export class App {
 
   appInitialization(isInitialized: boolean): void {
     if (isInitialized) {
+      // Wait a little while before we actually init or else the MutationObserver will freak out (Firefox hangs actually if you init this too early on) as everything loads.
+      setTimeout(() => {
+        this.tooltipService.init();
+      }, 2000);
+
       setTimeout(() => {
         if (this.accountService.loggedInWithTemporaryPassword) {
           this.modalService.alert(
@@ -110,12 +113,18 @@ export class App {
               this.router.navigateByUrl('/settings/account');
             }
           );
-          // @TODO/polish The transition from loading/login screen to `modalService.close` looks nice, but transitioning to alert not so much. We could either handle it specially, or once queuing up modals works we could maybe call the alert right after closing.
+          // @TODO/polish The transition from loading/login screen to `modalService.close` looks nice, but transitioning to alert not so much. We could either handle it specially, or once queuing up modals works we could maybe call the alert right after closing. @TODO/modals I guess we can use `modal2` now!
         }
         else {
           this.modalService.close();
         }
       }, 0);
+    }
+    else {
+      // Just look for tooltips in homepage component (which uh happens to be in modal). And wait a sec cause stuff will still be loading.
+      setTimeout(() => {
+        this.tooltipService.init(document.querySelector('modal'));
+      }, 2000);
     }
 
     const outerLoader = document.querySelector('.initial-loader.outer');

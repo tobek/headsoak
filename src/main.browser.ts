@@ -51,4 +51,4 @@ import 'mousetrap';
 import 'mousetrap-global-bind';
 import 'sentiment';
 import 'toastr';
-import 'app/vendor/darsain-tooltips';
+import 'app/vendor/darsain-tooltips.min';

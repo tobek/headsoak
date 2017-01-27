@@ -2,11 +2,10 @@ import {Injectable, Inject, forwardRef} from '@angular/core';
 
 import {SizeMonitorService} from '../utils/';
 
-import * as Tooltips from '../vendor/darsain-tooltips';
+import * as Tooltips from '../vendor/darsain-tooltips.min';
 
 @Injectable()
 export class TooltipService {
-
   private _tips;
 
   constructor(
@@ -14,8 +13,12 @@ export class TooltipService {
   ) {
   }
 
-  init() {
-    this._tips = new Tooltips(document.body, {
+  init(el = document.querySelector('.app-outer'), observe = 1) {
+    if (this._tips) {
+      this._tips.destroy();
+    }
+
+    this._tips = new Tooltips(el, {
       tooltip:    {
         auto: true, // automatically position if it would go off screen
         effectClass: 'fade',
@@ -23,7 +26,7 @@ export class TooltipService {
       key: 'tooltip', // `data-tooltip` attribute triggers tooltip
       showOn: 'mouseenter',
       hideOn: 'mouseleave',
-      observe: 1 // enable mutation observer (used only when supported - need to apply tooltips to newly generated elements.) @TODO Tooltips library uses dataset which doesn't exist on SVG elements so this library throws an error when mutation observer hits SVG and tries to bind tooltips, see issue https://github.com/darsain/tooltips/issues/14. Apart from ugly error in console, this may prevent tooltips from working, presumably if a tooltip attribute shows up after any SVG element as part of same DOM transformation.
+      observe: observe // enable mutation observer (used only when supported - need to apply tooltips to newly generated elements.) @TODO Tooltips library uses dataset which doesn't exist on SVG elements so this library throws an error when mutation observer hits SVG and tries to bind tooltips, see issue https://github.com/darsain/tooltips/issues/14. Apart from ugly error in console, this may prevent tooltips from working, presumably if a tooltip attribute shows up after any SVG element as part of same DOM transformation.
     });
   }
 
