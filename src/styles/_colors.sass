@@ -1,19 +1,21 @@
 // BASE COLORS
 
-$primary-color: #f4f4f2 // #e05151 //#fcdf15 //#e05151 //#7FD6FA // #A6E22E // #FF5D38 // #FFE792 //#00A8C6 // #A6E22E// #424242 // e.g. body text, icons
-$primary-color-light: #85A4D2 // #3F454A //#6e7a94 // #bcc2c7 // used e.g. for tag count, active icon hover, note action icons
-$primary-color-contrast: rgba(255, 255, 255, 0.86) // e.g. card bg, text background
-$secondary-color: #f26964 // #0b99bc //#FF5D38 // #F25A56 // #FF5D38 // #c3521b // e.g. tag text, button stuff
-$highlight-color: #85A4D2 // #e05151 //#F5BB14 //#26A6A6 // #50e3c2 // e.g. logo, hover states
+$primary-color: #424242 // e.g. body text, icons
+$primary-color-light: #bcc2c7 // used e.g. for tag count, active icon hover, note action icons
+$primary-color-contrast: rgba(255, 255, 255, 0.925) // e.g. card bg, text background
+$secondary-color: #c3521b // e.g. tag text, button stuff
+$highlight-color: #50e3c2 // e.g. logo, hover states
 
-$input-stroke: #DEE3F3 //#989898 // This is used for input placeholder text, input borders/underlines, logo slogan, minor text on login (forgot password, T&Cs), text links @TODO/rename
+$input-stroke: #989898 // This is used for input placeholder text, input borders/underlines, logo slogan, minor text on login (forgot password, T&Cs), text links @TODO/rename
 
 // $accent-color: #4f54e2 // used for tag-related action icons (add, expand, etc., but *not* shared/programmatic state). @TODO/ece Should the rename pencil and/or remove X (from tag in note search bar) be this color too?
 $accent-color: $input-stroke // eh that looked gaudy, let's just use this for now
 
 
 // OTHER COLORS
- 
+
+$logo-color: $highlight-color
+
 $app-bg-gradient-top: #16697f
 $app-bg-gradient-bottom: #0e465e
 
@@ -23,8 +25,6 @@ $danger-color: #c33132
 
 
 // ASSIGNED/DERIVED COLORS
-
-$logo-color: $highlight-color
 
 $link-color: $input-stroke
 $link-hover: $highlight-color
@@ -37,7 +37,7 @@ $icon-hover: $highlight-color
 $icon-active: $secondary-color
 $icon-active-hover: $primary-color-light
 
-$menu-dropdown-bg-color: rgba(#30302f, 0.9) // #3c3c3c #464C57 #191B1F #2b303b #6e7a94 //rgba($primary-color-contrast, 1) // used for menus and dropdowns like autocomplete, expanded tag list, individual tag dropdown, sort dropdown, etc.
+$menu-dropdown-bg-color: rgba($primary-color-contrast, 1) // used for menus and dropdowns like autocomplete, expanded tag list, individual tag dropdown, sort dropdown, etc.
 $pane-bar-bg-color: $menu-dropdown-bg-color // used for tag list on notes, and for the tags/settings sidebar, and for the header
 
 
@@ -54,9 +54,3 @@ $shadow-color-light: rgba(0, 0, 0, 0.1) // Only used (tentatively) for note tag 
 $modal-backdrop: rgba(0, 0, 0, 0.7)
 $modal-backdrop--dark: rgba(0, 0, 0, 0.9)
 $white-overlay: rgba(255,255,255,0.75)
-
-.note .body-input
-    color: #30302f
-.pane-layout .overview,
-.pane-layout .pane
-    background-color: $pane-bar-bg-color !important

@@ -19,10 +19,11 @@
     height: 300px
 
   .cooccurrences
-    +span(12)
-
-    @media (min-width: $screen-small)
-      +gallery(6)
+    +span(6) // e.g. 50% (with a bit of padding)
+    &:last-of-type
+      +span(6 last)
+    &:first-of-type:last-of-type
+      +span(6) // otherwise if there's only enough cooccurrences for one, it gets pulled right
 
     .static-tag
       cursor: pointer
