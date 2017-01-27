@@ -74,8 +74,9 @@ tag-browser
       display: inline-block
       max-width: 100%
 
-      &.hovered
-        +tag-chiclet-active
+      @media (min-width: $tablet-large)
+        &.hovered
+          +tag-chiclet-active
 
       // @TODO/soon Totally made up numbers to make space for caret, count, and any tag state icons based on how wide browser is. Should be flexbox or something - and/or should have mobile responsive breakpoints
       .name-wrapper
@@ -129,11 +130,12 @@ tag-browser
     // On full page tag browser you can click anywhere in the row
     .route--tags & .tag-header
       cursor: pointer
-      &:hover
-        tag
-          +tag-chiclet-active
-        .caret-wrapper
-          color: $icon-hover
+      @media (min-width: $tablet-large)
+        &:hover
+          tag
+            +tag-chiclet-active
+          .caret-wrapper
+            color: $icon-hover
 
     &.is--expanded
       tag
@@ -166,6 +168,13 @@ tag-browser
 
 
   @media (max-width: $tablet-large - 1px)
+    .pane-layout
+      .fixed-pane-wrapper
+        +span(12 last)
+
+      .overview
+        display: none
+
     .pane-layout.is--home
       .overview
-        +span(12 last)
+        display: block

@@ -8,6 +8,7 @@ import {TagsService} from './tags.service';
 
 import {Logger, utils} from '../utils/';
 import {SizeMonitorService} from '../utils/size-monitor.service';
+import {TooltipService} from '../utils/tooltip.service';
 
 import * as _ from 'lodash';
 
@@ -85,6 +86,7 @@ export class TagComponent {
   constructor(
     private analyticsService: AnalyticsService,
     private sizeMonitorService: SizeMonitorService,
+    private tooltipService: TooltipService,
     private activeUIs: ActiveUIsService,
     private tagsService: TagsService
   ) {}

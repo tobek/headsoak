@@ -19,16 +19,16 @@
 ></span>
 
 <span class="tag-state">
-  <span class="share" *ngIf="tag.share" data-tooltip="This tag is shared">
+  <span class="share" *ngIf="tag.share" data-tooltip="This tag is shared" (click)="$event.stopPropagation()">
     <i class="fa fa-users"></i>
   </span>
-  <span class="prog" *ngIf="tag.prog" data-tooltip="This tag is a smart tag">
+  <span class="prog" *ngIf="tag.prog" data-tooltip="This tag is a smart tag" (click)="$event.stopPropagation()">
     <i class="fa fa-bolt"></i>
   </span>
-  <span class="pinned" *ngIf="tag.id === INTERNAL_TAG_DATA.PINNED.id" data-tooltip="Notes you've pinned">
+  <span class="pinned" *ngIf="tag.id === INTERNAL_TAG_DATA.PINNED.id" data-tooltip="Notes you've pinned" (click)="$event.stopPropagation()">
     <i class="fa fa-thumb-tack"></i>
   </span>
-  <span class="archived" *ngIf="tag.id === INTERNAL_TAG_DATA.ARCHIVED.id" data-tooltip="Notes you've archived">
+  <span class="archived" *ngIf="tag.id === INTERNAL_TAG_DATA.ARCHIVED.id" data-tooltip="Notes you've archived" (click)="$event.stopPropagation()">
     <i class="fa fa-archive"></i>
   </span>
 </span>
@@ -38,7 +38,7 @@
     <i class="fa fa-times"></i>
   </a>
 
-  <a *ngIf="renamable && ! tag.readOnly" data-tooltip="Rename" class="tag-action tag-action--rename" (click)="renameStart()"><i class="fa fa-pencil"></i></a>
+  <a *ngIf="renamable && ! tag.readOnly" data-tooltip="Rename" class="tag-action tag-action--rename" (click)="renameStart(); tooltipService.closeTooltip($event)"><i class="fa fa-pencil"></i></a>
   <a *ngIf="renamable && tag.isLibraryTag" data-tooltip="This is a Smart Tag Library tag and so can't be renamed" class="tag-action tag-action--rename is--disabled"><i class="fa fa-pencil"></i></a>
 </span>
 

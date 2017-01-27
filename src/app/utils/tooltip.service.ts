@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, Inject, forwardRef} from '@angular/core';
 
 import {SizeMonitorService} from '../utils/';
 
@@ -10,7 +10,7 @@ export class TooltipService {
   private _tips;
 
   constructor(
-    private sizeMonitorService: SizeMonitorService,
+    @Inject(forwardRef(() => SizeMonitorService)) private sizeMonitorService: SizeMonitorService
   ) {
   }
 

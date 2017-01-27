@@ -257,6 +257,11 @@ export class TagBrowserComponent {
       return;
     }
 
+    if (this.sizeMonitorService.isMobile) {
+      this.toggleTagDropdown(tag);
+      return;
+    }
+
     if (this.expandedTag !== tag) {
       tag.goTo();
       this.expandedTag = tag;
@@ -274,6 +279,10 @@ export class TagBrowserComponent {
       return;
     }
 
+    this.toggleTagDropdown(tag);
+  }
+
+  toggleTagDropdown(tag: Tag) {
     if (this.expandedTag !== tag) {
       this.expandedTag = tag;
     }
