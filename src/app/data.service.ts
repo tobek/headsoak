@@ -20,6 +20,8 @@ import * as _ from 'lodash';
 
 declare type DataItem = Note | Tag | Setting | Shortcut;
 
+// @TODO/data @TODO/soon Need to do `window.onbeforeunload = function() { return "Some message about unsaved stuff"; };` when sync state is not synced.
+
 @Injectable()
 export class DataService {
   NEW_FEATURE_COUNT = 12; // Hard-coded so that it only updates when user actually receives updated code with the features

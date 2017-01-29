@@ -96,7 +96,7 @@ export class ModalComponent {
 
     this.modalService['modal' + (this.second ? '2' : '')] = this;
 
-    this.activeModalSub = this.modalService['activeModal' + (this.second ? '2$' : '$')]
+    this.activeModalSub = this.modalService['setActiveModal' + (this.second ? '2$' : '$')]
       .subscribe((activeModal: ModalType) => {
         // setTimeout or else initial animation doesn't seem to work
         setTimeout(() => {
@@ -145,6 +145,8 @@ export class ModalComponent {
         }, 200);
       }
     }
+
+    this.modalService.modalChange$.next(modalName);
   }
 
   clear() {
@@ -187,6 +189,9 @@ export class ModalComponent {
     if (! this.cancellable && ! evenIfUncancellable) {
       return;
     }
+    else {
+      this.cancellable = true; // otherwise we'll get stuck at `ModalService`'s `onPopstate` which `this.close` triggers via `history.back`
+    }
 
     if (this.config.cancelCb) {
       this.config.cancelCb();
@@ -197,6 +202,16 @@ export class ModalComponent {
 
 
   close() {
+    if (this.activeModal === 'login' || this.activeModal === 'loading') {
+      this._close();
+    }
+    else {
+      // Funnel all closures via popstate - see `onPopstate` in `ModalService`
+      window.history.back();
+    }
+  }
+
+  _close() {
     if (! this.second) {
       this.modalService.closed$.next(null);
     }

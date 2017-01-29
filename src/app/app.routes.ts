@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
-import { Routes } from '@angular/router';
-import { SettingsComponent } from './settings';
-import { NoContentComponent } from './no-content';
-import { EmptyComponent } from './utils';
+import {Component, Injectable} from '@angular/core';
+import {Routes/*, CanDeactivate */} from '@angular/router';
+import {SettingsComponent} from './settings';
+import {NoContentComponent} from './no-content';
+import {EmptyComponent} from './utils';
+// import {ModalService} from './modals/modal.service';
 
 
 /** Routes which contain NoteBrowserComponent. */
@@ -189,3 +190,41 @@ export const ROUTES: Routes = [
     component: NoContentComponent
   },
 ];
+
+
+// @REMOVED What follows was an attempt to abuse Angular route guards to make sure the browser back button closes modals (instead of actually navigating back). The dealbreaker here was that it wouldn't work if you haven't yet navigated anywhere within the app: instead of trying to deactivate the route, browser would simply go back to where you were before the app. Tried to fix this by navigating to a dummy route and back to current URL on app initialization, but it didn't really work.
+// interface CanComponentDeactivate {
+//   canDeactivate: () => boolean;
+// }
+// @Injectable()
+// export class CanDeactivateGuard implements CanDeactivate<CanComponentDeactivate> {
+//   constructor(
+//     private modalService: ModalService
+//   ) {}
+
+//   canDeactivate(/* component, route: ActivatedRouteSnapshot, state: RouterStateSnapshot */): boolean {
+//     console.log('YO CAN WE DEACT?', this.modalService.activeModal);
+//     if (
+//       ! this.modalService.activeModal ||
+//       this.modalService.activeModal === 'login' ||
+//       this.modalService.activeModal === 'loading'
+//     ) {
+//       return true; // navigate freely!
+//     }
+//     else {
+//       // Attempt to cancel the modal instead of navigating away
+//       this.modalService.cancel();
+
+//       // Now prevent the navigation. If we couldn't cancel the modal - good they should be stuck. If we did cancel the modal, they should be where they were before, and if they hit back again then they will be able to freely navigate away.
+//       return false;
+//     }
+//   }
+// }
+// // Rather than hardcoding the guard into each route, just loop through them all
+// function guardRoutes(route) {
+//   route.canDeactivate = [CanDeactivateGuard];
+//   if (route.children) {
+//     _.each(route.children, guardRoutes);
+//   }
+// }
+// _.each(ROUTES, guardRoutes);

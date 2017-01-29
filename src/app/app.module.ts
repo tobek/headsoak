@@ -90,6 +90,7 @@ import {ProgTagApiService} from './tags/prog-tag-api.service';
 import {ProgTagLibraryService} from './tags/';
 import {SettingsService} from './settings/settings.service';
 import {AutocompleteService, SizeMonitorService, ScrollMonitorService, SyntaxService, ToasterService, TooltipService} from './utils/';
+// import {CanDeactivateGuard} from './app.routes';
 
 // Application wide providers - all services used in the application have to go here (from where they're injected into the main App componenet) or else DI can't find providers for them
 const APP_PROVIDERS = [
@@ -111,6 +112,7 @@ const APP_PROVIDERS = [
   AutocompleteService,
   SizeMonitorService,
   ScrollMonitorService,
+  // CanDeactivateGuard,
 ];
 
 
