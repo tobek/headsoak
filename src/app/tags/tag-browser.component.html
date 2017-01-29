@@ -72,7 +72,12 @@
       *ngFor="let tag of (tags | arrayLimit:limit)"
       [class.is--expanded]="expandedTag === tag"
     >
-      <div class="tag-header" (click)="tagHeaderClick(tag)">
+      <!-- @TODO/refactor Copy-pasting from normal tags... -->
+      <div class="tag-header"
+        (click)="tagHeaderClick(tag)"
+        (mouseenter)="hoveredTag = tag.name ? tag : null"
+        (mouseleave)="hoveredTag = null"
+      >
         <span *ngIf="tag.name" class="caret-wrapper" (click)="tagDropdownCaretClick(tag)"
           ><i class="fa fa-caret-up go-up"></i
           ><i class="fa fa-caret-down go-down"></i
@@ -85,8 +90,6 @@
           showCount=1
           context="tagBrowser"
           (click)="tagClick(tag, $event)"
-          (mouseenter)="hoveredTag = tag.name ? tag : null"
-          (mouseleave)="hoveredTag = null"
         ></tag><!-- checking tag.name in mouseenter to make sure it's not a new/unsaved tag -->
       </div>
 
@@ -123,7 +126,11 @@
       [class.is--expanded]="expandedTag === tag"
     >
       <!-- @TODO/refactor Copy-pasting from normal tags... -->
-      <div class="tag-header" (click)="tagHeaderClick(tag)">
+      <div class="tag-header"
+        (click)="tagHeaderClick(tag)"
+        (mouseenter)="hoveredTag = tag"
+        (mouseleave)="hoveredTag = null"
+      >
         <span class="caret-wrapper" (click)="tagDropdownCaretClick(tag)"
           ><i class="fa fa-caret-up go-up"></i
           ><i class="fa fa-caret-down go-down"></i
@@ -134,8 +141,6 @@
           showCount=1
           context="tagBrowser"
           (click)="tagClick(tag, $event)"
-          (mouseenter)="hoveredTag = tag"
-          (mouseleave)="hoveredTag = null"
         ></tag>
       </div>
 
