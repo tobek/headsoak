@@ -13,13 +13,16 @@ $susy: ( columns: 12, gutters: 1/3, global-box-sizing: border-box/*, debug: (ima
 // $susy: ( math: static, columns: 12, column-width: 81px, gutters: 1/3, global-box-sizing: border-box, debug: (image: show, color: lightblue) )
 
 
+*, *:before, *:after
+  box-sizing: inherit
+
 html
   box-sizing: border-box
   overflow: hidden // `main` is the element that scrolls
-  // @TODO/mobile Investigate full screen API and may have to change layout so that scroll triggers it, doesn't look like adding extra height here and scrolling with JS does it any more...
 
-*, *:before, *:after
-  box-sizing: inherit
+  @media (max-width: $tablet-large - 1px)
+    // Except on mobile!
+    overflow-y: visible
 
 
 #app-bg
@@ -64,11 +67,13 @@ html
 
 // This is our main grid container. gutter() and span() etc. should work as normal in here
 main
+  @extend .clearfix
   position: relative
   z-index: 1
 
   height: $full-height
   overflow-y: auto
+  -webkit-overflow-scrolling: touch // enable momentum scrolling - only really relevant for very big touch devices cause on small touch devices <main> doesn't scroll, body does. @TODO/mobile @TODO/QA Test this on iOS Safari - css-tricks says it has to be overflow scroll, not auto
 
   // This is the container in the app that will scroll, so we'd like to have the scrollbar at the far right. So onstead of grid container with max width and margins on either side and gutter-width padding, here we try to pad it out to the full width of the viewport
   max-width: 100%
@@ -79,19 +84,36 @@ main
     padding-right: gutter()
     padding-left: gutter()
 
-  @media (max-width: $tablet-large - 1px)
-    height: $mobile-full-height
-    // padding: 0 // @TODO/soon @TODO/ece What's the final call on this?
+  // @REMOVED/height
+  // @media (max-width: $tablet-large - 1px)
+  //   height: $mobile-full-height
+  //   // padding: 0 // @TODO/soon @TODO/ece What's the final call on this?
     
-    transition: height $transition-fast, transform $transition-fast
+  //   transition: height $transition-fast, transform $transition-fast
 
-    .is--note-query-visible &
-      height: $mobile-full-height--with-note-query
+  //   .is--note-query-visible &
+  //     height: $mobile-full-height--with-note-query
+  //   .is--headerless &
+  //     height: $mobile-full-height--headerless
+  //     transform: translateY(-1 * $inner-header-height)
+  //   .is--headerless.is--note-query-visible &
+  //     height: $mobile-full-height--headerless-with-note-query
+
+  @media (max-width: $tablet-large - 1px)
+    // On mobile the main element does not scroll - html/body scroll
+    height: auto
+    overflow-y: visible
+
+    margin-bottom: $nav-header-height
+    transform: translateY($inner-header-height + $mobile-header-margin)
+    transition: transform $transition-fast
+
+    .route--note-route.is--note-query-visible &
+      transform: translateY($inner-header-height + $mobile-header-margin + $mobile-note-query-height)
     .is--headerless &
-      height: $mobile-full-height--headerless
-      transform: translateY(-1 * $inner-header-height)
-    .is--headerless.is--note-query-visible &
-      height: $mobile-full-height--headerless-with-note-query
+      transform: translateY($mobile-header-margin)
+    .is--headerless.route--note-route.is--note-query-visible &
+      transform: translateY($mobile-header-margin + $mobile-note-query-height)
 
 .app-wrapper
   opacity: 1

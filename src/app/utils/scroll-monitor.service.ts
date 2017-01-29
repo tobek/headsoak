@@ -7,31 +7,40 @@ import * as _ from 'lodash';
 @Injectable()
 export class ScrollMonitorService {
   lastScrollY = 0;
+  newScrollY = 0;
   scroll$ = new Subject<number>();
 
-  private scrollingEl: Element;
+  private desktopScrollingEl: HTMLElement;
+
+  private throttledOnScroll = _.throttle(
+    this.onScroll.bind(this),
+    200,
+    { leading: true, trailing: true }
+  );
 
   constructor() {}
 
   init() {
-    // We used to listen to `window` but now just <main> scrolls
-    this.scrollingEl = document.querySelector('main');
+    this.desktopScrollingEl = document.querySelector('main');
+    this.desktopScrollingEl.addEventListener('scroll', this.throttledOnScroll);
 
-    this.scrollingEl.addEventListener('scroll', _.throttle(
-      this.onScroll.bind(this),
-      200,
-      { leading: true, trailing: true }
-    ));
+    // On mobile:
+    window.addEventListener('scroll', this.throttledOnScroll);
 
-    this.lastScrollY = this.scrollingEl.scrollTop;
+    this.lastScrollY = document.documentElement.scrollTop || document.body.scrollTop;
   }
 
-  onScroll(event) {
-    const newScrollY = this.scrollingEl.scrollTop;
+  onScroll(event: Event) {
+    if (event.currentTarget === this.desktopScrollingEl) {
+      this.newScrollY = this.desktopScrollingEl.scrollTop;
+    }
+    else {
+      this.newScrollY = document.documentElement.scrollTop || document.body.scrollTop;
+    }
 
-    this.scroll$.next(newScrollY);
+    this.scroll$.next(this.newScrollY);
 
-    this.lastScrollY = newScrollY;
+    this.lastScrollY = this.newScrollY;
   }
 
 }

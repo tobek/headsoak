@@ -149,7 +149,7 @@ export class TagBrowserComponent {
       // @HACK @TODO/tags @TODO/polish @TODO/soon This REALLY shouldn't be necessary, but for now, especially e.g. if you scroll to bottom of notes or tag list and then click on a tag, you don't see shit. They need to scroll independently. It also means you lose your place in your notes when you go back. Bah.
       if (this.activeTag || this.activePane) {
         // We were already looking at tags, so animate scroll so you don't lose your place
-        jQuery('main').animate({ scrollTop: 0 }, 250);
+        jQuery('html, body').animate({ scrollTop: 0 }, 250);
       }
       else {
         // We were elsewhere, animating will look weird
