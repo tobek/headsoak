@@ -89,6 +89,11 @@ export const ROUTES: Routes = [
         component: EmptyComponent
       },
       {
+        // Only used on mobile - on desktop we show explore visualization in the base `/tags` page
+        path: 'explore',
+        component: EmptyComponent
+      },
+      {
         path: 'smart-tags',
         component: EmptyComponent,
         children: [

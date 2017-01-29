@@ -169,11 +169,15 @@ export class TagBrowserComponent {
       this.activeTagPane = null;
       this.expandedTag = null;
 
-      if (event.url.indexOf('smart-tags/library') !== -1) {
+      if (event.url.indexOf('/tags/smart-tags/library') === 0) {
         this.activePane = 'library';
+      }
+      else if (event.url.indexOf('/tags/explore') === 0) {
+        this.activePane = 'viz';
       }
       else {
         if (! this.sizeMonitorService.isMobile) {
+          // On desktop we default to showing vizualization on main tag browser page
           this.activePane = 'viz';
         }
         else {
