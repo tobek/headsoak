@@ -25,7 +25,8 @@ export class TouchOrClick {
     this.output.emit({ event: event, wasClick: true });
   }
 
-  @HostListener('touchend', ['$event']) onTouchend(event: TouchEvent) {
+  // Type should really be `TouchEvent` but that's not present in Edge or Safari and this gets emitted in decorator metadata and breaks in those browsers. @TODO Where else could presumbed-global variables be causing problems?
+  @HostListener('touchend', ['$event']) onTouchend(event: Event) {
     // console.log('touch ended! preventing default:', event.cancelable, event);
     if (event.cancelable) {
       event.preventDefault();
