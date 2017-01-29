@@ -8,7 +8,7 @@ import {AccountService} from './account/account.service';
 import {AnalyticsService} from './analytics.service';
 import {DataService} from './data.service';
 import {SettingsService} from './settings/settings.service';
-import {Logger, SizeMonitorService, TooltipService} from './utils/';
+import {Logger, SizeMonitorService, ScrollMonitorService, TooltipService} from './utils/';
 
 import {ROUTES, NOTE_BROWSER_ROUTES, routingInfo} from './app.routes';
 
@@ -38,6 +38,7 @@ export class App {
   forceMenuClosed = false;
 
   isNoteQueryVisible = false;
+  isHeaderless = false;
 
   /** Whether we are on a route such that we should show the back button. */
   isBackable = false;
@@ -48,6 +49,7 @@ export class App {
   @ViewChild(HomeComponent) homeComponent: HomeComponent;
   @ViewChild(NoteQueryComponent) noteQueryComponent: NoteQueryComponent;
 
+  private subscriptions: Subscription[] = [];
   private initializiationSub: Subscription;
   private routerSub: Subscription;
 
@@ -57,6 +59,7 @@ export class App {
     private activeUIs: ActiveUIsService,
     private modalService: ModalService,
     private sizeMonitorService: SizeMonitorService,
+    private scrollMonitor: ScrollMonitorService,
     private tooltipService: TooltipService,
     private router: Router,
     public changeDetector: ChangeDetectorRef,
@@ -77,11 +80,13 @@ export class App {
       { data: { navSection: 'menu' } }
     );
 
-    this.initializiationSub = this.dataService.initialized$.subscribe(this.appInitialization.bind(this));
+    this.subscriptions.push(this.dataService.initialized$.subscribe(this.appInitialization.bind(this)));
 
-    this.routerSub = router.events
+    this.subscriptions.push(router.events
       .filter(event => event instanceof NavigationEnd)
-      .subscribe(this.routeUpdated.bind(this));
+      .subscribe(this.routeUpdated.bind(this)));
+
+    this.subscriptions.push(this.scrollMonitor.scroll$.subscribe(this.onScroll.bind(this)));
   }
 
   ngOnInit() {
@@ -89,10 +94,14 @@ export class App {
 
     // @HACK Passing change detector through the app is annoying but it can't be added to a Service and DataService needs to call it, so...
     this.accountService.init(this.changeDetector);
+
+    this.scrollMonitor.init();
   }
   ngOnDestroy() {
-    this.initializiationSub.unsubscribe();
-    this.routerSub.unsubscribe();
+    for (var i = 0; i < this.subscriptions.length; ++i) {
+      this.subscriptions[i].unsubscribe();
+    }
+
     this._logger.log('App component destroyed!');
   }
 
@@ -152,6 +161,8 @@ export class App {
         this.modalService.close();
       }
     }
+
+    this.isHeaderless = false;
 
     this.setRouteClass(event);
   }
@@ -240,6 +251,14 @@ export class App {
     }, 0);
   }
 
+  setSearchModeVisiblity(visible: boolean) {
+    if (! visible) {
+      this.isHeaderless = false;
+    }
+
+    this.isNoteQueryVisible = visible;
+  }
+
   newNote(): void {
     // @HACK: Make this work on all routes by hijacking the shortcut for this, which includes `routeTo` logic to make sure we're in the right place.
     this.settings.data['sNewNote']['_fn']();
@@ -261,6 +280,20 @@ export class App {
     }
     else {
       this.router.navigateByUrl('/tags');
+    }
+  }
+
+  onScroll(newScrollY: number) {
+    if (! this.sizeMonitorService.isMobile) {
+      return;
+    }
+
+    if (newScrollY > this.scrollMonitor.lastScrollY) {
+      // User scrolled down
+      this.isHeaderless = true;
+    }
+    else {
+      this.isHeaderless = false;
     }
   }
 

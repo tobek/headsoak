@@ -15,6 +15,10 @@ $pane-horizontal-padding: 60px
 
       .is--note-query-visible &
         min-height: $mobile-full-height--with-note-query
+      .is--headerless &
+        min-height: $mobile-full-height--headerless
+      .is--headerless.is--note-query-visible &
+        min-height: $mobile-full-height--headerless-with-note-query
 
   .overview
     +span(4)

@@ -235,7 +235,10 @@
 @media (max-width: $tablet-large - 1px)
   .app-header
     margin-bottom: $mobile-header-margin
-    transition: padding $transition-fast
+    transition: padding $transition-fast, transform $transition-fast
+
+    .is--headerless &
+      transform: translateY(-1 * $inner-header-height);
 
     .back-button
       +faded-out
