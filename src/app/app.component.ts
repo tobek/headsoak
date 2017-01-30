@@ -127,6 +127,12 @@ export class App {
         else {
           this.modalService.close();
         }
+
+        // @HACK Our angular select dropdown library has a field to type in what you want to select. You shouldn't be able to tab to it.
+        const noTabPlease = document.querySelectorAll('ng-select [tabindex="0"]');
+        for (let i = 0; i < noTabPlease.length; ++i) {
+          noTabPlease[i].setAttribute('tabindex', '-1');
+        }
       }, 0);
     }
     else {

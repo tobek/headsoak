@@ -1,6 +1,6 @@
 <div id="app-bg"></div>
 
-<input id="blur-hack" class="mousetrap" type="text" />
+<input id="blur-hack" class="mousetrap" type="text" tabindex="-1" />
 
 <modal></modal>
 <modal class="second" second=true></modal>
@@ -74,14 +74,14 @@
     <nav class="app-nav" *ngIf="dataService.user.loggedIn">
       <ul
         ><li
-          ><a class="nav-link" (touchOrClick)="newNote()">
+          ><span class="nav-link" (touchOrClick)="newNote()">
             <i class="fa fa-lg fa-pencil-square-o"></i>
             <span class="nav-link-text">New</span>
-          </a
+          </span
         ></li
 
         ><li class="notes-nav-link"
-          ><a class="nav-link nav-link--note-views" [routerLink]="[routingInfo.lastNoteRoute]">
+          ><span class="nav-link nav-link--note-views" [routerLink]="[routingInfo.lastNoteRoute]">
             <!-- @TODO/mobile @TODO/polish Ideally this would have a special behavior on mobile where it normally goes to last note route and does NOT show the notes views, unless already on a note route, in which case it force-shows the note views but without the current bug of hitting one while you tap. -->
             <span class="note-views"
               ><span
@@ -95,14 +95,14 @@
             ></span>
 
             <span class="nav-link-text">Notes</span
-          ></a
+          ></span
         ></li
 
         ><li class="tag-nav-link" [class.is--active]="! homeComponent || ! homeComponent.tagBrowserCollapsed"
-          ><a class="nav-link" (touchOrClick)="tagNavClick()">
+          ><span class="nav-link" (touchOrClick)="tagNavClick()">
           <i class="fa fa-lg fa-hashtag"></i>
             <span class="nav-link-text">Tags</span>
-          </a
+          </span
         ></li
       ></ul>
     </nav>
