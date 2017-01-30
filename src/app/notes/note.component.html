@@ -19,7 +19,7 @@
         ><i *ngIf="! addingTag" class="fa fa-plus"></i><i *ngIf="addingTag" class="fa fa-check"></i></span
       ></span
 
-      ><tag class="tag-{{ tagId }}"
+      ><tag class="tag-{{ tagId }}" style="touch-action: manipulation"
         *ngFor="let tagId of (note.tags | internalTagsFilter)"
         [tag]="getTagById(tagId)"
         [ofNoteId]="note.id"

@@ -35,6 +35,8 @@ export class TagComponent {
   @HostBinding('class.renaming') renaming = false;
   @HostBinding('hidden') hidden = false;
 
+  @ViewChild('actionsDropdown') actionsDropdownRef: ElementRef;
+
   @ViewChild('tagName') tagNameRef: ElementRef;
   tagNameEl: HTMLInputElement; // Not actually, but contenteditable so it behaves as such
 
@@ -75,6 +77,27 @@ export class TagComponent {
       this.hoveredTimeout = null;
     }
     this.hovered = false;
+  }
+
+  /** This gets called before mouseover so we can stop that logic from in here. */
+  @HostListener('touchend', ['$event']) onTouchend(event: Event) {
+    if (! this.ofNoteId || ! this.sizeMonitorService.isMobile) {
+      return;
+    }
+
+    if (! event.cancelable) {
+      // This was the end of a scroll! Or some other gesture, and probably not a click. Do nothing.
+      return;
+    }
+
+    if (! this.hovered) {
+      this.hovered = true;
+
+      // Don't set this up until next click otherwise we immediately unhover
+      setTimeout(this.unHoverOnNextTouch.bind(this), 0);
+
+      return false;
+    }
   }
 
   private hoveredTimeout;
@@ -203,5 +226,20 @@ export class TagComponent {
       this.deleted.emit(this.tag);
     }
   }
+
+  unHoverOnNextTouch() {
+    // We can use `one` cause no matter what we want to only affect next touch, whether it's in tag actions (so close it, but let tag actions touch go ahead) or somewhere else on the page, in which case close it and cancel any other events from firing
+    jQuery(window).one('touchend', this.onNextTouch.bind(this));
+  }
+
+  onNextTouch(event: Event) {
+    if (this.hovered && ! this.actionsDropdownRef.nativeElement.contains(event.target)) {
+      this.hovered = false;
+      event.stopImmediatePropagation();
+      return false;
+    }
+    // Something else closed us, OR this was a click inside actions. Either way, let other handlers handle what to do next
+  }
+
 
 }
