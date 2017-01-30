@@ -96,6 +96,11 @@ export class App {
     this.accountService.init(this.changeDetector);
 
     this.scrollMonitor.init();
+
+    // sorry
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent) && ! window['MSStream']) {
+      document.documentElement.classList.add('is--ios');
+    }
   }
   ngOnDestroy() {
     for (var i = 0; i < this.subscriptions.length; ++i) {
