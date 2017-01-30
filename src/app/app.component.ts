@@ -311,8 +311,8 @@ export class App {
       return;
     }
 
-    if (newScrollY > this.scrollMonitor.lastScrollY) {
-      // User scrolled down
+    if (newScrollY > 50 && newScrollY > this.scrollMonitor.lastScrollY) {
+      // User scrolled down - and must be 50px or more down the page otherwise momentum scroll bounce fucks it up (I thinkthat's what's happening)
       this.isHeaderless = true;
     }
     else {
