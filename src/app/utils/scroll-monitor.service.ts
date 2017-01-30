@@ -10,7 +10,7 @@ export class ScrollMonitorService {
   newScrollY = 0;
   scroll$ = new Subject<number>();
 
-  private desktopScrollingEl: HTMLElement;
+  private desktopScrollingEl: Element;
 
   private throttledOnScroll = _.throttle(
     this.onScroll.bind(this),
