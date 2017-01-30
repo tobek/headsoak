@@ -1,7 +1,7 @@
 <div class="note-wrapper" *ngIf="note">
   <div class="header">
     <div class="tags"
-      ><span class="tag-like" (click)="newTagClick($event)"
+      ><span class="tag-like" (touchOrClick)="newTagClick($event)"
         ><!--
           @TODO/polish @TODO/mobile When you submit a tag and it closes and re-opens, it doesn't look great on desktop but on mobile it removes the keyboard and brings it back again... looks stupid
         --><input type="text" placeholder="add tag" class="new-tag-input" tabindex=-1
@@ -14,7 +14,7 @@
           (keydown.shift.tab)="closeAddTagField()"
         /><span class="new-tag-button"
           [attr.data-tooltip]="! addingTag ? 'Add a tag' : (! addTagName ? 'Close' : ('Add tag &quot;' + addTagName + '&quot;'))"
-          (click)="newTagIconClick($event); tooltipService.reloadOnEvent($event, false)"
+          (touchOrClick)="newTagIconClick($event); tooltipService.reloadOnEvent($event, false)"
           (mouseleave)="tooltipService.reloadOnMouseleave($event)"
         ><i *ngIf="! addingTag" class="fa fa-plus"></i><i *ngIf="addingTag" class="fa fa-check"></i></span
       ></span
