@@ -195,16 +195,19 @@ export class NoteComponent {
     }
   }
 
-  bodyFocus() {
-    if (this.bodyInputRef) {
-      this.bodyInputRef.nativeElement.focus();
+  bodyFocus(attemptNumber = 0) {
+    if (! this.bodyInputRef || ! jQuery(this.bodyInputRef.nativeElement).is(':visible')) {
+      if (attemptNumber > 20) {
+        this._logger.warn('Failed after 2 seconds to try to focus on note body element');
+        return;
+      }
+
+      setTimeout(() => {
+        this.bodyFocus(attemptNumber + 1);
+      }, 100);
     }
     else {
-      setTimeout(() => {
-        if (this.bodyInputRef) {
-          this.bodyInputRef.nativeElement.focus();
-        }
-      }, 5);
+      this.bodyInputRef.nativeElement.focus();
     }
   }
 
