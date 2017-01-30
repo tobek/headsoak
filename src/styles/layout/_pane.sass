@@ -13,11 +13,11 @@ $pane-horizontal-padding: 60px
       min-height: $mobile-full-height
       transition: min-height $transition-fast
 
-      .is--note-query-visible &
+      .route--note-route.is--note-query-visible &
         min-height: $mobile-full-height--with-note-query
       .is--headerless &
         min-height: $mobile-full-height--headerless
-      .is--headerless.is--note-query-visible &
+      .is--headerless.route--note-route.is--note-query-visible &
         min-height: $mobile-full-height--headerless-with-note-query
 
   .overview

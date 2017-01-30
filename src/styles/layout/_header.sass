@@ -90,8 +90,8 @@
     li
       display: block
 
-      &.is--active
-        // @TODO/ece Active state for menu item, like when you're on settings screen?
+      // @TODO/ece Active state for menu item, like when you're on settings screen?
+      // &.is--active
 
       &.sync-status
         +small
@@ -123,20 +123,18 @@
     margin-right: 3px
     padding-top: 2px // same as padding in note-query
 
-  .search-mode-indicator
-    display: none // mobile only
-
   .private-mode-indicator
     color: $danger-color
 
     .unlocked
       display: none
 
-    &:hover
-      .locked
-        display: none
-      .unlocked
-        display: inline-block
+    @media (min-width: $tablet-large)
+      &:hover
+        .locked
+          display: none
+        .unlocked
+          display: inline-block
 
     opacity: 0
     visibility: hidden
@@ -263,7 +261,7 @@
         max-width: 3rem
         padding: 0 0.5rem 0 0.25rem
 
-    .is--note-query-visible &
+    .route--note-route.is--note-query-visible &
       padding-bottom: $mobile-note-query-height // to provide space (with background and box shadow) for now-absolute note-query nav header
 
     note-query
@@ -276,12 +274,11 @@
       transition: opacity $transition-fast, visibility $transition-fast, transform $transition-fast
       +faded-out
 
-      .is--note-query-visible &
+      .route--note-route.is--note-query-visible &
         +faded-in
         transform: translateY($inner-header-height)
 
     .search-mode-indicator
-      display: block
       margin-right: 0
       margin-left: 8px
 

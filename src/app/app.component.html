@@ -31,7 +31,8 @@
         </div>
 
         <div class="search-mode-indicator"
-          [class.is--active]="isNoteQueryVisible"
+          *ngIf="sizeMonitorService.isMobile"
+          [class.is--active]="! noteQueryComponent.isEmpty()"
           (click)="searchModeClick()"
         ><i class="fa fa-search"></i></div>
 

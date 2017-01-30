@@ -172,23 +172,33 @@ export class App {
     const path = event.url.substring(1).split('/')[0];
     const routeInfo = _.find(this.routes, { path: path });
 
-    const className = this.appWrapperRef.nativeElement.className;
-
     // We don't want to add the class to the host element because it would be nice for the modal to be independent of route classes. So we'll add it to app wrapper, which has various classes bound to variables already, so we have to play nicely with them:
 
-    if (className.indexOf('route--') === -1) {
-      this.appWrapperRef.nativeElement.className += ' route--' + routeInfo.data['slug'];
+    let className = this.appWrapperRef.nativeElement.className;
+
+    className = className.replace(/route--[^ $]*/g, '');
+
+    className += ' route--' + routeInfo.data['slug'];
+
+    if (NOTE_BROWSER_ROUTES.indexOf(this.router.url) !== -1) {
+      className += ' route--note-route';
     }
-    else {
-      this.appWrapperRef.nativeElement.className = className
-        .replace(/route--[^ $]*/, 'route--' + routeInfo.data['slug']);
-    }
+
+    this.appWrapperRef.nativeElement.className = className;
   }
 
-  // @TODO/ece Should this maybe do the same thing as back button?
   logoClick(): void {
+    if (this.sizeMonitorService.isMobile && this.isBackable) {
+      this.backClick();
+      return;
+    }
+
     if (this.activeUIs.noteQuery) {
       this.activeUIs.noteQuery.clearAndEnsureRoute();
+
+      if (this.isNoteQueryVisible) {
+        this.isNoteQueryVisible = false;
+      }
     }
     else {
       this.router.navigateByUrl(this.routingInfo.lastNoteRoute);
@@ -197,7 +207,8 @@ export class App {
 
   // @TODO/refactor This is nasty and requires in-depth knowledge about how parts of the app structure their routes. Ideally this could be baked into either the components running the navigation, OR we just store a `parent` path in each route in app routes data. However, it seems impossible to get data from the current route unless you're injecting `ActivatedRoute` *into the component being used for the route*.
   backClick(): void {
-    if (NOTE_BROWSER_ROUTES.indexOf(this.router.url) !== -1) {
+    if (! this.isBackable || NOTE_BROWSER_ROUTES.indexOf(this.router.url) !== -1) {
+      this._logger.warn('Unexpected call to `backClick` when `isBackable` is false or we\'re on a note route. How did we get here? Route:', this.router.url);
       return;
     }
 
@@ -245,10 +256,22 @@ export class App {
 
   // @TODO/mobile @TODO/polish @TODO/ece Right now you can close the search bar even while there's something being searched for. Auto-clearing the search when closing it seems draconic, but the way it is there's no indication you're searching for something, could be surprising. I think the magnifier glass should be highlighted if a) there's a search query, and b) the search query is closed.
   searchModeClick(): void {
+    if (NOTE_BROWSER_ROUTES.indexOf(this.router.url) === -1) {
+      this.router.navigateByUrl(this.routingInfo.lastNoteRoute);
+
+      if (this.isNoteQueryVisible) {
+        // Don't close it - bring them back to it and show it to them
+        return;
+      }
+    }
+
     this.isNoteQueryVisible = ! this.isNoteQueryVisible;
-    setTimeout(() => {
-      this.noteQueryComponent.focus();
-    }, 0);
+
+    if (this.isNoteQueryVisible) {
+      setTimeout(() => {
+        this.noteQueryComponent.focus();
+      }, 0);
+    }
   }
 
   setSearchModeVisiblity(visible: boolean) {

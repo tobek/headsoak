@@ -105,19 +105,22 @@ $tag-hash-opacity: 0.33
   color: $icon-color
   transition: color $transition-fast
 
-  &:hover
-    color: $icon-hover
+  @media (min-width: $tablet-large)
+    &:hover
+      color: $icon-hover
 
   &.is--active
     color: $icon-active
-    &:hover
-      color: $icon-active-hover
+    @media (min-width: $tablet-large)
+      &:hover
+        color: $icon-active-hover
 
   &.is--disabled
     cursor: default
     opacity: $btn-disabled-opacity
-    &:hover
-      color: $icon-color
+    @media (min-width: $tablet-large)
+      &:hover
+        color: $icon-color
 
 
 =alert-style

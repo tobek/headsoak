@@ -1,5 +1,6 @@
 // @TODO/rewrite Hide all but warnings and errors unless in dev mode? 
 // @TODO/analytics Fire analytics events on warnings and errors. Maybe also pass in the class instance to the constructor so that we can log info about the instance?
+// @TODO/errors On staging we should maybe pop up errors in toasters or modals?
 export class Logger {
   private _prefix: string;
 
