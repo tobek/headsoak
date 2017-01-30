@@ -429,7 +429,7 @@ export class NoteComponent {
 
     let noConfirm;
 
-    if (eventOrNoConfirm instanceof MouseEvent) {
+    if (eventOrNoConfirm instanceof Event) {
       eventOrNoConfirm.stopPropagation();
       this.tooltipService.closeTooltip(eventOrNoConfirm);
 
