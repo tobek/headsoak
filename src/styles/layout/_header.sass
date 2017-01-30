@@ -293,15 +293,25 @@
       display: none !important
 
   .app-nav
+    +menu-dropdown
     position: fixed
     bottom: 0
+    height: $mobile-nav-height
     width: 100%
-    padding-top: 1rem
+    padding-top: 0
     padding-bottom: 0
+    border: none
     text-align: center
 
     .nav-link
+      +not-menu-dropdown
       margin-right: 0
+      padding: 11px 1rem 5px // 2px off vertically from normal nav-link padding, so it looks vertically centered even when the border is not there
+
+    // Faking `.is--active`, because `.is--active` is already applied to these guys via angular template and kind of used for other things (individual note views get active, and on desktop tag nav is active when browser is not collapsed)
+    .route--note-route & .nav-link--note-views,
+    .route--tags & .tag-nav-link .nav-link
+      +menu-dropdown-border
 
     .notes-nav-link
       float: left
