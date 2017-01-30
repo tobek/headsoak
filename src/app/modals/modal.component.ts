@@ -51,8 +51,6 @@ export class ModalComponent {
     'note'
   ];
 
-  // @ViewChild(NoteComponent) noteComponent: NoteComponent;
-
   @Input('second') second = false;
 
   @HostBinding('class.full-height') fullHeight = false;

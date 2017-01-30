@@ -42,7 +42,6 @@ modal
     position: relative // @TODO/now Check this doesn't break normal modals
     max-width: $screen-small
     height: 100%
-    max-width: $screen-small
 
   .modal-content
     +card
@@ -79,6 +78,9 @@ modal
       padding-bottom: 25px
 
   &.windowed
+    .modal-content-container
+      max-height: 100vh
+
     .modal-content
       transform: translateY(-35%)
       transition: transform $transition-med ease-in

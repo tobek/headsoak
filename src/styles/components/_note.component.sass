@@ -387,6 +387,10 @@
       padding-top: 3.5rem
       padding-bottom: 2.5rem
 
+      .is--ios &
+        // Unlike Chrome, which updates vh units based on whether browser bar is visible or not, iOS Safari calculates vh from dimensions as if browser bar is never there. This means that we need some more space on iOS Safari, in case browser bar is there. @TODO/polish Chrome is updating their behavior (<https://bugs.chromium.org/p/chromium/issues/detail?id=428132>) to match iOS here - once that update is widespread we should make this the default behavior.
+        height: calc(100vh - 75px)
+
       .body-input
         padding-left: 0.5rem
         padding-right: 0.5rem
