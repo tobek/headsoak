@@ -60,12 +60,12 @@
     <!-- @TODO/polish On desktop tooltip is still visible behind modal on click until you mouse away - should make something similar -->
     <a data-tooltip="Expand note" class="note-action note-action--open" *ngIf="! isOpened" (click)="openNote($event)"><i class="fa fa-fw fa-pencil-square-o"></i></a
 
-    ><a data-tooltip="Close note" class="note-action note-action--close" *ngIf="isOpened" (click)="unopenNote($event)"><i class="fa fa-fw fa-close"></i></a
+    ><a data-tooltip="Close note" class="note-action note-action--close" *ngIf="isOpened" (touchOrClick)="unopenNote($event)"><i class="fa fa-fw fa-close"></i></a
 
     ><a class="note-action"
       [class.is--active]="note.pinned"
       [attr.data-tooltip]="(note.pinned ? 'Un-pin' : 'Pin') + ' this note'"
-      (click)="togglePinned($event)"
+      (touchOrClick)="togglePinned($event)"
     ><i class="fa fa-fw fa-thumb-tack"></i></a
 
     ><!--<a data-tooltip="Share settings" class="note-action" (click)="note.showShareSettings()"><i class="fa fa-fw fa-users"></i></a
@@ -73,7 +73,7 @@
     >--><a class="note-action note-action--private"
       [class.is--active]="note.private"
       [attr.data-tooltip]="'Make this note' + (note.private ? ' not' : '') + ' private'"
-      (click)="togglePrivate($event)"
+      (touchOrClick)="togglePrivate($event)"
     ><i class="fa fa-fw fa-lock locked"></i><i class="fa fa-fw fa-unlock-alt unlocked"></i></a
 
     ><span *ngIf="! note.new"
@@ -82,16 +82,16 @@
 
       --><a class="note-action"
         data-tooltip="Explore note"
-        (click)="showExplore($event)"
+        (touchOrClick)="showExplore($event)"
       ><i class="fa fa-fw fa-bar-chart"></i></a
 
       ><a class="note-action"
         [class.is--active]="note.archived"
         [attr.data-tooltip]="(note.archived ? 'Un-archive' : 'Archive') + ' this note'"
-        (click)="toggleArchived($event)"
+        (touchOrClick)="toggleArchived($event)"
       ><i class="fa fa-fw fa-archive"></i></a
 
-      ><a data-tooltip="Delete note" class="note-action" (click)="delete($event)"><i class="fa fa-fw fa-trash-o"></i></a
+      ><a data-tooltip="Delete note" class="note-action" (touchOrClick)="delete($event)"><i class="fa fa-fw fa-trash-o"></i></a
     ></span
   ></div>
 </div>
