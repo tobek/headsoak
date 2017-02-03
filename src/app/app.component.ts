@@ -43,11 +43,14 @@ export class App {
   /** Whether we are on a route such that we should show the back button. */
   isBackable = false;
 
+  isNoteViewsNavOpen = false;
+
   initialized = false;
 
   @ViewChild('appWrapperRef') appWrapperRef: ElementRef;
   @ViewChild(HomeComponent) homeComponent: HomeComponent;
   @ViewChild(NoteQueryComponent) noteQueryComponent: NoteQueryComponent;
+  @ViewChild('notesNav') notesNav: ElementRef;
 
   private subscriptions: Subscription[] = [];
   private initializiationSub: Subscription;
@@ -296,6 +299,36 @@ export class App {
   newNote(): void {
     // @HACK: Make this work on all routes by hijacking the shortcut for this, which includes `routeTo` logic to make sure we're in the right place.
     this.settings.data['sNewNote']['_fn']();
+  }
+
+  noteNavTouchend(event: Event): void {
+    if  (! this.sizeMonitorService.isMobile) {
+      return;
+    }
+    if (NOTE_BROWSER_ROUTES.indexOf(this.router.url) === -1) {
+      // Let the routerLink directive take us back notes
+      return;
+    }
+
+    this.isNoteViewsNavOpen = ! this.isNoteViewsNavOpen;
+
+    // Don't set this up until next click otherwise we immediately unhover
+    setTimeout(this.closeNoteNavOnNextTouch.bind(this), 0);
+
+    event.preventDefault();
+  }
+
+  // @TODO/refactor Very similar code for tag dropdown in TagComponent - if we need this again, should share logic
+  closeNoteNavOnNextTouch() {
+    jQuery(window).one('touchend', this.noteNavOnNextTouch.bind(this));
+  }
+  noteNavOnNextTouch(event: Event) {
+    if (this.isNoteViewsNavOpen && ! this.notesNav.nativeElement.contains(event.target)) {
+      this.isNoteViewsNavOpen = false;
+      event.stopImmediatePropagation();
+      return false;
+    }
+    // Something else closed us, OR this was a click inside notes nav. Either way, let other handlers handle what to do next
   }
 
   tagNavClick(): void {

@@ -227,6 +227,7 @@ export class TagComponent {
     }
   }
 
+  // @TODO/refactor Very similar code for note nav in AppComponent - if we need this again, should share logic
   unHoverOnNextTouch() {
     // We can use `one` cause no matter what we want to only affect next touch, whether it's in tag actions (so close it, but let tag actions touch go ahead) or somewhere else on the page, in which case close it and cancel any other events from firing
     jQuery(window).one('touchend', this.onNextTouch.bind(this));

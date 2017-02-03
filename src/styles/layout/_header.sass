@@ -154,7 +154,7 @@
   .new-note
     margin-top: 13px // @HACK Magic number to vertically align. Lazy.
 
-  .tag-nav-link
+  .nav-link-outer--tags
     float: right
 
   ul
@@ -202,24 +202,25 @@
     .fa-bars
       transform: translateY(-0.5px) // no idea why this is necessary but it bothers me that it's off...
 
-  .route--list &,
-  .route--scroll &,
-  .route--browse &
-    .nav-link--note-views:hover
-      .note-view
-        display: inline
+  @media (min-width: $tablet-large)
+    .route--list &,
+    .route--scroll &,
+    .route--browse &
+      .nav-link--note-views:hover
+        .note-view
+          display: inline
 
-        &.is--active
-          color: $icon-hover
-
-      // While actually hovering over the choices, don't highlight the currently active one
-      .note-views:hover
-        .note-view.is--active
-          cursor: default
-          color: inherit
-
-          &:hover
+          &.is--active
             color: $icon-hover
+
+        // While actually hovering over the choices, don't highlight the currently active one
+        .note-views:hover
+          .note-view.is--active
+            cursor: default
+            color: inherit
+
+            &:hover
+              color: $icon-hover
 
 
 @media (max-width: 900px) // @HACK Kind of arbitrary but it works?
@@ -310,11 +311,49 @@
 
     // Faking `.is--active`, because `.is--active` is already applied to these guys via angular template and kind of used for other things (individual note views get active, and on desktop tag nav is active when browser is not collapsed)
     .route--note-route & .nav-link--note-views,
-    .route--tags & .tag-nav-link .nav-link
+    .route--tags & .nav-link-outer--tags .nav-link
       +menu-dropdown-border
 
-    .notes-nav-link
-      float: left
+    .nav-link-outer--notes
+      position: absolute
+      left: 0.5rem
+      max-width: 33vw
+      text-align: right
+      transition: max-width $transition-fast
+
+    .nav-link-outer--tags
+      position: absolute
+      right: 0.5rem
+
+    .nav-link-outer--tags,
+    .nav-link-outer--new-note,
+      +fadeable
+      +faded-in
+
+    .nav-link--note-views
+      width: 100%
+
+    .note-view
+      transition: margin $transition-fast
+
+    &.is--note-nav-open
+      .nav-link-outer--tags,
+      .nav-link-outer--new-note,
+        +faded-out
+
+      .nav-link-outer--notes
+        width: 100%
+        max-width: 100vw
+
+      .note-views
+        display: inline-block
+
+      .note-view
+        display: inline-block
+        margin-right: 15vw
+
+        &.is--active
+          color: $icon-hover
 
 // .mobile-only
 //   display: none !important
