@@ -217,7 +217,12 @@ module.exports = function (options) {
 
             // This didn't work cause this plugin needs npm packages (for name and version to know how to cache them). See my comments here <https://github.com/shlomiassaf/webpack-dll-bundles-plugin/issues/8>. For now this library will just have to not be in the vendor bundle
             // process.cwd() + '/src/app/vendor/darsain-tooltips.min.js',
-          ]
+          ],
+          smartness: [
+            'nlcst-to-string',
+            'retext',
+            'retext-keywords',
+          ],
         },
         dllDir: helpers.root('dll'),
         webpackConfig: webpackMergeDll(commonConfig({env: ENV}), {
@@ -236,7 +241,10 @@ module.exports = function (options) {
        */
       new AddAssetHtmlPlugin([
         { filepath: helpers.root(`dll/${DllBundlesPlugin.resolveFile('polyfills')}`) },
-        { filepath: helpers.root(`dll/${DllBundlesPlugin.resolveFile('vendor')}`) }
+        { filepath: helpers.root(`dll/${DllBundlesPlugin.resolveFile('vendor')}`) },
+
+        // @TODO/build/smartness Eventually this shouldn't be here and should be loaded asynchronously
+        { filepath: helpers.root(`dll/${DllBundlesPlugin.resolveFile('smartness')}`) },
       ]),
 
       /**

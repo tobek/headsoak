@@ -33,7 +33,7 @@ bootloader(main);
 /*
  * Vendor dependencies
  *
- * To pack these in `vendor` bundle they have to go in `webpack.dev.js` too. See `src/app/vendor/README.md`.
+ * To pack these in `vendor` bundle they have to go in `webpack.dev.js` too. See `src/app/vendor/README.md`. Dependencies specifically imported elsewhere can be omitted here (but must be in `webpack.dev.js`).
  */
 
 // Ace editor
@@ -56,3 +56,5 @@ import 'mousetrap-global-bind';
 import 'sentiment';
 import 'toastr';
 import 'app/vendor/darsain-tooltips.min';
+
+// @TODO/build/smartness More vendor packages required for smart tags are in `smartness.browser.ts`

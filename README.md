@@ -27,7 +27,7 @@ You can now load the package in an individual file, e.g. `const lodash = require
 If you want the package to be included in `vendor.bundle.js` (as opposed to with application code in `main.bundle.js`) which you probably do, then you need to do two things:
 
 1. Put the package name in the `vendor` array in the `DllBundlesPlugin` config in `webpack.dev.js`.
-2. Put `import '<package>'` in the end of `src/main.browser.ts`.
+2. If it doesn't need referencing in any specific piece of code, you can put `import '<package>'` in the end of `src/main.browser.ts`.
 
 You can then, if necessary, reference those modules e.g. `const lunr = require('lunr')`. (If you do so, then putting it in `src/main.browser.ts` isn't necessary, but it's nice to have them all in one place, since some do not need referencing from within our code.)
 
