@@ -7,7 +7,10 @@ import {Note} from '../notes/note.model';
 
 import * as _ from 'lodash';
 
-const sentiment = require('sentiment');
+import * as sentiment from 'sentiment';
+import * as nlcstToString from 'nlcst-to-string';
+import * as retext from 'retext';
+import * as retextKeywords from 'retext-keywords';
 
 @Injectable()
 export class ProgTagApiService {
@@ -16,6 +19,9 @@ export class ProgTagApiService {
 
   lib = {
     sentiment: sentiment,
+    nlcstToString: nlcstToString,
+    retext: retext,
+    retextKeywords: retextKeywords,
   };
 
   constructor() {
