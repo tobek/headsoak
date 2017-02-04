@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 
 import {TagsService} from './tags.service';
-import {Tag} from './tag.model';
-// import {Note} from '../notes/note.model';
+import {Tag, NoteSpecificData} from './tag.model';
+import {Note} from '../notes/note.model';
 
 import {Logger} from '../utils/logger';
 
@@ -21,7 +21,88 @@ export class ProgTagLibraryService {
       name: 'sentiment',
       description: 'Tag notes that show a markedly positive or negative sentiment. Hover over the tag on a note to see the calculated strength of that note\'s sentiment.',
       prog: true,
-      progFuncString: '// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm\'s `sentiment` module) have been bundled with the app.\nvar sentiment = api.lib.sentiment;\n\nvar score = sentiment(note.body);\nif (score && score.comparative) {\n  score = Math.round(score.comparative * 1000) / 1000;\n}\nelse {\n  score = 0;\n}\n\nvar value;\nif (score >= 0.1) {\n  value = \'positive\';\n}\nelse if (score <= -0.1) {\n  value = \'negative\';\n}\nelse {\n  return false;\n}\n\nreturn {\n  subTag: value,\n  score: score,\n};',
+      // @NOTE Can use this function definition to write the library tag with the benefits of type checking and general JS linting, and then just comment out and use backticks
+      // progFuncString: function(note: Note, api, _): boolean | NoteSpecificData {
+      progFuncString: `
+// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`sentiment\` module) have been bundled with the app.
+
+var sentiment = api.lib.sentiment;
+
+var score = sentiment(note.body);
+if (score && score.comparative) {
+  score = Math.round(score.comparative * 1000) / 1000;
+}
+else {
+  score = 0;
+}
+
+var value;
+if (score >= 0.1) {
+  value = 'positive';
+}
+else if (score <= -0.1) {
+  value = 'negative';
+}
+else {
+  return false;
+}
+
+return {
+  subTag: value,
+  score: score,
+};` // }
+    },
+    {
+      id: 'lib--topic',
+      isLibraryTag: true,
+      readOnly: true,
+      name: 'topic',
+      description: '@TODO/now',
+      prog: true,
+      // progFuncString: function(note: Note, api, _): boolean | NoteSpecificData {
+      progFuncString:`
+// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`retext-keywords\` module) have been bundled with the app. DIFFERENT
+
+api.lib.retext().use(api.lib.retextKeywords).process(note.body, function(err, doc) {
+  console.log('\\n\\n\\nresults for', note);
+  // console.log(doc.data);
+
+  console.log('\\nKeywords:');
+
+  doc.data.keywords.forEach(function (keyword) {
+    console.log(api.lib.nlcstToString(keyword.matches[0].node), keyword.stem, keyword.score);
+  });
+
+  console.log('\\nKey-phrases:');
+
+  doc.data.keyphrases.forEach(function (phrase) {
+    console.log(phrase.matches[0].nodes.map(api.lib.nlcstToString).join(''), phrase.stems, phrase.score);
+  });
+  // return;
+
+  // console.log();
+  // console.log();
+
+  // console.log('Keywords:');
+
+  // doc.data.keywords.forEach(function (keyword) {
+  //   console.log(keyword.matches[0].node);
+  // });
+
+  // console.log();
+  // console.log('Key-phrases:');
+
+  // doc.data.keyphrases.forEach(function (phrase) {
+  //   // console.log(phrase.matches[0].nodes.map(api.lib.nlcstToString).join(''));
+  //   console.log(phrase.matches[0].nodes);
+  // });
+});
+
+// return {
+//   subTag: value,
+//   score: score,
+// };
+return false;` // }
     },
     {
       id: 'lib--untagged',
@@ -71,21 +152,25 @@ export class ProgTagLibraryService {
     this.tagsService = tagsService;
 
     this.library = _.map(this.librarySourceData, (tagData) => {
-      const localTag = this.tagsService.tags[tagData.id];
-
-      if (localTag) {
-        // This tag is being used by the user, so let's pick that up in order to get `docs` list etc.
-
-        // While we're at it we may need to update the tag
-        this.maybeUpdateLocalTag(localTag, tagData);
-
-        return localTag;
-      }
-      else {
-        // A sort of "detached" version of the tag, that will be added to user's data if they choose to enable it
-        return new Tag(tagData, this.tagsService.dataService);
-      }
+      return this.initializeLibraryTag(tagData);
     });
+  }
+
+  initializeLibraryTag(tagData): Tag {
+    const localTag = this.tagsService.tags[tagData.id];
+
+    if (localTag) {
+      // This tag is being used by the user, so let's pick that up in order to get `docs` list etc.
+
+      // While we're at it we may need to update the tag
+      this.maybeUpdateLocalTag(localTag, tagData);
+
+      return localTag;
+    }
+    else {
+      // A sort of "detached" version of the tag, that will be added to user's data if they choose to enable it
+      return new Tag(tagData, this.tagsService.dataService);
+    }
   }
 
   maybeUpdateLocalTag(localTag: Tag, latestTagData) {
