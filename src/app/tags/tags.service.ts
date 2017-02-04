@@ -14,6 +14,7 @@ import * as _ from 'lodash';
 export class TagsService {
   tags: { [tagId: string]: Tag } = {}; // id -> Tag instance
   initialized$ = new ReplaySubject<void>(1);
+  isInitialized = false;
 
   /** Updates whenever a tag is added to users tags (not added to a given note). */
   tagCreated$ = new Subject<Tag>();
@@ -60,9 +61,10 @@ export class TagsService {
     this.setUpInternalTags();
 
     this.progTagApi.init(this.dataService);
-    this.progTagLibraryService.init(this);
+    // this.progTagLibraryService.init(this); // This requires notes to be set up, so is now initialized by DataService
 
     this.initialized$.next(null);
+    this.isInitialized = true;
 
     this._logger.log('Got', _.size(this.tags), 'tags');
   }
