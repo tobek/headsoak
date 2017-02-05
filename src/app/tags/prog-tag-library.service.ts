@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 
 import {TagsService} from './tags.service';
-import {Tag, NoteSpecificData} from './tag.model';
+import {Tag, ClassifierResult, ClassifierReturnType} from './tag.model';
 import {Note} from '../notes/note.model';
 
 import {Logger} from '../utils/logger';
@@ -21,10 +21,9 @@ export class ProgTagLibraryService {
       name: 'sentiment',
       description: 'Tag notes that show a markedly positive or negative sentiment. Hover over the tag on a note to see the calculated strength of that note\'s sentiment.',
       prog: true,
-      // @NOTE Can use this function definition to write the library tag with the benefits of type checking and general JS linting, and then just comment out and use backticks
-      // progFuncString: function(note: Note, api, _): boolean | NoteSpecificData {
-      progFuncString: `
-// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`sentiment\` module) have been bundled with the app.
+      // @NOTE Can use this function definition to write the library tag with the benefits of type checking and general JS linting and easy testing, and then just comment out and use backticks (and comment/update the last line of func as well)
+      // classifier: function(note: Note, api, _): ClassifierReturnType {
+      progFuncString: `// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`sentiment\` module) have been bundled with the app.
 
 var sentiment = api.lib.sentiment;
 
@@ -59,9 +58,8 @@ return {
       name: 'topic',
       description: '@TODO/now',
       prog: true,
-      // progFuncString: function(note: Note, api, _): boolean | NoteSpecificData {
-      progFuncString:`
-// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`retext-keywords\` module) have been bundled with the app. DIFFERENT
+      // classifier: function(note: Note, api, _): ClassifierReturnType {
+      progFuncString:`// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`retext-keywords\` module) have been bundled with the app.
 
 api.lib.retext().use(api.lib.retextKeywords).process(note.body, function(err, doc) {
   console.log('\\n\\n\\nresults for', note);
