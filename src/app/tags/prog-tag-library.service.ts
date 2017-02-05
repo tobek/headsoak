@@ -21,8 +21,8 @@ export class ProgTagLibraryService {
       name: 'sentiment',
       description: 'Tag notes that show a markedly positive or negative sentiment. Hover over the tag on a note to see the calculated strength of that note\'s sentiment.',
       prog: true,
-      // @NOTE Can use this function definition to write the library tag with the benefits of type checking and general JS linting and easy testing, and then just comment out and use backticks (and comment/update the last line of func as well)
-      // classifier: function(note: Note, api, _): ClassifierReturnType {
+      // @NOTE Can use this function definition to write the library tag with the benefits of type checking and general JS linting, and then just comment out and use backticks (and comment/update the last line of func as well)
+      // progFunc: function(note: Note, api, _): ClassifierReturnType {
       progFuncString: `// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`sentiment\` module) have been bundled with the app.
 
 var sentiment = api.lib.sentiment;
@@ -58,8 +58,14 @@ return {
       name: 'topic',
       description: '@TODO/now',
       prog: true,
-      // classifier: function(note: Note, api, _): ClassifierReturnType {
+      // progFunc: function(note: Note, api, _): ClassifierReturnType {
       progFuncString:`// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`retext-keywords\` module) have been bundled with the app.
+
+var resolve, reject;
+var result = new Promise(function(res, rej) {
+  resolve = res;
+  reject = rej;
+});
 
 api.lib.retext().use(api.lib.retextKeywords).process(note.body, function(err, doc) {
   console.log('\\n\\n\\nresults for', note);
@@ -76,31 +82,18 @@ api.lib.retext().use(api.lib.retextKeywords).process(note.body, function(err, do
   doc.data.keyphrases.forEach(function (phrase) {
     console.log(phrase.matches[0].nodes.map(api.lib.nlcstToString).join(''), phrase.stems, phrase.score);
   });
-  // return;
 
-  // console.log();
-  // console.log();
-
-  // console.log('Keywords:');
-
-  // doc.data.keywords.forEach(function (keyword) {
-  //   console.log(keyword.matches[0].node);
-  // });
-
-  // console.log();
-  // console.log('Key-phrases:');
-
-  // doc.data.keyphrases.forEach(function (phrase) {
-  //   // console.log(phrase.matches[0].nodes.map(api.lib.nlcstToString).join(''));
-  //   console.log(phrase.matches[0].nodes);
-  // });
+  if (doc.data.keywords[0]) {
+    resolve({
+      subTag: api.lib.nlcstToString(doc.data.keywords[0].matches[0].node),
+      score: doc.data.keywords[0].score
+    });
+  }
+  else {
+    resolve(false);
+  }
 });
-
-// return {
-//   subTag: value,
-//   score: score,
-// };
-return false;` // }
+return result; `//}
     },
     {
       id: 'lib--untagged',
