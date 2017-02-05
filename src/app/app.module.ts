@@ -119,10 +119,12 @@ const APP_PROVIDERS = [
 // import { PLATFORM_PIPES } from '@angular/core';
 import {ArrayLimitPipe} from './pipes/array-limit.pipe';
 import {InternalTagsFilterPipe} from './pipes/internal-tags-filter.pipe';
+import {MapIdsToTagsPipe} from './pipes/map-ids-to-tags.pipe';
 
 const APP_PIPES = [
   ArrayLimitPipe,
   InternalTagsFilterPipe,
+  MapIdsToTagsPipe,
 ];
 
 

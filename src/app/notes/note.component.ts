@@ -157,25 +157,6 @@ export class NoteComponent {
     this.noteClosed.emit(this.note);
   }
 
-  /** Have had some issue with deleted or non-existent tag IDs showing up on notes, here we can debug it. */
-  getTagById(tagId: string) {
-    // @TODO/optimization This seems to be getting called a BILLION times (more in dev mode but still in prod) though only seeing it when we hit that error of course. Seems to be because of change detection starting from app component. Is that necessary?
-
-    const tag = this.notesService.dataService.tags.tags[tagId];
-
-    if (! tag) {
-      if (! this['erroredOnMissingTag' + tagId]) {
-        // Logging this message a gajillion times seems to slow down browser, so only do it once
-        this._logger.warn('Note ID', this.note.id, 'claims to have tag ID', tagId, 'but no tag found for that ID.');
-        this['erroredOnMissingTag' + tagId] = true;
-      }
-      // @TODO/rewrite @TODO/tags. Check firebase data for all of these and see how pervasive. Permanent fix would be to loop through notes that reference this tag! Once fixed, TagComponent should throw an error rather than try to handle being passed no tag
-      return null;
-    }
-
-    return tag;
-  }
-
   /** `wholeTagClick` refers to whether this click is coming from the <tag> element or from inside the tag actions dropdown. */
   toggleTag(tagId: string, event: MouseEvent, wholeTagClick = false) {
     if (event) {

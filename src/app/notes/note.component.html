@@ -19,15 +19,15 @@
         ><i *ngIf="! addingTag" class="fa fa-plus"></i><i *ngIf="addingTag" class="fa fa-check"></i></span
       ></span
 
-      ><tag class="tag-{{ tagId }}" style="touch-action: manipulation"
-        *ngFor="let tagId of (note.tags | internalTagsFilter)"
-        [tag]="getTagById(tagId)"
+      ><tag class="tag-{{ tag.id }}" style="touch-action: manipulation"
+        *ngFor="let tag of (note.tags | internalTagsFilter | mapIdsToTags:note.id)"
+        [tag]="tag"
         [ofNoteId]="note.id"
         context="note"
         enableDropdown=1
-        (click)="toggleTag(tagId, $event, true)"
+        (click)="toggleTag(tag.id, $event, true)"
         (toggled)="toggleTag($event.id)"
-        (removed)="removeTag(tagId)"
+        (removed)="removeTag(tag.id)"
       ></tag>
       <!-- @TODO/ece Should make a call on if clicking on tag name should a) toggle in query, or b) go to tag details. Also, what should cursor be. -->
 
