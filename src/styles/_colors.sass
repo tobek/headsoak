@@ -12,6 +12,9 @@ $accent-color: blue
 
 $menu-color: white
 
+$bg-blur: 5px // set to 0 to disable
+$bg-overlay: rgba(blue, 0.25) // set to transparent to disable
+
 
 // ASSIGNED/DERIVED COLROS
 
@@ -28,12 +31,12 @@ $panel-heading: lighten($accent-color, 20%)
 $panel-text-link: $panel-text
 $panel-text-link-hover: $accent-color
 
-$form-label: $accent-color // e.g. "profile image URL" in settings screen
+$form-label: $accent-color // mini label headings in settings screens
 
 // Standalone icons which perform major functions:add tag, new tag, search, tag browser dropdown caret, x icons
 $icon-color: hsl(hue($panel-color), saturation($panel-color), 50%)
 $icon-hover: $accent-color 
-// @TODO/now The following active icon colors are used in `+icon-button` mixin, but not sure if any elements using that mixin actually have active states. For now made them the same as note icon active/active hover.
+// @TODO/now The following two active icon colors are used in `+icon-button` mixin, but not sure if any elements using that mixin actually have active states. For now made them the same as note icon active/active hover.
 $icon-active: darken($accent-color, 20%)
 $icon-active-hover: lighten($accent-color, 20%)
 
@@ -49,7 +52,7 @@ $primary-button-bg: $accent-color
 $secondary-button-text: $primary-button-bg
 $secondary-button-bg: $primary-button-text
 
-// Both sidebar/panel menu (like settings/tags) and dropdown menus
+// Sidebar/panel menu (like settings/tags) and also the navigation icons (new, notes, tags)
 $menu-link: $menu-color
 $menu-link-active: $panel-color
 $menu-link-active-bg: $menu-link
