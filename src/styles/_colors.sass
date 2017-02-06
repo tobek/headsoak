@@ -1,9 +1,11 @@
+// MAIN THEME COLORS
+
 $tag-color: orange
 
-$note-text: black
-$note-bg: white
+$note-text: #424242
+$note-bg: rgba(255, 255, 255, 0.92)
 
-$panel-color: darkgray
+$panel-color: #424242
 $panel-text: white
 
 $accent-color: blue
@@ -11,26 +13,34 @@ $accent-color: blue
 $menu-color: white
 
 
-$cta-icon: hsl(hue($panel-color), saturation($panel-color), 50%)
-$cta-icon-hover: $accent-color 
+// ASSIGNED/DERIVED COLROS
 
 $tag-text: $tag-color
-$tag-text-hover: white
-@if lightness($tag-color) > 50 and saturation($tag-color) < 50
-    $tag-text-hover: black
 $tag-bg: transparent
-$tag-bg-hover: $tag-color
+$tag-active-text: white
+@if lightness($tag-color) > 50 and saturation($tag-color) < 50
+    $tag-active-text: black
+$tag-active-bg: $tag-color
 
+$panel-bg: rgba($panel-color, 0.75)
+$panel-text-secondary: mix($panel-bg, $panel-text, 25%) // used for secondary stuff in panels like links, note/tag count, and asides. also currently assigned below to placeholders and form field borders
+$panel-heading: lighten($accent-color, 20%)
+$panel-text-link: $panel-text
+$panel-text-link-hover: $accent-color
 
-$note-icon: hsl(hue($panel-color), saturation($panel-color), 60%)
+$form-label: $accent-color // e.g. "profile image URL" in settings screen
+
+// Standalone icons which perform major functions:add tag, new tag, search, tag browser dropdown caret, x icons
+$icon-color: hsl(hue($panel-color), saturation($panel-color), 50%)
+$icon-hover: $accent-color 
+// @TODO/now The following active icon colors are used in `+icon-button` mixin, but not sure if any elements using that mixin actually have active states. For now made them the same as note icon active/active hover.
+$icon-active: darken($accent-color, 20%)
+$icon-active-hover: lighten($accent-color, 20%)
+
+$note-icon-color: hsl(hue($panel-color), saturation($panel-color), 60%)
 $note-icon-hover: $accent-color 
 $note-icon-active: darken($accent-color, 20%)
 $note-icon-active-hover: lighten($accent-color, 20%)
-
-$panel-bg: rgba($panel-color, 0.20)
-$panel-text-secondary: mix($panel-bg, $panel-text, 25%)
-$panel-heading: lighten($accent-color, 20%)
-$form-label: $accent-color
 
 $primary-button-text: white
 @if lightness($accent-color) > 50 and saturation($accent-color) < 50
@@ -39,37 +49,31 @@ $primary-button-bg: $accent-color
 $secondary-button-text: $primary-button-bg
 $secondary-button-bg: $primary-button-text
 
+// Both sidebar/panel menu (like settings/tags) and dropdown menus
 $menu-link: $menu-color
-$menu-link-active: $panel-bg 
-$menu-link-active-bg: $menu-link 
-$text-icon: $menu-link 
-$text-icon-active: $panel-bg
+$menu-link-active: $panel-color
+$menu-link-active-bg: $menu-link
+$menu-icon: $menu-link
+$menu-icon-active: $menu-link-active
 
-$dropdown-text: $panel-text
-$dropdown-bg: $panel-bg
+// Dropdowns are: autocomplete, sort dropdown, tooltips, tag dropdown, etc.
+$dropdown-text: $panel-text // non-clickable text in dropdowns
+$dropdown-bg: $panel-color
+$dropdown-menu-link: $dropdown-text
+$dropdown-menu-link-active: $dropdown-bg
+$dropdown-menu-link-active-bg: $dropdown-menu-link
+$dropdown-menu-icon: $menu-icon
+$dropdown-menu-icon-active: $menu-icon-active
 $dropdown-underline: $accent-color
 
-$focused-underline: $accent-color
+$form-stroke: $panel-text-secondary // Used for forms and other borders
+$form-placeholder: $panel-text-secondary
+$form-focused-stroke: $accent-color // Used for active form/input fields and under active note
 
 
+// MISC OTHER COLORS
 
-
-
-// BASE COLORS
-
-$primary-color: #f4f4f2 //#e05151 //#7FD6FA // #A6E22E // #FF5D38 // #FFE792 //#00A8C6 // #A6E22E// #424242 // e.g. body text, icons
-$primary-color-light: #848993 //#CCE2FF // #848993 // #3F454A //#6e7a94 // #bcc2c7 // used e.g. for tag count, active icon hover, note action icons
-$primary-color-contrast: rgba(255, 255, 255, 0.92) // e.g. card bg, text background
-$secondary-color: #f26964 // #0b99bc //#FF5D38 // #F25A56 // #FF5D38 // #c3521b // e.g. tag text, button stuff
-$highlight-color: #00A8C6 // #00A8C6 // #85A4D2 // #50e3c2 // #e05151 //#F5BB14 //#26A6A6 // #50e3c2 // e.g. logo, hover states
-
-$input-stroke: #848993 // #848993 // #DEE3F3 //#989898 // This is used for input placeholder text, input borders/underlines, logo slogan, minor text on login (forgot password, T&Cs), text links @TODO/rename
-
-// $accent-color: #4f54e2 // used for tag-related action icons (add, expand, etc., but *not* shared/programmatic state). @TODO/ece Should the rename pencil and/or remove X (from tag in note search bar) be this color too?
-$accent-color: $input-stroke // eh that looked gaudy, let's just use this for now
-
-
-// OTHER COLORS
+$logo-color: $accent-color // @TODO/now
  
 $app-bg-gradient-top: #16697f
 $app-bg-gradient-bottom: #0e465e
@@ -79,35 +83,45 @@ $warning-color: #edc23a
 $danger-color: #c33132
 
 
-// ASSIGNED/DERIVED COLORS
-
-$logo-color: $highlight-color
-
-$link-color: $input-stroke
-$link-hover: $highlight-color
-
-$tag-color: $secondary-color
-// $tag-bg: $primary-color-light // was used when all tags were chiclets
-
-$icon-color: $primary-color
-$icon-hover: $highlight-color
-$icon-active: $secondary-color
-$icon-active-hover: $primary-color-light
-
-$menu-dropdown-bg-color: rgba(#30302f, 0.92) // #3c3c3c #464C57 #191B1F #2b303b #6e7a94 //rgba($primary-color-contrast, 1) // used for menus and dropdowns like autocomplete, expanded tag list, individual tag dropdown, sort dropdown, etc.
-$pane-bar-bg-color: $menu-dropdown-bg-color // used for tag list on notes, and for the tags/settings sidebar, and for the header
-
-
 // SHADING AND MASKS
 
 $btn-disabled-opacity: 0.5
 
 $shadow-color: rgba(0, 0, 0, 0.5) // e.g. card box-shadow, text shadow
 $shadow-color-light: rgba(0, 0, 0, 0.1) // Only used (tentatively) for note tag list
-// $shadow-border: rgba(0, 0, 0, 0.1) // we use box shadows everywhere but someshapes like the shape of account menu you can't really do box shadow, but a border with this color kind of approximates it // NO LONGER NEEDED
-// @TODO/ece Could be fun to do something like this, which takes $primary-color and makes it translucent. That way these box shadows will match changing theme
-// $shadow-color: rgba(74, 74, 74, 0.5)
+// @TODO/ece Could be fun to do something like this, which takes $panel-color and makes it translucent. That way these box shadows will match changing theme
+// $shadow-color: rgba($panel-color, 0.5)
 
 $modal-backdrop: rgba(0, 0, 0, 0.7)
-$modal-backdrop--dark: rgba(0, 0, 0, 0.9)
-$white-overlay: rgba(255,255,255,0.75)
+$modal-backdrop--dark: rgba(0, 0, 0, 0.9) // e.g. for full screen note modal
+$light-overlay: rgba($note-bg, 0.75)
+$light-overlay-text: $note-text
+
+
+// OLD COLORS
+
+// $primary-color: #f4f4f2 //#e05151 //#7FD6FA // #A6E22E // #FF5D38 // #FFE792 //#00A8C6 // #A6E22E// #424242 // e.g. body text, icons
+// $primary-color-light: #848993 //#CCE2FF // #848993 // #3F454A //#6e7a94 // #bcc2c7 // used e.g. for tag count, active icon hover, note action icons
+// $primary-color-contrast: rgba(255, 255, 255, 0.92) // e.g. card bg, text background
+// $secondary-color: #f26964 // #0b99bc //#FF5D38 // #F25A56 // #FF5D38 // #c3521b // e.g. tag text, button stuff
+// $highlight-color: #00A8C6 // #00A8C6 // #85A4D2 // #50e3c2 // #e05151 //#F5BB14 //#26A6A6 // #50e3c2 // e.g. logo, hover states
+
+// $input-stroke: #848993 // #848993 // #DEE3F3 //#989898 // This is used for input placeholder text, input borders/underlines, logo slogan, minor text on login (forgot password, T&Cs), text links @TODO/rename
+
+// $accent-color: #4f54e2 // used for tag-related action icons (add, expand, etc., but *not* shared/programmatic state). @TODO/ece Should the rename pencil and/or remove X (from tag in note search bar) be this color too?
+// $accent-color: $input-stroke // eh that looked gaudy, let's just use this for now
+
+// $link-color: $panel-text-secondary
+// $link-hover: $accent-color
+
+// $menu-dropdown-bg-color: rgba(#30302f, 0.92) // #3c3c3c #464C57 #191B1F #2b303b #6e7a94 //rgba($primary-color-contrast, 1) // used for menus and dropdowns like autocomplete, expanded tag list, individual tag dropdown, sort dropdown, etc.
+// $pane-bar-bg-color: $menu-dropdown-bg-color // used for tag list on notes, and for the tags/settings sidebar, and for the header
+
+
+// .note .body-input
+//   color: #30302f
+
+// .pane-layout .overview,
+// .pane-layout .pane,
+// tag-browser .tag-pane,
+//   background-color: $pane-bar-bg-color !important

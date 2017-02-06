@@ -5,7 +5,7 @@ tag-browser
 
     height: 100%
     padding: $pane-overview-padding 0
-    background-color: $primary-color-contrast
+    background-color: $panel-bg
     text-align: center
 
     .menu
@@ -15,7 +15,7 @@ tag-browser
   .menu.menu--tag-home
     margin-bottom: 1rem
     padding-bottom: 1rem
-    // border-bottom: 1px solid $input-stroke
+    // border-bottom: 1px solid $form-stroke
 
   .search-bar
     +input-underline
@@ -45,15 +45,15 @@ tag-browser
       width: 130px
 
 
-  // @TODO/ece How are the styles for this?
+  // @TODO/now How are the styles for this?
   .add-new-tag
     cursor: pointer
 
     .text
-      color: $input-stroke
+      color: $panel-text-secondary
 
     .fa
-      color: $accent-color
+      color: $icon-color
     &:hover .fa
       color: $icon-hover
 
@@ -87,7 +87,6 @@ tag-browser
     // @TODO/now @TODO/ece Too intense? Should it be tag color? Maybe light gray?
     .caret-wrapper
       +icon-button
-      color: $accent-color
       position: absolute
       top: 0
       right: 0

@@ -30,7 +30,7 @@ note-query
       &:hover,
       &.is--active
         +input-underline
-        color: $primary-color
+        color: $panel-text // @TODO/now Test this
 
         .count,
         .sort-dropdown,
@@ -105,9 +105,9 @@ note-query
       // FOR NOW: Hiding the active style altogether, unless they're *actually* hovering
       .ui-select-choices.dropdown-menu .ui-select-choices-row // extra specificity to override their styles
         &.active .dropdown-item
-          +menu-link-unhovered
+          +dropdown-menu-link-unhovered
         &.active:hover .dropdown-item
-          +menu-link-hover
+          +dropdown-menu-link-hover
 
     .query-controls
       flex: 0.1

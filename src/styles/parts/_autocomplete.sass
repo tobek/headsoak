@@ -1,14 +1,14 @@
 // @TODO/ece Should these be styled liked tags, with color and #? Could looks busy, but no busier than tag browser. Hover state could be chiclet look
 .autocomplete-suggestions
-  +menu-dropdown
+  +dropdown-menu
   z-index: $z-autocomplete !important // override inline style
   overflow-y: hidden
   margin-left: -8px // same as tag-chiclet padding
 
   .autocomplete-suggestion
-    +menu-link
+    +dropdown-menu-link
     padding-left: 8px
     padding-right: 8px
 
   .autocomplete-selected
-    +menu-link-hover
+    +dropdown-menu-link-hover

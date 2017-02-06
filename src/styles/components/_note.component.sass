@@ -1,5 +1,6 @@
 .note
   +card
+  background-color: $note-bg // @TODO/now Needs to not be behind header
 
   position: relative
   display: block
@@ -36,7 +37,7 @@
     max-height: 2.5rem
     padding: 0.25rem 0.5rem 0.5rem
     // background-color: transparent
-    background-color: $pane-bar-bg-color
+    background-color: $panel-bg
     +box-shadowed-small-light
     border-bottom: 2px solid transparent
 
@@ -56,9 +57,10 @@
   &.is--adding-tag .tag-like
     cursor: default
 
+    // So hovering over the whole tag doesn't highlight the icon
     &:hover .fa
-      color: $accent-color
-
+      color: $icon-color
+    // You have to hover over the icon itself
     .new-tag-button:hover .fa
       color: $icon-hover
 
@@ -75,8 +77,8 @@
     padding: 0 2px
 
   .new-tag-button
+    +icon-button
     cursor: pointer
-    color: $accent-color
 
     .fa
       +small
@@ -93,7 +95,7 @@
     padding-bottom: 5px // magic number that makes this the full height of the tags header, for increasing click target size
 
     .tag-like
-      color: $accent-color
+      color: $icon-color
       margin-left: 5px // matches tag margins (which exclude left margin) for the purpose of increasing click target size of parent
     &:hover .tag-like
       color: $icon-hover
@@ -123,7 +125,7 @@
   &.is--adding-tag,
   &.is--focused
     box-shadow: 0px 6px 10px 5px $shadow-color
-    border-bottom-color: $highlight-color
+    border-bottom-color: $form-focused-stroke
 
   &.is--expanded
     .expand-tags
@@ -133,8 +135,7 @@
         +faded-in
 
     .tags
-      +menu-dropdown
-      background-color: $pane-bar-bg-color
+      +dropdown-menu
       // overflow-y: auto
       // max-height: 200px // should be more than enough, and in case not, we can scroll
       // @TODO/animation Just snapping to this for now, see note on .tags above
@@ -150,6 +151,7 @@
     border: 0
     outline: none
     white-space: pre-wrap
+    color: $note-text
 
     transition: min-height $transition-fast, max-height $transition-fast, padding $transition-fast
 
@@ -236,7 +238,7 @@
     font-size: 20px
 
   .note-action
-    +icon-button
+    +note-icon-button
 
     position: relative
 
@@ -295,19 +297,6 @@
   //     @media (max-height: 600px)
   //       height: 300px
 
-
-  .note-action
-    .fa
-      transition: color $transition-fast, visibility $transition-fast, width $transition-fast
-      color: $primary-color-light
-
-    // re-set-up colors cause we overrode them by using primary-color-light for these normally
-    &:hover .fa
-      color: $icon-hover
-    &.is--active .fa
-      color: $icon-active
-    &.is--active:hover .fa
-      color: $primary-color
 
   // slide-fade-in effect
   note-browser &

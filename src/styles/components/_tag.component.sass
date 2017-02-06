@@ -49,9 +49,9 @@ tag
 
   // &.dropdown-enabled:hover // @TODO/ece Should this happen on hover, or on the 0.25s-delayed .hover classs?
   &.dropdown-enabled.hovered
-    +menu-dropdown
+    +dropdown-menu
     +tag-face
-    border-color: $menu-dropdown-bg-color
+    border-color: $dropdown-bg
 
     // Magic numbers to make it the full height of the note tag bar
     padding: 11px 4px;
@@ -79,11 +79,10 @@ tag
 
   .accept-rename
     +icon-button
-    color: $accent-color
 
   .count
     // +small // @TODO/ece I don't know, I like the consistency of this being the same size as the tag itself
-    color: $primary-color-light
+    color: $panel-text-secondary // @TODO/now Is this right?
     margin-left: 0.25rem
 
   note-query &
@@ -99,17 +98,17 @@ tag
       left: 0
       padding: 2px 0 // matches vertical padding on root tag element so that icon remains centered
       text-align: center
-      background-color: $white-overlay
-      color: $primary-color
+      background-color: $light-overlay
+      color: $light-overlay-text
 
       &:hover
-        color: $primary-color
+        color: $light-overlay-text
 
   .tag-actions-dropdown
     // @TODO/bug Dropdown can get hidden off right edgeof the screen (also making horizontal scrollbar appear)
     // @TODO/bug For very long tag names this is SHORTER and looks a bit weird, and for very very long tag names, the box shadow from .tag-actions doesn't go far enough back... looks weird
 
-    +menu-dropdown
+    +dropdown-menu
 
     z-index: 1
     position: absolute
@@ -119,8 +118,8 @@ tag
     font-weight: normal
 
     .tag-action
-      +menu-link
+      +dropdown-menu-link
       display: block
 
       &:hover
-        +menu-link-hover
+        +dropdown-menu-link-hover

@@ -13,9 +13,9 @@ prog-tag-control
 
     pre
       padding: 0
-      background: none
 
     .function-wrapper
+      background: none
       &:first-of-type
         margin-bottom: -10px
       &:last-of-type
@@ -26,7 +26,7 @@ prog-tag-control
     position: absolute
     width: 100%
     height: 100%
-    background: $white-overlay
+    background: $light-overlay // @TODO/prog @TODO/soon This needs to be a different thing
 
     transition: opacity $transition-med, visibility $transition-med
     opacity: 0
@@ -40,7 +40,7 @@ prog-tag-control
     +card
     margin-top: 50px
     padding-top: 10px
-    background-color: #f2f2f2 // @TODO/polish @TODO/prog This is a new color, what should it be? Maybe $primary-color-contrast if we used a different background for code
+    background-color: $dropdown-bg
 
     pre
       margin-left: 2em

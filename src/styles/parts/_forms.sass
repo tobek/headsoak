@@ -1,12 +1,10 @@
-$active-form-stroke: $highlight-color
-
 =input-underline-base
-  border-bottom: 1px solid $input-stroke
+  border-bottom: 1px solid $form-stroke
   transition: border-color $transition-fast
 
 =input-underline-active
   // @TODO/ece Should this go to 2px when focused?
-  border-bottom-color: $active-form-stroke
+  border-bottom-color: $form-focused-stroke
 
 =input-underline
   +input-underline-base
@@ -19,7 +17,7 @@ $active-form-stroke: $highlight-color
   cursor: text
   content: attr(placeholder)
   // font-style: italic
-  color: $input-stroke
+  color: $form-placeholder
 
 span[contenteditable]
   display: inline-block // cursor doesn't display properly (in Chrome at least) on inline contenteditable elements
@@ -54,7 +52,7 @@ input[type=password]
 textarea,
   width: 100%
   padding: 20px
-  border: 1px solid $input-stroke
+  border: 1px solid $form-stroke
   background: none
 
   &,
@@ -65,7 +63,7 @@ textarea,
 
   &:focus,
   &:active
-    border-color: $active-form-stroke
+    border-color: $form-focused-stroke
 
 
 .btn
@@ -92,7 +90,8 @@ textarea,
   text-align: center
   white-space: nowrap
 
-  background: $primary-color-contrast
+  color: $secondary-button-text
+  background: $secondary-button-bg
   border: 0
   border-radius: 0
   outline: 0
@@ -125,7 +124,7 @@ textarea,
     &:before
       +faded-in
       animation: fa-spin 2s infinite linear
-      color: $primary-color-contrast
+      color: $secondary-button-text // @TODO/now This right?
 
 .btn-primary
   // @REMOVED button sizing Used to be just ehse that were this size, now they're all the same size
@@ -134,21 +133,18 @@ textarea,
   // padding-right: 2.5rem
   // padding-left: 2.5rem
 
-  background-color: $secondary-color
-  color: $primary-color-contrast
+  background-color: $primary-button-bg
+  color: $primary-button-text
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15)
   font-weight: bold
   text-transform: uppercase
 
-.btn-secondary
-  background-color: $primary-color-contrast
-  color: $secondary-color
+  &.is--loading:before
+    color: $primary-button-text
 
+.btn-secondary
   font-weight: bold
   text-transform: uppercase
-
-  &.is--loading:before
-    color: $secondary-color
 
 .btn-success
   +success-style
@@ -176,7 +172,7 @@ textarea,
       top: -2px
       vertical-align: middle
       margin-right: 0.5rem
-      border: 1px solid $input-stroke
+      border: 1px solid $form-stroke
       content: ''
 
     & + label:after
@@ -190,20 +186,21 @@ textarea,
       color: transparent
       transition: color $transition-fast, opacity $transition-fast
 
+    // @TODO/now How bout these
     &:checked + label:after
-      color: $secondary-color
+      color: $icon-active
 
     @media (min-width: $tablet-large)
       & + label:hover:after
         opacity: 0.5
-        color: $input-stroke
+        color: $icon-color
       &:checked + label:hover:after
-          color: $highlight-color
+          color: $icon-active-hover
 
 
 .query-controls
   .count
-    color: $input-stroke
+    color: $panel-text-secondary
     letter-spacing: 1px
 
     &:after
@@ -211,7 +208,7 @@ textarea,
       position: relative
       top: -1px
       margin-left: 0.25rem
-      color: $accent-color
+      color: $panel-text-secondary
 
   .control-icon
     +icon-button
@@ -257,7 +254,7 @@ textarea,
 
     .dropdown-menu
       +plain-list
-      +menu-dropdown
+      +dropdown-menu
       position: absolute
       max-height: none
       top: 100%
@@ -277,7 +274,7 @@ textarea,
 
     .ui-select-choices .ui-select-choices-row // extra specificity to override their styles
       .dropdown-item
-        +menu-link
+        +dropdown-menu-link
 
       &.active .dropdown-item
-        +menu-link-hover
+        +dropdown-menu-link-hover
