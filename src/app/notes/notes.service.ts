@@ -13,7 +13,7 @@ const lunr = require('lunr');
 
 @Injectable()
 export class NotesService {
-  notes: { [key: string]: Note } = {}; // id -> Note instance
+  notes: { [noteId: string]: Note } = {}; // id -> Note instance
   initialized$ = new ReplaySubject<void>(1);
   noteUpdated$ = new Subject<Note>();
   index: lunr.Index;

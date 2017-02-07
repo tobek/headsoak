@@ -11,8 +11,8 @@ const sentiment = require('sentiment');
 
 @Injectable()
 export class ProgTagApiService {
-  tags: { [key: string]: Tag } = {}; // id -> Tag instance
-  notes: { [key: string]: Note } = {}; // id -> Note instance
+  tags: { [tagId: string]: Tag } = {}; // id -> Tag instance
+  notes: { [noteId: string]: Note } = {}; // id -> Note instance
 
   lib = {
     sentiment: sentiment,

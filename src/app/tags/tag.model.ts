@@ -36,10 +36,10 @@ export class Tag {
   readonly isLibraryTag?: boolean;
 
   /** Tag can store specific information on a per-note basis, indexed by note ID. */
-  noteData: { [key: string]: NoteDataType } = {};
+  noteData: { [noteId: string]: NoteDataType } = {};
 
   /** Tags (currently only prog tags) can have sub tags. This index maps subTag name to list of Note IDs, so that we can both get a list of all possible subtags, and sort easily. @TODO/tags This is overall a shitty way of handling this, and I don't think multiple subtags of the same tag on one note will work very well or at all. */
-  subTagDocs: { [key: string]: string[] } = {};
+  subTagDocs: { [subTagName: string]: string[] } = {};
 
 
   /** If this is set, this tag corresponds to some specially implemented feature, such as pinned or archived (and, later, private notes). Unless the user selects otherwise in settings, this tag will be hidden from everywhere (autocomplete when adding tag, tag list on notes) except searching and maybe tag browser (probably different section). */

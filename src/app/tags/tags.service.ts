@@ -12,7 +12,7 @@ import * as _ from 'lodash';
 
 @Injectable()
 export class TagsService {
-  tags: { [key: string]: Tag } = {}; // id -> Tag instance
+  tags: { [tagId: string]: Tag } = {}; // id -> Tag instance
   initialized$ = new ReplaySubject<void>(1);
 
   /** Updates whenever a tag is added to users tags (not added to a given note). */

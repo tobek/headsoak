@@ -51,9 +51,9 @@ export class DataService {
 
   /** This stores data that needs to be synced to server. Periodically checked by this.sync() */
   private digest: {
-    'nuts': { [key: string]: Note },
-    'tags': { [key: string]: Tag },
-    'settings': { [key: string]: Setting | Shortcut },
+    'nuts': { [noteId: string]: Note },
+    'tags': { [tagId: string]: Tag },
+    'settings': { [settingId: string]: Setting | Shortcut },
   };
   private digestSub: Subscription;
   private throttledSync: Function;
@@ -146,7 +146,7 @@ export class DataService {
 
     // Here we loop through notes, tags, etc. in digest, and for each one process them and update to data store
     let updated = false;
-    _.forEach(this.digest, (contents: { [key: string]: DataItem }, field: string) => {
+    _.forEach(this.digest, (contents: { [id: string]: DataItem }, field: string) => {
       if (_.isEmpty(contents)) {
         return;
       }

@@ -71,14 +71,14 @@ export class TagVisualizationComponent {
     let nodes: GraphNode[];
 
     // Index of processed Tags which we can prune if we're using centralTag.
-    const nodeIndex: { [key: string]: GraphNode } = this.computeNodes(this.tagsService.tags);
+    const nodeIndex: { [tagId: string]: GraphNode } = this.computeNodes(this.tagsService.tags);
 
     if (! this.centralTag) {
       nodes = _.map(nodeIndex, (node) => node); // just turn into an array
       links = this.computeLinks(this.tagsService.tags, this.tagsService.dataService.notes.notes);
     }
     else {
-      const nodeIndexPruned: { [key: string]: GraphNode } = {};
+      const nodeIndexPruned: { [tagId: string]: GraphNode } = {};
 
       links = this.computeLinks(
         this.tagsService.tags,
@@ -98,8 +98,8 @@ export class TagVisualizationComponent {
     this._logger.timeEnd('Computed tags nodes and links');
   }
 
-  computeNodes(tags: { [key: string]: Tag }): { [key: string]: GraphNode } {
-    const nodeIndex: { [key: string]: GraphNode } = {};
+  computeNodes(tags: { [tagId: string]: Tag }): { [tagId: string]: GraphNode } {
+    const nodeIndex: { [tagId: string]: GraphNode } = {};
 
     let classAttr;
     _(tags).each((tag: Tag) => {
@@ -143,10 +143,10 @@ export class TagVisualizationComponent {
 
   /** If nodeIndexAll and nodeIndexToUse are supplied, nodeIndexToUse is populated with those nodes from nodeIndexAll that are found in links. nodeIndexToUse is modified as a side effect. */
   computeLinks(
-    tags: { [key: string]: Tag },
-    notes: { [key: string]: Note } | Note[],
-    nodeIndexAll?: { [key: string]: GraphNode },
-    nodeIndexToUse?: { [key: string]: GraphNode }
+    tags: { [tagId: string]: Tag },
+    notes: { [noteId: string]: Note } | Note[],
+    nodeIndexAll?: { [tagId: string]: GraphNode },
+    nodeIndexToUse?: { [tagId: string]: GraphNode }
   ): GraphLink[] {
     const tagLinkIndex = {}; // maps from string (source tag + sep + target tag) to weight
     const separator = '👻🌚🌀🌱'; // need something unlikely to be in a subtag name

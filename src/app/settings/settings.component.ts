@@ -53,7 +53,7 @@ export class SettingsComponent {
 
   private displayedSettings: Setting[] = [];
   private subSections: string[] = [];
-  private subSectionedSettings: { [key: string]: Setting[] } = {};
+  private subSectionedSettings: { [settingId: string]: Setting[] } = {};
 
   private routeDataSub: Subscription;
 

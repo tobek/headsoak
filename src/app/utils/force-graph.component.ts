@@ -81,7 +81,7 @@ export class ForceGraphComponent {
   @HostBinding('class.is--node-hovered') nodeHovered: boolean;
 
   /** Maps from node ID to a map of node ID connections. E.g. nodeConnections['node2']['node10'] === true if node2 is connected to node10. */
-  nodeConnections: { [key: string]: {[key: string]: boolean} } = {};
+  nodeConnections: { [nodeId: string]: {[nodeId: string]: boolean} } = {};
 
   private _logger: Logger = new Logger(this.constructor.name);
 
