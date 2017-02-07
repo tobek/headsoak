@@ -36,7 +36,6 @@ $form-label: $accent-color // mini label headings in settings screens
 // Standalone icons which perform major functions:add tag, new tag, search, tag browser dropdown caret, x icons
 $icon-color: hsl(hue($panel-color), saturation($panel-color), 50%)
 $icon-hover: $accent-color 
-// @TODO/now The following two active icon colors are used in `+icon-button` mixin, but not sure if any elements using that mixin actually have active states. For now made them the same as note icon active/active hover.
 $icon-active: darken($accent-color, 20%)
 $icon-active-hover: lighten($accent-color, 20%)
 
@@ -76,14 +75,17 @@ $form-focused-stroke: $accent-color // Used for active form/input fields and und
 
 // MISC OTHER COLORS
 
-$logo-color: $accent-color // @TODO/now
+$logo-color: $accent-color
  
 $app-bg-gradient-top: #16697f
 $app-bg-gradient-bottom: #0e465e
 
 $success-color: #71b72b
+$success-text: $panel-text
 $warning-color: #edc23a
+$warning-text: $panel-text
 $danger-color: #c33132
+$danger-text: $panel-text
 
 
 // SHADING AND MASKS

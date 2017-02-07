@@ -53,9 +53,11 @@ modal
     margin: 0 auto
     background-color: $dropdown-bg
 
-    @media (min-width: $tablet-large)
-      &.is--login,
-      &.is--loading
+    &.is--login,
+    &.is--loading
+      background-color: $panel-bg
+
+      @media (min-width: $tablet-large)
         +span(6 last)
 
     @media (max-width: $tablet-large)

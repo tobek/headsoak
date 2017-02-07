@@ -45,7 +45,6 @@ tag-browser
       width: 130px
 
 
-  // @TODO/now How are the styles for this?
   .add-new-tag
     cursor: pointer
 
@@ -83,8 +82,7 @@ tag-browser
     .tag-header
       position: relative
 
-    // @TODO/now Caret should change when it's open, and it should be the same
-    // @TODO/now @TODO/ece Too intense? Should it be tag color? Maybe light gray?
+    // @TODO/polish Caret should change to active style when it's open
     .caret-wrapper
       +icon-button
       position: absolute
@@ -109,7 +107,6 @@ tag-browser
         position: absolute
         margin-top: 2px
 
-    // @TODO/ece @TODO/now How's the styling here? It's identical to the dropdown menus elsewhere
     // @TODO/polish This should slide down all nice, but right now it just jumps into place because it's done with *ngIf
     .menu .item
       +base-font-size

@@ -184,7 +184,7 @@ $tag-hash-opacity: 0.33
 
 
 =alert-style
-  color: $panel-text // @TODO/now We need to figure out how these work on success/warning/danger
+  color: $panel-text
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15) // @TODO/ece What do you think of this? Look at toasters and primary and other buttons
 
   a
@@ -198,15 +198,18 @@ $tag-hash-opacity: 0.33
 
 =success-style
   +alert-style
+  color: $success-text
   background-color: $success-color
 =info-style
   +alert-style
   background-color: $dropdown-bg
 =warning-style
   +alert-style
+  color: $warning-text
   background-color: $warning-color
 =danger-style
   +alert-style
+  color: $danger-text
   background-color: $danger-color
 
 .danger-text

@@ -3,7 +3,7 @@
 homepage
   display: block
   position: relative
-  color: $panel-text // @TODO/now Check this
+  color: $panel-text
 
   // There are none of these any more
   // h2
@@ -154,15 +154,12 @@ homepage
     margin: 0
     padding: 50px 25px
     text-align: center
-    background-color: rgba(0, 0, 0, 0.6)
+    background-color: $panel-bg
     text-shadow: 2px 2px 5px $shadow-color
     letter-spacing: 1.8px
-    color: $panel-text
 
     a
-      color: $panel-text
-      &:hover
-        color: $panel-text-link-hover
+      +text-link
 
 // .modal-content.outro-login
 //   float: right
