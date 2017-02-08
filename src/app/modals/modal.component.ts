@@ -13,7 +13,11 @@ import {Note, NoteComponent} from '../notes/';
 export type ModalType = null | 'loading' | 'login' | 'feedback' | 'privateMode' | 'note' | 'generic';
 
 export interface ModalConfig {
-  okCb?: (result?: any, showLoadingState?: Function, hideLoadingState?: Function) => any, // Called when OK is pressed (or enter in prompt), just before modal is closed. If it's a prompt and not cancelled, prompt contents is passed in, otherwise falsey value passed. Return explicit false to prevent modal from being closed. Callback is also passed two functions that control loading state of button.
+  /**
+   * Called when OK is pressed (or enter in prompt), just before modal is closed. If it's a prompt and not cancelled, prompt contents is passed in, otherwise falsey value passed. Return explicit false to prevent modal from being closed. Callback is also passed two functions that control loading state of button.
+   *
+   * @NOTE @TODO/polish Since we have to run this before actually closing in order to see if we *should* close, navigation is impossible in `okCb` (because modal is closed via `window.history.back`, which will fire after `okCb`). For cancel and additional button callbacks, which can't control whether modal closes, this isn't an issue. One fix would be to have a separate `canOk` cb and then a `didOk` cb. */
+  okCb?: (result?: any, showLoadingState?: Function, hideLoadingState?: Function) => any,
 
   message?: string | SafeHtml,
   okButtonText?: string,
@@ -191,20 +195,29 @@ export class ModalComponent {
       this.cancellable = true; // otherwise we'll get stuck at `ModalService`'s `onPopstate` which `this.close` triggers via `history.back`
     }
 
-    if (this.config.cancelCb) {
-      this.config.cancelCb();
-    }
-
-    this.close();
+    this.close(this.config.cancelCb());
   }
 
 
-  close() {
+  close(cb?: Function) {
     if (this.activeModal === 'login' || this.activeModal === 'loading') {
       this._close();
+
+      if (cb) {
+        cb();
+      }
     }
     else {
       // Funnel all closures via popstate - see `onPopstate` in `ModalService`
+
+      // There's a delay before popstate actually fires, which means if we fire callback even after calling `window.history.back()`, the callback will fire before modal starts closing. This ensures that doesn't happen
+      if (cb) {
+        jQuery(window).one('popstate', () => {
+          // Seems like we have to wait yet one more tick...
+          setTimeout(cb, 0);
+        });
+      }
+
       window.history.back();
     }
   }
