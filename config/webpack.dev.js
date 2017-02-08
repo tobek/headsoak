@@ -222,6 +222,7 @@ module.exports = function (options) {
             'nlcst-to-string',
             'retext',
             'retext-keywords',
+            'retext-profanities',
           ],
         },
         dllDir: helpers.root('dll'),

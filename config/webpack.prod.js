@@ -364,7 +364,7 @@ module.exports = function (env) {
     node: {
       global: true,
       crypto: 'empty',
-      process: false,
+      process: true, // @NOTE Needed by `retext` stuff
       module: false,
       clearImmediate: false,
       setImmediate: false
