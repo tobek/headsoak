@@ -373,13 +373,43 @@ export class Note {
   }
 
   togglePrivate() {
-    this.private = ! this.private;
+    if (this.private) {
+      this.private = false;
+      this.updated(false, true);
+    }
+    else {
+      this.makePrivate(false);
+    }
+  }
+
+  makePrivate(viaSmartTag = true) {
+    if (this.private) {
+      return;
+    }
+
+    this.private = true;
+
     this.updated(false, true);
 
-    if (this.private && ! this.dataService.accountService.privateMode) {
+    if (viaSmartTag || ! this.dataService.accountService.privateMode) {
+      let title = 'Note made private';
+      let message = '<p>Since you do not currently have private mode enabled, this note will be hidden from view.</p><p>Click to enable private mode.</p>';
+
+      if (viaSmartTag) {
+        // @TODO/polish Clicking should maybe let you see or disable the smart tag. This would require passing the smart tag in to this function or else making some public interface in smart tag api that masks these and provides it.
+        title = 'Note(s) made private by smart tag';
+
+        if (! this.dataService.accountService.privateMode) {
+          message = '<p>One or more notes have been made private. Since you do not currently have private mode enabled, they will be hidden from view.</p><p>Click to enable private mode.</p>';
+        }
+        else {
+          message = null;
+        }
+      }
+
       this.dataService.toaster.info(
-        '<p>Since you do not currently have private mode enabled, this note will be hidden from view.</p><p>Click to enable private mode.</p>',
-        'Note made private',
+        message,
+        title,
         {
           preventDuplicates: true,
           timeOut: 7500,
@@ -388,7 +418,7 @@ export class Note {
           },
         }
       );
-      // @TODO/ece If this is the "open" note then we do *not* hide it. So in that case we should either a) simply not show this message, b) do actually hide the note, and show this message, or c) show a different message (like 'when you close this note it'll be invisible...'')
+      // @TODO/ece @TODO/soon If this is the "open" note then we do *not* hide it. So in that case we should either a) simply not show this message, b) do actually hide the note, and show this message, or c) show a different message (like 'when you close this note it'll be invisible...'')
     }
   }
 

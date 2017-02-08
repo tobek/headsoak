@@ -93,6 +93,46 @@ api.lib.retext().use(api.lib.retextKeywords).process(note.body, function(err, do
     resolve(false);
   }
 });
+
+return result; `//}
+    },
+    {
+      id: 'lib--nsfw',
+      isLibraryTag: true,
+      readOnly: true,
+      name: 'nsfw',
+      description: '@TODO/now Automatically tags nsfw notes and makes them private. NOTE: This tag will never make a note *un*private even if it no longer detects nsfw content.',
+      prog: true,
+      // progFunc: function(note: Note, api, _): ClassifierReturnType {
+      progFuncString:`// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`retext-profanities\` module) have been bundled with the app.
+
+var resolve, reject;
+var result = new Promise(function(res, rej) {
+  resolve = res;
+  reject = rej;
+});
+
+var subTags = [];
+
+api.lib.retext().use(api.lib.retextProfanities).process(note.body, function(err, doc) {
+  if (err) {
+    throw err;
+  }
+
+  if (doc && _.size(doc.messages)) {
+    var actualProfanities = _.filter(doc.messages, { profanitySeverity: 2 });
+    if (_.size(actualProfanities)) {
+      console.info('Marking note', note.id, 'nsfw because of words:', _.map(actualProfanities, 'ruleId'));
+      note.makePrivate();
+
+      resolve(true);
+      return;
+    }
+  }
+
+  resolve(false);
+});
+
 return result; `//}
     },
     {
