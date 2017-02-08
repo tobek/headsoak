@@ -11,6 +11,7 @@ import * as sentiment from 'sentiment';
 import * as nlcstToString from 'nlcst-to-string';
 import * as retext from 'retext';
 import * as retextKeywords from 'retext-keywords';
+import * as retextProfanities from 'retext-profanities';
 
 @Injectable()
 export class ProgTagApiService {
@@ -22,6 +23,7 @@ export class ProgTagApiService {
     nlcstToString: nlcstToString,
     retext: retext,
     retextKeywords: retextKeywords,
+    retextProfanities: retextProfanities,
   };
 
   constructor() {
