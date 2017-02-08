@@ -23,7 +23,7 @@ export class TagVisualizationComponent {
   tagGraph: ForceGraph;
 
   /** Maps from tag ID to # of cooccurrences. @NOTE Currently only used if `this.isCrowded`. @NOTE Now not used at all, and `isCrowded` is calculated in ForceGraphComponent */
-  // pairCount: { [key: string]: number } = {};
+  // pairCount: { [tagId: string]: number } = {};
 
   isCrowded = false;
 

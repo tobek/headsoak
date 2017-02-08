@@ -109,7 +109,7 @@ export class TagDetailsComponent {
 
     this.exploreStatsReset();
 
-    const cooccurrences: { [key: string]: number } = {}; // tagId => # of cooccurrences with the current tag
+    const cooccurrences: { [tagId: string]: number } = {}; // tagId => # of cooccurrences with the current tag
     let note, pairedTag, pairedSubTagId;
     this.tag.docs.forEach((noteId) => {
       // This note has the given tag
