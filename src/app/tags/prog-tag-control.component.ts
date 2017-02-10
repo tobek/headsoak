@@ -106,11 +106,22 @@ export class ProgTagControlComponent {
   }
 
   makeDumb(): void {
-    // @TODO/modals
-    if (! confirm('Notes that are already tagged with this tag will remain tagged, but this tag will no longer be automatically added or removed from to notes.')) {
-      return;
+    if (_.size(this.tag.docs)) {
+      this.tagsService.dataService.modalService.confirm(
+        'Notes that are already tagged with this tag will remain tagged, but this tag will no longer be automatically added to or removed from notes.',
+        (confirmed) => {
+          if (confirmed) {
+            this._makeDumb();
+          }
+        },
+      );
     }
+    else {
+      this._makeDumb();
+    }
+  }
 
+  _makeDumb(): void {
     this.tag.prog = false;
     this.tag.progFuncString = this.editor.getValue();
     this.tag.updated();
