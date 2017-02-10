@@ -402,6 +402,15 @@ export class AccountService {
     this._logger.warn('Headsoak session started from elsewhere at ' + newUserChild.val() + '!');
     // @TODO/polish Since this is coming back in from unzoned firebase call, this should be run in zone in order for modal service to show up right away
 
+    if (ENV === 'development') {
+      if (! this['loggedInElsewhereDialogShown']) {
+        this.modalService.alert('<p>You logged in to this account in another session. Because this is a dev environment we\'ll let it slide, but watch out for your data.</p><p>This dialog won\'t be shown again in this session.', true);
+        this['loggedInElsewhereDialogShown'] = true;
+      }
+
+      return;
+    }
+
     // @TODO/modals Need a way to queue up modals, what happens if this gets hit when another modal is open? Especially could be weird when the close listener to refresh fires too soon.
 
     // @TODO We could log time and IP and browser etc. of the login so we can tell them when and where etc.
