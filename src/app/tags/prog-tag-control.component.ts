@@ -6,7 +6,8 @@ import {TagsService} from './tags.service'; // Dunno why we can't import from ta
 
 import {Logger} from '../utils/';
 
-const ace = require('brace');
+import * as _ from 'lodash';
+import * as ace from 'brace';
 
 @Component({
   selector: 'prog-tag-control',

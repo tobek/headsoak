@@ -319,6 +319,7 @@ export class AccountService {
           this.modalService.modal.okButton.nativeElement,
           'error'
         );
+        this._logger.error('Failed to change email:', err);
       }
 
       return; // don't close modal
@@ -444,6 +445,7 @@ export class AccountService {
           return cb('Wrong password');
         }
         else {
+          this._logger.error('Error while "changing" password in order to check password:', err)
           return cb('Something went wrong, sorry! Give it another shot or try refreshing the page.');
         }
       }

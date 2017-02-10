@@ -231,6 +231,8 @@ export class DataService {
       else {
         this.initFromData(data);
       }
+    }, (err) => {
+      this._logger.error('Failed to fetch data for user ' + uid + ' on app load:', err);
     });
 
   }
@@ -256,7 +258,9 @@ export class DataService {
       }
     });
 
-    this.ref.root().child('emailToId/' + utils.formatForFirebase(this.user.email)).set(this.user.uid);
+    this.ref.root().child('emailToId/' + utils.formatForFirebase(this.user.email)).set(this.user.uid, (err) => {
+      this._logger.error('Failed to set emailToId for user ' + this.user.uid, err);
+    });
 
 
     this.initialized$.filter(val => !! val).first().subscribe(this.newUserPostInit.bind(this));
@@ -335,7 +339,7 @@ export class DataService {
         email: this.user.email
       }, (err) => {
         if (err) {
-          this._logger.error('Failed to update email in user object!', err);
+          this._logger.error('Failed to update email ' + this.user.email + ' in user object!', err);
         }
       });
     }
@@ -429,7 +433,9 @@ export class DataService {
       email: this.user.email,
       provider: this.user.provider,
       idsMigrated2016: true
-    }, () => {});
+    }, (err) => {
+      this._logger.error('Failed to update user info when migrating IDs for user ' + this.user.uid, err);
+    });
   }
 
   /** Clears all loaded data. */

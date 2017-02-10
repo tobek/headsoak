@@ -61,7 +61,7 @@ export class PrivateModeComponent {
       this.isLoading = false;
 
       if (error) {
-        this._logger.warn('Failed to enable private mode');
+        this._logger.info('Failed to enable private mode:', error);
         this.tooltipService.justTheTip(error, this.passwordInput.nativeElement, 'error');
         return;
       }

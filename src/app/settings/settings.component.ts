@@ -288,8 +288,6 @@ export class SettingsComponent {
       this.changePasswordIsLoading = false;
 
       if (err) {
-        this._logger.warn('Failed to change password:', err);
-
         if (err.code === 'INVALID_PASSWORD') {
           this.tooltipService.justTheTip(
             'Wrong password!',
@@ -303,6 +301,8 @@ export class SettingsComponent {
             this.changePasswordButton.nativeElement,
             'error'
           );
+
+          this._logger.error('Failed to change password:', err);
         }
         return;
       }
