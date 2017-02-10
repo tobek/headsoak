@@ -399,7 +399,7 @@ export class AccountService {
     if (newUserChild.key() !== 'lastLogin') return;
 
     // lastLogin changed!
-    this._logger.warn('Headsoak session started from elsewhere at ' + newUserChild.val() + '!');
+    this._logger.info('Headsoak session started from elsewhere at ' + newUserChild.val() + '!');
     // @TODO/polish Since this is coming back in from unzoned firebase call, this should be run in zone in order for modal service to show up right away
 
     if (ENV === 'development') {

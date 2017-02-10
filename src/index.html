@@ -14,7 +14,7 @@
   <%= webpackConfig.htmlElements.headTags %>
   <% } %>
 
-  <!-- Loading screen styles go here. -->
+  <!-- Loading screen styles -->
   <style>
     html, body {
       margin: 0;
@@ -44,14 +44,12 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 
-  <!-- base url -->
   <base href="<%= htmlWebpackPlugin.options.metadata.baseUrl %>">
 </head>
 <body>
 
   <i class="initial-loader outer fa fa-spin fa-cube"></i>
 
-  <!-- Google Analytics -->
   <script>
     (function(i,s,o,g,r,a,m){i.GoogleAnalyticsObject=m;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].r=1*new Date();a=s.createElement(o),
@@ -60,7 +58,10 @@
     ga('create', 'UA-76034923-1', 'auto');
     ga('send', 'pageview');
   </script>
-  <!-- End Google Analytics -->
+
+  <script>
+    !function(){var r={};window.hsErrorReport=function(n,e,o,t,i,a){var s,l;try{if(s=[e,o,t,i].filter(function(r){return!!r}).join(" - "),a&&(l=a.toString?""+a:a,a.stack&&(l+=" - "+a.stack)),r[s+l]=(r[s+l]||0)+1,10===r[s+l])n+="Overload";else if(r[s+l]>10)return}catch(c){s="error reporting failed: "+c}ga("send",{hitType:"event",eventCategory:"JS"+n,eventAction:s,eventLabel:l})},window.hsErrorReportVal=function(r,n){n instanceof Error?hsErrorReport(r,""+n,null,null,null,n.stack):hsErrorReport(r,n)},window.onerror=function(r,n,e,o,t){r&&-1!==r.indexOf("Script error.")||hsErrorReport("unhandled",r,n,e,o,t)}}();
+  </script>
 
   <app class="app-outer"></app>
 

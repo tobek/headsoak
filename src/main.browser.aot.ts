@@ -16,7 +16,11 @@ export function main(): Promise<any> {
   return platformBrowser()
     .bootstrapModuleFactory(AppModuleNgFactory)
     .then(decorateModuleRef)
-    .catch((err) => console.error(err));
+    .catch((err) => {
+        console.error(err);
+
+        window['hsErrorReportVal']('bootstrapErr', err);
+    });
 }
 
 export function bootstrapDomReady() {

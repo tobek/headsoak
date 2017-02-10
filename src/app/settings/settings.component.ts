@@ -118,6 +118,12 @@ export class SettingsComponent {
     }
   }
 
+  // @TODO/temp
+  testAnError() {
+    const hahaa = 42;
+    console.log(hahaa['nope']());
+  }
+
   /** Trying to pass args directly from SettingComponent to here - seemingly can't use ES6 splats/parameter magic in template, and had some issues with `this`, so this is where we ended up. */
   settingUpdatedProxy(args){
     this.settingUpdated.apply(this, args);

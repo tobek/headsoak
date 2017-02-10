@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 // @TODO/rewrite Hide all but warnings and errors unless in dev mode? 
 // @TODO/analytics Fire analytics events on warnings and errors. Maybe also pass in the class instance to the constructor so that we can log info about the instance?
 // @TODO/errors On staging we should maybe pop up errors in toasters or modals?
@@ -31,5 +33,27 @@ export class Logger {
 
   private _log(level, ...args) {
     console[level](this._prefix, ...args);
+
+    // @TODO/polish @TODO/error reporting The `hsErrorReport` function inlined in index.html should go via something other than GA so we can capture from adblocking users?
+    // @NOTE We hit `hsErrorReport` from a bunch of different places, so make sure to search entire codebase when making major changes.
+    if (level === 'warn' || level === 'error') {
+      let message = '';
+      let err = null;
+
+      message += _.map(
+        _.filter(args, (arg) => {
+          if (arg instanceof Error) {
+            err = arg;
+            return false;
+          }
+          return true;
+        }),
+        (nonErrArg) => {
+          return JSON.stringify(nonErrArg).replace(/^"/, '').replace(/"$/, '');
+        }
+      ).join(', ');
+
+      window['hsErrorReport'](level, message, this.name, null, null, err);
+    }
   }
 }

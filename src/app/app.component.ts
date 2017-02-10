@@ -1,4 +1,4 @@
-import {Component, ViewChild, ViewEncapsulation, HostBinding, ChangeDetectorRef, ElementRef} from '@angular/core';
+import {Component, ViewChild, ViewEncapsulation, HostBinding, ChangeDetectorRef, ElementRef, NgZone} from '@angular/core';
 import {Route, Router, NavigationEnd} from '@angular/router';
 import {Subscription} from 'rxjs';
 
@@ -59,6 +59,7 @@ export class App {
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
+    private zone: NgZone,
     private activeUIs: ActiveUIsService,
     private modalService: ModalService,
     private sizeMonitorService: SizeMonitorService,
@@ -71,6 +72,10 @@ export class App {
     public settings: SettingsService,
     public dataService: DataService
    ) {
+    this.zone.onError.subscribe((err) => {
+      window['hsErrorReportVal']('zoneErr', err);
+    });
+
     this.noteToggleNavRoutes = _.filter(
       this.routes,
       { data: { navSection: 'note-toggle' } }
