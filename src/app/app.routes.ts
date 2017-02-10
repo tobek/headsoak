@@ -180,6 +180,22 @@ export const ROUTES: Routes = [
       },
     ]
   },
+  {
+    path: 'download',
+    component: EmptyComponent,
+    data: {
+      slug: 'download'
+    },
+    children: [
+      {
+        path: '',
+        data: {
+          slug: 'download',
+        },
+        component: SettingsComponent
+      },
+    ]
+  },
 
   {
     path: '**',

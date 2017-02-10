@@ -28,6 +28,10 @@
         <i class="fa fa-fw fa-lg fa-comment-o"></i>
         Feedback
       </li>
+      <li class="item download-menu" [routerLink]="['/download']" routerLinkActive="is--active">
+        <i class="fa fa-fw fa-lg fa-download"></i>
+        Download
+      </li>
     </ul>
   </div>
 
@@ -134,9 +138,67 @@
       </div>
     </div>
 
-    <p class="bottom-info" *ngIf="section !== 'account' && section !== 'feedback' && section !== 'privateMode'"><a class="danger-link" (click)="revert()">Revert to default {{ section }}</a></p>
+    <p class="bottom-info" *ngIf="section !== 'account' && section !== 'feedback' && section !== 'privateMode' && section !== 'download'"><a class="danger-link" (click)="revert()">Revert to default {{ section }}</a></p>
 
     <p class="bottom-info" *ngIf="section === 'shortcuts'"><i>Note: Different browsers and operating systems handle web site shortcuts differently. You might find that some combinations don't work. (For example, <code>ctrl+n</code> will be overridden by "new window" in Chrome on Windows.)</i></p>
+
+    <div *ngIf="section === 'download'">
+      <p>Download a standalone version of Headsoak that you can run outside of your browser!</p>
+
+      <div>
+        <div class="heading">Linux</div>
+        <p><a download href="https://headsoak.com/builds/linux64/headsoak.zip" (click)="showLinuxInstr = true">Download</a></p>
+        <div *ngIf="showLinuxInstr">
+          <p>Installation instructions:</p>
+          <ul>
+            <li>Unzip the downloaded file</li>
+            <li>Inside it there is an executable file named <code>headsoak</code> which will run the application</li>
+            <li>To install it globally:
+              <ul>
+                <li>Copy the files to <code>/usr/share/headsoak/</code></li>
+                <li>Symlink to it with: <code>ln -s /usr/share/headsoak/headsoak /usr/bin/headsoak</code></li>
+                <li>Run <a href="https://headsoak.com/builds/linux64/headsoak.desktop">this .desktop file</a>, or put it in <code>/usr/share/applications/</code> and your desktop environment should pick it up</li>
+              </ul>
+            </li>
+          </ul>
+
+          <p>A proper installer is coming soon!</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="heading">Mac OS X</div>
+        <p><a download href="https://headsoak.com/builds/osx64/headsoak.app.zip" (click)="showMacInstr = true">Download</a></p>
+        <div *ngIf="showMacInstr">
+          <p>Installation instructions:</p>
+          <ul>
+            <li>Unzip the downloaded file</li>
+            <li>Copy the unzipped Headsoak app to your Applications folder</li>
+            <li>Right click (or hold the <code>ctrl</code> key while you click) on it and click "Open"</li>
+            <li>Choose "Open" in the dialog that pops up</li>
+          </ul>
+
+          <p>A proper signed installer is coming soon!</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="heading">Windows</div>
+        <p><a download href="https://headsoak.com/builds/win64/headsoak.zip" (click)="showWinInstr = true">Download</a></p>
+        <div *ngIf="showWinInstr">
+          <p>Installation instructions:</p>
+          <ul>
+            <li>Unzip the downloaded file to somewhere handy</li>
+            <li>We haven't actually tested on Windows yet, but <code>headsoak.exe</code> should work</li>
+          </ul>
+
+          <p>A proper installer is coming soon!</p>
+        </div>
+      </div>
+
+      <p>&nbsp;</p>
+      <p>Note that, for now, the desktop application will still only work when you are online.</p>
+    </div>
 
   </div>
 </div>

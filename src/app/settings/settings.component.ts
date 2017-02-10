@@ -27,6 +27,7 @@ export class SettingsComponent {
     account: 'Account',
     feedback: 'Feedback',
     privateMode: 'Private Mode',
+    download: 'Download desktop application',
   };
 
   initialized = false;
@@ -54,6 +55,10 @@ export class SettingsComponent {
   private displayedSettings: Setting[] = [];
   private subSections: string[] = [];
   private subSectionedSettings: { [settingId: string]: Setting[] } = {};
+
+  private showLinuxInstr = false;
+  private showMacInstr = false;
+  private showWinInstr = false;
 
   private routeDataSub: Subscription;
 
