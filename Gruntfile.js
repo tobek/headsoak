@@ -141,6 +141,16 @@ module.exports = function(grunt) {
                 files: [
                     {
                         expand: true,
+                        cwd: './nw/',
+                        src: ['headsoak.desktop'],
+                        dest: '/builds/linux64/',
+                        params: {
+                            CacheControl: 'public, max-age=' + 60*60*24*365,
+                            Expires: new Date(Date.now() + 1000*60*60*24*365)
+                        }
+                    },
+                    {
+                        expand: true,
                         cwd: './nw/builds/headsoak/',
                         src: ['**/*.zip'],
                         dest: '/builds/',
