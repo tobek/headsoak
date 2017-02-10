@@ -89,12 +89,25 @@ export class ProgTagControlComponent {
   makeSmart(): void {
     if (this.tag.docs.length) {
       const singular = this.tag.docs.length === 1;
-      // @TODO/modals
-      if (! confirm('Warning: you currently have ' + this.tag.docs.length + ' note' + (singular ? '' : 's') + ' tagged as "' + this.tag.name + '". ' + (singular ? 'It' : 'They') + ' will be untagged if ' + (singular ? 'it doesn\'t' : 'they don\'t') + ' return true for the function you enter below.\n\nAre you sure you wish to continue?')) {
-        return;
-      }
-    }
+      const message = '<p>Warning: You currently have ' + this.tag.docs.length + ' note' + (singular ? '' : 's') + ' tagged with <span class="static-tag">' + this.tag.name + '</span>. ' + (singular ? 'It' : 'They') + ' will be untagged if ' + (singular ? 'it doesn\'t' : 'they don\'t') + ' return true for the function you enter below.</p><p>Are you sure you wish to continue?</p>';
 
+      this.tagsService.dataService.modalService.confirm(
+        message,
+        (confirmed) => {
+          if (confirmed) {
+            this._makeSmart();
+          }
+        },
+        true,
+        'Make smart tag'
+      );
+    }
+    else {
+      this._makeSmart();
+    }
+  }
+
+  _makeSmart(): void {
     this.tag.prog = true;
 
     if (this.tag.progFuncString) {
