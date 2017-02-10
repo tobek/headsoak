@@ -2,6 +2,9 @@
 /config.json
 /backups
 
+/nw/cache
+/nw/builds
+
 # Below is the .gitignore from angular2-webpack-starter
 
 # Logs

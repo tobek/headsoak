@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# e.g. make-icns.sh input.png outputname
+# e.g. make-mac-icns-sips.sh icon.png headsoak
 
 mkdir $2.iconset
 sips -z 16 16     $1 --out $2.iconset/icon_16x16.png

@@ -1,0 +1,8 @@
+[Desktop Entry] 
+Name=Headsoak 
+Comment=Augmented note-taking
+Type=Application 
+Exec=/home/toby/dev/nutmeg/nw/builds/headsoak/linux64/headsoak
+StartupNotify=true 
+Icon=/usr/share/headsoak/icon.png
+Categories=Office;TextTools;TextEditor;
