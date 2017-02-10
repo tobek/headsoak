@@ -162,7 +162,12 @@ export class DataService {
       this.status = 'syncing';
       updated = true;
 
-      this.ref.child(field).update(updates, this.syncCb.bind(this));
+      try {
+        this.ref.child(field).update(updates, this.syncCb.bind(this));
+      }
+      catch (err) {
+        this.syncCb(err);
+      }
     });
 
     if (updated) {
@@ -177,8 +182,11 @@ export class DataService {
     this.syncTasksRemaining--;
 
     if (err) {
-      this.modalService.alert('Error syncing your notes to the cloud! Some stuff may not have been saved. We\'ll keep trying though. You can email us at support@headsoak.com if this keeps happening. Tell us what this error says:<br><br><pre>' + JSON.stringify(err) + '</pre>', true);
-      this.status = 'disconnected'; // @TODO/rewrite Make sure sync status widget updates
+      this._logger.error('Sync to Firebase threw or returned error:', err);
+      this.modalService.alert('Error syncing your notes to the cloud! Some stuff may not have been saved. We\'ll keep trying though. You can email us at <a href="mailto:support@headsoak.com">support@headsoak.com</a> if this keeps happening. Tell us what this error says:<br><br><pre class="syntax">' + JSON.stringify(err, null, 2) + '</pre>', true);
+      this.status = 'disconnected'; // @TODO/soon Make sure sync status widget updates
+      // @TODO/soon We should actually try again
+      // @TODO/polish This shouldn't get called multiple times for same error?
       return;
     }
 
