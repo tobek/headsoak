@@ -21,7 +21,7 @@ export class MapIdsToTagsPipe implements PipeTransform {
       return [];
     }
 
-    return _.map(arr, (tagId: string) => {
+    return _.chain(arr).map((tagId: string) => {
       const tag = this.tagsService.tags[tagId];
 
       // Have had some issue with deleted or non-existent tag IDs showing up on notes, here we can debug it
@@ -36,6 +36,6 @@ export class MapIdsToTagsPipe implements PipeTransform {
       }
 
       return tag;
-    });
+    }).filter((tag) => !! tag).value();
   }
 }
