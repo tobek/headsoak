@@ -43,7 +43,17 @@ export class DataService {
 
   digest$ = new EventEmitter<DataItem>();
 
-  status: string; // 'synced' | 'syncing' | 'unsynced' | 'disconnected'
+  _status: 'synced' | 'syncing' | 'unsynced' | 'disconnected';
+  get status(): 'synced' | 'syncing' | 'unsynced' | 'disconnected' {
+    return this._status;
+  }
+  set status(newStatus) {
+    this._status = newStatus;
+
+    if (newStatus === 'unsynced') {
+      setTimeout(this.throttledSync, this.SYNC_THROTTLE);
+    }
+  }
 
   ref: Firebase;
 
@@ -142,7 +152,7 @@ export class DataService {
   sync(): void {
     if (this.syncTasksRemaining > 0) return; // currently syncing
 
-    this._logger.log('Checking for changes to sync');
+    this._logger.log('Checking if there are changes to sync');
 
     // Here we loop through notes, tags, etc. in digest, and for each one process them and update to data store
     let updated = false;
