@@ -89,8 +89,9 @@ module.exports = function(grunt) {
                         src: ['index.html.gz'],
                         dest: '/',
                         params: {
-                            CacheControl: 'public, max-age=' + 60*60*24,
-                            Expires: new Date(Date.now() + 1000*60*60*24)
+                            // @TODO/soon Does client still get a 304 if this period has expired but object at origin hasn't changed?
+                            CacheControl: 'public, max-age=' + 60*60,
+                            Expires: new Date(Date.now() + 1000*60*60)
                         }
                     },
                     {
@@ -99,7 +100,7 @@ module.exports = function(grunt) {
                         src: ['**/*', '!index.html.gz'],
                         dest: '/',
                         params: {
-                            CacheControl: 'public, max-age=' + 60*60*24*365,
+                            CacheControl: 'public, max-age=' + 60*60*24*365 + ', immutable',
                             Expires: new Date(Date.now() + 1000*60*60*24*365)
                         }
                     },
@@ -127,7 +128,7 @@ module.exports = function(grunt) {
                         src: ['**/*', '!index.html.gz'],
                         dest: '/',
                         params: {
-                            CacheControl: 'public, max-age=' + 60*60*24,
+                            CacheControl: 'public, max-age=' + 60*60*24 + ', immutable',
                             Expires: new Date(Date.now() + 1000*60*60*24)
                         }
                     },
