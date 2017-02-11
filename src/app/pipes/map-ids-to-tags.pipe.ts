@@ -23,21 +23,24 @@ export class MapIdsToTagsPipe implements PipeTransform {
       return [];
     }
 
-    return _.chain(arr).map((tagId: string) => {
+    return _.reduce(arr, (tags: Tag[], tagId: string): Tag[] => {
       const tag = this.tagsService.tags[tagId];
 
-      // Have had some issue with deleted or non-existent tag IDs showing up on notes, here we can debug it
-      if (! tag) {
+      if (tag) {
+        tags.push(tag);
+      }
+      else {
+        // Have had some issue with deleted or non-existent tag IDs showing up on notes, here we can debug it
+
         if (noteId && ! erroredOnMissingTag[noteId + tagId]) {
           // Logging this message a gajillion times slows things down and also we report this to GA, so only do it once
           this._logger.warn('Note ID', noteId, 'claims to have tag ID', tagId, 'but no tag found for that ID.');
           erroredOnMissingTag[noteId + tagId] = true;
         }
         // @TODO/rewrite @TODO/tags. Check firebase data for all of these and see how pervasive. Permanent fix would be to loop through notes that reference this tag! Once fixed, TagComponent should throw an error rather than try to handle being passed no tag
-        return null;
       }
 
-      return tag;
-    }).filter((tag) => !! tag).value();
+      return tags;
+    }, []);
   }
 }
