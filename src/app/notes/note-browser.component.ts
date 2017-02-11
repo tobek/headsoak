@@ -197,12 +197,26 @@ export class NoteBrowserComponent {
     // Now we have an untouched new note open
     if (thenFocus) {
       // Wait for component to get set up
-      setTimeout(() => {
-        this.noteComponents.first.bodyFocus();
+      setTimeout(this.focusOnFirstNote.bind(this), 0);
+    }
+  }
 
-        // There's something weird with the `HostBinding`s not firing properly on this new component, so uh just add this manually:
-        this.noteComponents.first.el.nativeElement['classList'].add('is--focused');
-      }, 0);
+  focusOnFirstNote(attempt = 0) {
+    if (this.noteComponents && this.noteComponents.first) {
+      this.noteComponents.first.bodyFocus();
+
+      // There's something weird with the `HostBinding`s not firing properly on this new component, so uh just add this manually:
+      this.noteComponents.first.el.nativeElement['classList'].add('is--focused');
+    }
+    else {
+      // @HACK It doesn't always seem to happen quickly enough...
+      if (attempt > 7) {
+        this._logger.warn('No note could be found when trying to focus on first note!');
+        return;
+      }
+      setTimeout(() => {
+        this.focusOnFirstNote(attempt + 1);
+      }, Math.pow(2, attempt);
     }
   }
 
