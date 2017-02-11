@@ -20,8 +20,6 @@ import * as _ from 'lodash';
 
 declare type DataItem = Note | Tag | Setting | Shortcut;
 
-// @TODO/data @TODO/soon Need to do `window.onbeforeunload = function() { return "Some message about unsaved stuff"; };` when sync state is not synced.
-
 @Injectable()
 export class DataService {
   NEW_FEATURE_COUNT = 12; // Hard-coded so that it only updates when user actually receives updated code with the features
@@ -52,6 +50,13 @@ export class DataService {
 
     if (newStatus === 'unsynced') {
       setTimeout(this.throttledSync, this.SYNC_THROTTLE);
+    }
+
+    if (newStatus === 'unsynced' || newStatus === 'syncing') {
+      window.addEventListener('beforeunload', this.confirmLeaving);
+    }
+    else {
+      window.removeEventListener('beforeunload', this.confirmLeaving);
     }
   }
 
@@ -96,6 +101,11 @@ export class DataService {
 
   ngOnDestroy() {
     this.digestSub.unsubscribe();
+  }
+
+  confirmLeaving(event) {
+    event.returnValue = 'Are you sure you want to leave? You have unsaved changes.';
+    return event.returnValue;
   }
 
   getDataStoreName(item: DataItem): string {
