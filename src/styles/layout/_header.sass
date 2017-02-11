@@ -55,6 +55,8 @@
     border: 1px solid $input-stroke // @TODO/rewrite @TODO/ece Vary based on sync status
     border-radius: 50%
 
+    transition: border-color $transition-med
+
     &.status--synced
       border-color: $success-color
       .sync-status
@@ -71,6 +73,15 @@
       border-color: $danger-color
       .sync-status
         color: $danger-color
+
+    &.status--syncing
+      animation: syncing-status-animation 1s alternate infinite
+
+      @keyframes syncing-status-animation
+        0%
+          border-width: 1px
+        100%
+          border-width: 3px
 
   .menu-body
     +menu-dropdown
