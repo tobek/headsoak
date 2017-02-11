@@ -7,6 +7,8 @@ import {TagsService} from '../tags/tags.service';
 
 import * as _ from 'lodash';
 
+const erroredOnMissingTag: { [noteAndTagIds: string ]: boolean} = {};
+
 @Pipe({ name: 'mapIdsToTags' })
 export class MapIdsToTagsPipe implements PipeTransform {
   private _logger: Logger = new Logger(this.constructor.name);
@@ -26,10 +28,10 @@ export class MapIdsToTagsPipe implements PipeTransform {
 
       // Have had some issue with deleted or non-existent tag IDs showing up on notes, here we can debug it
       if (! tag) {
-        if (noteId && ! this['erroredOnMissingTag' + noteId + tagId]) {
-          // Logging this message a gajillion times seems to slow down browser, so only do it once
+        if (noteId && ! erroredOnMissingTag[noteId + tagId]) {
+          // Logging this message a gajillion times slows things down and also we report this to GA, so only do it once
           this._logger.warn('Note ID', noteId, 'claims to have tag ID', tagId, 'but no tag found for that ID.');
-          this['erroredOnMissingTag' + noteId + tagId] = true;
+          erroredOnMissingTag[noteId + tagId] = true;
         }
         // @TODO/rewrite @TODO/tags. Check firebase data for all of these and see how pervasive. Permanent fix would be to loop through notes that reference this tag! Once fixed, TagComponent should throw an error rather than try to handle being passed no tag
         return null;
