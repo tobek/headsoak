@@ -151,8 +151,8 @@ export class TagComponent {
   }
 
   queryTagsUpdated(tags: Tag[]): void {
-    // @TODO/tags/subtags @HACK Since on notes we show Tag instances but sort of hack to show subtag stuff if relevant, but in note query we can get actual SubTag instances, we need to check base tag ID.
-    this.isActive = !! _.find(tags, (tag) => tag.baseTagId === this.tag.id);
+    // @TODO/tags/child tags @HACK Since on notes we show Tag instances but sort of hack to show child tag stuff if relevant, but in note query we can get actual ChildTag instances, we need to check base tag ID.
+    this.isActive = !! _.find(tags, (tag) => tag.parentTagId === this.tag.id);
   }
 
   _toggled() {

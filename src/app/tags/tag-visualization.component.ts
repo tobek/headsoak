@@ -113,12 +113,12 @@ export class TagVisualizationComponent {
         classAttr = '';
       }
 
-      if (_.size(tag.subTagDocs)) {
-        // Go through each subtag
-        _.each(tag.subTagDocs, (docs, subTagName) => {
-          nodeIndex[tag.getSubTagId(subTagName)] = {
-            id: tag.getSubTagId(subTagName),
-            name: tag.name + ': ' + subTagName,
+      if (_.size(tag.childTagDocs)) {
+        // Go through each child tag
+        _.each(tag.childTagDocs, (docs, childTagName) => {
+          nodeIndex[tag.getChildTagId(childTagName)] = {
+            id: tag.getChildTagId(childTagName),
+            name: tag.name + ': ' + childTagName,
             size: docs.length,
             classAttr: classAttr,
             tagInstance: tag,
@@ -149,7 +149,7 @@ export class TagVisualizationComponent {
     nodeIndexToUse?: { [tagId: string]: GraphNode }
   ): GraphLink[] {
     const tagLinkIndex = {}; // maps from string (source tag + sep + target tag) to weight
-    const separator = '👻🌚🌀🌱'; // need something unlikely to be in a subtag name
+    const separator = '👻🌚🌀🌱'; // need something unlikely to be in a child tag name
 
     _.each(notes, (note) => {
       if (! note.tags || note.tags.length < 2) {
@@ -174,14 +174,14 @@ export class TagVisualizationComponent {
           let sourceTagId = sourceTag.id;
           let targetTagId = targetTag.id;
 
-          // Modify source/target tag "id"s if this note actually has a SubTag
-          let sourceSubTagId = sourceTag.getSubTagIdForNoteId(note.id);
-          if (sourceSubTagId) {
-            sourceTagId = sourceSubTagId;
+          // Modify source/target tag "id"s if this note actually has a ChildTag
+          let sourceChildTagId = sourceTag.getChildTagIdForNoteId(note.id);
+          if (sourceChildTagId) {
+            sourceTagId = sourceChildTagId;
           }
-          let targetSubTagId = targetTag.getSubTagIdForNoteId(note.id);
-          if (targetSubTagId) {
-            targetTagId = targetSubTagId;
+          let targetChildTagId = targetTag.getChildTagIdForNoteId(note.id);
+          if (targetChildTagId) {
+            targetTagId = targetChildTagId;
           }
 
           if (nodeIndexAll && nodeIndexToUse) {

@@ -13,7 +13,7 @@
   ><span class="accept-rename" *ngIf="renaming" (mousedown)="renameFinish()" (touchstart)="renameFinish()"> <i class="fa fa-check"></i></span
 
   ><span *ngIf="ofNoteId && tag.noteData && tag.noteData[ofNoteId]"
-    ><span *ngIf="tag.noteData[ofNoteId].subTag">: {{ tag.noteData[ofNoteId].subTag }}</span>
+    ><span *ngIf="tag.noteData[ofNoteId].childTag">: {{ tag.noteData[ofNoteId].childTag }}</span>
     <span class="tag-value-hover" *ngIf="tag.noteData[ofNoteId].score">({{ tag.noteData[ofNoteId].score}})</span>
   </span
 ></span>
@@ -63,22 +63,22 @@
     Remove from note
   </a>
   <!--
-  <a class="tag-action" [routerLink]="['/tags/tag', tag.baseTagId, tag.name, 'share']" (click)="$event.stopPropagation()">
+  <a class="tag-action" [routerLink]="['/tags/tag', tag.parentTagId, tag.name, 'share']" (click)="$event.stopPropagation()">
     <i class="fa fa-fw fa-users"></i>
     Share{{ tag.share ? 'd' : '' }}
   </a>
   -->
-  <a class="tag-action" [routerLink]="['/tags/tag', tag.baseTagId, tag.name, 'smartness']" (click)="$event.stopPropagation()">
+  <a class="tag-action" [routerLink]="['/tags/tag', tag.parentTagId, tag.name, 'smartness']" (click)="$event.stopPropagation()">
     <i class="fa fa-fw fa-bolt"></i>
     Smart Tag
   </a>
   <!-- @TODO/tags @TODO/privacy
-  <a class="tag-action" [routerLink]="['/tags/tag', tag.baseTagId, tag.name, 'privacy']" (click)="$event.stopPropagation()">
+  <a class="tag-action" [routerLink]="['/tags/tag', tag.parentTagId, tag.name, 'privacy']" (click)="$event.stopPropagation()">
     <i class="fa fa-fw fa-lock"></i>
     Private Tag
   </a>
   -->
-  <a class="tag-action" [routerLink]="['/tags/tag', tag.baseTagId, tag.name]" (click)="$event.stopPropagation()">
+  <a class="tag-action" [routerLink]="['/tags/tag', tag.parentTagId, tag.name]" (click)="$event.stopPropagation()">
     <i class="fa fa-fw fa-bar-chart"></i>
     More
   </a>
