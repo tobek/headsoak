@@ -4,7 +4,7 @@ import {Subscription} from 'rxjs';
 // import 'rxjs/add/operator/debounceTime';
 
 import {AnalyticsService} from '../analytics.service';
-import {Tag, SubTag} from './';
+import {Tag, ChildTag} from './';
 import {TagsService} from './tags.service'; // Dunno why we can't import from tags/index.ts
 import {ToasterService} from '../utils/toaster.service'; // Likewise, this breaks if combined with import of Logger below
 import {Logger} from '../utils/';
@@ -110,7 +110,7 @@ export class TagDetailsComponent {
     this.exploreStatsReset();
 
     const cooccurrences: { [tagId: string]: number } = {}; // tagId => # of cooccurrences with the current tag
-    let note, pairedTag, pairedSubTagId;
+    let note, pairedTag, pairedChildTagId;
     this.tag.docs.forEach((noteId) => {
       // This note has the given tag
       note = this.tagsService.dataService.notes.notes[noteId];
@@ -132,10 +132,10 @@ export class TagDetailsComponent {
           return;
         }
 
-        pairedSubTagId = pairedTag.getSubTagIdForNoteId(note.id);
-        if (pairedSubTagId) {
-          // Actually a subtag of this tag is on this note so we can overwrite what we have
-          tagId = pairedSubTagId;
+        pairedChildTagId = pairedTag.getChildTagIdForNoteId(note.id);
+        if (pairedChildTagId) {
+          // Actually a child tag of this tag is on this note so we can overwrite what we have
+          tagId = pairedChildTagId;
         }
 
         if (! cooccurrences[tagId]) {
@@ -158,7 +158,7 @@ export class TagDetailsComponent {
 
       while(_.size(sortedCooccurrences) && this.exploreStats.topCooccurrences.length < 5) {
         tagId = sortedCooccurrences.pop();
-        tag = SubTag.getTagOrSubTag(tagId, this.tagsService);
+        tag = ChildTag.getTagOrChildTag(tagId, this.tagsService);
 
         if (! tag) {
           continue;
@@ -172,7 +172,7 @@ export class TagDetailsComponent {
 
       while(_.size(sortedCooccurrences) && this.exploreStats.bottomCooccurrences.length < 5) {
         tagId = sortedCooccurrences.shift();
-        tag = SubTag.getTagOrSubTag(tagId, this.tagsService);
+        tag = ChildTag.getTagOrChildTag(tagId, this.tagsService);
 
         if (! tag) {
           continue;

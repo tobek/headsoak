@@ -3,7 +3,7 @@ import {Component, ViewChild, ElementRef, HostBinding} from '@angular/core';
 import {AnalyticsService} from '../analytics.service';
 import {Logger} from '../utils/logger';
 
-import {Tag, SubTag} from '../tags/';
+import {Tag, ChildTag} from '../tags/';
 import {ForceGraph} from '../utils/force-graph.component';
 
 import * as _ from 'lodash';
@@ -38,11 +38,11 @@ export class HomepageComponent {
   @ViewChild('noteAddTagInput') noteAddTagInput: ElementRef;
 
   tagSent = new Tag({ id: 'sent', name: 'sentiment', prog: true }, null);
-  tagSentPos = new SubTag('positive', this.tagSent);
-  tagSentNeg = new SubTag('negative', this.tagSent);
+  tagSentPos = new ChildTag('positive', this.tagSent);
+  tagSentNeg = new ChildTag('negative', this.tagSent);
 
   tagLoc = new Tag({ id: 'loc', name: 'location', prog: true }, null);
-  tagLocGaia = new SubTag('Gaia Cafe', this.tagLoc);
+  tagLocGaia = new ChildTag('Gaia Cafe', this.tagLoc);
 
   tagQuote = new Tag({ id: 'quote', name: 'quote', prog: true }, null);
   tagFut = new Tag({ id: 'fut', name: 'futurism' }, null);

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 
 import {Logger, fuzzyMatchSort} from './';
 import {TagsService} from '../tags/tags.service';
-import {Tag, SubTag} from '../tags';
+import {Tag, ChildTag} from '../tags';
 
 import * as _ from 'lodash';
 
@@ -45,7 +45,7 @@ export class AutocompleteService {
     autocompleteOpts: {}, // should be `any` but can't be found...?
   }) {
     // While we're iterating through tags creating lookup list, we can build this too:
-    const subTags: AutocompleteSuggestion[] = [];
+    const childTags: AutocompleteSuggestion[] = [];
 
     var lookupArray: AutocompleteSuggestion[] = _.filter(this.tagsService.tags, (tag: Tag) => {
 
@@ -62,13 +62,13 @@ export class AutocompleteService {
         return false;
       }
 
-      // These only work in NoteQueryComponent so far (and anyway since subTags currently only are for prog tags, they can't be added to a note context yet)
-      if (context === 'query' && tag.subTagDocs) {
-        _.each(tag.subTagDocs, (docs: string[], subTagName: string) => {
-          subTags.push({
-            value: tag.name + ': ' + subTagName,
+      // These only work in NoteQueryComponent so far (and anyway since childTags currently only are for prog tags, they can't be added to a note context yet)
+      if (context === 'query' && tag.childTagDocs) {
+        _.each(tag.childTagDocs, (docs: string[], childTagName: string) => {
+          childTags.push({
+            value: tag.name + ': ' + childTagName,
             data: {
-              tag: new SubTag(subTagName, tag)
+              tag: new ChildTag(childTagName, tag)
             }
           });
         });
@@ -79,7 +79,7 @@ export class AutocompleteService {
       return { value: tag.name, data: { tag: tag } };
     });
 
-    lookupArray = _.concat(lookupArray, subTags);
+    lookupArray = _.concat(lookupArray, childTags);
 
     this._logger.log('Initializing autocomplete with:', lookupArray);
 
