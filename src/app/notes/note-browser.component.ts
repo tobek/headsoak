@@ -216,7 +216,7 @@ export class NoteBrowserComponent {
       }
       setTimeout(() => {
         this.focusOnFirstNote(attempt + 1);
-      }, Math.pow(2, attempt);
+      }, Math.pow(2, attempt));
     }
   }
 
