@@ -20,6 +20,12 @@ import * as _ from 'lodash';
 
 declare type DataItem = Note | Tag | Setting | Shortcut;
 
+interface DataDigest {
+  'nuts': { [noteId: string]: Note },
+  'tags': { [tagId: string]: Tag },
+  'settings': { [settingId: string]: Setting | Shortcut },
+}
+
 @Injectable()
 export class DataService {
   NEW_FEATURE_COUNT = 12; // Hard-coded so that it only updates when user actually receives updated code with the features
@@ -58,7 +64,7 @@ export class DataService {
     });
 
     if (newStatus === 'unsynced') {
-      setTimeout(this.throttledSync, this.SYNC_THROTTLE);
+      setTimeout(this.throttledSync, this.SYNC_DELAY);
     }
 
     if (newStatus === 'unsynced' || newStatus === 'syncing') {
@@ -73,18 +79,13 @@ export class DataService {
 
   accountService: AccountService;
 
-  /** This stores data that needs to be synced to server. Periodically checked by this.sync() */
-  private digest: {
-    'nuts': { [noteId: string]: Note },
-    'tags': { [tagId: string]: Tag },
-    'settings': { [settingId: string]: Setting | Shortcut },
-  };
+  /** This stores data that needs to be synced to server. Checked by this.sync() */
+  private digest: DataDigest;
+  /** This stores data that is currently being synced to server. */
+  private digestSyncing: DataDigest;
   private digestSub: Subscription;
   private throttledSync: Function;
   private cancelThrottledSync: Function;
-
-  /** How many separate async callbacks to sync data to data store we're currently waiting on. Using `parallel` from `async` module would be more elegant, but we don't need anything else from that module right now and source code for that function simply keeps a counter of the number of tasks that have completed, so it's the same idea. */
-  private syncTasksRemaining = 0;
 
   private _logger = new Logger(this.constructor.name);
 
@@ -99,7 +100,8 @@ export class DataService {
     public tags: TagsService,
     @Inject(forwardRef(() => SettingsService)) public settings: SettingsService
   ) {
-    this.digestReset();
+    this.digest = this.getEmptyDigest();
+    this.digestSyncing = this.getEmptyDigest();
     this.digestSub = this.digest$.subscribe(this.dataUpdated.bind(this));
     this.throttledSync = _.throttle(this.sync.bind(this), this.SYNC_THROTTLE);
     this.cancelThrottledSync = this.throttledSync['cancel']; // lodash adds this property, which cancels any pending invocations
@@ -112,10 +114,11 @@ export class DataService {
     this.digestSub.unsubscribe();
   }
 
-  confirmLeaving(event) {
+  confirmLeaving = (event) => {
+    this.sync(); // sync now!
     event.returnValue = 'Are you sure you want to leave? You have unsaved changes.';
     return event.returnValue;
-  }
+  };
 
   getDataStoreName(item: DataItem): string {
     if (item instanceof Note) {
@@ -132,9 +135,7 @@ export class DataService {
   dataUpdated(update: DataItem): void {
     this.digest[this.getDataStoreName(update)][update.id] = update;
 
-    this.status = 'unsynced';
-
-    setTimeout(this.throttledSync, this.SYNC_DELAY);
+    this.status = 'unsynced'; // triggers sync too
 
     // This function can get called inside change detection loop, and changing this.status is another change which will trigger another round of detection. This blows up in dev mode, so tell Angular/Zone that we need to check for changes now:
     this.accountService.rootChangeDetector.markForCheck();
@@ -143,7 +144,7 @@ export class DataService {
   }
 
   removeData(dataType: string, id: string) {
-    this.status = 'unsynced';
+    this.status = 'unsynced'; // triggers sync
 
     if (dataType === 'nut' || dataType === 'note') {
       this.digest.nuts[id] = null;
@@ -151,36 +152,55 @@ export class DataService {
     else if (dataType === 'tag') {
       this.digest.tags[id] = null;
     }
-    
-    this.throttledSync();
   }
 
-  digestReset(): void {
-    this.digest = { 'nuts': {}, 'tags': {}, 'settings': {} };
-    this.status = 'synced'; // @TODO/rewrite Make sure sync status widget updates
+  getEmptyDigest(): DataDigest {
+    return { 'nuts': {}, 'tags': {}, 'settings': {} };
+  }
+  isDigestEmpty(digest: DataDigest): boolean {
+    return (_.isEmpty(digest['nuts']) && _.isEmpty(digest['tags']) && _.isEmpty(digest['settings']));
   }
 
   isUnsaved(item: DataItem): boolean {
     if (! item) {
       return false;
     }
-    return this.digest[this.getDataStoreName(item)][item.id] !== undefined;
+
+    const store = this.getDataStoreName(item);
+
+    if (this.digest[store][item.id] !== undefined) {
+      return true;
+    }
+    else if (this.digestSyncing[store][item.id] !== undefined) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
   /** We run this throttled. Checks the digest and syncs updates as necessary. */
   sync(): void {
-    if (this.syncTasksRemaining > 0) return; // currently syncing
+    if (! this.isDigestEmpty(this.digestSyncing)) {
+      this._logger.log('sync called while digest is syncing');
+      return;
+    }
 
     this._logger.log('Checking if there are changes to sync');
 
+    if (this.isDigestEmpty(this.digest)) {
+      this._logger.log('(There aren\'t)');
+      this.status = 'synced';
+      return;
+    }
+
+    this._logger.log('Changes found, syncing');
+
     // Here we loop through notes, tags, etc. in digest, and for each one process them and update to data store
-    let updated = false;
     _.forEach(this.digest, (contents: { [id: string]: DataItem }, field: string) => {
       if (_.isEmpty(contents)) {
         return;
       }
-
-      this.syncTasksRemaining++;
 
       let updates = _.mapValues(contents, (item: DataItem ) => {
         // null indicates item has been deleted
@@ -188,28 +208,32 @@ export class DataService {
       });
 
       this._logger.log('Updating', field, 'with', updates);
-      this.status = 'syncing';
-      updated = true;
 
       try {
-        this.ref.child(field).update(updates, this.syncCb.bind(this));
+        this.ref.child(field).update(updates, (err?) => {
+          this.zone.run(() => {
+            this.syncCb(err, field);
+          });
+        });
       }
       catch (err) {
-        this.syncCb(err);
+        this.syncCb(err, field);
       }
     });
 
-    if (updated) {
-      this._logger.log('Changes found, syncing');
-    }
-    else if (this.status !== 'synced') {
-      this.status = 'synced';
-    }
+    this.status = 'syncing';
+    this.digestSyncing = this.digest;
+    this.digest = this.getEmptyDigest();
   }
 
-  syncCb(err): void {
-    this.syncTasksRemaining--;
+  // Use this and rename existing `syncCb` to `_syncCb` to simulate slow connection
+  // syncCb(err, field: string) {
+  //   setTimeout(() => {
+  //     this._syncCb(err, field);
+  //   }, 5000);
+  // }
 
+  syncCb(err, field: string): void {
     if (err) {
       this._logger.error('Sync to Firebase threw or returned error:', err);
       this.modalService.alert('Error syncing your notes to the cloud! Some stuff may not have been saved. We\'ll keep trying though. You can email us at <a href="mailto:support@headsoak.com">support@headsoak.com</a> if this keeps happening. Tell us what this error says:<br><br><pre class="syntax">' + JSON.stringify(err, null, 2) + '</pre>', true);
@@ -219,11 +243,19 @@ export class DataService {
       return;
     }
 
-    if (this.syncTasksRemaining === 0) {
-      this._logger.log('Changes pushed successfully');
+    this._logger.log('Successfully synced', field);
+    this.digestSyncing[field] = {};
 
-      // @TODO/soon @TODO/bug If anything was added to the digest while we were waiting for syc to run, this will clear those unsynced changes!! That's really bad. Due to the throttling hopefully this won't happen much, but it's a problem. Instead, `sync` should clear the digest (just of what it found at the time) but save them somewhere as like pending updates (so that it can keep trying and know what's not synced if it failed) but allowing for new changes to go in.
-      this.digestReset();
+    if (this.isDigestEmpty(this.digestSyncing)) {
+      this._logger.log('All fields now synced');
+
+      if (! this.isDigestEmpty(this.digest)) {
+        this._logger.log('But updates were made while digest was syncing - syncing again soon');
+        this.throttledSync();
+      }
+      else {
+        this.status = 'synced';
+      }
     }
   }
 

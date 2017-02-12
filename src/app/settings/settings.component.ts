@@ -47,6 +47,7 @@ export class SettingsComponent {
   private changeEmailIsLoading = false;
   private changePasswordIsLoading = false;
 
+  /** DataService's throttled sync interval is a bit long if user is sitting there waiting for setting to save. */
   private syncDebounced = _.debounce(this.dataService.sync.bind(this.dataService), 1000);
   private checkEmptyModKeyDebounced = _.debounce(this.checkEmptyModKey.bind(this), 1000);
 
@@ -143,7 +144,7 @@ export class SettingsComponent {
 
     setting.updated(newVal);
 
-    this.syncDebounced(); // Digest sync is 5s which is a bit long if user is sitting there waiting for setting to save
+    this.syncDebounced();
 
     this.checkEmptyModKeyDebounced();
   }
