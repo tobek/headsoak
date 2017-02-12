@@ -1,4 +1,4 @@
-import {Component, HostListener, HostBinding, EventEmitter, Input, Output, ElementRef, ViewChild} from '@angular/core';
+import {Component, Inject, forwardRef, HostListener, HostBinding, EventEmitter, Input, Output, ElementRef, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
 
 import {AnalyticsService} from '../analytics.service';
@@ -110,7 +110,7 @@ export class TagComponent {
     private sizeMonitorService: SizeMonitorService,
     private tooltipService: TooltipService,
     private activeUIs: ActiveUIsService,
-    private tagsService: TagsService
+    @Inject(forwardRef(() => TagsService)) private tagsService: TagsService
   ) {}
 
   ngOnInit() {

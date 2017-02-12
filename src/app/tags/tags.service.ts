@@ -5,6 +5,7 @@ import {Logger, utils} from '../utils/';
 import {DataService} from '../data.service';
 
 import {Tag} from './tag.model'; // For some reason this breaks with `TypeError: Cannot read property 'getOptional' of undefined` if I do `from './'`, which I think should work
+import {ChildTag} from './child-tag.model';
 import {ProgTagApiService} from './prog-tag-api.service';
 import {ProgTagLibraryService} from './prog-tag-library.service';
 
@@ -83,7 +84,8 @@ export class TagsService {
     });
   }
 
-  createTag(tagData: any = {}, addToDataStore = false): Tag {
+  /** Able to rehydrate normal Tags or ChildTags from saved data. However, when creating a *new* ChildTag from scratch, `createNewChildTag` should be called to handle various things. */
+  createTag(tagData: any = {}, addToDataStore = false): Tag | ChildTag {
     if (tagData.id) {
       if (this.tags[tagData.id]) {
         this._logger.error('Cannot create a new tag with id "' + tagData.id + '" - that ID is already taken!\nExisting tag:', this.tags[tagData.id], '\nNew tag:', tagData);
@@ -99,7 +101,13 @@ export class TagsService {
       return null;
     }
 
-    const newTag = new Tag(tagData, this.dataService);
+    let newTag;
+    if (tagData.parentTagId) {
+      newTag = new ChildTag(tagData, this.dataService);
+    }
+    else {
+      newTag = new Tag(tagData, this.dataService);
+    }
     this.tags[newTag.id] = newTag;
 
     // No need to sync to data store if we're initializing tags from data store.
@@ -109,6 +117,24 @@ export class TagsService {
     }
 
     return newTag;
+  }
+
+  createNewChildTag(childTagName: string, parentTag: Tag): ChildTag {
+    const tagData = {
+      name: parentTag.name + ': ' + childTagName,
+      childTagName: childTagName,
+      parentTagId: parentTag.id,
+
+      // Fields we inherit from parent (everything else new/specific to child tag)
+      description: parentTag.description,
+      prog: parentTag.prog,
+      isLibraryTag: parentTag.isLibraryTag,
+      readOnly: parentTag.readOnly,
+      share: parentTag.share,
+      sharedBy: parentTag.sharedBy,
+    };
+
+    return this.createTag(tagData, true) as ChildTag;
   }
 
   /** Adds an already existing Tag instance to user's tags. */

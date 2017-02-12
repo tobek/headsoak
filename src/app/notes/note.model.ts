@@ -3,7 +3,7 @@ import {EventEmitter} from '@angular/core';
 import {Logger} from '../utils/logger';
 
 import {DataService} from '../data.service';
-import {Tag} from '../tags';
+import {Tag, ChildTag} from '../tags';
 
 import * as _ from 'lodash';
 
@@ -495,7 +495,8 @@ export class Note {
     }
 
     _.each(this.dataService.tags.tags, (tag) => {
-      if (tag && tag.prog) {
+      if (tag && tag.prog && ! (tag instanceof ChildTag)) {
+        // @NOTE Currently child tags only exist on prog tags, and don't need/can't have their own programmatic stuff (but still have `tag.prog` and are styled as such)
         // @TODO/prog We could probably identify which tags are causing any infinite loops by keeping track of which tags are going back and forth somehow
         tag.runProgOnNote(this);
       }
