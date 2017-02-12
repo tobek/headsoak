@@ -67,11 +67,9 @@ export class DataService {
       setTimeout(this.throttledSync, this.SYNC_DELAY);
     }
 
-    if (newStatus === 'unsynced' || newStatus === 'syncing') {
+    window.removeEventListener('beforeunload', this.confirmLeaving);
+    if (newStatus !== 'synced') {
       window.addEventListener('beforeunload', this.confirmLeaving);
-    }
-    else {
-      window.removeEventListener('beforeunload', this.confirmLeaving);
     }
   }
 
