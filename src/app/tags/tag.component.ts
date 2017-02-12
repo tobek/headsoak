@@ -3,7 +3,7 @@ import {Subscription} from 'rxjs';
 
 import {AnalyticsService} from '../analytics.service';
 import {ActiveUIsService} from '../active-uis.service';
-import {Tag} from './tag.model';
+import {Tag, NoteSpecificDatum} from './tag.model';
 import {TagsService} from './tags.service';
 
 import {Logger, utils} from '../utils/';
@@ -24,6 +24,13 @@ export class TagComponent {
   /** Optional, supplied if this tag component is being shown on a specific note. */
   @Input() ofNoteId?: string;
 
+  /** This tag is on a note and has `noteData` for that note. Furthermore, `tag.noteData` is an array, representing multiple child tags of this tag are on this note, and this particular instance of TagComponent will actually contain one TagComponent for each. */
+  @HostBinding('class.is--split') splitIntoChildTags?: boolean;
+  /** This tag is a "child" of a `splitIntoChildTags` TagComponent, and this particular instance of TagComponent refers to just `i`th child tag. */
+  @Input() noteDataI?: number;
+  /** This gets set to the specific piece of note data that concerns this TagComponent, if any. */
+  noteData?: NoteSpecificDatum;
+
   @Input() context?: 'note' | 'noteQuery' | 'tagBrowser';
 
   /** If this is a new tag not yet saved to data store but just created for the user to type new tag name into. */
@@ -38,7 +45,6 @@ export class TagComponent {
   @ViewChild('actionsDropdown') actionsDropdownRef: ElementRef;
 
   @ViewChild('tagName') tagNameRef: ElementRef;
-  tagNameEl: HTMLInputElement; // Not actually, but contenteditable so it behaves as such
 
   @Input() renamable?: boolean;
   @Input() renamableOnNameClick?: boolean;
@@ -129,8 +135,6 @@ export class TagComponent {
       this.renamable = false;
     }
 
-    this.tagNameEl = this.tagNameRef.nativeElement;
-
     if (this.ofNoteId || this.context === 'tagBrowser') {
       this.queryTagsUpdatedSub = this.activeUIs.noteQuery.tagsUpdated$.subscribe(
         this.queryTagsUpdated.bind(this)
@@ -139,6 +143,20 @@ export class TagComponent {
       // And run it once at first to get us started:
 
       this.queryTagsUpdated(this.activeUIs.noteQuery.tags);
+    }
+
+    if (this.ofNoteId && this.tag.noteData && this.tag.noteData[this.ofNoteId]) {
+      if (this.tag.noteData[this.ofNoteId] instanceof Array) {
+        if (typeof this.noteDataI !== 'undefined') {
+          this.noteData = this.tag.noteData[this.ofNoteId][this.noteDataI];
+        }
+        else {
+          this.splitIntoChildTags = true;
+        }
+      }
+      else {
+        this.noteData = this.tag.noteData[this.ofNoteId];
+      }
     }
 
     this.disableDropdown = ! this.enableDropdown;
@@ -156,6 +174,7 @@ export class TagComponent {
   }
 
   _toggled() {
+    // @TODO/polish @TODO/notes Everywhere this is used, we should pass through event so we can determine if shift was held
     this.toggled.emit(this.tag);
     this.hovered = false;
   }
@@ -172,7 +191,7 @@ export class TagComponent {
 
     this.renaming = true; // makes name element contenteditable
     setTimeout(() => {
-      utils.placeCaretAtEnd(this.tagNameEl);
+      utils.placeCaretAtEnd(this.tagNameRef.nativeElement);
     }, 0);
   }
   renameFinish(event?: KeyboardEvent) {
@@ -184,7 +203,7 @@ export class TagComponent {
       event.preventDefault();
     }
 
-    const newName = this.tagNameEl.innerHTML.trim();
+    const newName = this.tagNameRef.nativeElement.innerHTML.trim();
 
     if (! newName || newName === this.tag.name) {
       this.renameCancel();
@@ -207,7 +226,7 @@ export class TagComponent {
       this.delete(true);
     }
     else {
-      this.tagNameEl.innerHTML = this.tag.name;
+      this.tagNameRef.nativeElement.innerHTML = this.tag.name;
     }
 
     this.renamingOver.emit();

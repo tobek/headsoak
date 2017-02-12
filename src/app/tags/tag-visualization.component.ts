@@ -165,6 +165,8 @@ export class TagVisualizationComponent {
         return;
       }
 
+      // @TODO/now We should just make ChildTag instances here for each separate child tag and then loop through all of those - then we don't have to do getChildTagIdForNoteId
+
       // We want to get every pairing of tags on this note, but since links are bidirectional we don't need the reverse, e.g. tag 4 -> tag 8 and tag 8 -> tag 4.
       for (let i = validTags.length - 1; i >= 1; i--) {
         for (let j = i - 1; j >= 0; j--) {
