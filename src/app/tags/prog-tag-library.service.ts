@@ -47,7 +47,7 @@ else {
 }
 
 return {
-  subTag: value,
+  childTag: value,
   score: score,
 };` // }
     },

@@ -10,8 +10,8 @@ import {each as asyncEach} from 'async';
 
 /** Information this tag generates about a specific note. */
 export interface NoteSpecificData {
-  subTag?: string, // will be displayed after tag name when shown on this note, e.g. for sentiment analysis tag called "sentiment", `val` might be "joy" and be displayed as "sentiment: joy"
-  score?: any, // in addition to `val`, this will be displayed in parentheses after tag name on hover, e.g. `valHover` might be "90% confidence" and show "sentiment: joy (90% confidence)" @TODO/prog Update component and this comment: if no subTag, show score always without hover
+  childTag?: string, // will be displayed after tag name when shown on this note, e.g. for sentiment analysis tag called "sentiment", `val` might be "joy" and be displayed as "sentiment: joy"
+  score?: any, // in addition to `val`, this will be displayed in parentheses after tag name on hover, e.g. `valHover` might be "90% confidence" and show "sentiment: joy (90% confidence)" @TODO/prog Update component and this comment: if no childTag, show score always without hover
   more?: string, // additional stuff can be displayed in the dropdown (unimplemented)
 }
 
@@ -43,8 +43,8 @@ export class Tag {
   /** Tag can store specific information on a per-note basis, indexed by note ID. */
   noteData: { [noteId: string]: NoteSpecificData } = {};
 
-  /** Tags (currently only prog tags) can have sub tags. This index maps subTag name to list of Note IDs, so that we can both get a list of all possible subtags, and sort easily. @TODO/tags This is overall a shitty way of handling this, and I don't think multiple subtags of the same tag on one note will work very well or at all. */
-  subTagDocs: { [subTagName: string]: string[] } = {};
+  /** Tags (currently only prog tags) can have sub tags. This index maps childTag name to list of Note IDs, so that we can both get a list of all possible child tags, and sort easily. @TODO/tags This is overall a shitty way of handling this, and I don't think multiple child tags of the same tag on one note will work very well or at all. */
+  childTagDocs: { [childTagName: string]: string[] } = {};
 
 
   /** If this is set, this tag corresponds to some specially implemented feature, such as pinned or archived (and, later, private notes). Unless the user selects otherwise in settings, this tag will be hidden from everywhere (autocomplete when adding tag, tag list on notes) except searching and maybe tag browser (probably different section). */
@@ -84,7 +84,7 @@ export class Tag {
     'progFuncString',
     'isLibraryTag',
     'noteData',
-    'subTagDocs',
+    'childTagDocs',
 
     'internal',
     'readOnly',
@@ -181,12 +181,12 @@ export class Tag {
     _.pull(this.docs, '' + noteId);
 
     if (this.noteData[noteId]) {
-      const noteSubTag = this.noteData[noteId].subTag;
-      if (noteSubTag) {
-        _.pull(this.subTagDocs[noteSubTag], noteId);
+      const noteChildTag = this.noteData[noteId].childTag;
+      if (noteChildTag) {
+        _.pull(this.childTagDocs[noteChildTag], noteId);
 
-        if (_.isEmpty(this.subTagDocs[noteSubTag])) {
-          delete this.subTagDocs[noteSubTag];
+        if (_.isEmpty(this.childTagDocs[noteChildTag])) {
+          delete this.childTagDocs[noteChildTag];
         }
       }
 
@@ -245,8 +245,8 @@ export class Tag {
 
       this.noteData[note.id] = result;
 
-      if (result.subTag) {
-        this.subTagDocs[result.subTag] = _.union(this.subTagDocs[result.subTag], [note.id]);
+      if (result.childTag) {
+        this.childTagDocs[result.childTag] = _.union(this.childTagDocs[result.childTag], [note.id]);
       }
 
       if (note.hasTag(this)) {
@@ -325,30 +325,30 @@ export class Tag {
     // }, 50);
   }
 
-  /** Given a noteId, find which subTag of this tag the note has, and return its "id" (or undefined if there's no subtag of this tag that the note has). */
-  getSubTagIdForNoteId(noteId: string): string {
-    if (! _.size(this.subTagDocs)) {
+  /** Given a noteId, find which childTag of this tag the note has, and return its "id" (or undefined if there's no child tag of this tag that the note has). */
+  getChildTagIdForNoteId(noteId: string): string {
+    if (! _.size(this.childTagDocs)) {
       return undefined;
     }
 
-    let subTagId;
+    let childTagId;
 
-    _.each(this.subTagDocs, (docs, subTagName) => {
+    _.each(this.childTagDocs, (docs, childTagName) => {
       if (_.includes(docs, noteId)) {
-        subTagId = this.getSubTagId(subTagName);
+        childTagId = this.getChildTagId(childTagName);
         return false; // short-circuit _.each loop
       }
     });
 
-    return subTagId;
+    return childTagId;
   }
-  /** Kind of lame, and evidence of poor data structure here, but to keep this consistent this is how we generate "id"s of subtags. */
-  getSubTagId(subTagName: string): string {
-    return this.id + ':' + subTagName;
+  /** Kind of lame, and evidence of poor data structure here, but to keep this consistent this is how we generate "id"s of child tags. */
+  getChildTagId(childTagName: string): string {
+    return this.id + ':' + childTagName;
   }
-  getSubTagIds(): string[] {
+  getChildTagIds(): string[] {
     // Have to cooerce type with double any because bind messes up types.
-    return _.map(_.keys(this.subTagDocs), this.getSubTagId.bind(this)) as any as string[];
+    return _.map(_.keys(this.childTagDocs), this.getChildTagId.bind(this)) as any as string[];
   }
 
   /** Navigates to the tag details page for this tag, optionally to a sub-page within it. */
@@ -356,17 +356,17 @@ export class Tag {
     let path: string;
 
     if (subPage) {
-      path = ['', 'tags', 'tag', this.baseTagId, this.name, subPage].join('/');
+      path = ['', 'tags', 'tag', this.parentTagId, this.name, subPage].join('/');
     }
     else {
-      path = ['', 'tags', 'tag', this.baseTagId, this.name].join('/');
+      path = ['', 'tags', 'tag', this.parentTagId, this.name].join('/');
     }
 
     this.dataService.router.navigateByUrl(path);
   }
 
-  /** Implemented in SubTag to return not the subtag ID. */
-  get baseTagId(): string {
+  /** Implemented in ChildTag to return not the child tag ID. */
+  get parentTagId(): string {
     return this.id;
   }
 

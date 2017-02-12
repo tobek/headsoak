@@ -8,7 +8,7 @@ import {ModalService} from '../modals/modal.service';
 import {SettingsService} from '../settings/settings.service';
 import {Note} from './note.model';
 import {NotesService} from './notes.service';
-import {Tag, SubTag, TagsService} from '../tags';
+import {Tag, ChildTag, TagsService} from '../tags';
 import {Logger, AutocompleteService, AutocompleteSuggestion, ToasterService} from '../utils/';
 import {NOTE_BROWSER_ROUTES, routingInfo} from '../app.routes';
 
@@ -182,8 +182,8 @@ export class NoteQueryComponent {
 
       this.removeTag(lastTag);
 
-      if (lastTag instanceof SubTag) {
-        this.addTag(lastTag.baseTag);
+      if (lastTag instanceof ChildTag) {
+        this.addTag(lastTag.parentTag);
       }
 
       this.ensureFocusAndAutocomplete(); // reset autocomplete so that newly removed tag is in suggestions again

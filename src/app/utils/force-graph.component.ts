@@ -223,7 +223,7 @@ export class ForceGraphComponent {
 
           if (central) {
             if (centralNodes.length > 1) {
-              // Multiple opposing central nodes (e.g. subtags) should definitely pull so you can see how related tags align
+              // Multiple opposing central nodes (e.g. child tags) should definitely pull so you can see how related tags align
               baseStrength = 0.1;
             }
             else {
@@ -512,10 +512,10 @@ export class ForceGraphComponent {
     }
 
     let higlightNodeEls;
-    if (_.size(tag.subTagDocs)) {
-      // This is a tag with subtags, and since we break out individual subtags and don't show the parent in the viz, let's highlight all of them.
-      const subTagIds = tag.getSubTagIds();
-      higlightNodeEls = this.nodeEls.filter((nodeEl) => _.includes(subTagIds, nodeEl.id));
+    if (_.size(tag.childTagDocs)) {
+      // This is a tag with child tags, and since we break out individual child tags and don't show the parent in the viz, let's highlight all of them.
+      const childTagIds = tag.getChildTagIds();
+      higlightNodeEls = this.nodeEls.filter((nodeEl) => _.includes(childTagIds, nodeEl.id));
     }
     else {
       higlightNodeEls = this.nodeEls.filter((nodeEl) => nodeEl.id === tag.id);

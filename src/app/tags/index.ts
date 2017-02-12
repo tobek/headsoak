@@ -9,4 +9,4 @@ export * from './tag-browser.component';
 export * from './tag-details.component';
 export * from './tag-visualization.component';
 export * from './tag.model';
-export * from './sub-tag.model';
+export * from './child-tag.model';
