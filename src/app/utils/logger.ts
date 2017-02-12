@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import * as safeStringify from 'json-stringify-safe';
 
 // @TODO/rewrite Hide all but warnings and errors unless in dev mode? 
 // @TODO/analytics Fire analytics events on warnings and errors. Maybe also pass in the class instance to the constructor so that we can log info about the instance?
@@ -46,10 +47,17 @@ export class Logger {
             err = arg;
             return false;
           }
+          else if (! arg) {
+            return false;
+          }
           return true;
         }),
         (nonErrArg) => {
-          return JSON.stringify(nonErrArg).replace(/^"/, '').replace(/"$/, '');
+          if (nonErrArg.forDataStore()) {
+            // notes, tags, and settings have a simpler representation so we can send up less data
+            nonErrArg = nonErrArg.forDataStore();
+          }
+          return (safeStringify(nonErrArg) || '').replace(/^"/, '').replace(/"$/, '');
         }
       ).join(', ');
 
