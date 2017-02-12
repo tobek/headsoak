@@ -23,3 +23,4 @@
 import 'nlcst-to-string';
 import 'retext';
 import 'retext-keywords';
+import 'retext-profanities';
