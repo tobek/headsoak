@@ -53,7 +53,7 @@ export class Logger {
           return true;
         }),
         (nonErrArg) => {
-          if (nonErrArg.forDataStore()) {
+          if (nonErrArg.forDataStore) {
             // notes, tags, and settings have a simpler representation so we can send up less data
             nonErrArg = nonErrArg.forDataStore();
           }
