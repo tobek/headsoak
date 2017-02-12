@@ -179,6 +179,10 @@ export class Tag {
       const noteSubTag = this.noteData[noteId].subTag;
       if (noteSubTag) {
         _.pull(this.subTagDocs[noteSubTag], noteId);
+
+        if (_.isEmpty(this.subTagDocs[noteSubTag])) {
+          delete this.subTagDocs[noteSubTag];
+        }
       }
 
       delete this.noteData[noteId];
