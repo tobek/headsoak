@@ -56,7 +56,7 @@ return {
       isLibraryTag: true,
       readOnly: true,
       name: 'topic',
-      description: '@TODO/now',
+      description: '@TODO/now Automatically extract topics',
       prog: true,
       // progFunc: function(note: Note, api, _): ClassifierReturnType {
       progFuncString:`// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`retext-keywords\` module) have been bundled with the app.
@@ -67,27 +67,20 @@ var result = new Promise(function(res, rej) {
   reject = rej;
 });
 
+var childTags = [];
+
 api.lib.retext().use(api.lib.retextKeywords).process(note.body, function(err, doc) {
-  console.log('\\n\\n\\nresults for', note);
-  // console.log(doc.data);
-
-  console.log('\\nKeywords:');
-
-  doc.data.keywords.forEach(function (keyword) {
-    console.log(api.lib.nlcstToString(keyword.matches[0].node), keyword.stem, keyword.score);
+  doc.data.keyphrases.forEach(function (phrase, i) {
+    if (i < 5) {
+      childTags.push({
+        childTag: phrase.matches[0].nodes.map(api.lib.nlcstToString).join(''),
+        score: phrase.score
+      });
+    }
   });
 
-  console.log('\\nKey-phrases:');
-
-  doc.data.keyphrases.forEach(function (phrase) {
-    console.log(phrase.matches[0].nodes.map(api.lib.nlcstToString).join(''), phrase.stems, phrase.score);
-  });
-
-  if (doc.data.keywords[0]) {
-    resolve({
-      subTag: api.lib.nlcstToString(doc.data.keywords[0].matches[0].node),
-      score: doc.data.keywords[0].score
-    });
+  if (childTags.length) {
+    resolve(childTags);
   }
   else {
     resolve(false);
@@ -111,8 +104,6 @@ var result = new Promise(function(res, rej) {
   resolve = res;
   reject = rej;
 });
-
-var subTags = [];
 
 api.lib.retext().use(api.lib.retextProfanities).process(note.body, function(err, doc) {
   if (err) {

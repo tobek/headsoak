@@ -9,11 +9,19 @@ import {each as asyncEach} from 'async';
 
 
 /** Information this tag generates about a specific note. */
-export interface NoteSpecificData {
+export interface NoteSpecificDatum {
   childTag?: string, // will be displayed after tag name when shown on this note, e.g. for sentiment analysis tag called "sentiment", `val` might be "joy" and be displayed as "sentiment: joy"
   score?: any, // in addition to `val`, this will be displayed in parentheses after tag name on hover, e.g. `valHover` might be "90% confidence" and show "sentiment: joy (90% confidence)" @TODO/prog Update component and this comment: if no childTag, show score always without hover
   more?: string, // additional stuff can be displayed in the dropdown (unimplemented)
 }
+/** Same as `NoteSpecificDatum` but `childTag` is required: if note data is an array then each must have a child tag. */
+export interface NoteSpecificDatumWithChildTag {
+  childTag: string,
+  score?: any,
+  more?: string,
+}
+/** If a tag has multiple child tags on the same note, then this value can be an array. */
+export type NoteSpecificData = NoteSpecificDatum | NoteSpecificDatumWithChildTag[];
 
 export type ClassifierResult = boolean | NoteSpecificData;
 export type ClassifierReturnType = ClassifierResult | Promise<ClassifierResult>;
@@ -178,17 +186,21 @@ export class Tag {
   /** @NOTE This does *not* remove ourselves from the note in return. */
   removeNoteId(noteId: string): void {
     this._logger.log('Removing note id', noteId);
-    _.pull(this.docs, '' + noteId);
+    this.docs = _.without(this.docs, '' + noteId);
 
-    if (this.noteData[noteId]) {
-      const noteChildTag = this.noteData[noteId].childTag;
-      if (noteChildTag) {
-        _.pull(this.childTagDocs[noteChildTag], noteId);
+    // @TODO/now Test this
+    const noteData = this.noteData[noteId];
+    if (noteData) {
+      (noteData instanceof Array ? noteData : [noteData]).forEach((noteDatum) => {
+        const noteChildTag = noteDatum.childTag;
+        if (noteChildTag) {
+          this.childTagDocs[noteChildTag] = _.without(this.childTagDocs[noteChildTag], noteId);
 
-        if (_.isEmpty(this.childTagDocs[noteChildTag])) {
-          delete this.childTagDocs[noteChildTag];
+          if (_.isEmpty(this.childTagDocs[noteChildTag])) {
+            delete this.childTagDocs[noteChildTag];
+          }
         }
-      }
+      });
 
       delete this.noteData[noteId];
     }
@@ -240,14 +252,22 @@ export class Tag {
       this._logger.log('User classifier returned true for note ID', note.id);
       note.addTag(this, true, true);
     }
-    else if (typeof result === 'object') {
+    else if (result instanceof Array || typeof result === 'object') {
       this._logger.log('User classifier returned true for note ID', note.id, 'and noteData', result);
 
-      this.noteData[note.id] = result;
+      (result instanceof Array ? result : [result]).forEach((noteDatum) => {
+        if (noteDatum.score) {
+          noteDatum.score = Math.round(noteDatum.score * 1000) / 1000;
+        }
 
-      if (result.childTag) {
-        this.childTagDocs[result.childTag] = _.union(this.childTagDocs[result.childTag], [note.id]);
-      }
+        if (noteDatum.childTag) {
+          // @TODO/now Must be a better way to handle this - prob have to refactor `childTagDocs` to store this as a string and not as object key
+          noteDatum.childTag = noteDatum.childTag.replace(/[\n\t]+/g, ' ').replace(/[\.#\$\/\[\]]+/g, '-'); // remove characters that Firebase doesn't allow in keys and replace with dash
+          this.childTagDocs[noteDatum.childTag] = _.union(this.childTagDocs[noteDatum.childTag], [note.id]);
+        }
+      });
+
+      this.noteData[note.id] = result;
 
       if (note.hasTag(this)) {
         // No need to add to note but we still have to update tag to save new noteData. @TODO/prog Check if noteData has changed before updating
