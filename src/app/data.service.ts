@@ -14,16 +14,15 @@ import {Tag} from './tags/';
 import {TagsService} from './tags/tags.service';
 import {SettingsService} from './settings/settings.service';
 import {Setting} from './settings/setting.model';
-import {Shortcut} from './settings/shortcut.model';
 
 import * as _ from 'lodash';
 
-declare type DataItem = Note | Tag | Setting | Shortcut;
+declare type DataItem = Note | Tag | Setting;
 
 interface DataDigest {
   'nuts': { [noteId: string]: Note },
   'tags': { [tagId: string]: Tag },
-  'settings': { [settingId: string]: Setting | Shortcut },
+  'settings': { [settingId: string]: Setting },
 }
 
 @Injectable()
@@ -132,7 +131,7 @@ export class DataService {
     else if (item instanceof Tag) {
       return 'tags';
     }
-    else if (item instanceof Setting || item instanceof Shortcut) {
+    else if (item instanceof Setting) {
       return 'settings';
     }
   }
