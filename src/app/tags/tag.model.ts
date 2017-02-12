@@ -60,6 +60,9 @@ export class Tag {
 
   childTagIds: string[] = [];
 
+  /** If this note is currently in the process of being deleted. Child tags delete themselves when they've been removed from all notes, deleting a tag also removes the tag from notes, so we need this to prevent infinite loop */
+  isDeleting: boolean;
+
 
   /** If this is set, this tag corresponds to some specially implemented feature, such as pinned or archived (and, later, private notes). Unless the user selects otherwise in settings, this tag will be hidden from everywhere (autocomplete when adding tag, tag list on notes) except searching and maybe tag browser (probably different section). */
   readonly internal?: boolean;
@@ -158,10 +161,16 @@ export class Tag {
 
   /** Returns true if tag was deleted. */
   delete(noConfirm = false): boolean {
+    if (this.isDeleting) {
+      return false;
+    }
+
     // @TODO/modals
     if (! noConfirm && ! confirm('Are you sure you want to delete the tag "' + this.name + '"? It will be removed from all notes which have this tag, but the notes will remain.\n\nThis can\'t be undone.')) {
       return false;
     }
+
+    this.isDeleting = true;
 
     this.prog = false; // so that we don't get added back by any programmatic logic when updating note while removing ourselves
 
@@ -175,6 +184,24 @@ export class Tag {
     //   // Shared tag that is shared by the current user
     //   $s.t.unshareTagWithAll(tag);
     // }
+
+    if (this.parentTag) {
+      // We're a child tag
+      this._logger.log('Being deleted, so removing ourselves from parent tag', this.parentTag);
+      this.parentTag.childTagIds = _.without(this.parentTag.childTagIds, this.id);
+      this.parentTag.updated(true);
+    }
+
+    if (this.childTagIds.length) {
+      // We're a parent tag
+      this.childTagIds.forEach((childTagId) => {
+        const childTag = this.dataService.tags.tags[childTagId];
+        if (childTag) {
+          this._logger.log('Deleting ourselves, so deleting child tag', childTag);
+          childTag.delete(true);
+        }
+      });
+    }
 
     this.dataService.tags.removeTag(this);
 
@@ -204,24 +231,17 @@ export class Tag {
     this._logger.log('Removing note id', noteId);
     this.docs = _.without(this.docs, '' + noteId);
 
-    // @TODO/now Test this
-    const noteData = this.noteData[noteId];
-    if (noteData) {
-      (noteData instanceof Array ? noteData : [noteData]).forEach((noteDatum) => {
-        const noteChildTag = noteDatum.childTag;
-        if (noteChildTag) {
-          this.childTagDocs[noteChildTag] = _.without(this.childTagDocs[noteChildTag], noteId);
-
-          if (_.isEmpty(this.childTagDocs[noteChildTag])) {
-            delete this.childTagDocs[noteChildTag];
-          }
-        }
-      });
-
+    if (this.noteData[noteId]) {
       delete this.noteData[noteId];
     }
 
-    this.updated();
+    if (this.parentTag && this.docs.length === 0) {
+      this._logger.log('Deleting no-longer-used child tag');
+      this.delete(true);
+    }
+    else {
+      this.updated();
+    }
   }
 
   updateProgFuncString(newFuncString: string): void {
@@ -264,26 +284,35 @@ export class Tag {
   }
 
   handleProgResult(note: Note, result: ClassifierResult): void {
+    // We need to detect which tags should *no longer* be on this note. We do that by starting here with a list of all the relevant tags on the note. As we handle the classifier result, tags that get added/remain are removed from this list, such that anything left on it at the end should be removed
+    const tagsToRemove = this.getTagAndChildTagsOnNote(note);
+
     if (result === true) {
       // @TODO/prog Check/make clear that it has to be strict boolean true
       this._logger.log('User classifier returned true for note ID', note.id);
       note.addTag(this, true, true);
+      _.pull(tagsToRemove, this);
     }
     else if (! (result instanceof Array) && ! (typeof result === 'object')) {
       this._logger.log('User classifier returned false for note ID', note.id);
-      // `note.removeTag` will ultimately call `this.removeNoteId` which will handle `noteData` and sub tags
-      note.removeTag(this, true, true);
+      // `tagsToRemove` will handle the removal
     }
     else {
       this._logger.log('User classifier returned data for note ID', note.id, result);
 
       (result instanceof Array ? result : [result]).forEach((noteDatum) => {
-        this.handleProgResultDatum(note, noteDatum);
+        this.handleProgResultDatum(note, noteDatum, tagsToRemove);
       });
     }
+
+    tagsToRemove.forEach((tag) => {
+      this._logger.log('User classifier no longer returned anything for tag', tag, '- removing');
+      // `note.removeTag` will ultimately call `this.removeNoteId` which will handle `noteData` and child tags as necessary
+      note.removeTag(tag, true, true);
+    });
   }
 
-  handleProgResultDatum(note: Note, noteDatum: NoteSpecificDatum | NoteSpecificDatumForChildTag): void {
+  handleProgResultDatum(note: Note, noteDatum: NoteSpecificDatum | NoteSpecificDatumForChildTag, tagsToRemove: Tag[]): void {
     if (noteDatum.score) {
       noteDatum.score = Math.round(noteDatum.score * 1000) / 1000;
     }
@@ -298,7 +327,7 @@ export class Tag {
         childTag = this.dataService.tags.createNewChildTag(childTagName, this);
       }
 
-      // Note need to keep `childTag` on note data we add to the child tag - but if there's anything else there we can attach it
+      // No need to keep `childTag` on note data we add to the child tag - but if there's anything else there we can attach it
       delete noteDatum.childTag;
 
       childTag.attachNoteDatum(note, noteDatum);
@@ -307,10 +336,14 @@ export class Tag {
         this.childTagIds = _.concat(this.childTagIds, childTag.id);
         this.updated(true);
       }
+
+      _.pull(tagsToRemove, childTag);
     }
     else {
       // Just some data to attach to this specific note and tag
       this.attachNoteDatum(note, noteDatum);
+
+      _.pull(tagsToRemove, this);
     }
   }
 
@@ -402,6 +435,41 @@ export class Tag {
     //     large: true,
     //   });
     // }, 50);
+  }
+
+  _parentTag: Tag;
+  get parentTag(): Tag {
+    if (this._parentTag !== undefined) {
+      return this._parentTag;
+    }
+
+    this._parentTag = this.dataService.tags.tags[this.parentTagId];
+
+    if (! this._parentTag) {
+      throw new Error('Child tag ' + this.id + ' could not find parent tag ' + this.parentTagId);
+    }
+
+    if (this._parentTag === this) {
+      // We are a root parent tag
+      this._parentTag = null;
+    }
+
+    return this._parentTag;
+  }
+
+  /** Returns list of any child tags of ours this note currently has, plus ourselves if the note is tagged with `this` */
+  getTagAndChildTagsOnNote(note: Note): Tag[] {
+    let tag: Tag;
+
+    return _.reduce(note.tags, (tags: Tag[], tagId: string) => {
+      tag = this.dataService.tags.tags[tagId];
+
+      if (tag === this || tag.parentTag === this) {
+        tags.push(tag);
+      }
+
+      return tags;
+    }, []);
   }
 
   // @TODO/now
