@@ -46,7 +46,7 @@ export class AccountService {
     public user: UserService
   ) {
     // Instantiating this outside of the Angular zone prevents Firebase from using Angular/Zone's monkey-patched async services. If we don't do this, then any of Firebase's continual setInterval and setTimeout and websocket calls etc. will trigger change detection for the whole app. This way, we have to trigger change detection manually.
-    // @NOTE: This means that callbacks from functions like `this.ref.on('value', ...)` will not trigger change detection, even if called from within angular zone. As it stands (Jan 2017), there are no cases where we have to do so, since the only time we receive data *from* Firebase is on login/logout/initialization, where it seems that shortly-following stuff must be triggering change detection.
+    // @NOTE: This means that callbacks from functions like `this.ref.on('value', ...)` will not trigger change detection, even if called from within angular zone. In order to fix this, make sure Firebase callbacks execute in `zone.run(...)` when necessary.
     this.zone.runOutsideAngular(() => {
       this.ref = new Firebase('https://nutmeg.firebaseio.com/');
     });
@@ -89,7 +89,7 @@ export class AccountService {
     // onAuth immediately fires with current auth state, so let's capture that specifically
     var isInitialAuthState = true;
 
-    this.ref.onAuth((authData) => {
+    this.ref.onAuth((authData) => { this.zone.run(() => {
       if (isInitialAuthState) {
         isInitialAuthState = false;
 
@@ -105,7 +105,7 @@ export class AccountService {
         // They're logged out
         this.handleLoggedOut();
       }
-    });
+    })});
   }
 
   offlineHandler(): void {
@@ -130,7 +130,7 @@ export class AccountService {
     this.ref.authWithPassword({
       email: email,
       password: password,
-    }, (error) => {
+    }, (error) => { this.zone.run(() => {
       if (error) {
         this.analytics.event('Account', 'login.error', error.code);
 
@@ -152,7 +152,7 @@ export class AccountService {
       this.analytics.event('Account', 'login.success');
 
       // Actual login logic handled in `onAuth` callback from this.init
-    }, {
+    })}, {
       remember: 'default' // @TODO - should let user choose not to remember, in which case should be 'none'
     });
   }
@@ -186,7 +186,9 @@ export class AccountService {
         this._logger.error('Failed to set user lastLogin:', err);
       }
 
-      userRef.on('child_changed', this.userDataUpdated.bind(this));
+      userRef.on('child_changed', () => {
+        this.zone.run(this.userDataUpdated.bind(this));
+      });
     });
 
     this.loginState$.next('logged-in');
@@ -234,14 +236,16 @@ export class AccountService {
         this.analytics.event('Account', 'password_reset.success');
       }
 
-      cb(errMessage);
+      this.zone.run(() => {
+        cb(errMessage);
+      });
     });
   }
 
   createAccount(email: string, password: string, errCb: (errMessage: string) => void) {
     this.analytics.event('Account', 'create_account.attempt');
 
-    this.ref.createUser({ email: email, password: password}, (err, userData) => {
+    this.ref.createUser({ email: email, password: password}, (err, userData) => { this.zone.run(() => {
       if (err) {
         this.analytics.event('Account', 'create_account.error', err.code);
         switch (err.code) {
@@ -265,7 +269,7 @@ export class AccountService {
 
       this._logger.info('New account created with user id', userData.id);
       this.login(email, password, errCb);
-    });
+    })});
   }
 
   changeEmail(newEmail: string, doneCb: () => void): void {
@@ -284,11 +288,11 @@ export class AccountService {
           oldEmail: this.user.email,
           newEmail: newEmail,
           password: password,
-        }, (err) => {
+        }, (err) => { this.zone.run(() => {
           hideLoading();
           this.changeEmailResponseHandler(newEmail, err);
           doneCb();
-        });
+        })});
 
         return false; // don't close modal, wait for Firebase response so we can keep it open if wrong password
       },
@@ -337,7 +341,11 @@ export class AccountService {
       email: this.user.email,
       oldPassword: oldPassword,
       newPassword: newPassword,
-    }, cb);
+    }, (err) => {
+      this.zone.run(() => {
+        cb(err);
+      });
+    });
   }
 
   deleteAccount(email: string, password: string, cb: Function) {
@@ -368,7 +376,9 @@ export class AccountService {
           this.analytics.event('Account', 'delete_account.error_data', err.code);
           this._logger.error('Error deleting account data:', err);
 
-          cb(err);
+          this.zone.run(() => {
+            cb(err);
+          });
           return;
         }
 
@@ -389,8 +399,11 @@ export class AccountService {
 
           // @TODO/modals Will this work with logout? Might need blocking modal
           alert('Your account was deleted successfully - thanks for using Headsoak!'); // @TODO Should give opportunity to leave feedback? We'd need to make modal (in this case) blocking, and to send additional data (that it was before deletion) and to loggout on cancel or successful submit. Maybe leave feedback before finishing account deletion because writing feedback and knowing we want it might change their mind?
-          this.logout();
-          cb();
+
+          this.zone.run(() => {
+            this.logout();
+            cb();
+          });
         });
       });
     });
@@ -401,7 +414,6 @@ export class AccountService {
 
     // lastLogin changed!
     this._logger.info('Headsoak session started from elsewhere at ' + newUserChild.val() + '!');
-    // @TODO/polish Since this is coming back in from unzoned firebase call, this should be run in zone in order for modal service to show up right away
 
     if (ENV === 'development') {
       if (! this['loggedInElsewhereDialogShown']) {
@@ -437,7 +449,7 @@ export class AccountService {
       email: this.user.email,
       oldPassword: password,
       newPassword: password
-    }, (err) => {
+    }, (err) => { this.zone.run(() => {
       if (err) {
         this._logger.warn('Password didn\'t check out:', err);
         
@@ -452,7 +464,7 @@ export class AccountService {
       else {
         return cb();
       }
-    });
+    })});
   }
 
   // @TODO/ece The messaging is maybe switched here. "Private mode on" could be interpreted as privacy features are activated, meaning private notes are now hidden. That's why I'm adding the full text in toaster after title text - however, copy in the private mode modal itself (and toasters when making note private) has this same problem. Also, we can consider using warning or error toaster for enabling/disabling/both.

@@ -53,7 +53,9 @@ export class DataService {
     return this._status;
   }
   set status(newStatus) {
-    this._status = newStatus;
+    this.zone.run(() => {
+      this._status = newStatus;
+    });
 
     if (newStatus === 'unsynced') {
       setTimeout(this.throttledSync, this.SYNC_THROTTLE);
@@ -87,7 +89,7 @@ export class DataService {
   private _logger = new Logger(this.constructor.name);
 
   constructor(
-    public ngZone: NgZone,
+    public zone: NgZone,
     public router: Router,
     public activeUIs: ActiveUIsService,
     public modalService: ModalService,
@@ -211,7 +213,7 @@ export class DataService {
     if (err) {
       this._logger.error('Sync to Firebase threw or returned error:', err);
       this.modalService.alert('Error syncing your notes to the cloud! Some stuff may not have been saved. We\'ll keep trying though. You can email us at <a href="mailto:support@headsoak.com">support@headsoak.com</a> if this keeps happening. Tell us what this error says:<br><br><pre class="syntax">' + JSON.stringify(err, null, 2) + '</pre>', true);
-      this.status = 'error'; // @TODO/soon Make sure sync status widget updates
+      this.status = 'error';
       // @TODO/soon We should actually try again
       // @TODO/polish This shouldn't get called multiple times for same error?
       return;
@@ -248,7 +250,7 @@ export class DataService {
 
     this.ref = this.ref.root().child('users/' + uid);
 
-    this.ref.once('value', (snapshot) => {
+    this.ref.once('value', (snapshot) => { this.zone.run(() => {
       var data = snapshot.val();
       this._logger.log('Got data:', data);
 
@@ -259,7 +261,7 @@ export class DataService {
       else {
         this.initFromData(data);
       }
-    }, (err) => {
+    })}, (err) => {
       this._logger.error('Failed to fetch data for user ' + uid + ' on app load:', err);
     });
 
@@ -392,7 +394,7 @@ export class DataService {
     if (featuresSeen < this.NEW_FEATURE_COUNT) {
       this._logger.info('[latestFeatures] There are some new features user hasn\'t seen');
 
-      this.ref.root().child('newFeatures').once('value', (snapshot) => {
+      this.ref.root().child('newFeatures').once('value', (snapshot) => { this.zone.run(() => {
         this._logger.log('[latestFeatures] Fetched new feautures list');
 
         var feats = snapshot.val();
@@ -417,7 +419,7 @@ export class DataService {
         this.ref.child('featuresSeen').set(this.NEW_FEATURE_COUNT);
 
         cb();
-      }, function(err) {
+      })}, function(err) {
         this._logger.error('[latestFeatures] Failed to get new features', err);
         cb();
       });

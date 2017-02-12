@@ -60,7 +60,7 @@ export class FeedbackComponent {
       uid: this.dataService.user.uid,
       name: this.dataService.user.displayName,
       email: this.dataService.user.email
-    }, (err) => {
+    }, (err) => { this.dataService.zone.run(() => {
       this.isLoading = false;
 
       if (err) {
@@ -82,7 +82,7 @@ export class FeedbackComponent {
         'success'
       );
       this.feedbackText = '';
-    });
+    })});
   }
 
 }
