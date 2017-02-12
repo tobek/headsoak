@@ -73,7 +73,7 @@ export class TagBrowserComponent {
     // private autocompleteService: AutocompleteService,
     // private scrollMonitor: ScrollMonitorService,
     // private notesService: NotesService,
-    private tagsService: TagsService,
+    @Inject(forwardRef(() => TagsService)) private tagsService: TagsService
   ) {
     this.el = elRef.nativeElement;
   }

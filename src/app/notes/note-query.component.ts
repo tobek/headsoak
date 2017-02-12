@@ -183,7 +183,7 @@ export class NoteQueryComponent {
       this.removeTag(lastTag);
 
       if (lastTag instanceof ChildTag) {
-        this.addTag(lastTag.parentTag);
+        this.addTag(this.tagsService.tags[lastTag.parentTagId]);
       }
 
       this.ensureFocusAndAutocomplete(); // reset autocomplete so that newly removed tag is in suggestions again

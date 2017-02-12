@@ -1,4 +1,4 @@
-import {Component, Input, SimpleChanges} from '@angular/core';
+import {Component, Inject, forwardRef, Input, SimpleChanges} from '@angular/core';
 
 import {Note} from '../notes/';
 import {Tag} from './';
@@ -31,7 +31,7 @@ export class TagVisualizationComponent {
 
   constructor(
     // private analyticsService: AnalyticsService,
-    private tagsService: TagsService
+    @Inject(forwardRef(() => TagsService)) private tagsService: TagsService
   ) {
   }
 
@@ -173,16 +173,6 @@ export class TagVisualizationComponent {
 
           let sourceTagId = sourceTag.id;
           let targetTagId = targetTag.id;
-
-          // Modify source/target tag "id"s if this note actually has a ChildTag
-          let sourceChildTagId = sourceTag.getChildTagIdForNoteId(note.id);
-          if (sourceChildTagId) {
-            sourceTagId = sourceChildTagId;
-          }
-          let targetChildTagId = targetTag.getChildTagIdForNoteId(note.id);
-          if (targetChildTagId) {
-            targetTagId = targetChildTagId;
-          }
 
           if (nodeIndexAll && nodeIndexToUse) {
             if (! nodeIndexToUse[sourceTagId]) {

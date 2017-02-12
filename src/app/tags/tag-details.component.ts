@@ -1,10 +1,10 @@
-import {Component, EventEmitter/*, ElementRef*/, Input, Output, HostBinding} from '@angular/core';
+import {Component, Inject, forwardRef, EventEmitter/*, ElementRef*/, Input, Output, HostBinding} from '@angular/core';
 import {Router, NavigationEnd} from '@angular/router';
 import {Subscription} from 'rxjs';
 // import 'rxjs/add/operator/debounceTime';
 
 import {AnalyticsService} from '../analytics.service';
-import {Tag, ChildTag} from './';
+import {Tag} from './';
 import {TagsService} from './tags.service'; // Dunno why we can't import from tags/index.ts
 import {ToasterService} from '../utils/toaster.service'; // Likewise, this breaks if combined with import of Logger below
 import {Logger} from '../utils/';
@@ -42,7 +42,7 @@ export class TagDetailsComponent {
     // private elRef: ElementRef,
     private analyticsService: AnalyticsService,
     private toaster: ToasterService,
-    private tagsService: TagsService,
+    @Inject(forwardRef(() => TagsService)) private tagsService: TagsService,
     private router: Router,
   ) {
     // this.el = elRef.nativeElement;
@@ -110,7 +110,7 @@ export class TagDetailsComponent {
     this.exploreStatsReset();
 
     const cooccurrences: { [tagId: string]: number } = {}; // tagId => # of cooccurrences with the current tag
-    let note, pairedTag, pairedChildTagId;
+    let note, pairedTag;
     this.tag.docs.forEach((noteId) => {
       // This note has the given tag
       note = this.tagsService.dataService.notes.notes[noteId];
@@ -128,14 +128,8 @@ export class TagDetailsComponent {
         pairedTag = this.tagsService.tags[tagId];
         if (! pairedTag) {
           // @TODO I think/hope this stems from past problems with properly deleting tagIds from notes when deleting a tag. If this continues to show up in the future we have a problem.
-          this._logger.warn('Note', note, 'appears to have non-existent tag with ID', tagId);
+          this._logger.warn('Note', note.id, 'appears to have non-existent tag with ID', tagId);
           return;
-        }
-
-        pairedChildTagId = pairedTag.getChildTagIdForNoteId(note.id);
-        if (pairedChildTagId) {
-          // Actually a child tag of this tag is on this note so we can overwrite what we have
-          tagId = pairedChildTagId;
         }
 
         if (! cooccurrences[tagId]) {
@@ -158,7 +152,7 @@ export class TagDetailsComponent {
 
       while(_.size(sortedCooccurrences) && this.exploreStats.topCooccurrences.length < 5) {
         tagId = sortedCooccurrences.pop();
-        tag = ChildTag.getTagOrChildTag(tagId, this.tagsService);
+        tag = this.tagsService[tagId];
 
         if (! tag) {
           continue;
@@ -172,7 +166,7 @@ export class TagDetailsComponent {
 
       while(_.size(sortedCooccurrences) && this.exploreStats.bottomCooccurrences.length < 5) {
         tagId = sortedCooccurrences.shift();
-        tag = ChildTag.getTagOrChildTag(tagId, this.tagsService);
+        tag = this.tagsService[tagId];
 
         if (! tag) {
           continue;

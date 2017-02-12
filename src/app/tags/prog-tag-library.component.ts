@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, Inject, forwardRef} from '@angular/core';
 
 import {AnalyticsService} from '../analytics.service';
 import {Tag} from './';
@@ -19,7 +19,7 @@ export class ProgTagLibraryComponent {
 
   constructor(
     private analyticsService: AnalyticsService,
-    private tagsService: TagsService,
+    @Inject(forwardRef(() => TagsService)) private tagsService: TagsService,
     private progTagLibraryService: ProgTagLibraryService,
   ) {
   }

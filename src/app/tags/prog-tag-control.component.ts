@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild, ElementRef} from '@angular/core';
+import {Component, Inject, forwardRef, Input, ViewChild, ElementRef} from '@angular/core';
 
 import {AnalyticsService} from '../analytics.service';
 import {Tag} from './';
@@ -30,7 +30,7 @@ export class ProgTagControlComponent {
 
   constructor(
     private analyticsService: AnalyticsService,
-    private tagsService: TagsService,
+    @Inject(forwardRef(() => TagsService)) private tagsService: TagsService
   ) {
   }
 
