@@ -31,6 +31,7 @@ export class DataService {
   NEW_FEATURE_COUNT = 12; // Hard-coded so that it only updates when user actually receives updated code with the features
   SYNC_THROTTLE = 5000; // As soon as data is updated it is synced to the server after SYNC_DELAY, but immediately-subsequent updates don't trigger a new sync until this time, in ms, has passed
   SYNC_DELAY = 500
+  SYNC_ERROR_DELAY = 6000; // How long to wait after an error before trying to sync again
 
   // online: boolean; // @TODO/rewrite connection widget should show if offline
 
@@ -65,6 +66,10 @@ export class DataService {
 
     if (newStatus === 'unsynced') {
       setTimeout(this.throttledSync, this.SYNC_DELAY);
+    }
+    else if (newStatus === 'error') {
+      this._logger.log('Error state - syncing again in', this.SYNC_ERROR_DELAY);
+      setTimeout(this.throttledSync, this.SYNC_ERROR_DELAY);
     }
 
     window.removeEventListener('beforeunload', this.confirmLeaving);
@@ -215,7 +220,10 @@ export class DataService {
         });
       }
       catch (err) {
-        this.syncCb(err, field);
+        // This is a synchronous error so wait a tick so that the rest of `sync` can run before we run `syncCb`
+        setTimeout(() => {
+          this.syncCb(err, field);
+        }, 0);
       }
     });
 
@@ -234,17 +242,28 @@ export class DataService {
   syncCb(err, field: string): void {
     if (err) {
       this._logger.error('Sync to Firebase threw or returned error:', err);
-      this.modalService.alert('Error syncing your notes to the cloud! Some stuff may not have been saved. We\'ll keep trying though. You can email us at <a href="mailto:support@headsoak.com">support@headsoak.com</a> if this keeps happening. Tell us what this error says:<br><br><pre class="syntax">' + JSON.stringify(err, null, 2) + '</pre>', true);
-      this.status = 'error';
-      // @TODO/soon We should actually try again
-      // @TODO/polish This shouldn't get called multiple times for same error?
+      const stuffChanged = field === 'nuts' ? 'notes' : field;
+      this.toaster.error(
+        'Some ' + stuffChanged + ' may not have been saved. We\'ll keep trying though. You can email us at <a href="mailto:support@headsoak.com">support@headsoak.com</a> if this keeps happening.',
+        'Error syncing ' + stuffChanged + ' to the cloud',
+        {
+          preventDuplicates: true,
+          timeOut: 10000,
+        }
+      );
+      this.status = 'error'; // triggers sync
+
+      // Merge syncing stuff back into current digest (current digest overrides) and then try to sync it again
+      this.digest[field] = _.assign({}, this.digestSyncing[field], this.digest[field]);
+      this.digestSyncing[field] = {};
+
       return;
     }
 
     this._logger.log('Successfully synced', field);
     this.digestSyncing[field] = {};
 
-    if (this.isDigestEmpty(this.digestSyncing)) {
+    if (this.status !== 'error' && this.isDigestEmpty(this.digestSyncing)) {
       this._logger.log('All fields now synced');
 
       if (! this.isDigestEmpty(this.digest)) {
