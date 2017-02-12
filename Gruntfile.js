@@ -1,10 +1,16 @@
 /** Most of this project uses the package.json (with Webpack etc.) method, and Grunt has fallen out of favor, but whatever, there was non-trivial AWS S3 upload and NWJS stuff working here in the old version of Nutmeg that should be used. */
 
+var moment = require('moment');
+
 module.exports = function(grunt) {
 
     "use strict";
 
-    var ENV = grunt.option('prod') ? 'prod' : 'staging';
+    var ENV = grunt.option('env'); // dev | staging (default) | prod
+    if (! ENV) {
+        // For backwards compatibility:
+        ENV = grunt.option('prod') ? 'prod' : 'staging';
+    }
 
     require('load-grunt-tasks')(grunt);
 
@@ -65,7 +71,10 @@ module.exports = function(grunt) {
             },
 
             gitTagDeploy: {
-                command: 'git tag deployed-' + ENV + '-`date +%s` && git push --tags'
+                command:
+                    'git tag deployed-' + ENV + ' && ' +
+                    (ENV === 'prod' ? ('git tag deployed-' + ENV + '-' + moment.utc().format('YYYY-MM-DD-HH-mm-ss') +' && ') : '') +
+                    'git push --tags'
             },
         },
 
@@ -109,6 +118,34 @@ module.exports = function(grunt) {
             staging: {
                 options: {
                     bucket: '<%= s3cfg.stagingBucket %>',
+                    gzipRename: 'ext',
+                    // debug: true, // do a dry run
+                },
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= distDir %>',
+                        src: ['index.html.gz'],
+                        dest: '/',
+                        params: {
+                            CacheControl: 'no-cache'
+                        }
+                    },
+                    {
+                        expand: true,
+                        cwd: '<%= distDir %>',
+                        src: ['**/*', '!index.html.gz'],
+                        dest: '/',
+                        params: {
+                            CacheControl: 'public, max-age=' + 60*60*24 + ', immutable',
+                            Expires: new Date(Date.now() + 1000*60*60*24)
+                        }
+                    },
+                ]
+            },
+            dev: {
+                options: {
+                    bucket: '<%= s3cfg.devBucket %>',
                     gzipRename: 'ext',
                     // debug: true, // do a dry run
                 },
