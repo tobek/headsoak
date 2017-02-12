@@ -38,7 +38,6 @@ export class TagComponent {
   @ViewChild('actionsDropdown') actionsDropdownRef: ElementRef;
 
   @ViewChild('tagName') tagNameRef: ElementRef;
-  tagNameEl: HTMLInputElement; // Not actually, but contenteditable so it behaves as such
 
   @Input() renamable?: boolean;
   @Input() renamableOnNameClick?: boolean;
@@ -129,8 +128,6 @@ export class TagComponent {
       this.renamable = false;
     }
 
-    this.tagNameEl = this.tagNameRef.nativeElement;
-
     if (this.ofNoteId || this.context === 'tagBrowser') {
       this.queryTagsUpdatedSub = this.activeUIs.noteQuery.tagsUpdated$.subscribe(
         this.queryTagsUpdated.bind(this)
@@ -156,6 +153,7 @@ export class TagComponent {
   }
 
   _toggled() {
+    // @TODO/polish @TODO/notes Everywhere this is used, we should pass through event so we can determine if shift was held
     this.toggled.emit(this.tag);
     this.hovered = false;
   }
@@ -174,7 +172,7 @@ export class TagComponent {
 
     this.renaming = true; // makes name element contenteditable
     setTimeout(() => {
-      utils.placeCaretAtEnd(this.tagNameEl);
+      utils.placeCaretAtEnd(this.tagNameRef.nativeElement);
     }, 0);
   }
   renameFinish(event?: KeyboardEvent) {
@@ -186,7 +184,7 @@ export class TagComponent {
       event.preventDefault();
     }
 
-    const newName = this.tagNameEl.innerHTML.trim();
+    const newName = this.tagNameRef.nativeElement.innerHTML.trim();
 
     if (! newName || newName === this.tag.name) {
       this.renameCancel();
@@ -211,7 +209,7 @@ export class TagComponent {
       this.delete(true);
     }
     else {
-      this.tagNameEl.innerHTML = this.tag.name;
+      this.tagNameRef.nativeElement.innerHTML = this.tag.name;
     }
 
     this.renamingOver.emit();
