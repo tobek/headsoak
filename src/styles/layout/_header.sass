@@ -69,7 +69,8 @@
       border-color: $warning-color
       .sync-status
         color: $warning-color
-    &.status--disconnected
+    &.status--error,
+    &.status--offline
       border-color: $danger-color
       .sync-status
         color: $danger-color

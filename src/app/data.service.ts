@@ -41,8 +41,15 @@ export class DataService {
 
   digest$ = new EventEmitter<DataItem>();
 
-  _status: 'synced' | 'syncing' | 'unsynced' | 'disconnected';
-  get status(): 'synced' | 'syncing' | 'unsynced' | 'disconnected' {
+  statusNameMap = {
+    synced: 'synced',
+    syncing: 'syncing',
+    unsynced: 'unsynced',
+    error: 'sync error',
+    offline: 'offline',
+  };
+  _status: 'synced' | 'syncing' | 'unsynced' | 'offline' | 'error' = 'synced';
+  get status(): 'synced' | 'syncing' | 'unsynced' | 'offline' | 'error' {
     return this._status;
   }
   set status(newStatus) {
@@ -204,7 +211,7 @@ export class DataService {
     if (err) {
       this._logger.error('Sync to Firebase threw or returned error:', err);
       this.modalService.alert('Error syncing your notes to the cloud! Some stuff may not have been saved. We\'ll keep trying though. You can email us at <a href="mailto:support@headsoak.com">support@headsoak.com</a> if this keeps happening. Tell us what this error says:<br><br><pre class="syntax">' + JSON.stringify(err, null, 2) + '</pre>', true);
-      this.status = 'disconnected'; // @TODO/soon Make sure sync status widget updates
+      this.status = 'error'; // @TODO/soon Make sure sync status widget updates
       // @TODO/soon We should actually try again
       // @TODO/polish This shouldn't get called multiple times for same error?
       return;
@@ -235,6 +242,7 @@ export class DataService {
       this._logger.log('OFFLINE, USING SAMPLE DATA:', sampleData);
       // this.initFromData(sampleData);
       this.initNewUser();
+      this.status = 'offline';
       return;
     }
 
