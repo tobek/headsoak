@@ -72,7 +72,8 @@ module.exports = function(grunt) {
 
             gitTagDeploy: {
                 command:
-                    'git tag deployed-' + ENV + ' && ' +
+                    'git push origin :refs/tags/deployed-' + ENV + ' && ' + // delete existing deployed-ENV tag
+                    'git tag -f deployed-' + ENV + ' && ' +
                     (ENV === 'prod' ? ('git tag deployed-' + ENV + '-' + moment.utc().format('YYYY-MM-DD-HH-mm-ss') +' && ') : '') +
                     'git push --tags'
             },
