@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 
 import {Logger, fuzzyMatchSort} from './';
 import {TagsService} from '../tags/tags.service';
-import {Tag, ChildTag} from '../tags';
+import {Tag} from '../tags';
 
 import * as _ from 'lodash';
 
@@ -44,9 +44,6 @@ export class AutocompleteService {
     context: '',
     autocompleteOpts: {}, // should be `any` but can't be found...?
   }) {
-    // While we're iterating through tags creating lookup list, we can build this too:
-    const childTags: AutocompleteSuggestion[] = [];
-
     var lookupArray: AutocompleteSuggestion[] = _.filter(this.tagsService.tags, (tag: Tag) => {
 
       if (context === 'note') {
@@ -55,31 +52,20 @@ export class AutocompleteService {
           // @TODO/ece @TODO/usertesting Should these be add-able from add tag field autocomplete? actually for now it's easier to keep them removed - some extra behavior for pinning/archiving wouldn't get triggered through normal add tag (though pretty easy to fix)
         }
 
-        // @TODO also hide prog tags here? on the one hand, trying to add a prog tag shows progTagCantChangeAlert, so you might ask "why did you put it in autocomplete in the first place?". on the other hand, if we hide it, users might be like "why isn't this tag showing up?"
+        // @TODO also hide prog tags here? on the one hand, trying to add a prog tag shows progTagCantChangeAlert, so you might ask "why did you put it in autocomplete in the first place?". on the other hand, if we hide it, users might be like "why isn't this tag showing up?" We'll at least hide child tags
+        if (tag.parentTag) {
+          return false;
+        }
       }
 
       if (_.includes(excludeTags, tag) || _.includes(excludeTagIds, tag.id)) {
         return false;
       }
 
-      // These only work in NoteQueryComponent so far (and anyway since childTags currently only are for prog tags, they can't be added to a note context yet)
-      if (context === 'query' && tag.childTagDocs) {
-        _.each(tag.childTagDocs, (docs: string[], childTagName: string) => {
-          childTags.push({
-            value: tag.name + ': ' + childTagName,
-            data: {
-              tag: new ChildTag(childTagName, tag)
-            }
-          });
-        });
-      }
-
       return true;
     }).map((tag: Tag) => {
       return { value: tag.name, data: { tag: tag } };
     });
-
-    lookupArray = _.concat(lookupArray, childTags);
 
     this._logger.log('Initializing autocomplete with:', lookupArray);
 
