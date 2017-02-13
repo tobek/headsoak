@@ -46,7 +46,10 @@ tag
       opacity: $btn-disabled-opacity
 
     &.is--active
-      background-color: rgba($tag-color, $btn-disabled-opacity) // @TODO/colors Confirm that $tag-color is correct here with new colors
+      // Unless it's in use - @TODO/ece This good?
+      .name-wrapper,
+      .tag-state
+        opacity: 1
 
   // Remove clipping name overflow in some situations:
   &.dropdown-disabled:hover,
