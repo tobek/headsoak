@@ -2,6 +2,7 @@ import {DataService} from '../data.service';
 
 import {Logger} from '../utils/logger';
 
+import {ChildTag} from './';
 import {Note} from '../notes/';
 
 import * as _ from 'lodash';
@@ -43,7 +44,7 @@ export class Tag {
   _noteCount: number;
   get noteCount(): number {
     if (this._noteCount === undefined) {
-      this.calculateNoteCount();
+      this._calculateNoteCount(); // not the debounced version - let's get it right away
     }
     return this._noteCount;
   }
@@ -506,9 +507,26 @@ export class Tag {
   }
 
   // @TODO/privacy We could exclude private notes and recalculate all lengths when private mode enabled/disabled. Should time running recalculate all on ece's account with gajillion tags
-  calculateNoteCount() {
-    this._noteCount = this.docs.length;
+  _calculateNoteCount(): void {
+    if (this.childTagIds.length === 0) {
+      this._noteCount = this.docs.length;
+    }
+    else {
+      // We need to get the union of all notes this tag and its child tags are on, and count that.
+      this._noteCount = _((<Tag[]>this.getChildTags()).concat(this))
+        .map((tag) => tag.getNotes())
+        .flatten()
+        .uniq()
+        .filter((note) => note) // remove falsey notes
+        .size();
+    }
+
+    if (this.parentTag) {
+      this.parentTag.calculateNoteCount();
+    }
   }
+  // Generally want to use this debounced version in case many updates (e.g. during prog tag processing) cause this to get called a bunch
+  calculateNoteCount = _.debounce(this._calculateNoteCount.bind(this), 100);
 
   /** Returns array of Note instances that have this tag. */
   getNotes(): Note[] {
@@ -516,5 +534,13 @@ export class Tag {
       .map((noteId) => this.dataService.notes.notes[noteId])
       .filter((note) => note) // remove falsey notes
       .value();
+  }
+
+  /** Returns array of this tag's ChildTag instances. */
+  getChildTags(): ChildTag[] {
+    return _.map(
+      this.childTagIds,
+      (childTagId) => this.dataService.tags.tags[childTagId]
+    ) as ChildTag[];
   }
 }

@@ -177,7 +177,7 @@ export class Note {
    * 2. Updates lunr index. Note: this can be slow: 0.5s for 40k char text on one machine).
    * 3. Runs through all programmatic tags. Might be slow depending on user functions.
    *
-   * @TODO/optimization This should be debounced (while preserving any true `updatedModified` argument). Some scenarios cause multiple full udpates in a row. (One example: archiving a pinned note removes pinned tag and adds archived tag - both do full updates).
+   * @TODO/optimization This should be debounced (while preserving any true `updatedModified` argument - easiest way is maybe to make separate functions instead of using argument). Some scenarios cause multiple full udpates in a row. (One example: archiving a pinned note removes pinned tag and adds archived tag - both do full updates).
    */
   doFullUpdate(updateModified = true): void {
     this._logger.log('Doing full update');
