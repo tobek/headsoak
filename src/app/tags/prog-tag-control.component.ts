@@ -122,7 +122,7 @@ export class ProgTagControlComponent {
   makeDumb(): void {
     if (_.size(this.tag.docs)) {
       this.tagsService.dataService.modalService.confirm(
-        'Notes that are already tagged with this tag will remain tagged, but this tag will no longer be automatically added to or removed from notes.',
+        'The ' + this.tag.noteCount + ' note' + (this.tag.noteCount === 1 ? '' : 's') + ' already tagged with this tag will remain tagged, but this tag will no longer be automatically added to or removed from notes.',
         (confirmed) => {
           if (confirmed) {
             this._makeDumb();
