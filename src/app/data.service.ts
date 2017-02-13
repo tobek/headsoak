@@ -109,8 +109,10 @@ export class DataService {
     this.throttledSync = _.throttle(this.sync.bind(this), this.SYNC_THROTTLE);
     this.cancelThrottledSync = this.throttledSync['cancel']; // lodash adds this property, which cancels any pending invocations
 
-    // @TODO/rewrite - only do this if in dev mode (also, angular itself running in dev mode? there's a message in console about it. ensure that it runs in prod for prod build)
+    // @TODO/rewrite - do we want to only do this if in dev mode? Not sure if this is an attack vector. If a 3rd party can run arbitrary JS on the page then this makes it easy for them to do stuff, butthe user is probably already fucked
     window['dataService'] = this;
+
+    // @TODO/rewrite Check angular is running in prod mode in prod
   }
 
   ngOnDestroy() {

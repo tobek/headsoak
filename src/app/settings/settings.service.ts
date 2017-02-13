@@ -152,9 +152,9 @@ export class SettingsService {
             preventDuplicates: true,
             onclick: () => {
               this.dataService.modalService.alert(
-                '<p>Severity/type: <b>' + severity + '</b></p>' +
-                '<pre class="syntax">' + info + '</pre>' +
-                (label ? ('<pre class="syntax">' + label + '</pre>') : '') +
+                '<p>Severity/type: <b>' + _.escape(severity) + '</b></p>' +
+                '<pre class="syntax">' + _.escape(info) + '</pre>' +
+                (label ? ('<pre class="syntax">' + _.escape(label) + '</pre>') : '') +
                 '<p>See console for logged objects. This error has been reported.<p>',
                 true,
                 'Damn'

@@ -4,6 +4,8 @@ import {Subscription} from 'rxjs';
 import {AccountService} from './account.service';
 import {TooltipService} from '../utils/';
 
+import * as _ from 'lodash';
+
 
 type ViewType = 'email-signup' | 'login' | 'create-account' | 'reset-password';
 
@@ -169,7 +171,7 @@ export class LoginComponent {
       }
 
       this.tooltipService.justTheTip(
-        'If there\'s an account registered under <b>' + this.email + '</b>, then an email is on its way!',
+        'If there\'s an account registered under <b>' + _.escape(this.email) + '</b>, then an email is on its way!',
         this.resetPasswordButton.nativeElement,
         'success',
         null // don't fade until they click
