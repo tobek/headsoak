@@ -4,7 +4,7 @@ import {AutocompleteSuggestion} from './autocomplete.service';
 // Also, separator maybe shouldn't be just ' '. but for now this is fine
 
 
-function fuzzyInitialismMatch(needle: string, haystack: AutocompleteSuggestion): AutocompleteSuggestion | boolean {
+function fuzzyInitialismMatch(needle: string, haystack: AutocompleteSuggestion): AutocompleteSuggestion {
   needle = needle.toLowerCase();
   var haystackStr = haystack.value.toLowerCase();
 
@@ -23,7 +23,7 @@ function fuzzyInitialismMatch(needle: string, haystack: AutocompleteSuggestion):
 
   while (true) { // can't do for-loop cause lookahead sometimes pushes us out of it
     if (j === needle.length) break; // we're done
-    if (++i >= haystackStr.length) return false; // no match
+    if (++i >= haystackStr.length) return null; // no match
 
     if (haystackStr[i] === needle[j]) {
       // matched!
@@ -83,17 +83,31 @@ function highlightStringIndices(s, indices, before, after) {
 
 // returns array of elements from array of haystacks that fuzzily match needle
 function rankedFuzzyInitialismMatches(needle: string, haystacks: AutocompleteSuggestion[]): AutocompleteSuggestion[] {
-  var matches = [];
+  const matches: AutocompleteSuggestion[] = [];
 
   haystacks.forEach(function(suggestion: AutocompleteSuggestion) {
     var result = fuzzyInitialismMatch(needle, suggestion);
-    if (result !== false) {
+    if (result) {
       matches.push(result);
     }
   });
 
+  let score;
   matches.sort(function(a, b) {
-    return a.score - b.score;
+    // Lower scores come first - so if return val is less than 0, `a` comes first
+
+    score = a.score - b.score
+
+    if (score !== 0) {
+      return score;
+    }
+    // else if (a.data && a.data.tag && b.data && b.data.tag) {
+    //   // We could do something by comparing actual Tag instances
+    // }
+    else {
+      // Shorter suggestions first
+      return a.value.length - b.value.length;
+    }
   });
 
   return matches;
