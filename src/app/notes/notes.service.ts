@@ -158,7 +158,7 @@ export class NotesService {
 
     // FIRST get the docs filtered by tags
     if (tags && tags.length) {
-      filteredByTags = _.intersection(... tags.map(tag => tag.docs));
+      filteredByTags = _.intersection(... tags.map(tag => tag.childInclusiveDocs));
 
       if (filteredByTags.length === 0) {
         // no notes match this combination of tags, so we're done:

@@ -508,24 +508,13 @@ export class Tag {
 
   // @TODO/privacy We could exclude private notes and recalculate all lengths when private mode enabled/disabled. Should time running recalculate all on ece's account with gajillion tags
   _calculateNoteCount(): void {
-    if (this.childTagIds.length === 0) {
-      this._noteCount = this.docs.length;
-    }
-    else {
-      // We need to get the union of all notes this tag and its child tags are on, and count that.
-      this._noteCount = _((<Tag[]>this.getChildTags()).concat(this))
-        .map((tag) => tag.getNotes())
-        .flatten()
-        .uniq()
-        .filter((note) => note) // remove falsey notes
-        .size();
-    }
+    this._noteCount = this.childInclusiveDocs.length;
 
     if (this.parentTag) {
       this.parentTag.calculateNoteCount();
     }
   }
-  // Generally want to use this debounced version in case many updates (e.g. during prog tag processing) cause this to get called a bunch
+  // Generally want to use this debounced version in case many updates (e.g. during prog tag processing) cause this to get called a bunch - `childInclusiveDocs` could be complicated
   calculateNoteCount = _.debounce(this._calculateNoteCount.bind(this), 100);
 
   /** Returns array of Note instances that have this tag. */
@@ -542,5 +531,18 @@ export class Tag {
       this.childTagIds,
       (childTagId) => this.dataService.tags.tags[childTagId]
     ) as ChildTag[];
+  }
+
+  /** Get all the note IDs of this tag plus the note IDs of any notes tagged by our children. @TODO/optimization This could probably be cached as long as we're careful about when to update it (whenever `update` is called?). */
+  get childInclusiveDocs() : string[] {
+    if (this.childTagIds.length === 0) {
+      return this.docs;
+    }
+
+    return _((<Tag[]>this.getChildTags()).concat(this))
+      .map((tag) => tag.docs)
+      .flatten()
+      .uniq()
+      .value() as string[]; // not sure why type casting is necessary here...
   }
 }
