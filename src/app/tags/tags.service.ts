@@ -121,7 +121,6 @@ export class TagsService {
 
   createNewChildTag(childTagName: string, parentTag: Tag): ChildTag {
     const tagData = {
-      name: parentTag.name + ': ' + childTagName,
       childTagName: childTagName,
       parentTagId: parentTag.id,
 
