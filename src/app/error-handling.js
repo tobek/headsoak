@@ -23,9 +23,15 @@
       else if (hsErrorIndex[info + label] > 10) {
         return;
       }
+
+      if (window.hsDebugError) {
+        window.hsDebugError(severity, info, label);
+      }
     }
     catch (e) {
-      info = 'error reporting failed: ' + e.toString();
+      severity = (severity || '') + 'Failed';
+      info = info ? (info + ' - ') : '';
+      info += 'error reporting failed: ' + e.toString();
     }
 
     // console.log('Handling error:', severity, info, label);

@@ -129,12 +129,47 @@ export class SettingsService {
 
 
     {
+      // Can manually enable on account with: `dataService.settings.data.errorDebugging.updated(true)`
+      id: 'errorDebugging',
+      default: false,
+      name: 'Error debugging',
+      description: 'Pop up toasters for any JS errors that occur.',
+      type: 'boolean',
+      section: 'settings',
+      overkill: true,
+      enact: function() {
+        if (! this.value) {
+          delete window['hsDebugError'];
+          return;
+        }
+
+        window['hsDebugError'] = (severity: string, info: string, label: string) => {
+          if (severity === 'warn') {
+            return;
+          }
+          this.dataService.toaster.error('Click for full error info', 'JS Error', {
+            timeOut: 10000,
+            preventDuplicates: true,
+            onclick: () => {
+              this.dataService.modalService.alert(
+                '<p>Severity/type: <b>' + severity + '</b></p>' +
+                '<pre class="syntax">' + info + '</pre>' +
+                (label ? ('<pre class="syntax">' + label + '</pre>') : '') +
+                '<p>See console for logged objects. This error has been reported.<p>',
+                true,
+                'Damn'
+              );
+            }
+          });
+        }
+      },
+    },
+    {
       id: 'maxHistory',
       default: 0,
       name: 'Note history length',
       description: 'How many revisions of each note to save. 0 disables history. TOTALLY DISABLED FOR NOW.',
       type: 'integer', // integer not supported yet in UI
-      // section: 'settings',
       section: 'settings',
       overkill: true
     },

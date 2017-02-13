@@ -26,7 +26,7 @@ export class Setting {
   default: any;
   value: any; // current value used in app
 
-  /** Custom function called to make setting take effect - e.g. called when setting first initialized and every time it's updated. */
+  /** Custom function called to make setting take effect - e.g. called when setting first initialized and every time it's updated. Called with setting model as `this`. */
   enact = () => {};
 
   /** The <body> element will be classed with `'setting--' + setting.id` when `setting.value === true`. */
