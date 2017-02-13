@@ -38,11 +38,11 @@ export class HomepageComponent {
   @ViewChild('noteAddTagInput') noteAddTagInput: ElementRef;
 
   tagSent = new Tag({ id: 'sent', name: 'sentiment', prog: true }, null);
-  tagSentPos = new ChildTag('positive', this.tagSent);
-  tagSentNeg = new ChildTag('negative', this.tagSent);
+  tagSentPos = new ChildTag({ id: 'sentPos', childTagName: 'positive', _parentTag: this.tagSent, parentTagId: this.tagSent.id, prog: true }, null);
+  tagSentNeg = new ChildTag({ id: 'sentNeg', childTagName: 'negative', _parentTag: this.tagSent, parentTagId: this.tagSent.id, prog: true }, null);
 
   tagLoc = new Tag({ id: 'loc', name: 'location', prog: true }, null);
-  tagLocGaia = new ChildTag('Gaia Cafe', this.tagLoc);
+  tagLocGaia = new ChildTag({ id: 'locGaia', childTagName: 'Gaia Cafe', _parentTag: this.tagLoc, parentTagId: this.tagLoc.id, prog: true }, null);
 
   tagQuote = new Tag({ id: 'quote', name: 'quote', prog: true }, null);
   tagFut = new Tag({ id: 'fut', name: 'futurism' }, null);

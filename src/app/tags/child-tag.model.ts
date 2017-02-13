@@ -23,6 +23,10 @@ export class ChildTag extends Tag {
       throw new Error('Must supply child tag with parent tag ID and child tag name');
     }
 
+    if (! this.name) {
+      this.name = this.parentTag.name + ': ' + this.childTagName;
+    }
+
     this._logger = new Logger('ChildTag ' + this.id);
   }
 }
