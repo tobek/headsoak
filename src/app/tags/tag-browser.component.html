@@ -72,50 +72,52 @@
       *ngFor="let tag of (tags | arrayLimit:limit)"
       [class.is--expanded]="expandedTag === tag"
     >
-      <!-- @TODO/refactor Copy-pasting from normal tags... -->
-      <div class="tag-header"
-        (click)="tagHeaderClick(tag)"
-        (mouseenter)="hoveredTag = tag.name ? tag : null"
-        (mouseleave)="hoveredTag = null"
-      >
-        <span *ngIf="tag.name" class="caret-wrapper" (click)="tagDropdownCaretClick(tag)"
-          ><i class="fa fa-caret-up go-up"></i
-          ><i class="fa fa-caret-down go-down"></i
-        ></span>
+      <div *ngIf="tag && ! tag.parentTag">
+        <!-- @TODO/refactor Copy-pasting from normal tags... -->
+        <div class="tag-header"
+          (click)="tagHeaderClick(tag)"
+          (mouseenter)="hoveredTag = tag.name ? tag : null"
+          (mouseleave)="hoveredTag = null"
+        >
+          <span *ngIf="tag.name" class="caret-wrapper" (click)="tagDropdownCaretClick(tag)"
+            ><i class="fa fa-caret-up go-up"></i
+            ><i class="fa fa-caret-down go-down"></i
+          ></span>
 
-        <tag class="tag tag-{{ tag.id }}"
-          [tag]="tag"
-          [renamable]="expandedTag === tag"
-          [renamableOnNameClick]="! inSidebar"
-          showCount=1
-          context="tagBrowser"
-          (click)="tagClick(tag, $event)"
-        ></tag><!-- checking tag.name in mouseenter to make sure it's not a new/unsaved tag -->
-      </div>
+          <tag class="tag tag-{{ tag.id }}"
+            [tag]="tag"
+            [renamable]="expandedTag === tag"
+            [renamableOnNameClick]="! inSidebar"
+            showCount=1
+            context="tagBrowser"
+            (click)="tagClick(tag, $event)"
+          ></tag><!-- checking tag.name in mouseenter to make sure it's not a new/unsaved tag -->
+        </div>
 
-      <div class="tag-manager" *ngIf="expandedTag === tag">
-        <div *ngIf="tag.description" class="description">{{ tag.description }}</div>
-        <ul class="menu">
-          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" routerLinkActive="is--active" [routerLinkActiveOptions]="{ exact: true }">
-            <i class="fa fa-fw fa-lg fa-bar-chart"></i>
-            Explore
-          </li>
-          <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'smartness']" routerLinkActive="is--active">
-            <i class="fa fa-fw fa-lg fa-bolt"></i>
-            Smart tag
-          </li>
-          <!-- @TODO/tags @TODO/privacy
-          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'privacy']" routerLinkActive="is--active">
-            <i class="fa fa-fw fa-lg fa-lock"></i>
-            Private tag
-          </li>
-          -->
-          <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'delete']" routerLinkActive="is--active">
-            <!-- @TODO/tags @TODO/soon This should open up a modal -->
-            <i class="fa fa-fw fa-lg fa-trash-o"></i>
-            Delete
-          </li>
-        </ul>
+        <div class="tag-manager" *ngIf="expandedTag === tag">
+          <div *ngIf="tag.description" class="description">{{ tag.description }}</div>
+          <ul class="menu">
+            <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" routerLinkActive="is--active" [routerLinkActiveOptions]="{ exact: true }">
+              <i class="fa fa-fw fa-lg fa-bar-chart"></i>
+              Explore
+            </li>
+            <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'smartness']" routerLinkActive="is--active">
+              <i class="fa fa-fw fa-lg fa-bolt"></i>
+              Smart tag
+            </li>
+            <!-- @TODO/tags @TODO/privacy
+            <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'privacy']" routerLinkActive="is--active">
+              <i class="fa fa-fw fa-lg fa-lock"></i>
+              Private tag
+            </li>
+            -->
+            <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'delete']" routerLinkActive="is--active">
+              <!-- @TODO/tags @TODO/soon This should open up a modal -->
+              <i class="fa fa-fw fa-lg fa-trash-o"></i>
+              Delete
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
 
