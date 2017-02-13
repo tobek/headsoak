@@ -38,6 +38,16 @@ tag
     display: none
     margin-left: 4px
 
+  .note &.is--prog
+    // We want to fade these out but can't fade entire tag cause dropdown would fade too
+
+    .name-wrapper,
+    .tag-state
+      opacity: $btn-disabled-opacity
+
+    &.is--active
+      background-color: rgba($tag-color, $btn-disabled-opacity) // @TODO/colors Confirm that $tag-color is correct here with new colors
+
   // Remove clipping name overflow in some situations:
   &.dropdown-disabled:hover,
   &.heading,

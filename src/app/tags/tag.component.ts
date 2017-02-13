@@ -33,6 +33,9 @@ export class TagComponent {
   @Input() @HostBinding('class.is--active') isActive;
 
   @HostBinding('class.renaming') renaming = false;
+  @HostBinding('class.is--prog') get isProg() {
+    return this.tag && this.tag.prog;
+  }
   @HostBinding('hidden') hidden = false;
 
   @ViewChild('actionsDropdown') actionsDropdownRef: ElementRef;
