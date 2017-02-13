@@ -130,7 +130,7 @@ export class TagVisualizationComponent {
         nodeIndex[tag.id] = {
           id: tag.id,
           name: tag.name,
-          size: tag.docs.length,
+          size: tag.noteCount,
           classAttr: classAttr,
           tagInstance: tag,
           central: tag === this.centralTag,

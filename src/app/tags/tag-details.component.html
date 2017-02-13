@@ -4,9 +4,9 @@
   <!-- @TODO/ece Should there be a hashtag here? (if so, search elsewhere on this page where tag.name is mentioned) -->
   <h3 class="pane-heading">Explore <span class="static-tag">{{ tag.name }}</span></h3>
 
-  <div class="note-count-heading">{{ tag.docs.length }} Note{{ tag.docs.length !== 1 ? 's' : '' }}</div>
+  <div class="note-count-heading">{{ tag.noteCount }} Note{{ tag.noteCount !== 1 ? 's' : '' }}</div>
   
-  <tag-visualization *ngIf="tag.docs.length" [centralTag]="tag" [highlightedTag]="hoveredTag"></tag-visualization>
+  <tag-visualization *ngIf="tag.noteCount" [centralTag]="tag" [highlightedTag]="hoveredTag"></tag-visualization>
 
   <p *ngIf="! exploreComputed">
     <i class="fa fa-spin fa-cube"></i>&nbsp;
@@ -76,9 +76,9 @@
 <div *ngIf="activePane === 'delete' && ! tag.internal">
   <h3 class="pane-heading">Delete <span class="static-tag">{{ tag.name }}</span></h3>
 
-  <p *ngIf="tag.docs.length === 0">This tag isn't used on any of your notes, so deleting it isn't really a big deal.</p>
+  <p *ngIf="tag.noteCount === 0">This tag isn't used on any of your notes, so deleting it isn't really a big deal.</p>
 
-  <p *ngIf="tag.docs.length !== 0">Deleting this tag will remove if from {{ tag.docs.length === 1 ? 'the 1 note' : 'all ' + tag.docs.length + ' notes' }} tagged with it. {{ tag.docs.length === 1 ? 'That note' : 'Those notes' }} will remain undeleted.</p>
+  <p *ngIf="tag.noteCount !== 0">Deleting this tag will remove if from {{ tag.noteCount === 1 ? 'the 1 note' : 'all ' + tag.noteCount + ' notes' }} tagged with it. {{ tag.noteCount === 1 ? 'That note' : 'Those notes' }} will remain undeleted.</p>
 
   <p *ngIf="! tag.isLibraryTag">
     Are you sure you want to continue? This can't be undone.

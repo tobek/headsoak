@@ -40,6 +40,13 @@ export class Tag {
   modified = Date.now();
 
   docs: string[] = []; // array of note IDs
+  _noteCount: number;
+  get noteCount(): number {
+    if (this._noteCount === undefined) {
+      this.calculateNoteCount();
+    }
+    return this._noteCount;
+  }
 
   description?: string;
   prog?: boolean; // whether it's a programmatic tag
@@ -147,6 +154,8 @@ export class Tag {
     if (updateModified) {
       this.modified = Date.now();
     }
+
+    this.calculateNoteCount();
 
     this._logger.log('Updated');
 
@@ -494,6 +503,11 @@ export class Tag {
     }
 
     this.dataService.router.navigateByUrl(path);
+  }
+
+  // @TODO/privacy We could exclude private notes and recalculate all lengths when private mode enabled/disabled. Should time running recalculate all on ece's account with gajillion tags
+  calculateNoteCount() {
+    this._noteCount = this.docs.length;
   }
 
   /** Returns array of Note instances that have this tag. */
