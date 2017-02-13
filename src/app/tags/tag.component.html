@@ -42,7 +42,7 @@
   <a *ngIf="renamable && tag.isLibraryTag" data-tooltip="This is a Smart Tag Library tag and so can't be renamed" class="tag-action tag-action--rename is--disabled"><i class="fa fa-pencil"></i></a>
 </span>
 
-<span *ngIf="showCount && ! isNewTag" class="count">{{ tag.docs.length }}</span>
+<span *ngIf="showCount && ! isNewTag" class="count">{{ tag.noteCount }}</span>
 
 <!-- We use `hovered` property toggled by JS in order to add delay and also want to use ngIf for tag-actions-dropdown cause it's a heavy component. -->
 <!-- @TODO/mobile @TODO/polish On mobile you might want click out some random place to close dropdown, and then you end up e.g. opening a note. Maybe should have window touch listener to cancel next click. (same with note add tag field being open) -->
@@ -53,7 +53,7 @@
       Clear from search
     </span>
     <span *ngIf="! isActive">
-      View {{ tag.docs.length }} note{{ tag.docs.length !== 1 ? 's' : '' }}
+      View {{ tag.noteCount }} note{{ tag.noteCount !== 1 ? 's' : '' }}
     </span>
     <!-- @TODO/ece Should clicking on the name still toggle? What about elsehwere in the dropdown? Right now anywhere except the other tag actions will toggle. -->
     <!-- @TODO/ece Active state for these should be more obvious? And not sure about on/off. -->
