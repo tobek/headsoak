@@ -24,6 +24,10 @@
     @media (min-width: $screen-small)
       +gallery(6)
 
+  .tag-list
+    +plain-list
+    padding-left: 15px
+
     .static-tag
       cursor: pointer
       padding: 2px 4px
@@ -31,13 +35,21 @@
       &:hover
         +tag-chiclet-active
 
-  ul.cooccurring-tags
-    +plain-list
-    padding-left: 15px
-
     li
       display: block
       padding: 10px 0 0
+
+    &.tag-list--child-tags
+      .count
+        color: $primary-color-light // @TODO/colors @TODO/soon This is different with new colors
+
+      .static-tag:hover
+        cursor: default
+
+      @media (min-width: $screen-small)
+        li
+          display: inline-block
+          width: 50%
 
     .common-notes-link
       +text-link

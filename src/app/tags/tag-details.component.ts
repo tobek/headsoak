@@ -26,6 +26,8 @@ export class TagDetailsComponent {
     bottomCooccurrences: [ { tag: Tag, numNotes: number }]
   };
 
+  sortedChildTags: Tag[];
+
   hoveredTag?: Tag; // Tag that's currently hovered in cooccurrence lists (used to highlight tag in the visualization)
 
   @Input() tag: Tag;
@@ -94,6 +96,8 @@ export class TagDetailsComponent {
   }
 
   exploreStatsReset(): void {
+    delete this.sortedChildTags;
+
     this.exploreStats = {
       topCooccurrences: <[{ tag: Tag, numNotes: number }]>[],
       bottomCooccurrences: <[{ tag: Tag, numNotes: number }]>[],
@@ -108,6 +112,12 @@ export class TagDetailsComponent {
     this._logger.time('Calculated explore stats');
 
     this.exploreStatsReset();
+
+    if (this.tag.childTagIds.length) {
+      this.sortedChildTags = this.tag.getChildTags().sort((a, b) => {
+        return b.noteCount - a.noteCount;
+      });
+    }
 
     const cooccurrences: { [tagId: string]: number } = {}; // tagId => # of cooccurrences with the current tag
     let pairedTag: Tag;

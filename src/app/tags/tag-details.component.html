@@ -8,6 +8,22 @@
   
   <tag-visualization *ngIf="tag.noteCount" [centralTag]="tag" [highlightedTag]="hoveredTag"></tag-visualization>
 
+  <div *ngIf="sortedChildTags">
+    <h4>Child tags</h4><!-- @TODO/ece Should this be what we call them? -->
+    <ul class="tag-list tag-list--child-tags">
+      <li *ngFor="let childTag of sortedChildTags">
+        <span
+          (mouseenter)="hoveredTag = childTag"
+          (mouseleave)="hoveredTag = null"
+        >
+          <!-- @TODO/soon @TODO/child tags @TODO/prog tags Clicking on these should search for that tag. Also though it would be cool to show cooccurrences and/or tag visualization for these instead? Or maybe we *can* have a full tag details page for child tags? -->
+          <span class="static-tag">{{ childTag.childTagName }}</span>
+          <span class="count">{{ childTag.noteCount }}</span>
+        </span>
+      </li>
+    </ul>
+  </div>
+
   <p *ngIf="! exploreComputed">
     <i class="fa fa-spin fa-cube"></i>&nbsp;
     Loading tag stats...
@@ -20,7 +36,7 @@
     <div *ngIf="exploreStats.topCooccurrences.length" class="cooccurrences">
       <h4>Most commonly paired with:</h4>
 
-      <ul class="cooccurring-tags">
+      <ul class="cooccurring-tags tag-list">
         <li *ngFor="let cooccurrence of exploreStats.topCooccurrences">
           <span
             (mouseenter)="hoveredTag = cooccurrence.tag"
@@ -40,7 +56,7 @@
     <div *ngIf="exploreStats.bottomCooccurrences.length" class="cooccurrences">
       <h4>Least commonly paired with:</h4>
 
-      <ul class="cooccurring-tags">
+      <ul class="cooccurring-tags tag-list">
         <li *ngFor="let cooccurrence of exploreStats.bottomCooccurrences">
           <span
             (mouseenter)="hoveredTag = cooccurrence.tag"
