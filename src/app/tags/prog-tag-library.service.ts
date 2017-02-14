@@ -25,15 +25,8 @@ export class ProgTagLibraryService {
       // progFunc: function(note: Note, api, _): ClassifierReturnType {
       progFuncString: `// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`sentiment\` module) have been bundled with the app.
 
-var sentiment = api.lib.sentiment;
-
-var score = sentiment(note.body);
-if (score && score.comparative) {
-  score = Math.round(score.comparative * 1000) / 1000;
-}
-else {
-  score = 0;
-}
+var result = api.lib.sentiment(note.body);
+var score = result && result.comparative ? result.comparative : 0;
 
 var value;
 if (score >= 0.1) {
@@ -48,7 +41,7 @@ else {
 
 return {
   childTag: value,
-  score: score,
+  score: Math.round(score * 1000) / 10 + '%',
 };` // }
     },
     {
@@ -77,7 +70,7 @@ api.lib.retext().use(api.lib.retextKeywords).process(note.body, function(err, do
           .join('')
           .toLowerCase()
           .replace(/\\d([-'’])\\d/g, '$1'), // @HACK: nlcstToString seems to return these PunctuationNodes with numbers on either side, e.g. "feature2-2bloat" 
-        score: Math.round(phrase.score * 1000)/10 + '%'
+        score: Math.round(phrase.score * 1000) / 10 + '%'
       });
     }
   });
