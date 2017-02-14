@@ -15,7 +15,8 @@
 
   ><span *ngIf="ofNoteId && tag.noteData && tag.noteData[ofNoteId]"
     ><span *ngIf="tag.noteData[ofNoteId].childTag">: {{ tag.noteData[ofNoteId].childTag }}</span>
-    <span class="tag-value-hover" *ngIf="tag.noteData[ofNoteId].score">({{ tag.noteData[ofNoteId].score}})</span>
+    <!-- @TODO/prog @TODO/ece The only two smart tags right now that use this, sentiment and topic, return 0-100% and "confidence" makes sense. That might not always be the case. Should it say "x% confidence"? -->
+    <span class="tag-value-hover" data-tooltip="Confidence" *ngIf="tag.noteData[ofNoteId].score">({{ tag.noteData[ofNoteId].score}})</span>
   </span
 ></span>
 
