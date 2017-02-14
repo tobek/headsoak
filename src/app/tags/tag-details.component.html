@@ -16,6 +16,7 @@
   <div *ngIf="exploreComputed">
     <h4 *ngIf="! exploreStats.topCooccurrences.length && ! exploreStats.bottomCooccurrences.length">This tag has not been paired with any other tags.</h4>
 
+    <!-- @TODO/polish Tag details pages only exist for parent tags - so this looks for cooccurrences between notes tagged by *this tag or any of its children* and other tags. I.e. we don't grouping parent and child when checking other tags, so we end up with cooccurrences only with child tags, e.g. this tag cooccurs with "sentiment: positive". We could maybe have a toggle for grouping child tags, which could generate cooccurrence with just "sentiment". -->
     <div *ngIf="exploreStats.topCooccurrences.length" class="cooccurrences">
       <h4>Most commonly paired with:</h4>
 
