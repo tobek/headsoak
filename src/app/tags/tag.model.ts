@@ -525,6 +525,14 @@ export class Tag {
       .value();
   }
 
+  /** Returns array of Note instances that have this tag plus Note instances that have any of this tag's child tags. */
+  getChildInclusiveNotes(): Note[] {
+    return _(this.childInclusiveDocs)
+      .map((noteId) => this.dataService.notes.notes[noteId])
+      .filter((note) => note) // remove falsey notes
+      .value();
+  }
+
   /** Returns array of this tag's ChildTag instances. */
   getChildTags(): ChildTag[] {
     return _.map(
@@ -534,7 +542,7 @@ export class Tag {
   }
 
   /** Get all the note IDs of this tag plus the note IDs of any notes tagged by our children. @TODO/optimization This could probably be cached as long as we're careful about when to update it (whenever `update` is called?). */
-  get childInclusiveDocs() : string[] {
+  get childInclusiveDocs(): string[] {
     if (this.childTagIds.length === 0) {
       return this.docs;
     }

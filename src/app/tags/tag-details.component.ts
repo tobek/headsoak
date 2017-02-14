@@ -110,16 +110,9 @@ export class TagDetailsComponent {
     this.exploreStatsReset();
 
     const cooccurrences: { [tagId: string]: number } = {}; // tagId => # of cooccurrences with the current tag
-    let note, pairedTag;
-    this.tag.docs.forEach((noteId) => {
-      // This note has the given tag
-      note = this.tagsService.dataService.notes.notes[noteId];
-
-      if (! note) {
-        return;
-      }
-
-      // Now let's see what other tags this note has
+    let pairedTag: Tag;
+    this.tag.getChildInclusiveNotes().forEach((note) => {
+      // Now let's see what other tags these notes hav
       note.tags.forEach((tagId) => {
         if (tagId == this.tag.id) { // intentional == (we have some integer IDs floating around in data store)
           return;
@@ -129,6 +122,10 @@ export class TagDetailsComponent {
         if (! pairedTag) {
           // @TODO I think/hope this stems from past problems with properly deleting tagIds from notes when deleting a tag. If this continues to show up in the future we have a problem.
           this._logger.warn('Note', note.id, 'appears to have non-existent tag with ID', tagId);
+          return;
+        }
+
+        if (pairedTag.parentTagId == this.tag.id) {
           return;
         }
 
@@ -152,7 +149,7 @@ export class TagDetailsComponent {
 
       while(_.size(sortedCooccurrences) && this.exploreStats.topCooccurrences.length < 5) {
         tagId = sortedCooccurrences.pop();
-        tag = this.tagsService[tagId];
+        tag = this.tagsService.tags[tagId];
 
         if (! tag) {
           continue;
@@ -166,7 +163,7 @@ export class TagDetailsComponent {
 
       while(_.size(sortedCooccurrences) && this.exploreStats.bottomCooccurrences.length < 5) {
         tagId = sortedCooccurrences.shift();
-        tag = this.tagsService[tagId];
+        tag = this.tagsService.tags[tagId];
 
         if (! tag) {
           continue;
