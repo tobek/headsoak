@@ -1,8 +1,9 @@
 <span class="name-wrapper"
   (click)="renamable && ! tag.isLibraryTag && ! tag.readOnly && renamableOnNameClick && ! renaming && renameStart($event)"
+  ><span *ngIf="ofNoteId && tag.parentTag" class="parent-name">{{ tag.parentTag.name }}: </span
   ><span class="name" placeholder="tag name" spellcheck="false"
     ref-tagName
-    [innerHTML]="tag.name"
+    [innerHTML]="ofNoteId && tag.childTagName ? tag.childTagName : tag.name"
     [attr.contenteditable]="renaming || null"
     (click)="renaming && $event.stopPropagation()"
     (keydown.enter)="renameFinish($event)"

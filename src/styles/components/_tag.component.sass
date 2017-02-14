@@ -29,6 +29,9 @@ tag
     .route--browse &
       max-width: $tag-name-max-width--browse
 
+  .parent-name
+    display: none
+
   .tag-value-hover
     display: none
   &.dropdown-enabled.hovered .tag-value-hover
@@ -80,6 +83,8 @@ tag
 
     .name-wrapper
       max-width: none
+    .parent-name
+      display: inline
 
   .tag-action
     +icon-button

@@ -319,6 +319,7 @@ export class NoteComponent {
 
       this.closeAddTagField(! addAnother);
 
+      // @TODO/polish This isn't getting called when a tag is added by other means, e.g. a prog tag. Should fix!
       this.checkTagOverflow();
     }
 
