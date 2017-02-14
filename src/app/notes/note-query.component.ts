@@ -191,6 +191,23 @@ export class NoteQueryComponent {
   }
 
   addTag(tag: Tag): void {
+    // Adding a parent/child tag should remove corresponding child/parent
+    let i;
+    if (tag.parentTag) {
+      i = this.tags.indexOf(tag.parentTag);
+      if (i !== -1) {
+        this.tags.splice(i, 1);
+      }
+    }
+    if (tag.childTagIds.length) {
+      tag.getChildTags().forEach((childTag) => {
+        i = this.tags.indexOf(childTag);
+        if (i !== -1) {
+          this.tags.splice(i, 1);
+        }
+      });
+    }
+
     this.tags.push(tag);
     this.queryUpdated();
 
