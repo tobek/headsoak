@@ -312,7 +312,7 @@ export class Tag {
   }
 
   handleProgResultDatum(note: Note, noteDatum: NoteSpecificDatum | NoteSpecificDatumForChildTag, tagsToRemove: Tag[]): void {
-    if (noteDatum.score) {
+    if (typeof noteDatum.score === 'number') {
       noteDatum.score = Math.round(noteDatum.score * 1000) / 1000;
     }
 

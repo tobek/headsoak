@@ -77,7 +77,7 @@ api.lib.retext().use(api.lib.retextKeywords).process(note.body, function(err, do
           .join('')
           .toLowerCase()
           .replace(/\\d([-'’])\\d/g, '$1'), // @HACK: nlcstToString seems to return these PunctuationNodes with numbers on either side, e.g. "feature2-2bloat" 
-        score: phrase.score
+        score: Math.round(phrase.score * 1000)/10 + '%'
       });
     }
   });
