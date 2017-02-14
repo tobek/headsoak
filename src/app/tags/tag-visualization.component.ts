@@ -70,7 +70,7 @@ export class TagVisualizationComponent {
     let links: GraphLink[];
     let nodes: GraphNode[];
 
-    // Index of processed Tags which we can prune if we're using centralTag.
+    // Index of processed Tags (which we can prune if we're using centralTag).
     const nodeIndex: { [tagId: string]: GraphNode } = this.computeNodes(this.tagsService.tags);
 
     if (! this.centralTag) {
@@ -78,11 +78,19 @@ export class TagVisualizationComponent {
       links = this.computeLinks(this.tagsService.tags, this.tagsService.dataService.notes.notes);
     }
     else {
+      // This will hold only the nodes that have links to `centralTag`
       const nodeIndexPruned: { [tagId: string]: GraphNode } = {};
+
+      // But we should make sure we always show all child tags of `centralTag` even if they have no links
+      if (this.centralTag.childTagIds.length) {
+        this.centralTag.childTagIds.forEach((childTagId) => {
+          nodeIndexPruned[childTagId] = nodeIndex[childTagId];
+        });
+      }
 
       links = this.computeLinks(
         this.tagsService.tags,
-        this.centralTag.getNotes(),
+        this.centralTag.getChildInclusiveNotes(),
         nodeIndex,
         nodeIndexPruned
       );
@@ -103,6 +111,11 @@ export class TagVisualizationComponent {
 
     let classAttr;
     _(tags).each((tag: Tag) => {
+      if (tag.childTagIds.length && tag.docs.length === 0) {
+        // Ignore parent tags that aren't used themselves
+        return;
+      }
+      
       if (tag.prog) {
         classAttr = 'is--prog';
       }
@@ -113,29 +126,14 @@ export class TagVisualizationComponent {
         classAttr = '';
       }
 
-      if (_.size(tag.childTagDocs)) {
-        // Go through each child tag
-        _.each(tag.childTagDocs, (docs, childTagName) => {
-          nodeIndex[tag.getChildTagId(childTagName)] = {
-            id: tag.getChildTagId(childTagName),
-            name: tag.name + ': ' + childTagName,
-            size: docs.length,
-            classAttr: classAttr,
-            tagInstance: tag,
-            central: tag === this.centralTag,
-          };
-        });
-      }
-      else {
-        nodeIndex[tag.id] = {
-          id: tag.id,
-          name: tag.name,
-          size: tag.noteCount,
-          classAttr: classAttr,
-          tagInstance: tag,
-          central: tag === this.centralTag,
-        };
-      }
+      nodeIndex[tag.id] = {
+        id: tag.id,
+        name: tag.name,
+        size: tag.noteCount,
+        classAttr: classAttr,
+        tagInstance: tag,
+        central: tag === this.centralTag || tag.parentTag === this.centralTag,
+      };
     });
 
     return nodeIndex;
