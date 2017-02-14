@@ -125,7 +125,7 @@ export class TagDetailsComponent {
           return;
         }
 
-        if (pairedTag.parentTagId == this.tag.id) {
+        if (pairedTag.parentTagId === this.tag.id) {
           return;
         }
 

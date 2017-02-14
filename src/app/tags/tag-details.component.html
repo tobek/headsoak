@@ -27,7 +27,7 @@
             (mouseleave)="hoveredTag = null"
           >
             <span class="static-tag"
-              [routerLink]="['/tags/tag', cooccurrence.tag.parentTagId, cooccurrence.tag.name]"
+              (click)="cooccurrence.tag.goTo()"
             >{{ cooccurrence.tag.name }}</span>
 
             <!-- @TODO/tags Should link these to the search query! -->
@@ -47,7 +47,7 @@
             (mouseleave)="hoveredTag = null"
           >
             <span class="static-tag"
-              [routerLink]="['/tags/tag', cooccurrence.tag.parentTagId, cooccurrence.tag.name]"
+              (click)="cooccurrence.tag.goTo()"
             >{{ cooccurrence.tag.name }}</span>
 
             <span class="common-notes-link">{{ cooccurrence.numNotes }} common note{{ cooccurrence.numNotes !== 1 ? 's' : '' }}</span>
