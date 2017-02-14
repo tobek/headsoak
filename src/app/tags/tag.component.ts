@@ -30,7 +30,10 @@ export class TagComponent {
   isNewTag = false;
 
   /** Whether this should have active state, e.g. note is in the note query search bar is enabled in smart tag library */
-  @Input() @HostBinding('class.is--active') isActive;
+  @Input() @HostBinding('class.is--active') isActive: boolean;
+  isChildActive: boolean;
+  isParentActive: boolean;
+  isSelfActive: boolean;
 
   @HostBinding('class.renaming') renaming = false;
   @HostBinding('class.is--prog') get isProg() {
@@ -151,15 +154,27 @@ export class TagComponent {
   }
 
   queryTagsUpdated(tags: Tag[]): void {
+    this.isSelfActive = this.isChildActive = this.isParentActive = false;
+
     // If ourselves or a parent or child of ourselves is in the query, we should be highlighted
-    this.isActive = !! _.find(tags, (tag) => {
-      return tag.id === this.tag.id || tag.parentTagId === this.tag.id || tag.id === this.tag.parentTagId;
+    _.each(tags, (tag) => {
+      if (tag.id === this.tag.id) {
+        this.isSelfActive = true;
+      }
+      else if (tag.parentTagId === this.tag.id) {
+        this.isChildActive = true;
+      }
+      else if (tag.id === this.tag.parentTagId) {
+        this.isParentActive = true;
+      }
     });
+
+    this.isActive = this.isSelfActive || this.isParentActive || this.isChildActive;
   }
 
-  _toggled() {
+  _toggled(tag = this.tag) {
     // @TODO/polish @TODO/notes Everywhere this is used, we should pass through event so we can determine if shift was held
-    this.toggled.emit(this.tag);
+    this.toggled.emit(tag);
     this.hovered = false;
   }
 
