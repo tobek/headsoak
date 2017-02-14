@@ -63,9 +63,6 @@ export class Tag {
   /** Tag can store specific information on a per-note basis, indexed by note ID. */
   noteData: { [noteId: string]: NoteSpecificDatum } = {};
 
-  /** Tags (currently only prog tags) can have sub tags. This index maps childTag name to list of Note IDs, so that we can both get a list of all possible child tags, and sort easily. @TODO/tags This is overall a shitty way of handling this, and I don't think multiple child tags of the same tag on one note will work very well or at all. */
-  childTagDocs: { [childTagName: string]: string[] } = {};
-
   childTagIds: string[] = [];
 
   /** If this note is currently in the process of being deleted. Child tags delete themselves when they've been removed from all notes, deleting a tag also removes the tag from notes, so we need this to prevent infinite loop */
@@ -109,7 +106,6 @@ export class Tag {
     'progFuncString',
     'isLibraryTag',
     'noteData',
-    'childTagDocs',
     'childTagIds',
 
     'internal',
@@ -482,15 +478,6 @@ export class Tag {
     }, []);
   }
 
-  // @TODO/now
-  /** Kind of lame, and evidence of poor data structure here, but to keep this consistent this is how we generate "id"s of child tags. */
-  getChildTagId(childTagName: string): string {
-    return this.id + ':' + childTagName;
-  }
-  getChildTagIds(): string[] {
-    // Have to cooerce type with double any because bind messes up types.
-    return _.map(_.keys(this.childTagDocs), this.getChildTagId.bind(this)) as any as string[];
-  }
 
   /** Navigates to the tag details page for this tag, optionally to a sub-page within it. */
   goTo(subPage?: 'share' | 'smartness' | 'delete'): void {

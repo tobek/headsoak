@@ -512,10 +512,9 @@ export class ForceGraphComponent {
     }
 
     let higlightNodeEls;
-    if (_.size(tag.childTagDocs)) {
+    if (tag.childTagIds.length) {
       // This is a tag with child tags, and since we break out individual child tags and don't show the parent in the viz, let's highlight all of them.
-      const childTagIds = tag.getChildTagIds();
-      higlightNodeEls = this.nodeEls.filter((nodeEl) => _.includes(childTagIds, nodeEl.id));
+      higlightNodeEls = this.nodeEls.filter((nodeEl) => _.includes(tag.childTagIds, nodeEl.id));
     }
     else {
       higlightNodeEls = this.nodeEls.filter((nodeEl) => nodeEl.id === tag.id);
