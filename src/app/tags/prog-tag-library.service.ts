@@ -73,7 +73,10 @@ api.lib.retext().use(api.lib.retextKeywords).process(note.body, function(err, do
   doc.data.keyphrases.forEach(function (phrase, i) {
     if (i < 5) {
       childTags.push({
-        childTag: phrase.matches[0].nodes.map(api.lib.nlcstToString).join(''),
+        childTag: phrase.matches[0].nodes.map(api.lib.nlcstToString)
+          .join('')
+          .toLowerCase()
+          .replace(/\\d([-'’])\\d/g, '$1'), // @HACK: nlcstToString seems to return these PunctuationNodes with numbers on either side, e.g. "feature2-2bloat" 
         score: phrase.score
       });
     }
