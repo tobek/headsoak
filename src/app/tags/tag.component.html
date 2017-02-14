@@ -49,10 +49,10 @@
 <div class="tag-actions-dropdown" *ngIf="enableDropdown && hovered" ref-actionsDropdown>
   <a class="tag-action" style="touch-action: none" (click)="_toggled(); $event.stopPropagation()">
     <i class="fa fa-fw fa-eye"></i>
-    <span *ngIf="isActive">
+    <span *ngIf="isSelfActive">
       Clear from search
     </span>
-    <span *ngIf="! isActive">
+    <span *ngIf="! isSelfActive">
       View {{ tag.noteCount }} note{{ tag.noteCount !== 1 ? 's' : '' }}
     </span>
     <!-- @TODO/ece Should clicking on the name still toggle? What about elsehwere in the dropdown? Right now anywhere except the other tag actions will toggle. -->
