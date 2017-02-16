@@ -3,7 +3,7 @@ import {ReplaySubject, Subject} from 'rxjs';
 
 import {Logger, utils} from '../utils/';
 import {DataService} from '../data.service';
-import {Tag} from '../tags/';
+import {Tag, ChildTag} from '../tags/';
 import {TagsService} from '../tags/tags.service';
 
 import {Note} from './';
@@ -158,7 +158,24 @@ export class NotesService {
 
     // FIRST get the docs filtered by tags
     if (tags && tags.length) {
-      filteredByTags = _.intersection(... tags.map(tag => tag.childInclusiveDocs));
+      filteredByTags = _.intersection(... tags.map((tag) => {
+        // @TODO/ece Should this be controllable by a setting? How to phrase? (If this is put under a setting, `isActive` calculation in TagComponent needs to be as well)
+        let relevantTags = _.filter(this.tagsService.tags, (otherTag: Tag) {
+          return (<ChildTag>otherTag).childTagName === tag.name;
+        });
+
+        if (relevantTags.length) {
+          // Include with this tag's docs the docs of any child tag with the same name (e.g. from topic prog tag)
+          return _(relevantTags.concat(tag))
+            .map('childInclusiveDocs')
+            .flatten()
+            .union()
+            .value() as string[];
+        }
+        else {
+          return tag.childInclusiveDocs;
+        }
+      }));
 
       if (filteredByTags.length === 0) {
         // no notes match this combination of tags, so we're done:

@@ -4,6 +4,7 @@ import {Subscription} from 'rxjs';
 import {AnalyticsService} from '../analytics.service';
 import {ActiveUIsService} from '../active-uis.service';
 import {Tag} from './tag.model';
+import {ChildTag} from './child-tag.model';
 import {TagsService} from './tags.service';
 
 import {Logger, utils} from '../utils/';
@@ -30,9 +31,9 @@ export class TagComponent {
   isNewTag = false;
 
   /** Whether this should have active state, e.g. note is in the note query search bar is enabled in smart tag library */
-  @Input() @HostBinding('class.is--active') isActive;
+  @Input() @HostBinding('class.is--active') isActive: boolean;
   /** Specifically this tag, not its parent or child. */
-  isSelfActive: boolean;
+  @Input() @HostBinding('class.is--self-active') isSelfActive: boolean;
 
   @HostBinding('class.renaming') renaming = false;
   @HostBinding('class.is--prog') get isProg() {
@@ -162,6 +163,9 @@ export class TagComponent {
       }
       else if (tag.parentTagId === this.tag.id || tag.id === this.tag.parentTagId) {
         // If ourselves or a parent or child of ourselves is in the query, we should be highlighted too
+        return true;
+      }
+      else if (tag.name === (<ChildTag>this.tag).childTagName) {
         return true;
       }
     });

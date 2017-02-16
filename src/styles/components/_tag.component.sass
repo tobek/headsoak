@@ -42,17 +42,12 @@ tag
     margin-left: 4px
 
   .note &.is--prog
-    // We want to fade these out but can't fade entire tag cause dropdown would fade too
+    opacity: $btn-disabled-opacity
 
-    .name-wrapper,
-    .tag-state
-      opacity: $btn-disabled-opacity
-
-    &.is--active, // unless it's in use - @TODO/ece This good?
+    &.is--self-active, // unless it's in use,
+    &.hovered, // hovered,
     homepage & // or on homepage demo
-      .name-wrapper,
-      .tag-state
-        opacity: 1
+      opacity: 1
 
   // Remove clipping name overflow in some situations:
   &.dropdown-disabled:hover,
