@@ -191,4 +191,8 @@ export class TagDetailsComponent {
     this._logger.timeEnd('Calculated explore stats');
   }
 
+  goToTaggedNotes(tags: Tag[]) {
+    this.tagsService.dataService.activeUIs.noteQuery.goToQuery(tags);
+  }
+
 }

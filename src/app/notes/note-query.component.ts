@@ -288,6 +288,14 @@ export class NoteQueryComponent {
     }
   }
 
+  goToQuery(tags: Tag[] = [], queryText: string = '') {
+    this.tags = tags;
+    this.queryText = queryText;
+    this.tagsUpdated$.next(this.tags);
+    this.queryUpdated();
+    this.ensureCorrectRoute();
+  }
+
   ngSelectSelected(option): void {
     // ngSelect just gives us back object with id and text. We need to get full sortOpt:
     const sortOpt = _.find(this.notesService.sortOpts, { id: option.id });
