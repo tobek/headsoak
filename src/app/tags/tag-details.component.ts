@@ -1,4 +1,4 @@
-import {Component, Inject, forwardRef, EventEmitter/*, ElementRef*/, Input, Output, HostBinding} from '@angular/core';
+import {Component, Inject, forwardRef, EventEmitter, ElementRef, ViewChild, Input, Output, HostBinding} from '@angular/core';
 import {Router, NavigationEnd} from '@angular/router';
 import {Subscription} from 'rxjs';
 // import 'rxjs/add/operator/debounceTime';
@@ -10,12 +10,16 @@ import {ToasterService} from '../utils/toaster.service'; // Likewise, this break
 import {Logger} from '../utils/';
 
 import * as _ from 'lodash';
+import * as safeStringify from 'json-stringify-safe';
 
 @Component({
   selector: 'tag-details',
   template: require('./tag-details.component.html')
 })
 export class TagDetailsComponent {
+  _ = _; // for use in template
+  safeStringify = safeStringify; // for use in template
+
   DEFAULT_PANE = 'explore'
   activePane = this.DEFAULT_PANE;
 
@@ -35,6 +39,8 @@ export class TagDetailsComponent {
 
   /** We want to use `.tag-details` selector to style this so that we can have a "fake" component using same styles in homepage demo. Set that class here so we don't have to remember to do so whenever using <tag-details>. */
   @HostBinding('class.tag-details') thisIsUnusedAndAlwaysTrue = true;
+
+  @ViewChild('tagDataRef') tagDataRef: ElementRef;
 
   private routerSub: Subscription;
 
@@ -71,6 +77,23 @@ export class TagDetailsComponent {
 
   ngOnDestroy() {
     this.routerSub.unsubscribe();
+  }
+
+  tagDataUpdated() {
+    try {
+      // @TODO/soon @TODO/prog This runs prog on all notes which will be too slow, need to just look at blacklisted ones... but that's specific to keywords tag. So probably need loading indicator AND really just need to use web web workers
+      this.tag.data = JSON.parse(this.tagDataRef.nativeElement.innerHTML);
+    }
+    catch (err) {
+      this.toaster.error(
+        '<code>' + err + '</code><p>Click to restore previously-valid JSON.</p>',
+        'Error parsing tag data', {
+        timeOut: 7500,
+        onclick: () => {
+          this.tagDataRef.nativeElement.innerHTML = safeStringify(this.tag.data, null, 2);
+        }
+      });
+    }
   }
 
   routeUpdated(event: NavigationEnd | Router) {

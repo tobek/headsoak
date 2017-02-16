@@ -61,18 +61,28 @@ var result = new Promise(function(res, rej) {
 });
 
 var childTags = [];
+var blacklist = this.data.blacklist || [];
 
 api.lib.retext().use(api.lib.retextKeywords).process(note.body, function(err, doc) {
+  // @TODO/soon @TODO/prog Make sure these are sorted by weight
   doc.data.keyphrases.forEach(function (phrase, i) {
-    if (i < 5) {
-      childTags.push({
-        childTag: phrase.matches[0].nodes.map(api.lib.nlcstToString)
-          .join('')
-          .toLowerCase()
-          .replace(/\\d([-'’])\\d/g, '$1'), // @HACK: nlcstToString seems to return these PunctuationNodes with numbers on either side, e.g. "feature2-2bloat" 
-        score: Math.round(phrase.score * 1000) / 10 + '%'
-      });
+    if (childTags.length >= 5) {
+      return;
     }
+
+    var childTagName = phrase.matches[0].nodes.map(api.lib.nlcstToString)
+      .join('')
+      .toLowerCase()
+      .replace(/\\d([-'’])\\d/g, '$1'); // @HACK: nlcstToString seems to return these PunctuationNodes with numbers on either side, e.g. "feature2-2bloat";
+
+    if (blacklist.indexOf(childTagName) !== -1) {
+      return;
+    }
+
+    childTags.push({
+      childTag: childTagName,
+      score: Math.round(phrase.score * 1000) / 10 + '%'
+    });
   });
 
   if (childTags.length) {

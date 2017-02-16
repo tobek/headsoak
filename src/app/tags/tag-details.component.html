@@ -30,7 +30,7 @@
     Loading tag stats...
   </p>
 
-  <div *ngIf="exploreComputed">
+  <div *ngIf="exploreComputed" class="cooccurrences-wrapper">
     <h4 *ngIf="! exploreStats.topCooccurrences.length && ! exploreStats.bottomCooccurrences.length">This tag has not been paired with any other tags.</h4>
 
     <!-- @TODO/polish Tag details pages only exist for parent tags - so this looks for cooccurrences between notes tagged by *this tag or any of its children* and other tags. I.e. we don't grouping parent and child when checking other tags, so we end up with cooccurrences only with child tags, e.g. this tag cooccurs with "sentiment: positive". We could maybe have a toggle for grouping child tags, which could generate cooccurrence with just "sentiment". -->
@@ -75,6 +75,11 @@
         </li>
       </ul>
     </div>
+  </div>
+
+  <div *ngIf="! _.isEmpty(tag.data)">
+    <h4>Tag data</h4>
+    <pre contenteditable ref-tagDataRef (blur)="tagDataUpdated()">{{ safeStringify(tag.data, null, 2) }}</pre>
   </div>
 </div>
 

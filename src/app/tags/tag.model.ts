@@ -47,8 +47,23 @@ export class Tag {
   }
 
   description?: string;
+
   prog?: boolean; // whether it's a programmatic tag
   progFuncString?: string; // string representing programmatic ta@Tg function to be eval'd. This ccould be present even though `prog` is false, saving the function for potential future use.
+
+  private _data: Object = {};
+  /** Free-form persistent data store for prog tags to use */
+  get data(): Object {
+    return this._data;
+  }
+  set data(newData: Object) {
+    if (! _.isEqual(newData, this._data)) {
+      this._data = newData;
+      this.prog && this.runProgOnAllNotes();
+      this.updated();
+    }
+  }
+
   readOnly?: boolean; // @TODO/sharing handle other permissions
 
   share?: any; // map of recipient (shared-with) user ID to their permissions
@@ -99,6 +114,7 @@ export class Tag {
     'description',
     'docs',
 
+    'data',
     'prog',
     'progFuncString',
     'isLibraryTag',
@@ -116,6 +132,12 @@ export class Tag {
   constructor(tagData: any, public dataService: DataService) {
     if (! tagData.id) {
       throw new Error('Must supply tag with id');
+    }
+
+    if (tagData.data) {
+      // @HACK `data` is actually a setter which updates tag and re-runs programmatic stuff, but if we're just rehydrating a Tag instance then there's no need to do that, so assign it to `_data` instead.
+      tagData._data = tagData.data;
+      delete tagData.data;
     }
 
     _.extend(this, tagData);
