@@ -13,6 +13,7 @@
     <ul class="tag-list tag-list--child-tags">
       <li *ngFor="let childTag of sortedChildTags">
         <span
+          (click)="goToTaggedNotes([childTag])"
           (mouseenter)="hoveredTag = childTag"
           (mouseleave)="hoveredTag = null"
         >
