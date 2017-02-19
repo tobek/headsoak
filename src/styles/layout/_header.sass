@@ -1,3 +1,6 @@
+$menu-size: 40px
+$menu-padding: 3px
+
 .app-top
   position: relative
   z-index: $z-header
@@ -24,6 +27,39 @@
     h1
       cursor: pointer
 
+  .sync-animation
+    position: absolute
+    margin-top: -1 * $menu-padding
+    margin-left: -1 * $menu-padding
+    width: $menu-size
+    height: $menu-size
+    animation: syncing-animation 2s linear infinite
+
+    @keyframes syncing-animation
+      0%
+        transform: rotateZ(0)
+      100%
+        transform: rotateZ(360deg)
+
+    .sync-animation-clipper
+      height: 100%
+      overflow: hidden
+      transition: height $transition-slow
+      animation: syncing-inner-animation 4s alternate infinite
+
+      @keyframes syncing-inner-animation
+        0%
+          height: 95%
+        100%
+          height: 5%
+
+    .sync-animation-border
+      height: $menu-size
+      border: 2px solid $input-stroke
+      border-radius: 50%
+      transition: border-color $transition-slow, border-width $transition-slow, box-shadow $transition-slow
+
+
   .menu-wrapper
     position: relative
     margin-right: -10px // matching padding - want avatar to align with edge, but menu border to go outside
@@ -45,43 +81,42 @@
   .menu
     cursor: pointer
 
-    width: 40px
-    height: 40px
-    max-width: 40px
-    padding: 3px
-
-    border: 1px solid $form-stroke // @TODO/rewrite @TODO/ece Vary based on sync status
-    border-radius: 50%
-
-    transition: border-color $transition-med, border-width $transition-med
+    width: $menu-size
+    height: $menu-size
+    max-width: $menu-size
+    padding: $menu-padding
 
     &.status--synced
-      border-color: $success-color
-      .sync-status
+      .sync-animation-border
+        border-width: 1px
+        border-color: $success-color
+        box-shadow: inset 0 0 10px 0px rgba($success-color, 0.5)
+      .status
         color: $success-color
-    &.status--syncing
-      border-color: mix($success-color, $warning-color)
-      .sync-status
-        color: mix($success-color, $warning-color)
+
+    &.status--syncing,
     &.status--unsynced
-      border-color: $warning-color
-      .sync-status
+      .sync-animation-border
+        border-color: $warning-color
+        box-shadow: inset 0 0 10px 0px rgba($warning-color, 0.5)
+      .status
         color: $warning-color
+
     &.status--error,
     &.status--offline
-      border-color: $danger-color
-      .sync-status
+      .sync-animation-border
+        border-color: $danger-color
+        box-shadow: inset 0 0 10px 0px rgba($danger-color, 0.5)
+      .status
         color: $danger-color
 
+    &.status--synced,
     &.status--error,
-    &.status--syncing
-      animation: syncing-status-animation 1s alternate infinite
+    &.status--offline
+      .sync-animation,
+      .sync-animation-clipper
+        animation: none
 
-      @keyframes syncing-status-animation
-        0%
-          border-width: 1px
-        100%
-          border-width: 3px
 
   .menu-body
     // @TODO/soon @TODO/styles There should be padding above this just ike there is for the note tag dropdown
@@ -110,6 +145,9 @@
         padding: 0 0 5px
         text-align: center
         font-style: italic
+
+        .status
+          font-weight: bold
 
       &.unimplemented
         opacity: 0.3

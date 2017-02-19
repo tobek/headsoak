@@ -49,11 +49,11 @@ export class DataService {
   digest$ = new EventEmitter<DataItem>();
 
   statusNameMap = {
-    synced: 'synced',
-    syncing: 'syncing',
-    unsynced: 'unsynced',
-    error: 'sync error',
-    offline: 'offline',
+    synced: 'Synced',
+    syncing: 'Syncing',
+    unsynced: 'Unsynced',
+    error: 'Sync Error',
+    offline: 'Offline',
   };
   _status: 'synced' | 'syncing' | 'unsynced' | 'offline' | 'error' = 'synced';
   get status(): 'synced' | 'syncing' | 'unsynced' | 'offline' | 'error' {

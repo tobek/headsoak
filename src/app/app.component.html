@@ -40,10 +40,20 @@
         <!-- @TODO/mobile @TODO/QA Test the menu behavior with forceMenuClosed works -->
         <div class="menu-wrapper" [class.is--force-closed]="forceMenuClosed" (mouseenter)="forceMenuClosed = false" (click)="forceMenuClosed = false">
           <div class="menu status--{{ dataService.status }}" [hidden]="! dataService.user.loggedIn">
+            <div class="sync-animation">
+              <div class="sync-animation-clipper">
+                <div class="sync-animation-border">
+                </div>
+              </div>
+            </div>
+            
             <img class="avatar" src="{{ settings.get('profileImageUrl', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7') }}" />
 
             <ul class="menu-body" (click)="forceMenuClosed = true; $event.stopPropagation()">
-              <li class="sync-status">Status: {{ dataService.statusNameMap[dataService.status] }}</li>
+              <li class="sync-status">
+                Status:
+                <span class="status">{{ dataService.statusNameMap[dataService.status] }}</span>
+              </li>
 
               <li *ngFor="let route of menuNavSettingsRoutes" [class.is--active]="router.url === '/settings' + (route.path ? '/' + route.path : '')">
                 <a [routerLink]="route.path ? ['/settings', route.path] : ['/settings']" [class]="'menu-link--' + route.data.slug">
