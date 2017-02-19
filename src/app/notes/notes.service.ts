@@ -160,7 +160,7 @@ export class NotesService {
     if (tags && tags.length) {
       filteredByTags = _.intersection(... tags.map((tag) => {
         // @TODO/ece Should this be controllable by a setting? How to phrase? (If this is put under a setting, `isActive` calculation in TagComponent needs to be as well)
-        let relevantTags = _.filter(this.tagsService.tags, (otherTag: Tag) {
+        let relevantTags = _.filter(this.tagsService.tags, (otherTag: Tag) => {
           return (<ChildTag>otherTag).childTagName === tag.name;
         });
 
