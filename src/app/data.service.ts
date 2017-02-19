@@ -48,6 +48,9 @@ export class DataService {
 
   digest$ = new EventEmitter<DataItem>();
 
+  /** Whether there is currently some sync problem, e.g. we're offline or there was an error syncing. **/
+  syncProblem = false;
+
   statusNameMap = {
     synced: 'Synced',
     syncing: 'Syncing',
@@ -56,27 +59,6 @@ export class DataService {
     offline: 'Offline',
   };
   _status: 'synced' | 'syncing' | 'unsynced' | 'offline' | 'error' = 'synced';
-  get status(): 'synced' | 'syncing' | 'unsynced' | 'offline' | 'error' {
-    return this._status;
-  }
-  set status(newStatus) {
-    this.zone.run(() => {
-      this._status = newStatus;
-    });
-
-    if (newStatus === 'unsynced') {
-      setTimeout(this.throttledSync, this.SYNC_DELAY);
-    }
-    else if (newStatus === 'error') {
-      this._logger.log('Error state - syncing again in', this.SYNC_ERROR_DELAY);
-      setTimeout(this.throttledSync, this.SYNC_ERROR_DELAY);
-    }
-
-    window.removeEventListener('beforeunload', this.confirmLeaving);
-    if (newStatus !== 'synced') {
-      window.addEventListener('beforeunload', this.confirmLeaving);
-    }
-  }
 
   ref: Firebase;
 
@@ -117,6 +99,18 @@ export class DataService {
 
   ngOnDestroy() {
     this.digestSub.unsubscribe();
+  }
+
+  init(uid: string, accountService: AccountService) {
+    this.accountService = accountService;
+    this.ref = accountService.ref;
+    
+    // An initial check to see if anything needs updating after initialization (pretty sure this is impossible since we haven't fetched data, but why not):
+    this.throttledSync();
+
+    // @TODO/rewrite also sync (without throttle) before unload
+
+    this.fetchData(uid);
   }
 
   confirmLeaving = (event) => {
@@ -278,16 +272,58 @@ export class DataService {
     }
   }
 
-  init(uid: string, accountService: AccountService) {
-    this.accountService = accountService;
-    this.ref = accountService.ref;
-    
-    // An initial check to see if anything needs updating after initialization (pretty sure this is impossible since we haven't fetched data, but why not):
-    this.throttledSync();
+  get status(): 'synced' | 'syncing' | 'unsynced' | 'offline' | 'error' {
+    return this._status;
+  }
+  set status(newStatus) {
+    // @TODO/soon @TODO/data We should actually detect offline state (and what happens if it tries to sync while offline currently? Error?)
+    if (newStatus === 'error' || newStatus === 'offline') {
+      if (! this.syncProblem) {
+        // We've gone from a normal state to an error state
+        this.syncProblem = true;
+        this.toaster.error(
+          newStatus === 'error' ? '<p>There was a problem connecting to Headsoak. Changes you make to your notes will not be saved.</p><p>We\'ll keep trying to reconnect.</p>' : '<p>Your computer seems to be no longer connected to the internet. Changes to your notes will not be saved until you are reconnected.</p>',
+          newStatus === 'error' ? 'Error syncing to Headsoak' : 'Disconnected from Headsoak',
+          {
+            timeOut: 0,
+            extendTimeOut: 0,
+            closeButton: true,
+          }
+        );
+      }
+    }
+    else if (newStatus === 'synced') {
+      if (this.syncProblem) {
+        // We've gone from a problem state to a good state
+        this.syncProblem = false;
+        this.toaster.success(
+          '<p>Your notes have synced and everything looks good.</p>',
+          'Back online!',
+          {
+            timeOut: 0,
+            extendTimeOut: 0,
+            closeButton: true,
+          }
+        );
+      }
+    }
 
-    // @TODO/rewrite also sync (without throttle) before unload
+    this.zone.run(() => {
+      this._status = newStatus;
+    });
 
-    this.fetchData(uid);
+    if (newStatus === 'unsynced') {
+      setTimeout(this.throttledSync, this.SYNC_DELAY);
+    }
+    else if (newStatus === 'error') {
+      this._logger.log('Error state - syncing again in', this.SYNC_ERROR_DELAY);
+      setTimeout(this.throttledSync, this.SYNC_ERROR_DELAY);
+    }
+
+    window.removeEventListener('beforeunload', this.confirmLeaving);
+    if (newStatus !== 'synced') {
+      window.addEventListener('beforeunload', this.confirmLeaving);
+    }
   }
 
   fetchData(uid: string) {
