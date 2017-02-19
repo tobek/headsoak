@@ -237,6 +237,12 @@ export class Tag {
     return true;
   }
 
+  /** Really just a hack for fixing bugs if you add/remove same tag from smart tag library in same session. */
+  reset() {
+    this._data = {};
+    this.isDeleting = false;
+  }
+
   /** @NOTE This does *not* add ourselves to the note in return. Does nothing if tag already has note in `docs`. */
   addNoteId(noteId: string): void {
     if (_.includes(this.docs, noteId)) {

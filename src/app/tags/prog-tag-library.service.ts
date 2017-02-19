@@ -272,6 +272,7 @@ return result; `//}
   /** Enables/disables a tag for this user. */
   toggleTag(tag: Tag) {
     if (! this.tagsService.tags[tag.id]) {
+      tag.reset();
       this.tagsService.addTag(tag);
     }
     else {
