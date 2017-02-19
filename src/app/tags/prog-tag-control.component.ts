@@ -14,6 +14,14 @@ import * as ace from 'brace';
   template: require('./prog-tag-control.component.html')
 })
 export class ProgTagControlComponent {
+  readonly DEFAULT_PROG_FUNC_STRING = `// Any initialization logic can go here - this is run each time the app is initialized, and whenever the smart tag is changed
+
+function classifyNote(note) {
+  // This function will get run against each of your notes, and should return true (if this note should have this tag) or false. (See documentation below for more complex return types for child tags and scores.)
+}
+
+return classifyNote;`;
+
   @Input() tag: Tag;
 
   @ViewChild('editorRef') editorRef: ElementRef;
@@ -114,7 +122,7 @@ export class ProgTagControlComponent {
 
     if (this.tag.progFuncString) {
       // Must've had one from before
-      this.tag.runProgOnAllNotes();
+      this.run();
     }
 
     this.tag.updated();
@@ -148,7 +156,7 @@ export class ProgTagControlComponent {
       return;
     }
 
-    this.editor.setValue(this.tag.progFuncString || '');
+    this.editor.setValue(this.tag.progFuncString || this.DEFAULT_PROG_FUNC_STRING);
     this.editor.gotoLine(0, 0); // deselect and go to beginning (setValue sometimes selects all and/or puts cursor at end)
     this.editorUnchanged();
   }
@@ -162,17 +170,41 @@ export class ProgTagControlComponent {
     this.editorUnchanged();
 
     if (this.tag.progFuncString) {
-      this.isRunning = true;
-      // @TODO/webworkers @TODO/prog Wait 200ms (length of the transition to button loading state, which would pause while JS is busy) before starting, because running prog tags is synchronous (barring async calls written into them). Not ideal, and timeout can be removed when we're using web workers for running prog tags.
-      setTimeout(() => {
-        this.tag.runProgOnAllNotes();
-        this.isRunning = false;
-        this.tag.updated();
-        // @TODO/prog Should show the results of running it here! Like # of notes it was tagged on. And a success message. Tooltip or toaster?
-      }, 200);
+      this.run();
     }
     else {
       this.tag.updated();
     }
+  }
+
+  run(): void {
+    const err = this.tag.setAndValidateClassifier();
+
+    if (err) {
+      this.tagsService.dataService.modalService.generic({
+        message: '<p>The code for this smart tag threw an error or did not return a valid classifier. Please see documentation for details on the expected format.</p><pre class="syntax" style="max-height: 50vh">' + _.escape(err.stack || err.toString()) + '</pre>',
+        additionalButtons: [
+          {
+            text: 'Revert to default smart tag boilerplate',
+            cb: () => {
+              this.tag.progFuncString = this.DEFAULT_PROG_FUNC_STRING;
+              this.editor.setValue(this.tag.progFuncString);
+              this.editor.gotoLine(0, 0); // deselect and go to beginning (setValue sometimes selects all and/or puts cursor at end)
+            }
+          }
+        ]
+      });
+      return;
+    }
+
+    this.isRunning = true;
+    // @TODO/webworkers @TODO/prog Wait 200ms (length of the transition to button loading state, which would pause while JS is busy) before starting, because running prog tags is synchronous (barring async calls written into them). Not ideal, and timeout can be removed when we're using web workers for running prog tags.
+    setTimeout(() => {
+      this.tag.runProgOnAllNotes(() => {
+        this.isRunning = false;
+        this.tag.updated();
+        // @TODO/prog Should show the results of running it here! Like # of notes it was tagged on. And a success message. Tooltip or toaster?
+      });
+    }, 200);
   }
 }

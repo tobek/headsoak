@@ -277,9 +277,9 @@ export class Tag {
   }
 
   /** See if given note should be tagged by this programmatic tag. */
-  runProgOnNote(note: Note, doneCb = () => {}): void {
+  runProgOnNote(note: Note, doneCb = (err?) => {}): void {
     if (! this.prog || ! this.progFuncString) {
-      this._logger.warn('Can\'t run prog tag on note - this tag is not programmatic or has no programmatic function string!', this);
+      this._logger.info('Can\'t run prog tag on note - this tag is not programmatic or has no programmatic function string!', this);
       return doneCb();;
     }
 
@@ -289,7 +289,35 @@ export class Tag {
     }
 
     if (! this.classifier) {
-      this.classifier = this.generateClassifier();
+      const err = this.setAndValidateClassifier();
+      if (err) {
+        this.dataService.toaster.error(
+          'Could not generate classifier. Click for details.',
+          'Error running smart tag <span class="static-tag">' + this.name + '</span>',
+          {
+            timeOut: 10000,
+            onclick: () => {
+              this.dataService.modalService.generic({
+                message:
+                  '<h4>Error on smart tag <span class="static-tag">' + this.name + '</span></h4>' +
+                  '<pre class="syntax" style="max-height: 30vh">' + _.escape(err.stack || err.toString()) + '</pre>' +
+                  '<p>Smart tag definition:</p>' +
+                  '<pre class="syntax" style="max-height: 30vh">' + _.escape(this.progFuncString) + '</pre>',
+                additionalButtons: [
+                  {
+                    text: 'Go to smart tag settings',
+                    cb: () => {
+                      this.goTo('smartness');
+                    }
+                  }
+                ],
+              }, true);
+            }
+          }
+        );
+
+        return doneCb(err);
+      }
     }
 
     const result = this.classifier(note);
@@ -301,7 +329,7 @@ export class Tag {
       })
       .catch((err) => {
         this.progTagError(err, note);
-        doneCb();
+        doneCb(err);
       });
     }
     else {
@@ -403,31 +431,50 @@ export class Tag {
     }
   }
 
-  runProgOnAllNotes(): void {
+  runProgOnAllNotes(cb = (err?) => {}): void {
     if (! this.prog || ! this.progFuncString) {
-      this._logger.warn('Can\'t run prog tag on notes - this tag is not programmatic or has no programmatic function string!', this);
-      return;
+      const errMesg = 'Can\'t run prog tag on notes - this tag is not programmatic or has no programmatic function string!';
+      this._logger.info(errMesg, this);
+      return cb(errMesg);
     }
 
     this._logger.log('Running smart tag on all notes');
     this._logger.time('Ran smart tag on all notes in');
     console.groupCollapsed();
 
-    asyncEach(this.dataService.notes.notes, this.runProgOnNote.bind(this), () => {
+    asyncEach(this.dataService.notes.notes, this.runProgOnNote.bind(this), (err?) => {
       // @NOTE Since these are potentially async and could take unknown amount of time to complete (maybe they should be time limited?) then other console output could get stuck in here. Not sure what to do! Not that important though since it's just for dev use.
       console.groupEnd();
       this._logger.timeEnd('Ran smart tag on all notes in');
+      cb();
     });
   }
 
-  generateClassifier(): (note: Note) => ClassifierReturnType {
-    var classifierFunc = new Function('note', 'api', '_', this.progFuncString); // this line excites me
+  // Returns error if there was an issue, otherwise returns null 
+  setAndValidateClassifier(): Error {
+    try {
+      this.classifier = this.generateClassifier();
+      return null;
+    }
+    catch (err) {
+      this._logger.info('Failed to generate classifier', err, err.stack, 'Smart tag definition:', this.progFuncString);
+      return err;
+    }
+  }
 
-    // The function we actually call needs to be wrapped in try/catch and supplied with the API and other stuff
+  generateClassifier(): (note: Note) => ClassifierReturnType {
+    // Smart tag should be set up to return the classifier function, so we call the eval'd function immediately and pass in API and lodash:
+    const classifierFunc = (new Function('api', '_', this.progFuncString))(this.dataService.tags.progTagApi, _); // (this line excites me)
+
+    if (typeof classifierFunc !== 'function') {
+      throw Error('Smart tag code did not return a function');
+    }
+
+    // The function we actually call needs to be wrapped in try/catch
     return (note: Note): boolean => {
       try {
         // Passing in this tag as the this arg
-        return classifierFunc.call(this, note, this.dataService.tags.progTagApi, _);
+        return classifierFunc.call(this, note);
       }
       catch (err) {
         this.progTagError(err, note);
@@ -435,13 +482,14 @@ export class Tag {
     }
   }
 
+  /** This is intended to be run when an otherwise-uncaught error occurs while processing prog tag stuff - e.g. it could occur at any point, like when a note has been updated. */
   progTagError(err: Error, note: Note) {
     this._logger.error('Running programmatic tag on note ID', note.id, 'threw error:', err, err.stack, 'Tag prog function string:', this.progFuncString);
 
-    // @TODO/prog
-
-    // @TODO/modals
-    alert('Hey there was an unhandled error running smart tags, leave this page up and show toby please.');
+    // @TODO/prog @TODO/now
+    this.dataService.toaster.error('Hey there was an unhandled error running smart tags, leave this page up and show Toby please.', {
+      preventDuplicates: true,
+    });
 
     // // closeModal may have been just called, so open up new modal in a different tick:
     // $timeout(function() {

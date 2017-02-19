@@ -22,26 +22,29 @@ export class ProgTagLibraryService {
       description: 'Tag notes that show a markedly positive or negative sentiment. Hover over the tag on a note to see the calculated strength of that note\'s sentiment.',
       prog: true,
       // @NOTE Can use this function definition to write the library tag with the benefits of type checking and general JS linting, and then just comment out and use backticks (and comment/update the last line of func as well)
-      // progFunc: function(note: Note, api, _): ClassifierReturnType {
+      // progFunc: function(api, _): (note: Note) => ClassifierReturnType {
       progFuncString: `// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`sentiment\` module) have been bundled with the app.
+var sentiment = api.lib.sentiment;
 
-var result = api.lib.sentiment(note.body);
-var score = result && result.comparative ? result.comparative : 0;
+return function(note) {
+  var result = sentiment(note.body);
+  var score = result && result.comparative ? result.comparative : 0;
 
-var value;
-if (score >= 0.1) {
-  value = 'positive';
-}
-else if (score <= -0.1) {
-  value = 'negative';
-}
-else {
-  return false;
-}
+  var value;
+  if (score >= 0.1) {
+    value = 'positive';
+  }
+  else if (score <= -0.1) {
+    value = 'negative';
+  }
+  else {
+    return false;
+  }
 
-return {
-  childTag: value,
-  score: Math.round(score * 1000) / 10 + '%',
+  return {
+    childTag: value,
+    score: Math.round(score * 1000) / 10 + '%',
+  }
 };` // }
     },
     {
@@ -51,49 +54,56 @@ return {
       name: 'topic',
       description: '@TODO/now Automatically extract topics',
       prog: true,
-      // progFunc: function(note: Note, api, _): ClassifierReturnType {
+      // progFunc: function(api, _): (note: Note) => ClassifierReturnType {
       progFuncString:`// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`retext-keywords\` module) have been bundled with the app.
+var retext = api.lib.retext;
+var retextKeywords = api.lib.retextKeywords;
+var nlcstToString = api.lib.nlcstToString;
 
-var resolve, reject;
-var result = new Promise(function(res, rej) {
-  resolve = res;
-  reject = rej;
-});
+var processor = retext().use(retextKeywords);
 
-var childTags = [];
-var blacklist = this.data.blacklist || [];
-
-api.lib.retext().use(api.lib.retextKeywords).process(note.body, function(err, doc) {
-  // @TODO/soon @TODO/prog Make sure these are sorted by weight
-  doc.data.keyphrases.forEach(function (phrase, i) {
-    if (childTags.length >= 5) {
-      return;
-    }
-
-    var childTagName = phrase.matches[0].nodes.map(api.lib.nlcstToString)
-      .join('')
-      .toLowerCase()
-      .replace(/\\d([-'’])\\d/g, '$1'); // @HACK: nlcstToString seems to return these PunctuationNodes with numbers on either side, e.g. "feature2-2bloat";
-
-    if (blacklist.indexOf(childTagName) !== -1) {
-      return;
-    }
-
-    childTags.push({
-      childTag: childTagName,
-      score: Math.round(phrase.score * 1000) / 10 + '%'
-    });
+return function(note) {
+  var resolve, reject;
+  var result = new Promise(function(res, rej) {
+    resolve = res;
+    reject = rej;
   });
 
-  if (childTags.length) {
-    resolve(childTags);
-  }
-  else {
-    resolve(false);
-  }
-});
+  var childTags = [];
+  var blacklist = this.data.blacklist || [];
 
-return result; `//}
+  processor.process(note.body, function(err, doc) {
+    // @TODO/soon @TODO/prog Make sure these are sorted by weight
+    doc.data.keyphrases.forEach(function (phrase, i) {
+      if (childTags.length >= 5) {
+        return;
+      }
+
+      var childTagName = phrase.matches[0].nodes.map(nlcstToString)
+        .join('')
+        .toLowerCase()
+        .replace(/\\d([-'’])\\d/g, '$1'); // @HACK: nlcstToString seems to return these PunctuationNodes with numbers on either side, e.g. "feature2-2bloat";
+
+      if (blacklist.indexOf(childTagName) !== -1) {
+        return;
+      }
+
+      childTags.push({
+        childTag: childTagName,
+        score: Math.round(phrase.score * 1000) / 10 + '%'
+      });
+    });
+
+    if (childTags.length) {
+      resolve(childTags);
+    }
+    else {
+      resolve(false);
+    }
+  });
+
+  return result;
+}`//}
     },
     {
       id: 'lib--nsfw',
@@ -102,35 +112,41 @@ return result; `//}
       name: 'nsfw',
       description: '@TODO/now Automatically tags nsfw notes and makes them private. NOTE: This tag will never make a note *un*private even if it no longer detects nsfw content.',
       prog: true,
-      // progFunc: function(note: Note, api, _): ClassifierReturnType {
+      // progFunc: function(api, _): (note: Note) => ClassifierReturnType {
       progFuncString:`// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`retext-profanities\` module) have been bundled with the app.
+var retext = api.lib.retext;
+var retextProfanities = api.lib.retextProfanities;
 
-var resolve, reject;
-var result = new Promise(function(res, rej) {
-  resolve = res;
-  reject = rej;
-});
+var processor = retext().use(retextProfanities);
 
-api.lib.retext().use(api.lib.retextProfanities).process(note.body, function(err, doc) {
-  if (err) {
-    throw err;
-  }
+return function(note) {
+  var resolve, reject;
+  var result = new Promise(function(res, rej) {
+    resolve = res;
+    reject = rej;
+  });
 
-  if (doc && _.size(doc.messages)) {
-    var actualProfanities = _.filter(doc.messages, { profanitySeverity: 2 });
-    if (_.size(actualProfanities)) {
-      console.info('Marking note', note.id, 'nsfw because of words:', _.map(actualProfanities, 'ruleId'));
-      note.makePrivate();
-
-      resolve(true);
-      return;
+  processor.process(note.body, function(err, doc) {
+    if (err) {
+      throw err;
     }
-  }
 
-  resolve(false);
-});
+    if (doc && _.size(doc.messages)) {
+      var actualProfanities = _.filter(doc.messages, { profanitySeverity: 2 });
+      if (_.size(actualProfanities)) {
+        console.info('Marking note', note.id, 'nsfw because of words:', _.map(actualProfanities, 'ruleId'));
+        note.makePrivate();
 
-return result; `//}
+        resolve(true);
+        return;
+      }
+    }
+
+    resolve(false);
+  });
+
+  return result;
+}`//}
     },
     {
       id: 'lib--untagged',
@@ -139,7 +155,18 @@ return result; `//}
       name: 'untagged',
       description: 'Tag all notes which have no tags',
       prog: true,
-      progFuncString: 'if (note.tags.length === 0) {\n  return true;\n}\nelse if (note.tags.length === 1 && note.tags[0] === this.id) {\n  // note has only one tag and it\'s this one! note that without this check, this smart tag would produce an infinite loop. First an untagged note would be assigned this tag, and then, since the note was updated, it would be checked against smart tags again. This tag would then remove itself, triggering another update where it would be added back, etc.\n  return true;\n}\nelse {\n  return false;\n}',
+      progFuncString: `return function(note) {
+  if (note.tags.length === 0) {
+    return true;
+  }
+  else if (note.tags.length === 1 && note.tags[0] === this.id) {
+    // Note has only one tag and it's this one! note that without this check, this smart tag would produce an infinite loop. First an untagged note would be assigned this tag, and then, since the note was updated, it would be checked against smart tags again. This tag would then remove itself, triggering another update where it would be added back, etc.
+    return true;
+  }
+  else {
+    return false;
+  }
+}`,
     },
     {
       id: 'lib--has-quote',
@@ -150,7 +177,23 @@ return result; `//}
       prog: true,
       // old version which looks for 50% of lines being a quote:
       // progFuncString: 'if (! note.body) {\n  return false;\n}\n\nvar lines = note.body.split(\'\\n\');\nvar numQuoteLines = 0;\n\n_.each(lines, function(line) {\n  if (line[0] === \'>\') {\n    numQuoteLines++;\n  }\n});\n\nif (numQuoteLines / lines.length >= 0.5) {\n  return true;\n} else {\n  return false;\n}',
-      progFuncString: 'if (! note.body) {\n  return false;\n}\n\nvar lines = note.body.split(\'\\n\');\nvar foundQuote = false;\n\n_.each(lines, function(line) {\n  if (line[0] === \'>\' && line[1] === \' \') {\n    foundQuote = true;\n    return false;\n  }\n});\n\nreturn foundQuote;',
+      progFuncString: `return function(note) {
+  if (! note.body) {
+    return false;
+  }
+
+  var lines = note.body.split('\\n');
+  var foundQuote = false;
+
+  _.each(lines, function(line) {
+    if (line[0] === '>' && line[1] === ' ') {
+      foundQuote = true;
+      return false;
+    }
+  });
+
+  return foundQuote;
+}`,
     },
     {
       id: 'lib--nutmeg',
@@ -159,7 +202,14 @@ return result; `//}
       name: 'mentions headsoak', // @TODO/prog Mention or show that this is a "tutorial" tag or something. BETTER: Make it customizable for search string
       description: 'Tag all notes which contain the text "headsoak"',
       prog: true,
-      progFuncString: 'if (note.body.toLowerCase().indexOf("headsoak") !== -1) {\n  return true;\n}\nelse {\n  return false;\n}',
+      progFuncString: `return function(note) {
+  if (note.body.toLowerCase().indexOf("headsoak") !== -1) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}`,
     },
     // {
     //   name: 'List',
