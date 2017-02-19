@@ -240,7 +240,8 @@ export class Tag {
   /** Really just a hack for fixing bugs if you add/remove same tag from smart tag library in same session. */
   reset() {
     this._data = {};
-    this.isDeleting = false;
+    delete this.isDeleting;
+    delete this.classifier;
   }
 
   /** @NOTE This does *not* add ourselves to the note in return. Does nothing if tag already has note in `docs`. */
@@ -289,33 +290,8 @@ export class Tag {
     }
 
     if (! this.classifier) {
-      const err = this.setAndValidateClassifier();
+      const err = this.setAndValidateClassifier(true);
       if (err) {
-        this.dataService.toaster.error(
-          'Could not generate classifier. Click for details.',
-          'Error running smart tag <span class="static-tag">' + this.name + '</span>',
-          {
-            timeOut: 10000,
-            onclick: () => {
-              this.dataService.modalService.generic({
-                message:
-                  '<h4>Error on smart tag <span class="static-tag">' + this.name + '</span></h4>' +
-                  '<pre class="syntax" style="max-height: 30vh">' + _.escape(err.stack || err.toString()) + '</pre>' +
-                  '<p>Smart tag definition:</p>' +
-                  '<pre class="syntax" style="max-height: 30vh">' + _.escape(this.progFuncString) + '</pre>',
-                additionalButtons: [
-                  {
-                    text: 'Go to smart tag settings',
-                    cb: () => {
-                      this.goTo('smartness');
-                    }
-                  }
-                ],
-              }, true);
-            }
-          }
-        );
-
         return doneCb(err);
       }
     }
@@ -450,14 +426,42 @@ export class Tag {
     });
   }
 
-  // Returns error if there was an issue, otherwise returns null 
-  setAndValidateClassifier(): Error {
+  // Returns error if there was an issue, otherwise returns null. Optionally announces error.
+  setAndValidateClassifier(alertOnError = false): Error {
     try {
       this.classifier = this.generateClassifier();
       return null;
     }
     catch (err) {
       this._logger.info('Failed to generate classifier', err, err.stack, 'Smart tag definition:', this.progFuncString);
+
+      if (alertOnError) {
+        this.dataService.toaster.error(
+          'Could not generate classifier. Click for details.',
+          'Error running smart tag <span class="static-tag">' + this.name + '</span>',
+          {
+            timeOut: 10000,
+            onclick: () => {
+              this.dataService.modalService.generic({
+                message:
+                  '<h4>Error on smart tag <span class="static-tag">' + this.name + '</span></h4>' +
+                  '<pre class="syntax" style="max-height: 30vh">' + _.escape(err.stack || err.toString()) + '</pre>' +
+                  '<p>Smart tag definition:</p>' +
+                  '<pre class="syntax" style="max-height: 30vh">' + _.escape(this.progFuncString) + '</pre>',
+                additionalButtons: [
+                  {
+                    text: 'Go to smart tag settings',
+                    cb: () => {
+                      this.goTo('smartness');
+                    }
+                  }
+                ],
+              }, true);
+            }
+          }
+        );
+      }
+
       return err;
     }
   }

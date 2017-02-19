@@ -110,6 +110,11 @@ export class TagsService {
     }
     this.tags[newTag.id] = newTag;
 
+    if (newTag.prog && newTag.progFuncString) {
+      // @HACK We permit/encourage/document that initialization code can go in progFuncString, so we have to generate them now. (Library tags get run as soon as they're added to a user's account so `setAndValidateClassifier` will get run then.)
+      newTag.setAndValidateClassifier(true);
+    }
+
     // No need to sync to data store if we're initializing tags from data store.
     if (addToDataStore === true) {
       newTag.updated();
