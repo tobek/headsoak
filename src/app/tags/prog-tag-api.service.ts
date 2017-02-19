@@ -1,6 +1,7 @@
-import {Injectable} from '@angular/core';
+import {Injectable, Inject, forwardRef} from '@angular/core';
 
 import {DataService} from '../data.service';
+import {ModalService} from '../modals/modal.service';
 
 import {Tag} from './tag.model';
 import {Note} from '../notes/note.model';
@@ -26,7 +27,9 @@ export class ProgTagApiService {
     retextProfanities: retextProfanities,
   };
 
-  constructor() {
+  constructor(
+    @Inject(forwardRef(() => ModalService)) public modal: ModalService // @TODO/prog Add to documentation
+  ) {
   }
 
   init(dataService: DataService): void {
