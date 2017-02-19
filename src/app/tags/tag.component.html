@@ -84,4 +84,12 @@
     <i class="fa fa-fw fa-bar-chart"></i>
     More
   </a>
+
+  <a class="tag-action"
+    *ngFor="let action of (tag.parentTag && tag.parentTag.customActions.childTags) || []"
+    (click)="action.func(tag); $event.stopPropagation()"
+  >
+    <i class="fa fa-fw fa-{{ action.icon }}"></i>
+    {{ action.text }}
+  </a>
 </div>

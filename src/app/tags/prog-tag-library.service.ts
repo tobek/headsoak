@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 
 import {TagsService} from './tags.service';
 import {Tag, ClassifierResult, ClassifierReturnType} from './tag.model';
+import {ProgTagApiService} from './prog-tag-api.service';
 import {Note} from '../notes/note.model';
 
 import {Logger} from '../utils/logger';
@@ -54,13 +55,45 @@ return function(note) {
       name: 'topic',
       description: '@TODO/now Automatically extract topics',
       prog: true,
-      // progFunc: function(api, _): (note: Note) => ClassifierReturnType {
+      // progFunc: function(api: ProgTagApiService, _): (note: Note) => ClassifierReturnType {
       progFuncString:`// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`retext-keywords\` module) have been bundled with the app.
 var retext = api.lib.retext;
 var retextKeywords = api.lib.retextKeywords;
 var nlcstToString = api.lib.nlcstToString;
+var _this = this;
 
 var processor = retext().use(retextKeywords);
+
+if (! this.data.blacklist) {
+  this.data.blacklist = [];
+}
+
+function confirmBlacklisting(childTag, tagDetailsComponent) {
+  api.modal.confirm(
+    '<p>Are you sure you want to blacklist the topic <span class="static-tag">' + childTag.childTagName + '</span>? It won\\'t be suggested again.</p><p>You can view and edit the list of blacklisted tags from the <span class="static-tag">' + _this.name + '</span> tag details page.</p>',
+    function(confirmed) {
+      if (confirmed) {
+        blacklistChildTag(childTag);
+        if (tagDetailsComponent && tagDetailsComponent.setUpChildTags) {
+          tagDetailsComponent.setUpChildTags();
+        }
+      }
+    },
+    true,
+    'Blacklist'
+  );
+}
+
+function blacklistChildTag(childTag) {
+  _this.data.blacklist.push(childTag.childTagName);
+  childTag.delete(true);
+}
+
+this.customActions.childTags = [{
+  icon: 'ban',
+  text: 'Blacklist this topic',
+  func: confirmBlacklisting
+}];
 
 return function(note) {
   var resolve, reject;
@@ -70,7 +103,6 @@ return function(note) {
   });
 
   var childTags = [];
-  var blacklist = this.data.blacklist || [];
 
   processor.process(note.body, function(err, doc) {
     // @TODO/soon @TODO/prog Make sure these are sorted by weight
@@ -84,7 +116,7 @@ return function(note) {
         .toLowerCase()
         .replace(/\\d([-'’])\\d/g, '$1'); // @HACK: nlcstToString seems to return these PunctuationNodes with numbers on either side, e.g. "feature2-2bloat";
 
-      if (blacklist.indexOf(childTagName) !== -1) {
+      if (_this.data.blacklist.indexOf(childTagName) !== -1) {
         return;
       }
 
@@ -103,7 +135,8 @@ return function(note) {
   });
 
   return result;
-}`//}
+}`
+// }}
     },
     {
       id: 'lib--nsfw',
@@ -112,7 +145,7 @@ return function(note) {
       name: 'nsfw',
       description: '@TODO/now Automatically tags nsfw notes and makes them private. NOTE: This tag will never make a note *un*private even if it no longer detects nsfw content.',
       prog: true,
-      // progFunc: function(api, _): (note: Note) => ClassifierReturnType {
+      // progFunc: function(api: ProgTagApiService, _): (note: Note) => ClassifierReturnType {
       progFuncString:`// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`retext-profanities\` module) have been bundled with the app.
 var retext = api.lib.retext;
 var retextProfanities = api.lib.retextProfanities;

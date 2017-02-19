@@ -19,6 +19,7 @@ import * as safeStringify from 'json-stringify-safe';
 export class TagDetailsComponent {
   _ = _; // for use in template
   safeStringify = safeStringify; // for use in template
+  component = this; // for use in template
 
   DEFAULT_PANE = 'explore'
   activePane = this.DEFAULT_PANE;
@@ -119,12 +120,18 @@ export class TagDetailsComponent {
   }
 
   exploreStatsReset(): void {
-    delete this.sortedChildTags;
-
     this.exploreStats = {
       topCooccurrences: <[{ tag: Tag, numNotes: number }]>[],
       bottomCooccurrences: <[{ tag: Tag, numNotes: number }]>[],
     };
+  }
+
+  setUpChildTags(): void {
+    if (this.tag.childTagIds.length) {
+      this.sortedChildTags = this.tag.getChildTags().sort((a, b) => {
+        return b.noteCount - a.noteCount;
+      });
+    }
   }
 
   computeExplore(): void {
@@ -136,11 +143,7 @@ export class TagDetailsComponent {
 
     this.exploreStatsReset();
 
-    if (this.tag.childTagIds.length) {
-      this.sortedChildTags = this.tag.getChildTags().sort((a, b) => {
-        return b.noteCount - a.noteCount;
-      });
-    }
+    this.setUpChildTags();
 
     const cooccurrences: { [tagId: string]: number } = {}; // tagId => # of cooccurrences with the current tag
     let pairedTag: Tag;
