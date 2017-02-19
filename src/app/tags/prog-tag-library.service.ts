@@ -233,13 +233,13 @@ return result; `//}
 
     let message: string;
     if (funcUpdated && nameUpdated) {
-      message = '<p>Re-running tag on all your notes now. Also, it has been renamed to <b>#' + latestTagData.name + '</b>.</p>';
+      message = '<p>Re-running tag on all your notes now. Also, it has been renamed to <span class="static-tag">' + latestTagData.name + '</span>.</p>';
     }
     else if (funcUpdated) {
       message = '<p>The code for this Smart Tag Library tag has been updated - re-running it on all your notes now.</p>';
     }
     else if (nameUpdated) {
-      message = '<p>This Smart Tag Library tag has been renamed to <b>#' + latestTagData.name + '</b>.</p>';
+      message = '<p>This Smart Tag Library tag has been renamed to <span class="static-tag">' + latestTagData.name + '</span>.</p>';
     }
 
     message += '<p>Click for tag details.</p>';
@@ -248,7 +248,7 @@ return result; `//}
     this.tagsService.dataService.initialized$.filter(initialized => !! initialized).first().subscribe(() => {
       this.tagsService.dataService.toaster.info(
         message,
-        'Smart tag <b>#' + (oldName || localTag.name) + '</b> updated',
+        'Smart tag <span class="static-tag">' + (oldName || localTag.name) + '</span> updated',
         {
           timeOut: 10000,
           onclick: () => {
