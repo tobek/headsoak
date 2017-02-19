@@ -11,7 +11,7 @@
   <div *ngIf="sortedChildTags">
     <h4>Child tags</h4><!-- @TODO/ece Should this be what we call them? -->
     <ul class="tag-list tag-list--child-tags">
-      <li *ngFor="let childTag of sortedChildTags">
+      <li *ngFor="let childTag of sortedChildTags" class="child-tag">
         <span
           (click)="goToTaggedNotes([childTag])"
           (mouseenter)="hoveredTag = childTag"

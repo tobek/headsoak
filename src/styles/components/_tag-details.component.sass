@@ -56,6 +56,11 @@
       +small
       display: inline-block
 
-.child-tag-action
-  +icon-button
-  margin-left: 0.5rem
+  .child-tag-action
+    +icon-button
+    +small
+    display: none
+    margin-left: 0.5rem
+
+  .child-tag:hover .child-tag-action
+    display: inline
