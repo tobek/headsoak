@@ -55,6 +55,7 @@ export class ProgTagControlComponent {
 
     this.editor = ace.edit(this.editorRef.nativeElement);
     this.editor.setShowPrintMargin(false); // hides vertical ruler
+    this.editor.setFontSize(14); // @HACK The elements inherit our global typography styles (defaulting at 14px) but Ace seems to get confused and it throws off cursor alignment unless we explicitly set it right here. @TODO/polish Ideally we could dynamically pick it up (but from where are we canonically assured to get the "normal" font size? `body` is actually set to 16px for rem sizing) in case it's ever changed
     // this.editor.setTheme('ace/theme/dawn'); // @TODO/ece Lets pick a theme (later can be under user control). twilight is good. monokai is good. add in vendor.browser.ts
 
     const sesh = this.editor.getSession();
