@@ -195,7 +195,7 @@ export class ModalComponent {
       this.cancellable = true; // otherwise we'll get stuck at `ModalService`'s `onPopstate` which `this.close` triggers via `history.back`
     }
 
-    this.close(this.config.cancelCb());
+    this.close(this.config.cancelCb);
   }
 
 
