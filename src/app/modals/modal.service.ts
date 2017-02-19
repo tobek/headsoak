@@ -116,7 +116,11 @@ export class ModalService {
     component.generic(config);
   }
 
-  generic(config: ModalConfig) {
+  generic(config: ModalConfig, trustAsHtml = false) {
+    if (trustAsHtml && config.message) {
+      config.message = this.sanitizer.bypassSecurityTrustHtml(<string> config.message);
+    }
+
     this.modal.generic(config);
   }
 
