@@ -70,7 +70,7 @@ if (! this.data.blacklist) {
 
 function confirmBlacklisting(childTag, tagDetailsComponent) {
   api.modal.confirm(
-    '<p>Are you sure you want to blacklist the topic <span class="static-tag">' + childTag.childTagName + '</span>? It won\\'t be suggested again.</p><p>You can view and edit the list of blacklisted tags from the <span class="static-tag">' + _this.name + '</span> tag details page.</p>',
+    '<p>Are you sure you want to blacklist the topic <span class="static-tag">' + childTag.childTagName + '</span>? It won\\'t be suggested again.</p><p>You can view and edit the list of blacklisted tags from the <span class="static-tag">' + _this.name + '</span> Explore page.</p>',
     function(confirmed) {
       if (confirmed) {
         blacklistChildTag(childTag);
