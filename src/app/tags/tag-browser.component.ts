@@ -26,7 +26,15 @@ export class TagBrowserComponent {
 
   el: HTMLElement;
 
-  tags: Tag[] = []; // Tags currently being displayed in the tag browser list
+  _tags: Tag[] = [];
+  /** Tags currently being displayed in the tag browser list. */
+  get tags(): Tag[] {
+    return this._tags;
+  }
+  set tags(tags: Tag[]) {
+    this._tags = _.filter(tags, (tag) => tag && ! tag.parentTag);
+  }
+  
   activeTag: Tag; // Tag that's currently being show in details view
   hoveredTag?: Tag; // Tag that's currently hovered in the tag list (used to highlight tag in the visualization)
   expandedTag?: Tag; // Tag that's currently expanded to show rename/delete/explore/etc
