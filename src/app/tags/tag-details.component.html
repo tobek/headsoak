@@ -5,6 +5,7 @@
   <h3 class="pane-heading">Explore <span class="static-tag">{{ tag.name }}</span></h3>
 
   <div class="note-count-heading">{{ tag.noteCount }} Note{{ tag.noteCount !== 1 ? 's' : '' }}</div>
+  <!-- @TODO/ece We should have a link to go view these notes from here - what should it look like? -->
   
   <tag-visualization *ngIf="tag.noteCount" [centralTag]="tag" [highlightedTag]="hoveredTag"></tag-visualization>
 
@@ -17,7 +18,7 @@
           (mouseenter)="hoveredTag = childTag"
           (mouseleave)="hoveredTag = null"
         >
-          <!-- @TODO/soon @TODO/child tags @TODO/prog tags Clicking on these should search for that tag. Also though it would be cool to show cooccurrences and/or tag visualization for these instead? Or maybe we *can* have a full tag details page for child tags? -->
+          <!-- @TODO/child tags @TODO/prog tags Clicking on these searches for that tag, though it would be cool to show cooccurrences and/or tag visualization for these instead? Or maybe we *can* have a full tag details page for child tags? -->
           <span class="static-tag">{{ childTag.childTagName }}</span>
           <span class="count">{{ childTag.noteCount }}</span>
 
