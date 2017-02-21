@@ -49,13 +49,14 @@ tag
 
   // &.dropdown-enabled:hover // @TODO/ece Should this happen on hover, or on the 0.25s-delayed .hover classs?
   &.dropdown-enabled.hovered
-    +dropdown-menu
-    +tag-face
-    border-color: $dropdown-bg
+    // +dropdown-menu
+    // +tag-face
+    // border-color: $dropdown-bg
+    +tag-chiclet-active
 
     // Magic numbers to make it the full height of the note tag bar
-    padding: 11px 4px;
-    margin-top: -8px;
+    // padding: 11px 4px;
+    // margin-top: -8px;
     // @TODO/tags @TODO/soon .tag-actions-dropdown should be pushed down more but it's not really going as planned. Also, go over the transitions for hovering here especially hovering over an active tag.
 
     // @TODO/now This fixes the problem of a now-expanded tag overflowing tags container and going into new line, but it cause subsequent tags to up. Proper solution would maybe be to use JS to fix the tag width at its current value, but have the contents be absolutely positioned so it overflows. When this is fixed, it can happen on :hover instead of .hovered
@@ -112,7 +113,8 @@ tag
     z-index: 1
     position: absolute
     width: 200px
-    margin-top: 4px // matching bottom padding of tag chiclet
+    // margin-top: 4px // matching bottom padding of tag chiclet
+    margin-top: 8px
     margin-left: -4px // magic number to align with left edge of tag - we can't do left 0 and position the tag relatively because then we'll run afoul of tag container with overflow hidden
     font-weight: normal
 
