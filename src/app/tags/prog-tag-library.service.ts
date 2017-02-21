@@ -183,6 +183,10 @@ return function(note) {
         .join('')
         .replace(/\\d([-'’])\\d/g, '$1'); // @HACK: nlcstToString seems to return these PunctuationNodes with numbers on either side, e.g. "feature2-2bloat";
 
+      if (childTagName.length < 3) {
+        return;
+      }
+
       if (defaultBlacklist[childTagName] || _this.data.blacklist[childTagName]) {
         return;
       }
