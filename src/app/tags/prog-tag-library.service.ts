@@ -17,7 +17,7 @@ export class ProgTagLibraryService {
   librarySourceData = [
     {
       id: 'lib--sentiment',
-      isLibraryTag: true,
+      fromLib: true,
       readOnly: true,
       name: 'sentiment',
       description: 'Tag notes that show a markedly positive or negative sentiment. Hover over the tag on a note to see the calculated strength of that note\'s sentiment.',
@@ -50,7 +50,7 @@ return function(note) {
     },
     {
       id: 'lib--topic',
-      isLibraryTag: true,
+      fromLib: true,
       readOnly: true,
       name: 'topic',
       description: '@TODO/now Automatically extract topics',
@@ -215,7 +215,7 @@ return function(note) {
     },
     {
       id: 'lib--nsfw',
-      isLibraryTag: true,
+      fromLib: true,
       readOnly: true,
       name: 'nsfw',
       description: '@TODO/now Automatically tags nsfw notes and makes them private. NOTE: This tag will never make a note *un*private even if it no longer detects nsfw content.',
@@ -258,7 +258,7 @@ return function(note) {
     },
     {
       id: 'lib--untagged',
-      isLibraryTag: true,
+      fromLib: true,
       readOnly: true,
       name: 'untagged',
       description: 'Tag all notes which have no tags',
@@ -278,7 +278,7 @@ return function(note) {
     },
     {
       id: 'lib--has-quote',
-      isLibraryTag: true,
+      fromLib: true,
       readOnly: true,
       name: 'has quote',
       description: 'Tag all notes which contain quotes. This is calculated by looking to see if at least one line in the note follows the Markdown syntax for blockquotes: starting a line with "> ".',
@@ -305,7 +305,7 @@ return function(note) {
     },
     {
       id: 'lib--nutmeg',
-      isLibraryTag: true,
+      fromLib: true,
       readOnly: true,
       name: 'mentions headsoak', // @TODO/prog Mention or show that this is a "tutorial" tag or something. BETTER: Make it customizable for search string
       description: 'Tag all notes which contain the text "headsoak"',

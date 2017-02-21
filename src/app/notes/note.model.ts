@@ -255,7 +255,7 @@ export class Note {
     let tag = this.dataService.tags.getTagByName(tagName);
 
     // Exclude library tags here cause that'll get caught by `tag.prog` check in `addTag()` @TODO/share This logic hasn't been tested since we don't have sharing yet
-    if (tag && tag.readOnly && ! tag.isLibraryTag) {
+    if (tag && tag.readOnly && ! tag.fromLib) {
       if (! confirm('The tag "' + tag.name + '" is a tag that has been shared with you and is read-only. Do you want to create a new tag in your account with this name and add it to this note?')) {
         return null;
       }

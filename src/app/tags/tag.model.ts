@@ -86,7 +86,8 @@ export class Tag {
   sharedBy?: string; // ID of user that shared this tag
   shareTooltip?: string; // text to identify sharing status to user (e.g. "you are sharing this with ___" or "___ is sharing this with you")
 
-  readonly isLibraryTag?: boolean;
+  /** Whether this came from the smart tag library. */
+  readonly fromLib?: boolean;
 
   /** Tag can store specific information on a per-note basis, indexed by note ID. */
   noteData: { [noteId: string]: NoteSpecificDatum } = {};
@@ -133,7 +134,7 @@ export class Tag {
     'data',
     'prog',
     'progFuncString',
-    'isLibraryTag',
+    'fromLib',
     'noteData',
     'childTagIds',
 
@@ -244,7 +245,7 @@ export class Tag {
 
     this._logger.log('Deleted');
 
-    if (this.isLibraryTag) {
+    if (this.fromLib) {
       // Tag no longer lives in this.tags but is still referenced by prog tag library and could be used again, so:
       this.docs = []; // makes for cleaner update if user adds tag back in this session
       this.prog = true; // need this back!

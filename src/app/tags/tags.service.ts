@@ -131,7 +131,7 @@ export class TagsService {
 
       // Fields we inherit from parent (everything else new/specific to child tag)
       prog: parentTag.prog,
-      isLibraryTag: parentTag.isLibraryTag,
+      fromLib: parentTag.fromLib,
       readOnly: parentTag.readOnly,
       share: parentTag.share,
       sharedBy: parentTag.sharedBy,

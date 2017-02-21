@@ -1,5 +1,5 @@
 <span class="name-wrapper"
-  (click)="renamable && ! tag.isLibraryTag && ! tag.readOnly && renamableOnNameClick && ! renaming && renameStart($event)"
+  (click)="renamable && ! tag.fromLib && ! tag.readOnly && renamableOnNameClick && ! renaming && renameStart($event)"
   ><span *ngIf="ofNoteId && tag.parentTag" class="parent-name">{{ tag.parentTag.name }}: </span
   ><span class="name" placeholder="tag name" spellcheck="false"
     ref-tagName
@@ -41,7 +41,7 @@
   </a>
 
   <a *ngIf="renamable && ! tag.readOnly" data-tooltip="Rename" class="tag-action tag-action--rename" (click)="renameStart(); tooltipService.closeTooltip($event)"><i class="fa fa-pencil"></i></a>
-  <a *ngIf="renamable && tag.isLibraryTag" data-tooltip="This is a Smart Tag Library tag and so can't be renamed" class="tag-action tag-action--rename is--disabled"><i class="fa fa-pencil"></i></a>
+  <a *ngIf="renamable && tag.fromLib" data-tooltip="This is a Smart Tag Library tag and so can't be renamed" class="tag-action tag-action--rename is--disabled"><i class="fa fa-pencil"></i></a>
 </span>
 
 <span *ngIf="showCount && ! isNewTag" class="count">{{ tag.noteCount }}</span>

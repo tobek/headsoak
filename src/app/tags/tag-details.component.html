@@ -117,12 +117,12 @@
 
   <p *ngIf="tag.noteCount !== 0">Deleting this tag will remove if from {{ tag.noteCount === 1 ? 'the 1 note' : 'all ' + tag.noteCount + ' notes' }} tagged with it. {{ tag.noteCount === 1 ? 'That note' : 'Those notes' }} will remain undeleted.</p>
 
-  <p *ngIf="! tag.isLibraryTag">
+  <p *ngIf="! tag.fromLib">
     Are you sure you want to continue? This can't be undone.
   </p>
-  <p *ngIf="tag.isLibraryTag">
+  <p *ngIf="tag.fromLib">
     Do you want to continue? You can always re-enable this tag again from the <a [routerLink]="['/tags/smart-tags/library']">Smart Tag Library</a> later.
   </p>
 
-  <button class="btn" [class.btn-danger]="! tag.isLibraryTag" (click)="_deleted()">Yes, delete this tag</button>
+  <button class="btn" [class.btn-danger]="! tag.fromLib" (click)="_deleted()">Yes, delete this tag</button>
   </div>
