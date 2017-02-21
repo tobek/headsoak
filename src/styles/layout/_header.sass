@@ -55,7 +55,7 @@ $menu-padding: 3px
 
     .sync-animation-border
       height: $menu-size
-      border: 2px solid $input-stroke
+      border: 2px solid $form-stroke
       border-radius: 50%
       transition: border-color $transition-slow, border-width $transition-slow, box-shadow $transition-slow
 
@@ -119,7 +119,6 @@ $menu-padding: 3px
 
 
   .menu-body
-    // @TODO/soon @TODO/styles There should be padding above this just ike there is for the note tag dropdown
     +dropdown-menu
     +plain-list
     +fadeable
@@ -130,7 +129,7 @@ $menu-padding: 3px
     position: absolute
     right: -1px // needed to line up with .menu-wrapper border
     width: 160px
-    margin: 0
+    margin: 2px 0 0
     padding: 10px 0 0
     letter-spacing: 0.5px
 
