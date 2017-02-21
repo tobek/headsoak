@@ -95,6 +95,24 @@ this.customActions.childTags = [{
   func: confirmBlacklisting
 }];
 
+
+// The part-of-speech tagger that retext library uses doesn't handle contractions, so they're "unknown" words and can turn up as keywords. Here's a quick contraction replacer.
+var contractions = {
+  'n[’\\']t': ' not',
+  '[’\\']re': ' are',
+  '[’\\']m':  ' m',
+  '[’\\']ll': ' will',
+  '[’\\']ve': ' have',
+  // This doesn't handle "'d" or "'s" because expansions for those are ambiguous without something more sophisticated, but this still helps for now.
+};
+var contractionRegExp = new RegExp(Object.keys(contractions).join('|'), 'g');
+function contractionReplacer(contraction) {
+  return contractions[contraction];
+}
+function expandContractions(input) {
+  return input.replace(contractionRegExp, contractionReplacer);
+}
+
 return function(note) {
   var resolve, reject;
   var result = new Promise(function(res, rej) {
@@ -104,8 +122,7 @@ return function(note) {
 
   var childTags = [];
 
-  processor.process(note.body, function(err, doc) {
-    // @TODO/soon @TODO/prog Make sure these are sorted by weight
+  processor.process(expandContractions(note.body), function(err, doc) {
     doc.data.keyphrases.forEach(function (phrase, i) {
       if (childTags.length >= 5) {
         return;
