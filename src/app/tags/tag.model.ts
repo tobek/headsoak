@@ -7,6 +7,7 @@ import {Note} from '../notes/';
 
 import * as _ from 'lodash';
 import {each as asyncEach} from 'async';
+import * as safeStringify from 'json-stringify-safe';
 
 
 /** Information this tag generates about a specific note. */
@@ -71,6 +72,15 @@ export class Tag {
     }
   }
 
+  /** Serialized version of `data` that's safe to store in Firebase. */
+  get dataStr(): string {
+    if (_.isEmpty(this.data)) {
+      return null;
+    }
+
+    return safeStringify(this.data);
+  }
+
   /**
    * Custom actions that prog tags can register, e.g. new stuff in the note tag dropdown.
    *
@@ -131,7 +141,7 @@ export class Tag {
     'description',
     'docs',
 
-    'data',
+    'dataStr',
     'prog',
     'progFuncString',
     'fromLib',
@@ -151,6 +161,10 @@ export class Tag {
       throw new Error('Must supply tag with id');
     }
 
+    if (tagData.dataStr) {
+      tagData.data = JSON.parse(tagData.dataStr);
+      delete tagData.dataStr;
+    }
     if (tagData.data) {
       // @HACK `data` is actually a setter which updates tag and re-runs programmatic stuff, but if we're just rehydrating a Tag instance then there's no need to do that, so assign it to `_data` instead.
       tagData._data = tagData.data;
