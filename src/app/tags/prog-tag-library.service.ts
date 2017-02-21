@@ -133,12 +133,24 @@ this.customActions.childTags = [{
 
 // The part-of-speech tagger that retext library uses doesn't handle contractions, so they're "unknown" words and can turn up as keywords. Here's a quick contraction replacer.
 var contractions = {
-  'n[’\\']t': ' not',
-  '[’\\']re': ' are',
-  '[’\\']m':  ' m',
-  '[’\\']ll': ' will',
-  '[’\\']ve': ' have',
+  'n[’\\']t\\\\b': ' not',
+  '[’\\']re\\\\b': ' are',
+  '[’\\']m\\\\b':  ' m',
+  '[’\\']ll\\\\b': ' will',
+  '[’\\']ve\\\\b': ' have',
   // This doesn't handle "'d" or "'s" because expansions for those are ambiguous without something more sophisticated, but this still helps for now.
+  // We can do some common ones though:
+  '\\\\bit[’\\']s\\\\b': 'it is',
+  '\\\\bwhat[’\\']s\\\\b': 'what is',
+  '\\\\bthat[’\\']s\\\\b': 'that is',
+  '\\\\bshe[’\\']s\\\\b': 'she is',
+  '\\\\bhe[’\\']s\\\\b': 'he is',
+  '\\\\bi[’\\']d\\\\b': 'i would',
+  '\\\\bI[’\\']d\\\\b': 'I would',
+  '\\\\byou[’\\']d\\\\b': 'you would',
+  '\\\\bshe[’\\']d\\\\b': 'she would',
+  '\\\\bhe[’\\']d\\\\b': 'he would',
+  '\\\\blet[’\\']s\\\\b': 'let us',
 };
 var contractionRegExp = new RegExp(Object.keys(contractions).join('|'), 'g');
 function contractionReplacer(contraction) {
