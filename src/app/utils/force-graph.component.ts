@@ -506,7 +506,7 @@ export class ForceGraphComponent {
   }
 
   higlightTag(tag: Tag) {
-    if (! tag) {
+    if (! tag || ! this.nodeEls) {
       this.unHighlightNodes();
       return;
     }
