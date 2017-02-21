@@ -186,8 +186,10 @@ export class AccountService {
         this._logger.error('Failed to set user lastLogin:', err);
       }
 
-      userRef.on('child_changed', () => {
-        this.zone.run(this.userDataUpdated.bind(this));
+      userRef.on('child_changed', (val) => {
+        this.zone.run(() => {
+          this.userDataUpdated(val);
+        });
       });
     });
 
