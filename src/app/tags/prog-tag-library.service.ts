@@ -192,6 +192,11 @@ return function(note) {
         return;
       }
 
+      if (childTagName.indexOf('\\n') !== -1) {
+        // Tags with line breaks in them seem universally to be nonsensical tags
+        return;
+      }
+
       if (defaultBlacklist[childTagName] || _this.data.blacklist[childTagName]) {
         return;
       }
