@@ -9,9 +9,12 @@
   
   <tag-visualization *ngIf="tag.noteCount" [centralTag]="tag" [highlightedTag]="hoveredTag"></tag-visualization>
 
-  <div *ngIf="sortedChildTags">
-    <h4>Child tags</h4><!-- @TODO/ece Should this be what we call them? -->
-    <ul class="tag-list tag-list--child-tags">
+  <div *ngIf="sortedChildTags" class="child-tags">
+    <h4>
+      Child tags <!-- @TODO/ece Should this be what we call them? -->
+      <span class="count">&nbsp;{{ sortedChildTags.length }}</span>
+    </h4>
+    <ul class="tag-list">
       <li *ngFor="let childTag of sortedChildTags" class="child-tag">
         <span
           (click)="goToTaggedNotes([childTag])"

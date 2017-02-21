@@ -42,19 +42,20 @@
       display: block
       padding: 10px 0 0
 
-    &.tag-list--child-tags
-      .count
-        color: $panel-text-secondary
-
-      @media (min-width: $screen-small)
-        li
-          display: inline-block
-          width: 50%
-
     .common-notes-link
       +text-link
       +small
       display: inline-block
+
+  .child-tags
+    .count
+      color: $panel-text-secondary
+
+    .tag-list
+      @media (min-width: $screen-small)
+        li
+          display: inline-block
+          width: 50%
 
   .child-tag-action
     +icon-button
