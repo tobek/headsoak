@@ -67,11 +67,13 @@ var processor = retext().use(retextKeywords);
 // retext-keywords does use a stopword list, but for our purposes we need a stricter list:
 var defaultBlacklist = {
   'blah': 1,
+  'both': 1,
   'first': 1,
   'http': 1,
   'https': 1,
   'kind': 1,
   'lot': 1,
+  'lots': 1,
   'option': 1,
   'number': 1,
   'ones': 1,
@@ -139,11 +141,11 @@ var contractions = {
   '[’\\']m\\\\b':  ' m',
   '[’\\']ll\\\\b': ' will',
   '[’\\']ve\\\\b': ' have',
-  // This doesn't handle "'d" or "'s" because expansions for those are ambiguous without something more sophisticated, but this still helps for now.
-  // We can do some common ones though:
+  // This doesn't handle all "'d" or "'s" because expansions for those are ambiguous without something more sophisticated, but we can catch some common ones:
   '\\\\bit[’\\']s\\\\b': 'it is',
   '\\\\bwhat[’\\']s\\\\b': 'what is',
   '\\\\bthat[’\\']s\\\\b': 'that is',
+  '\\\\bthatthere[’\\']s\\\\b': 'there is',
   '\\\\bshe[’\\']s\\\\b': 'she is',
   '\\\\bhe[’\\']s\\\\b': 'he is',
   '\\\\bi[’\\']d\\\\b': 'i would',
@@ -190,6 +192,8 @@ return function(note) {
       if (defaultBlacklist[childTagName] || _this.data.blacklist[childTagName]) {
         return;
       }
+
+      // @TODO/prog See if we should exclude low-scoring matches on short notes (on long notes most matches are low-scoring)
 
       childTags.push({
         childTag: childTagName,

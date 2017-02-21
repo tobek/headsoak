@@ -339,6 +339,7 @@ export class DataService {
     this.ref.once('value', (snapshot) => { this.zone.run(() => {
       var data = snapshot.val();
       this._logger.log('Got data:', data);
+      // this._logger.log('Data is', JSON.stringify(data).length, 'chars long');
 
       if (! data || ! data.featuresSeen) {
         // Must be a new user - featuresSeen gets set up for every login
