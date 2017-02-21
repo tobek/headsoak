@@ -17,7 +17,7 @@ force-graph
     height: 100%
 
   .link
-    stroke: #999
+    stroke: $panel-text-secondary
     stroke-opacity: $link-opacity
 
   .node
@@ -25,8 +25,8 @@ force-graph
       cursor: pointer
 
     circle
-      fill: $secondary-color
-      stroke: $secondary-color
+      fill: $tag-color
+      stroke: $tag-color
       stroke-width: 1px
       transition: fill $transition-med, stroke $transition-med, stroke-width $transition-med
 
@@ -34,24 +34,24 @@ force-graph
     &.is--central,
     &.is--highlighted
       circle
-        fill: $highlight-color
-        stroke: $highlight-color
+        fill: $accent-color
+        stroke: $accent-color
 
     &.is--fixed,
       circle
         transition: fill $transition-fast ease-in-out, stroke $transition-fast ease-in-out, stroke-width $transition-slow ease-in-out
-        stroke: fade-out($secondary-color, 0.5)
+        stroke: fade-out($tag-color, 0.5)
         stroke-width: 10px
 
       &:hover,
       &.is--highlighted,
       &.is--central
         circle
-          stroke: fade-out($highlight-color, 0.5)
+          stroke: fade-out($accent-color, 0.5)
 
     &.is--internal
       circle
-        stroke: $primary-color
+        stroke: $panel-text
 
     &.is--internal,
     &.is--prog
@@ -59,12 +59,12 @@ force-graph
       &:hover circle,
       &.is--central circle,
       &.is--highlighted circle
-        fill: $primary-color-contrast
+        fill: $panel-bg
         
       &:hover circle,
       &.is--central circle,
       &.is--highlighted circle
-        stroke: $highlight-color
+        stroke: $accent-color
 
       &.is--fixed circle
         stroke-width: 5px
@@ -74,7 +74,8 @@ force-graph
     +small
     cursor: default
     user-select: none
-    text-shadow: white 2px 2px 3px, white -2px -2px 3px
+    fill: $panel-text
+    text-shadow: invert($panel-text) 2px 2px 3px, invert($panel-text) -2px -2px 3px
 
     .hash
       // @TODO/ece Yea or nay to these?
@@ -86,7 +87,7 @@ force-graph
   .node:hover text,
   .node.is--central text,
   .node.is--highlighted text
-    text-shadow: white 2px 2px 3px, white -2px -2px 3px, black 0 0 1px
+    text-shadow: invert($panel-text) 2px 2px 3px, invert($panel-text) -2px -2px 3px, $panel-text 0 0 1px
 
 
   .node,
@@ -149,7 +150,7 @@ tag-visualization
     left: 0
     bottom: 0
     padding: 0 $pane-horizontal-padding 0
-    background: rgba(255,255,255,0.9)
+    background: $panel-bg
 
     p
       +small

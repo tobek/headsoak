@@ -25,7 +25,7 @@ login
       margin-bottom: 10px
 
     .subheading
-      color: $input-stroke
+      color: $panel-text-secondary
       letter-spacing: 1.2px
 
       // So that this one can be on top of the other as they cross-fade transition
@@ -43,11 +43,12 @@ login
         opacity: 0
         visibility: hidden
 
+    // headsoak "beta"
     .superscript
       +small
       position: absolute
       margin-left: 5px
-      color: $secondary-color
+      color: $tag-color
 
   input
     display: block
@@ -58,13 +59,6 @@ login
 
     &:last-of-type
       margin-bottom: 5px
-
-    &::-webkit-input-placeholder
-      color: $input-stroke
-    &::-moz-placeholder
-      color: $input-stroke
-    &:-ms-input-placeholder  
-      color: $input-stroke
 
   .btn-primary
     width: 100%
@@ -79,12 +73,12 @@ login
     opacity: 0.6
     margin: 10px 0 30px
     padding: 0 10px
-    color: $input-stroke
+    color: $panel-text-secondary
     letter-spacing: 1.1px
     text-align: center
 
     a
-      color: $link-color
+      +text-link
       font-weight: bold
 
   .switch-sign-up-in
@@ -128,6 +122,6 @@ login
         margin-bottom: 20px
 
       &.success
-        color: $highlight-color
+        color: $accent-color
       &.error
         color: $danger-color

@@ -107,7 +107,7 @@ export class TagComponent {
   private _logger = new Logger(this.constructor.name);
 
   constructor(
-    private analyticsService: AnalyticsService,
+    private analytics: AnalyticsService,
     private sizeMonitorService: SizeMonitorService,
     private tooltipService: TooltipService,
     private activeUIs: ActiveUIsService,
@@ -166,6 +166,8 @@ export class TagComponent {
 
   // @TODO/polish If you get here by clicking on .name-wrapper, it would be cool if the cursor position was set properly!
   renameStart(event?: Event) {
+    this.analytics.event('Tag', 'rename.start', this.tag.id);
+
     if (event) {
       event.stopPropagation();
     }
@@ -190,6 +192,8 @@ export class TagComponent {
       this.renameCancel();
       return;
     }
+
+    this.analytics.event('Tag', 'rename.finish', this.tag.id);
 
     this.renaming = false;
     this.tag.rename(newName);

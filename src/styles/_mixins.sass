@@ -11,9 +11,10 @@
   box-shadow: 0 1px 2px 0 $shadow-color-light
 
 =card
-  +box-shadowed
+  @if $panel-bg != transparent
+    +box-shadowed
   padding: 50px gutter() * 2 // @TODO If this mixin is used in any context other than full 12 columns, padding will need to be redeclared passing # of columns its in to gutter()
-  background-color: $primary-color-contrast
+  background-color: $panel-bg
 
 
 $tag-hash-opacity: 0.33
@@ -28,30 +29,32 @@ $tag-hash-opacity: 0.33
 
 =tag-chiclet-active
   +box-shadowed-small
-  color: $primary-color-contrast
-  background-color: $tag-color
+  color: $tag-active-text
+  background-color: $tag-active-bg
+  text-shadow: none
 
 // To override `tag-chiclet-active` if necessary
 =tag-chiclet-reset
   +tag-chiclet
-  color: $tag-color !important
+  color: $tag-text !important
   background-color: transparent !important
   box-shadow: none !important
 
+
 =text-link
   cursor: pointer
-  color: $link-color
+  color: $panel-text-link
   text-decoration: underline
 
   transition: color $transition-fast
   &:hover
-    color: $link-hover
+    color: $panel-text-link-hover
 
   &.is--disabled
     cursor: default
     opacity: $btn-disabled-opacity
     &:hover
-      color: $link-color
+      color: $panel-text-link
 
 .text-link
   +text-link
@@ -65,18 +68,6 @@ $tag-hash-opacity: 0.33
 .danger-link
   +danger-link
 
-=menu-dropdown-border
-  border-bottom: 2px solid $secondary-color
-
-=menu-dropdown
-  +box-shadowed
-  +menu-dropdown-border
-  background-color: $menu-dropdown-bg-color
-
-=not-menu-dropdown
-  box-shadow: none
-  background-color: transparent
-  border-color: transparent
 
 =menu-link
   +menu-link-unhovered
@@ -88,6 +79,8 @@ $tag-hash-opacity: 0.33
 
   .fa
     margin-right: 0.25rem
+    color: $menu-icon
+    transition: color $transition-fast
 
   &.is--active
     +menu-link-hover
@@ -97,11 +90,54 @@ $tag-hash-opacity: 0.33
       +menu-link-hover
 
 =menu-link-unhovered
-  color: $primary-color
+  color: $menu-link
   background-color: transparent
+  .fa
+    color: $menu-icon
 =menu-link-hover
-  color: $menu-dropdown-bg-color
-  background-color: $primary-color
+  color: $menu-link-active
+  background-color: $menu-link-active-bg
+  .fa
+    color: $menu-icon-active
+
+
+=dropdown-menu-border
+  border-top: 2px solid $dropdown-underline
+
+=dropdown-menu
+  +box-shadowed
+  +dropdown-menu-border
+  background-color: $dropdown-bg
+
+=not-dropdown-menu
+  box-shadow: none
+  background-color: transparent
+  border-color: transparent
+
+=dropdown-menu-link
+  +menu-link
+  +dropdown-menu-link-unhovered
+  .fa
+    color: $dropdown-menu-icon
+
+  &.is--active
+    +dropdown-menu-link-hover
+
+  @media (min-width: $tablet-large)
+    &:hover
+      +dropdown-menu-link-hover
+
+=dropdown-menu-link-unhovered
+  color: $dropdown-menu-link
+  background-color: transparent
+  .fa
+    color: $dropdown-menu-icon
+=dropdown-menu-link-hover
+  color: $dropdown-menu-link-active
+  background-color: $dropdown-menu-link-active-bg
+  .fa
+    color: $dropdown-menu-icon-active
+
 
 =icon-button
   cursor: pointer
@@ -125,31 +161,57 @@ $tag-hash-opacity: 0.33
       &:hover
         color: $icon-color
 
+// Identical to +icon-button but with colors switched out
+=note-icon-button
+  cursor: pointer
+  color: $note-icon-color
+  transition: color $transition-fast
+
+  @media (min-width: $tablet-large)
+    &:hover
+      color: $note-icon-hover
+
+  &.is--active
+    color: $note-icon-active
+    @media (min-width: $tablet-large)
+      &:hover
+        color: $note-icon-active-hover
+
+  &.is--disabled
+    cursor: default
+    opacity: $btn-disabled-opacity
+    @media (min-width: $tablet-large)
+      &:hover
+        color: $note-icon-color
+
 
 =alert-style
-  color: white
+  color: $panel-text
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15) // @TODO/ece What do you think of this? Look at toasters and primary and other buttons
 
   a
-    color: white
+    color: $panel-text
     text-decoration: underline
     &:hover
-      color: $highlight-color
+      color: $panel-text-link-hover
 
   code
     text-shadow: none
 
 =success-style
   +alert-style
+  color: $success-text
   background-color: $success-color
 =info-style
   +alert-style
-  background-color: $primary-color
+  background-color: $dropdown-bg
 =warning-style
   +alert-style
+  color: $warning-text
   background-color: $warning-color
 =danger-style
   +alert-style
+  color: $danger-text
   background-color: $danger-color
 
 .danger-text

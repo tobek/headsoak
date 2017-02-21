@@ -22,13 +22,13 @@
   <span class="share" *ngIf="tag.share" data-tooltip="This tag is shared" (click)="$event.stopPropagation()">
     <i class="fa fa-users"></i>
   </span>
-  <span class="prog" *ngIf="tag.prog" data-tooltip="This tag is a smart tag" (click)="$event.stopPropagation()">
+  <span class="prog" *ngIf="tag.prog" data-tooltip="This tag is a smart tag">
     <i class="fa fa-bolt"></i>
   </span>
-  <span class="pinned" *ngIf="tag.id === INTERNAL_TAG_DATA.PINNED.id" data-tooltip="Notes you've pinned" (click)="$event.stopPropagation()">
+  <span class="pinned" *ngIf="tag.id === INTERNAL_TAG_DATA.PINNED.id" data-tooltip="Notes you've pinned">
     <i class="fa fa-thumb-tack"></i>
   </span>
-  <span class="archived" *ngIf="tag.id === INTERNAL_TAG_DATA.ARCHIVED.id" data-tooltip="Notes you've archived" (click)="$event.stopPropagation()">
+  <span class="archived" *ngIf="tag.id === INTERNAL_TAG_DATA.ARCHIVED.id" data-tooltip="Notes you've archived">
     <i class="fa fa-archive"></i>
   </span>
 </span>

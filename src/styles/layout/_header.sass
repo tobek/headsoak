@@ -3,9 +3,9 @@
   z-index: $z-header
   
 .app-header
-  +box-shadowed
-  // background-color: $primary-color-contrast
-  background-color: $pane-bar-bg-color
+  @if $panel-bg != transparent
+    +box-shadowed
+  background-color: $panel-bg
 
   .inner
     +outer-container
@@ -35,12 +35,10 @@
     transition: border-color $transition-fast
 
     &:hover
-      +menu-dropdown
       .menu-body
         +faded-in
 
     &.is--force-closed
-      +not-menu-dropdown
       .menu-body
         +faded-out
 
@@ -52,7 +50,7 @@
     max-width: 40px
     padding: 3px
 
-    border: 1px solid $input-stroke // @TODO/rewrite @TODO/ece Vary based on sync status
+    border: 1px solid $form-stroke // @TODO/rewrite @TODO/ece Vary based on sync status
     border-radius: 50%
 
     transition: border-color $transition-med, border-width $transition-med
@@ -86,7 +84,8 @@
           border-width: 3px
 
   .menu-body
-    +menu-dropdown
+    // @TODO/soon @TODO/styles There should be padding above this just ike there is for the note tag dropdown
+    +dropdown-menu
     +plain-list
     +fadeable
     +faded-out
@@ -118,7 +117,7 @@
           cursor: default
 
       a
-        +menu-link
+        +dropdown-menu-link
         display: inline-block
 
   .avatar
@@ -175,7 +174,10 @@
 
   .nav-link
     +menu-link
-    +menu-dropdown
+    @if $panel-bg != transparent
+      +box-shadowed
+    background-color: $panel-bg
+    border: none
     display: inline-block
     white-space: nowrap
     width: auto
@@ -210,7 +212,7 @@
       display: inline
 
     &:hover
-      color: $highlight-color
+      color: $icon-hover
 
     .fa-bars
       transform: translateY(-0.5px) // no idea why this is necessary but it bothers me that it's off...
@@ -223,17 +225,20 @@
         .note-view
           display: inline
 
-          &.is--active
+          &.is--active .fa
             color: $icon-hover
 
         // While actually hovering over the choices, don't highlight the currently active one
         .note-views:hover
-          .note-view.is--active
-            cursor: default
-            color: inherit
+          .note-view
+            &.is--active
+              cursor: default
+              .fa
+                color: $menu-icon-active
 
             &:hover
-              color: $icon-hover
+              .fa
+                color: $icon-hover
 
 
 @media (max-width: 900px) // @HACK Kind of arbitrary but it works?
@@ -307,7 +312,7 @@
       display: none !important
 
   .app-nav
-    +menu-dropdown
+    +dropdown-menu
     position: fixed
     bottom: 0
     height: $mobile-nav-height
@@ -318,14 +323,14 @@
     text-align: center
 
     .nav-link
-      +not-menu-dropdown
+      +not-dropdown-menu
       margin-right: 0
       padding: 11px 1rem 5px // 2px off vertically from normal nav-link padding, so it looks vertically centered even when the border is not there
 
     // Faking `.is--active`, because `.is--active` is already applied to these guys via angular template and kind of used for other things (individual note views get active, and on desktop tag nav is active when browser is not collapsed)
     .route--note-route & .nav-link--note-views,
     .route--tags & .nav-link-outer--tags .nav-link
-      +menu-dropdown-border
+      +dropdown-menu-border
 
     .nav-link-outer--notes
       position: absolute

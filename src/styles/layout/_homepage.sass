@@ -3,16 +3,16 @@
 homepage
   display: block
   position: relative
-  color: $primary-color
+  color: $panel-text
 
-  h2
-    margin-bottom: 40px
-    font-weight: normal
-    letter-spacing: 1.8px
-    color: $primary-color-contrast
-
-    a
-      color: $primary-color-contrast
+  // There are none of these any more
+  // h2
+  //   margin-bottom: 40px
+  //   font-weight: normal
+  //   letter-spacing: 1.8px
+  //   color: $primary-color-contrast
+  //   a
+  //     color: $primary-color-contrast
 
   .demo-container
     +span(6)
@@ -53,7 +53,7 @@ homepage
         cursor: default !important
 
       &:hover .fa
-        color: $secondary-color
+        color: $icon-hover
 
     tag
       transition: color $transition-slow, background-color $transition-slow, opacity $transition-slow // when un-highlighted
@@ -118,7 +118,7 @@ homepage
     font-weight: bold
     letter-spacing: 1.8px
     text-transform: uppercase
-    color: $primary-color-contrast
+    color: $panel-text
 
   @media (max-width: $screen-small)
     .demo-container,
@@ -154,15 +154,12 @@ homepage
     margin: 0
     padding: 50px 25px
     text-align: center
-    background-color: rgba(0, 0, 0, 0.6)
+    background-color: $panel-bg
     text-shadow: 2px 2px 5px $shadow-color
     letter-spacing: 1.8px
-    color: $primary-color-contrast
 
     a
-      color: $primary-color-contrast
-      &:hover
-        color: $highlight-color
+      +text-link
 
 // .modal-content.outro-login
 //   float: right

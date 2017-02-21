@@ -1,44 +1,107 @@
-// BASE COLORS
+// MAIN THEME COLORS
 
-$primary-color: #424242 // e.g. body text, icons
-$primary-color-light: #bcc2c7 // used e.g. for tag count, active icon hover, note action icons
-$primary-color-contrast: rgba(255, 255, 255, 0.925) // e.g. card bg, text background
-$secondary-color: #c3521b // e.g. tag text, button stuff
-$highlight-color: #50e3c2 // e.g. logo, hover states
+$tag-color: #F26B57
 
-$input-stroke: #989898 // This is used for input placeholder text, input borders/underlines, logo slogan, minor text on login (forgot password, T&Cs), text links @TODO/rename
+$note-text: #424242
+$note-bg: rgba(255, 255, 255, 0.92)
 
-// $accent-color: #4f54e2 // used for tag-related action icons (add, expand, etc., but *not* shared/programmatic state). @TODO/ece Should the rename pencil and/or remove X (from tag in note search bar) be this color too?
-$accent-color: $input-stroke // eh that looked gaudy, let's just use this for now
+// $panel-color: #cecece // all panel stuff based on $accent-color now
+$panel-text: white
+
+$form-inactive: #c0c0c0
+
+$accent-color: #00a8c6
+$accent-color-light: hsl(hue($accent-color), saturation($accent-color) * 0.4, 66%)
+$accent-color-dark: hsl(hue($accent-color), saturation($accent-color) * 1.4, 28%)
+$accent-color-darkest: hsl(hue($accent-color), saturation($accent-color) * 1.4, 8%)
+
+$menu-color: $panel-text
+
+$bg-blur: 2px // set to 0 to disable
+$bg-overlay: transparent // set to transparent to disable
 
 
-// OTHER COLORS
+// ASSIGNED/DERIVED COLROS
 
-$logo-color: $highlight-color
+$tag-text: $tag-color
+$tag-bg: transparent
+$tag-active-text: white
+@if lightness($tag-color) > 50 and saturation($tag-color) < 50
+    $tag-active-text: black
+$tag-active-bg: $tag-color
 
+$panel-bg: rgba($accent-color-darkest, 0.8)
+$panel-text-secondary: $accent-color-light // used for secondary stuff in panels like links, note/tag count, and asides. also currently assigned below to placeholders and form field borders
+$panel-heading: $accent-color
+$panel-text-link: $accent-color-light
+$panel-text-link-hover: $accent-color
+
+$form-label: $accent-color-light // mini label headings in settings screens
+
+// Standalone icons which perform major functions:add tag, new tag, search, tag browser dropdown caret, x icons
+$icon-color: $accent-color-light
+$icon-hover: $accent-color-dark
+$icon-active: $accent-color
+$icon-active-hover: $accent-color-dark
+
+$note-icon-color: $accent-color-light
+$note-icon-hover: $accent-color
+$note-icon-active: $icon-active
+$note-icon-active-hover: $accent-color-dark
+$note-placeholder: hsl(hue($form-inactive), saturation($form-inactive) * 1.2, 68%)
+
+$primary-button-text: white
+$primary-button-text-hover: white
+$primary-button-text-active: white
+@if lightness($accent-color) > 50 and saturation($accent-color) < 50
+    $primary-button-text: black
+    $primary-button-text-hover: black
+    $primary-button-text-active: black
+$primary-button-bg: $accent-color
+$primary-button-bg-hover: $accent-color-dark
+$primary-button-bg-active: $accent-color-light
+$secondary-button-text: $primary-button-bg
+$secondary-button-bg: $primary-button-text
+$secondary-button-text-hover: $primary-button-bg-hover
+$secondary-button-bg-hover: $primary-button-text-hover
+$secondary-button-text-active: $primary-button-bg-active
+$secondary-button-bg-active: $primary-button-text-active
+
+// Sidebar/panel menu (like settings/tags) and also the navigation icons (new, notes, tags)
+$menu-link: $menu-color
+$menu-link-active: $accent-color
+$menu-link-active-bg: white 
+$menu-icon: white
+$menu-icon-active: $accent-color
+
+// Dropdowns are: autocomplete, sort dropdown, tooltips, tag dropdown, etc.
+$dropdown-text: $panel-text// non-clickable text in dropdowns
+$dropdown-bg: $accent-color-darkest
+$dropdown-menu-link: $dropdown-text
+$dropdown-menu-link-active: $accent-color
+$dropdown-menu-link-active-bg: $menu-link-active-bg
+$dropdown-menu-icon: $dropdown-text
+$dropdown-menu-icon-active: $menu-icon-active
+$dropdown-underline: $accent-color
+
+$form-stroke: $form-inactive // Used for forms and other borders
+$form-placeholder: $form-inactive
+$form-focused-stroke: $accent-color // Used for active form/input fields and under active note
+
+
+// MISC OTHER COLORS
+
+$logo-color: $accent-color
+ 
 $app-bg-gradient-top: #16697f
 $app-bg-gradient-bottom: #0e465e
 
-$success-color: #71b72b
-$warning-color: #edc23a
-$danger-color: #c33132
-
-
-// ASSIGNED/DERIVED COLORS
-
-$link-color: $input-stroke
-$link-hover: $highlight-color
-
-$tag-color: $secondary-color
-// $tag-bg: $primary-color-light // was used when all tags were chiclets
-
-$icon-color: $primary-color
-$icon-hover: $highlight-color
-$icon-active: $secondary-color
-$icon-active-hover: $primary-color-light
-
-$menu-dropdown-bg-color: rgba($primary-color-contrast, 1) // used for menus and dropdowns like autocomplete, expanded tag list, individual tag dropdown, sort dropdown, etc.
-$pane-bar-bg-color: $menu-dropdown-bg-color // used for tag list on notes, and for the tags/settings sidebar, and for the header
+$success-color: #44AF69
+$success-text: $panel-text
+$warning-color: #FCAB10
+$warning-text: $panel-text
+$danger-color: #F8333C
+$danger-text: $panel-text
 
 
 // SHADING AND MASKS
@@ -47,10 +110,39 @@ $btn-disabled-opacity: 0.5
 
 $shadow-color: rgba(0, 0, 0, 0.5) // e.g. card box-shadow, text shadow
 $shadow-color-light: rgba(0, 0, 0, 0.1) // Only used (tentatively) for note tag list
-// $shadow-border: rgba(0, 0, 0, 0.1) // we use box shadows everywhere but someshapes like the shape of account menu you can't really do box shadow, but a border with this color kind of approximates it // NO LONGER NEEDED
-// @TODO/ece Could be fun to do something like this, which takes $primary-color and makes it translucent. That way these box shadows will match changing theme
-// $shadow-color: rgba(74, 74, 74, 0.5)
+// @TODO/ece Could be fun to do something like this, which takes $panel-color and makes it translucent. That way these box shadows will match changing theme
+// $shadow-color: rgba($panel-color, 0.5)
 
 $modal-backdrop: rgba(0, 0, 0, 0.7)
-$modal-backdrop--dark: rgba(0, 0, 0, 0.9)
-$white-overlay: rgba(255,255,255,0.75)
+$modal-backdrop--dark: rgba(0, 0, 0, 0.9) // e.g. for full screen note modal
+$light-overlay: rgba($note-bg, 0.75)
+$light-overlay-text: $note-text
+
+
+// OLD COLORS
+
+// $primary-color: #f4f4f2 //#e05151 //#7FD6FA // #A6E22E // #FF5D38 // #FFE792 //#00A8C6 // #A6E22E// #424242 // e.g. body text, icons
+// $primary-color-light: #848993 //#CCE2FF // #848993 // #3F454A //#6e7a94 // #bcc2c7 // used e.g. for tag count, active icon hover, note action icons
+// $primary-color-contrast: rgba(255, 255, 255, 0.92) // e.g. card bg, text background
+// $secondary-color: #f26964 // #0b99bc //#FF5D38 // #F25A56 // #FF5D38 // #c3521b // e.g. tag text, button stuff
+// $highlight-color: #00A8C6 // #00A8C6 // #85A4D2 // #50e3c2 // #e05151 //#F5BB14 //#26A6A6 // #50e3c2 // e.g. logo, hover states
+
+// $input-stroke: #848993 // #848993 // #DEE3F3 //#989898 // This is used for input placeholder text, input borders/underlines, logo slogan, minor text on login (forgot password, T&Cs), text links @TODO/rename
+
+// $accent-color: #4f54e2 // used for tag-related action icons (add, expand, etc., but *not* shared/programmatic state). @TODO/ece Should the rename pencil and/or remove X (from tag in note search bar) be this color too?
+// $accent-color: $input-stroke // eh that looked gaudy, let's just use this for now
+
+// $link-color: $panel-text-secondary
+// $link-hover: $accent-color
+
+// $menu-dropdown-bg-color: rgba(#30302f, 0.92) // #3c3c3c #464C57 #191B1F #2b303b #6e7a94 //rgba($primary-color-contrast, 1) // used for menus and dropdowns like autocomplete, expanded tag list, individual tag dropdown, sort dropdown, etc.
+// $pane-bar-bg-color: $menu-dropdown-bg-color // used for tag list on notes, and for the tags/settings sidebar, and for the header
+
+
+// .note .body-input
+//   color: #30302f
+
+// .pane-layout .overview,
+// .pane-layout .pane,
+// tag-browser .tag-pane,
+//   background-color: $pane-bar-bg-color !important

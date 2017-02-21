@@ -51,11 +51,13 @@ modal
     top: 50%
     transform: translateY(-50%)
     margin: 0 auto
-    background-color: $menu-dropdown-bg-color
+    background-color: $dropdown-bg
 
-    @media (min-width: $tablet-large)
-      &.is--login,
-      &.is--loading
+    &.is--login,
+    &.is--loading
+      background-color: $panel-bg
+
+      @media (min-width: $tablet-large)
         +span(6 last)
 
     @media (max-width: $tablet-large)
@@ -160,7 +162,7 @@ modal
   height: 100%
   left: 0
   top: 0
-  background-color: $primary-color-contrast
+  background-color: $panel-bg
   text-align: center
 
   opacity: 0
@@ -185,7 +187,7 @@ feedback
     +base-font-size
     height: 200px
     margin-bottom: 20px
-    color: $primary-color
+    color: $panel-text
 
     // @TODO/ece Do we want this letter spacing? It was in the original designs and looks... better with it, but when you start typing you won't have the spacing (but that could be added). This same letter spacing is used in form fields and buttons (but not textareas right now).
     &::-webkit-input-placeholder
