@@ -101,6 +101,11 @@ export class TagsService {
       return null;
     }
 
+    // @TODO/temp Added on Feb 21 - we can remove when all notable users have logged in after that. @TODO/refactor We should have data versioning...
+    if (tagData.isLibraryTag) {
+      tagData.fromLib = tagData.isLibraryTag;
+    }
+
     let newTag;
     if (tagData.parentTagId) {
       newTag = new ChildTag(tagData, this.dataService);
