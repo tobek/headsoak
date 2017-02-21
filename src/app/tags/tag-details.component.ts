@@ -84,6 +84,7 @@ export class TagDetailsComponent {
     try {
       // @TODO/soon @TODO/prog This runs prog on all notes which will be too slow, need to just look at blacklisted ones... but that's specific to keywords tag. So probably need loading indicator AND really just need to use web web workers
       this.tag.data = JSON.parse(this.tagDataRef.nativeElement.innerHTML);
+      setTimeout(this.setUpChildTags.bind(this), 0); // could have changed
     }
     catch (err) {
       this.toaster.error(
