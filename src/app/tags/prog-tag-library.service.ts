@@ -20,7 +20,7 @@ export class ProgTagLibraryService {
       fromLib: true,
       readOnly: true,
       name: 'sentiment',
-      description: 'Tag notes that show a markedly positive or negative sentiment. Hover over the tag on a note to see the calculated strength of that note\'s sentiment.',
+      description: 'Tag notes that show a markedly positive or negative sentiment. Hover over the tag on a note to see the calculated strength of that note\'s sentiment. Only works on English text.',
       prog: true,
       // @NOTE Can use this function definition to write the library tag with the benefits of type checking and general JS linting, and then just comment out and use backticks (and comment/update the last line of func as well, AND make sure to double escape as necessary)
       // progFunc: function(api, _): (note: Note) => ClassifierReturnType {
@@ -53,7 +53,7 @@ return function(note) {
       fromLib: true,
       readOnly: true,
       name: 'topic',
-      description: '@TODO/now Automatically extract topics. Only implemented for English text so far.',
+      description: 'Automatically identify topics relevant to each note and tag as such. Only works on English text.',
       prog: true,
       // progFunc: function(api: ProgTagApiService, _): (note: Note) => ClassifierReturnType {
       progFuncString:`// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (e.g. npm's \`retext-keywords\` module) have been bundled with the app.
@@ -221,7 +221,7 @@ return function(note) {
       fromLib: true,
       readOnly: true,
       name: 'nsfw',
-      description: '@TODO/now Automatically tags nsfw notes and makes them private. NOTE: This tag will never make a note *un*private even if it no longer detects nsfw content.',
+      description: 'Automatically tags NSFW (not safe for work) notes and makes them private. (To err on the safe side, if this smart tag previously detected NSFW content in a note and then later no longer does, the note will remain private - though this tag will be removed.) Only works on English text.',
       prog: true,
       // progFunc: function(api: ProgTagApiService, _): (note: Note) => ClassifierReturnType {
       progFuncString:`// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`retext-profanities\` module) have been bundled with the app.
