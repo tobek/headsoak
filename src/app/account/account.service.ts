@@ -296,6 +296,7 @@ export class AccountService {
 
         return false; // don't close modal, wait for Firebase response so we can keep it open if wrong password
       },
+      false,
       {
         promptInputType: 'password',
         promptPlaceholder: 'Password',

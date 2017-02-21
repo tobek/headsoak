@@ -353,6 +353,7 @@ export class SettingsComponent {
 
         return false; // explicit false to not close prompt until callback fires
       },
+      false,
       {
         promptInputType: 'password',
         promptPlaceholder: 'Password',

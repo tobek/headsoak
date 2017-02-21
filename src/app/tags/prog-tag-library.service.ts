@@ -53,10 +53,10 @@ return function(note) {
       fromLib: true,
       readOnly: true,
       name: 'topic',
-      description: '@TODO/now Automatically extract topics',
+      description: '@TODO/now Automatically extract topics. Only implemented for English text so far.',
       prog: true,
       // progFunc: function(api: ProgTagApiService, _): (note: Note) => ClassifierReturnType {
-      progFuncString:`// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`retext-keywords\` module) have been bundled with the app.
+      progFuncString:`// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (e.g. npm's \`retext-keywords\` module) have been bundled with the app.
 var retext = api.lib.retext;
 var retextKeywords = api.lib.retextKeywords;
 var nlcstToString = api.lib.nlcstToString;
@@ -107,7 +107,7 @@ if (! this.data.blacklist) {
 
 function confirmBlacklisting(childTag, tagDetailsComponent) {
   api.modal.confirm(
-    '<p>Are you sure you want to blacklist the topic <span class="static-tag">' + childTag.childTagName + '</span>? It won\\'t be suggested again.</p><p>You can view and edit the list of blacklisted tags from the <span class="static-tag">' + _this.name + '</span> Explore page.</p>',
+    '<p>Are you sure you want to blacklist the topic <span class="static-tag">' + _.escape(childTag.childTagName) + '</span>? It won\\'t be suggested again.</p><p>You can view and edit the list of blacklisted tags from the <span class="static-tag">' + _.escape(_this.name) + '</span> Explore page.</p>',
     function(confirmed) {
       if (confirmed) {
         blacklistChildTag(childTag);
@@ -133,7 +133,7 @@ this.customActions.childTags = [{
 }];
 
 
-// The part-of-speech tagger that retext library uses doesn't handle contractions, so they're "unknown" words and can turn up as keywords. Here's a quick contraction replacer.
+// The part-of-speech tagger that the retext library uses doesn't handle contractions, so they're "unknown" words and can turn up as keywords. Here's a quick contraction replacer.
 // (These can all be lower case since we convert note body to lower case before processing anyway)
 var contractions = {
   'n[’\\']t\\\\b': ' not',
@@ -162,6 +162,9 @@ function expandContractions(input) {
   return input.replace(contractionRegExp, contractionReplacer);
 }
 
+var punctuationFixRegExp = new RegExp('\\d([-’\\'])\\d', 'g');
+
+// And, finally, the actual classifier we run on each note
 return function(note) {
   var resolve, reject;
   var result = new Promise(function(res, rej) {
@@ -183,7 +186,7 @@ return function(note) {
 
       var childTagName = phrase.matches[0].nodes.map(nlcstToString)
         .join('')
-        .replace(/\\d([-'’])\\d/g, '$1'); // @HACK: nlcstToString seems to return these PunctuationNodes with numbers on either side, e.g. "feature2-2bloat";
+        .replace(punctuationFixRegExp, '$1'); // @HACK: nlcstToString seems to return these PunctuationNodes with numbers on either side, e.g. "feature2-2bloat";
 
       if (childTagName.length < 3) {
         return;

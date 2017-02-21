@@ -100,14 +100,15 @@ export class ModalService {
   }
 
   prompt(
-    message: string | SafeHtml,
+    message: string,
     cb: (result: string, showLoadingState?: Function, hideLoadingState?: Function) => any,
+    trustAsHtml = false,
     opts: ModalConfig
   ): void {
     const component = this.modal.visible ? this.modal2 : this.modal;
 
     const config: ModalConfig = _.defaults({
-      message: message,
+      message: trustAsHtml ? this.sanitizer.bypassSecurityTrustHtml(message) : message,
       prompt: true,
       cancelButton: true,
       okCb: cb,

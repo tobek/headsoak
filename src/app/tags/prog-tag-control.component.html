@@ -41,21 +41,24 @@
 <div class="documentation">
   <h1>Documentation</h1>
 
-  <p>Headsoak will test each of your notes against the function you return above in order to determine if a note should have the "{{ tag.name }}" tag.</p>
-  <p>If the function returns true for a note, that note is tagged with this tag - otherwise it's not tagged, and is untagged if it previously was tagged.</p>
+  <p>Headsoak will test each of your notes against the function you return above in order to determine if a note should have the <span class="static-tag">{{ tag.name }}</span> tag.</p>
+  <p>If the function returns <code>true</code> for a note, that note is tagged with this tag - otherwise it's not tagged, and is untagged if it previously was tagged. You may also return a <code>Promise</code> object and resolve the result asynchronously.</p>
   <p>This function is run on every note when the tag is updated, and whenever a note is modified in the future it is retested against all smart tags.</p>
 
   <h2>Properties in scope</h2>
 
   <h3><code>this</code></h3>
 
-  <p>The smart tag object "{{ tag.name }}" is supplied as <code>this</code> to this function. The public <code>Tag</code> model is as follows:</p>
+  <p>The smart tag object <span class="static-tag">{{ tag.name }}</span> is supplied as <code>this</code> to this function. The public <code>Tag</code> model is as follows:</p>
 
   <pre>id: string;
 name: string;
 created: number; // unix timestamp
 modified: number; // unix timestamp
-docs: string[]; // array of note IDs tagged with this tag</pre>
+docs: string[]; // array of note IDs tagged with this tag
+data: Object; // free-form persistent data store for saving anything you want to associate with this tag
+prog: boolean; // whether this tag is programmatic (i.e. a smart tag)
+fromLib: boolean; // whether this tag came from the Smart Tag Library</pre>
 
   <h3><code>note</code></h3>
 
@@ -75,6 +78,14 @@ private: boolean; // whether this note is a private note</pre>
   <ul>
     <li><code>api.notes</code> - All of your notes in an object mapping IDs to <code>Note</code> instances.</li>
     <li><code>api.tags</code> - All of your tags in an object mapping IDs to <code>Tag</code> instances.</li>
+    <li>
+      <code>api.modal</code> - Service for launching modals and prompts. Example invocations:
+      <ul>
+        <li><code>api.modal.alert('Some alert message')</code></li>
+        <li><code>api.modal.confirm('Are you sure you want to xyz?', function(confirmed) {{ '{' }}...{{ '}' }})</code></li>
+        <li><code>api.modal.prompt('Please enter your abc\'s', function(input) {{ '{' }}...{{ '}' }})</code></li>
+      </ul>
+    </li>
   </ul>
 
   <h3><code>_</code></h3>
@@ -98,14 +109,14 @@ private: boolean; // whether this note is a private note</pre>
 
   <p>The above value would be displayed on the tag as well, e.g. <code>word count: 842</code>.</p>
 
-  <p><code>childTag</code> and <code>score</code> can be combined, for instance a sentiment analysis tag might return the strength of the associated sentiment:</p>
+  <p><code>childTag</code> and <code>score</code> can be combined, for instance a sentiment analysis tag might return the confidence of the associated sentiment:</p>
 
   <pre>{{ '{' }}
     childTag: 'joy',
-    score: 0.82
+    score: '82%'
 {{ '}' }}</pre>
 
-  <p>The above would be displayed as <code>sentiment: joy</code>, and on hover would show <code>sentiment: joy (0.82)</code>.
+  <p>The above would be displayed as <code>sentiment: joy</code>, and on hover would show <code>sentiment: joy (82%)</code>.
 
   <!-- @TODO/prog Also store "more" or "description" and also multiple childTags -->
 
@@ -119,7 +130,7 @@ private: boolean; // whether this note is a private note</pre>
 
   <p><i>(under development)</i></p>
 
-  <p>Smart tags will be able to import external JavaScript libraries and may make JSON API requests.
+  <p>Smart tags will be able to import external JavaScript libraries and be able to make JSON API requests.
 
   <h2>Testing, debugging, and error-handling</h2>
 
