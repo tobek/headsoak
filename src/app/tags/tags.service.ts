@@ -117,7 +117,8 @@ export class TagsService {
 
     if (newTag.prog && newTag.progFuncString) {
       // @HACK We permit/encourage/document that initialization code can go in progFuncString, so we have to generate them now. (Library tags get run as soon as they're added to a user's account so `setAndValidateClassifier` will get run then.)
-      newTag.setAndValidateClassifier(true);
+      // @TODO/now @TODO/prog @TODO/temp Passing in false for now or else everyone's smart tags will error on init when smart tag format changes. Once everyone's logged in after Feb 21 we can put this back.
+      newTag.setAndValidateClassifier(/*true*/false);
     }
 
     // No need to sync to data store if we're initializing tags from data store.
