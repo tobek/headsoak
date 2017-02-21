@@ -1,7 +1,9 @@
+$note-header-height: 2.5rem
+
 .note
   +card
   +box-shadowed // `card` mixin is box-shadowed only if panel bg is transparent, but we always want note to be box-shadowed
-  background-color: $note-bg // @TODO/now Needs to not be behind header
+  background: transparent
 
   position: relative
   display: block
@@ -15,6 +17,16 @@
   homepage .demo-container & // extra specificity for homepage to override route class that might be there e.g. if you're in route--browse and logout
     padding: 54px 10px 35px 1rem // More magic numbers (correctly vertically positions header and note actions). Left padding is needed in order for body input scrollbar to not be flush against body text nor flush against edge of note. These values (+ right padding on .body-input) are close enough on all browser widths it seems, especially since right edge of text isn't clear because of non-justified left-alignment.
 
+  // @HACK @TODO/optimization The way padding and header work on here made it really hard to not have note-bg behind the header, so instead we're taking background off main .note element and hacking it in here while avoiding the header
+  .note-bg
+    z-index: -1
+    position: absolute
+    left: 0
+    bottom: 0
+    width: 100%
+    height: calc(100% - #{$note-header-height})
+    background-color: $note-bg
+
   .note-wrapper
     height: 100%
 
@@ -22,11 +34,11 @@
   .note-actions
     position: absolute
     width: 100%
-    height: 30px
 
   .note-actions
     white-space: nowrap
     overflow: hidden
+    height: 30px
 
   .header
     top: 0
@@ -35,7 +47,7 @@
   .tags
     overflow: hidden
     width: 100%
-    max-height: 2.5rem
+    max-height: $note-header-height
     padding: 0.25rem 0.5rem 0.5rem
     // background-color: transparent
     background-color: $panel-bg
@@ -118,7 +130,7 @@
   &.has--tag-overflow
     .tags
       padding-right: 30px // to make room for .expand-tags
-      transition: background-color $transition-fast
+      transition: background-color $transition-fast, border $transition-fast
     .expand-tags
       display: inline-block
 
@@ -384,6 +396,9 @@
       .body-input
         padding-left: 0.5rem
         padding-right: 0.5rem
+
+modal .is--note .modal-close
+  display: none
 
 
 // This actually gets shunted into ModalComponent but let's style it here
