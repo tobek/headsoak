@@ -1,19 +1,24 @@
 // MAIN THEME COLORS
 
-$tag-color: orange
+$tag-color: #F26B57
 
 $note-text: #424242
 $note-bg: rgba(255, 255, 255, 0.92)
 
-$panel-color: #424242
+// $panel-color: #cecece // all panel stuff based on $accent-color now
 $panel-text: white
 
-$accent-color: blue
+$form-inactive: #c0c0c0
 
-$menu-color: white
+$accent-color: #00a8c6
+$accent-color-light: hsl(hue($accent-color), saturation($accent-color) * 0.4, 66%)
+$accent-color-dark: hsl(hue($accent-color), saturation($accent-color) * 1.4, 28%)
+$accent-color-darkest: hsl(hue($accent-color), saturation($accent-color) * 1.4, 8%)
 
-$bg-blur: 5px // set to 0 to disable
-$bg-overlay: rgba(blue, 0.25) // set to transparent to disable
+$menu-color: $panel-text
+
+$bg-blur: 2px // set to 0 to disable
+$bg-overlay: transparent // set to transparent to disable
 
 
 // ASSIGNED/DERIVED COLROS
@@ -25,51 +30,62 @@ $tag-active-text: white
     $tag-active-text: black
 $tag-active-bg: $tag-color
 
-$panel-bg: rgba($panel-color, 0.75)
-$panel-text-secondary: mix($panel-bg, $panel-text, 25%) // used for secondary stuff in panels like links, note/tag count, and asides. also currently assigned below to placeholders and form field borders
-$panel-heading: lighten($accent-color, 20%)
-$panel-text-link: $panel-text
+$panel-bg: rgba($accent-color-darkest, 0.8)
+$panel-text-secondary: $accent-color-light // used for secondary stuff in panels like links, note/tag count, and asides. also currently assigned below to placeholders and form field borders
+$panel-heading: $accent-color
+$panel-text-link: $accent-color-light
 $panel-text-link-hover: $accent-color
 
-$form-label: $accent-color // mini label headings in settings screens
+$form-label: $accent-color-light // mini label headings in settings screens
 
 // Standalone icons which perform major functions:add tag, new tag, search, tag browser dropdown caret, x icons
-$icon-color: hsl(hue($panel-color), saturation($panel-color), 50%)
-$icon-hover: $accent-color 
-$icon-active: darken($accent-color, 20%)
-$icon-active-hover: lighten($accent-color, 20%)
+$icon-color: $accent-color-light
+$icon-hover: $accent-color-dark
+$icon-active: $accent-color
+$icon-active-hover: $accent-color-dark
 
-$note-icon-color: hsl(hue($panel-color), saturation($panel-color), 60%)
-$note-icon-hover: $accent-color 
-$note-icon-active: darken($accent-color, 20%)
-$note-icon-active-hover: lighten($accent-color, 20%)
+$note-icon-color: $accent-color-light
+$note-icon-hover: $accent-color
+$note-icon-active: $icon-active
+$note-icon-active-hover: $accent-color-dark
+$note-placeholder: hsl(hue($form-inactive), saturation($form-inactive) * 1.2, 68%)
 
 $primary-button-text: white
+$primary-button-text-hover: white
+$primary-button-text-active: white
 @if lightness($accent-color) > 50 and saturation($accent-color) < 50
     $primary-button-text: black
+    $primary-button-text-hover: black
+    $primary-button-text-active: black
 $primary-button-bg: $accent-color
+$primary-button-bg-hover: $accent-color-dark
+$primary-button-bg-active: $accent-color-light
 $secondary-button-text: $primary-button-bg
 $secondary-button-bg: $primary-button-text
+$secondary-button-text-hover: $primary-button-bg-hover
+$secondary-button-bg-hover: $primary-button-text-hover
+$secondary-button-text-active: $primary-button-bg-active
+$secondary-button-bg-active: $primary-button-text-active
 
 // Sidebar/panel menu (like settings/tags) and also the navigation icons (new, notes, tags)
 $menu-link: $menu-color
-$menu-link-active: $panel-color
-$menu-link-active-bg: $menu-link
-$menu-icon: $menu-link
-$menu-icon-active: $menu-link-active
+$menu-link-active: $accent-color
+$menu-link-active-bg: white 
+$menu-icon: white
+$menu-icon-active: $accent-color
 
 // Dropdowns are: autocomplete, sort dropdown, tooltips, tag dropdown, etc.
-$dropdown-text: $panel-text // non-clickable text in dropdowns
-$dropdown-bg: $panel-color
+$dropdown-text: $panel-text// non-clickable text in dropdowns
+$dropdown-bg: $accent-color-darkest
 $dropdown-menu-link: $dropdown-text
-$dropdown-menu-link-active: $dropdown-bg
-$dropdown-menu-link-active-bg: $dropdown-menu-link
-$dropdown-menu-icon: $menu-icon
+$dropdown-menu-link-active: $accent-color
+$dropdown-menu-link-active-bg: $menu-link-active-bg
+$dropdown-menu-icon: $dropdown-text
 $dropdown-menu-icon-active: $menu-icon-active
 $dropdown-underline: $accent-color
 
-$form-stroke: $panel-text-secondary // Used for forms and other borders
-$form-placeholder: $panel-text-secondary
+$form-stroke: $form-inactive // Used for forms and other borders
+$form-placeholder: $form-inactive
 $form-focused-stroke: $accent-color // Used for active form/input fields and under active note
 
 
@@ -80,11 +96,11 @@ $logo-color: $accent-color
 $app-bg-gradient-top: #16697f
 $app-bg-gradient-bottom: #0e465e
 
-$success-color: #71b72b
+$success-color: #44AF69
 $success-text: $panel-text
-$warning-color: #edc23a
+$warning-color: #FCAB10
 $warning-text: $panel-text
-$danger-color: #c33132
+$danger-color: #F8333C
 $danger-text: $panel-text
 
 

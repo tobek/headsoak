@@ -11,7 +11,8 @@
   box-shadow: 0 1px 2px 0 $shadow-color-light
 
 =card
-  +box-shadowed
+  @if $panel-bg != transparent
+    +box-shadowed
   padding: 50px gutter() * 2 // @TODO If this mixin is used in any context other than full 12 columns, padding will need to be redeclared passing # of columns its in to gutter()
   background-color: $panel-bg
 
@@ -30,6 +31,7 @@ $tag-hash-opacity: 0.33
   +box-shadowed-small
   color: $tag-active-text
   background-color: $tag-active-bg
+  text-shadow: none
 
 // To override `tag-chiclet-active` if necessary
 =tag-chiclet-reset
@@ -100,7 +102,7 @@ $tag-hash-opacity: 0.33
 
 
 =dropdown-menu-border
-  border-bottom: 2px solid $dropdown-underline
+  border-top: 2px solid $dropdown-underline
 
 =dropdown-menu
   +box-shadowed

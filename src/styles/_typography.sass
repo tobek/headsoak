@@ -78,10 +78,13 @@ select
   +base-font-size
 
 =tag-face
+  // +small
   // font-size: 13px
   // font-weight: bold
   color: $tag-color
   letter-spacing: 0.5px
+  text-shadow: 1px 1px 2px black
+  transition: text-shadow $transition-fast
 
 .logo h1
   margin: 18px 0 22px
@@ -103,6 +106,7 @@ select
   margin: 0 0 2rem
   letter-spacing: 1.7px
   text-transform: uppercase
+  color: $panel-heading
 =pane-subheading
   +h4
   margin: 2rem 0 1.5rem

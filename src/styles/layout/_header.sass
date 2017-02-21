@@ -3,7 +3,8 @@
   z-index: $z-header
   
 .app-header
-  +box-shadowed
+  @if $panel-bg != transparent
+    +box-shadowed
   background-color: $panel-bg
 
   .inner
@@ -34,12 +35,10 @@
     transition: border-color $transition-fast
 
     &:hover
-      +dropdown-menu
       .menu-body
         +faded-in
 
     &.is--force-closed
-      +not-dropdown-menu
       .menu-body
         +faded-out
 
@@ -72,6 +71,7 @@
         color: $danger-color
 
   .menu-body
+    // @TODO/soon @TODO/styles There should be padding above this just ike there is for the note tag dropdown
     +dropdown-menu
     +plain-list
     +fadeable
@@ -161,8 +161,10 @@
 
   .nav-link
     +menu-link
-    +dropdown-menu
+    @if $panel-bg != transparent
+      +box-shadowed
     background-color: $panel-bg
+    border: none
     display: inline-block
     white-space: nowrap
     width: auto

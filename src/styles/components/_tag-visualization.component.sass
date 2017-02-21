@@ -75,7 +75,7 @@ force-graph
     cursor: default
     user-select: none
     fill: $panel-text
-    text-shadow: $panel-color 2px 2px 3px, $panel-color -2px -2px 3px
+    text-shadow: invert($panel-text) 2px 2px 3px, invert($panel-text) -2px -2px 3px
 
     .hash
       // @TODO/ece Yea or nay to these?
@@ -87,7 +87,7 @@ force-graph
   .node:hover text,
   .node.is--central text,
   .node.is--highlighted text
-    text-shadow: $panel-color 2px 2px 3px, $panel-color -2px -2px 3px, $panel-text 0 0 1px
+    text-shadow: invert($panel-text) 2px 2px 3px, invert($panel-text) -2px -2px 3px, $panel-text 0 0 1px
 
 
   .node,
