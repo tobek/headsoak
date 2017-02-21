@@ -122,7 +122,7 @@ export class TagBrowserComponent {
   initTags(): void {
     this.sortOpt = _.find(this.tagsService.sortOpts, { id: this.settings.get('tagSortBy') });
 
-    // @TODO/tags We should probably listen for tag updates and re-sort
+    // @TODO/tags We need to listen for tag updates and re-sort (otherwise things like adding library tag won't update sort)
     this.tags = _.filter(
       this.tagsService.sortTags(this.sortOpt),
       (tag) => ! tag.internal

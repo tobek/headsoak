@@ -64,8 +64,43 @@ var _this = this;
 
 var processor = retext().use(retextKeywords);
 
+// retext-keywords does use a stopword list, but for our purposes we need a stricter list:
+var defaultBlacklist = {
+  'blah': 1,
+  'first': 1,
+  'http': 1,
+  'https': 1,
+  'kind': 1,
+  'lot': 1,
+  'option': 1,
+  'number': 1,
+  'ones': 1,
+  'order': 1,
+  'person': 1,
+  'room': 1,
+  'stuff': 1,
+  'thing': 1,
+  'things': 1,
+  'times': 1,
+  'use': 1,
+  'vs': 1,
+  'way': 1,
+
+  'one': 1,
+  'two': 1,
+  'three': 1,
+  'four': 1,
+  'five': 1,
+  'six': 1,
+  'seven': 1,
+  'eight': 1,
+  'nine': 1,
+  'ten': 1,
+};
+
+// And the user can add their own:
 if (! this.data.blacklist) {
-  this.data.blacklist = [];
+  this.data.blacklist = {};
 }
 
 function confirmBlacklisting(childTag, tagDetailsComponent) {
@@ -85,7 +120,7 @@ function confirmBlacklisting(childTag, tagDetailsComponent) {
 }
 
 function blacklistChildTag(childTag) {
-  _this.data.blacklist.push(childTag.childTagName);
+  _this.data.blacklist[childTag.childTagName] = true;
   childTag.delete(true);
 }
 
@@ -133,7 +168,7 @@ return function(note) {
         .toLowerCase()
         .replace(/\\d([-'’])\\d/g, '$1'); // @HACK: nlcstToString seems to return these PunctuationNodes with numbers on either side, e.g. "feature2-2bloat";
 
-      if (_this.data.blacklist.indexOf(childTagName) !== -1) {
+      if (defaultBlacklist[childTagName] || _this.data.blacklist[childTagName]) {
         return;
       }
 
