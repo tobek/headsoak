@@ -564,7 +564,7 @@ export class Tag {
     return _.reduce(note.tags, (tags: Tag[], tagId: string) => {
       tag = this.dataService.tags.tags[tagId];
 
-      if (tag === this || tag.parentTag === this) {
+      if (tag && (tag === this || tag.parentTag === this)) {
         tags.push(tag);
       }
 
