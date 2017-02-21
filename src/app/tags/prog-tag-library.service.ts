@@ -132,6 +132,7 @@ this.customActions.childTags = [{
 
 
 // The part-of-speech tagger that retext library uses doesn't handle contractions, so they're "unknown" words and can turn up as keywords. Here's a quick contraction replacer.
+// (These can all be lower case since we convert note body to lower case before processing anyway)
 var contractions = {
   'n[’\\']t\\\\b': ' not',
   '[’\\']re\\\\b': ' are',
@@ -146,7 +147,6 @@ var contractions = {
   '\\\\bshe[’\\']s\\\\b': 'she is',
   '\\\\bhe[’\\']s\\\\b': 'he is',
   '\\\\bi[’\\']d\\\\b': 'i would',
-  '\\\\bI[’\\']d\\\\b': 'I would',
   '\\\\byou[’\\']d\\\\b': 'you would',
   '\\\\bshe[’\\']d\\\\b': 'she would',
   '\\\\bhe[’\\']d\\\\b': 'he would',
@@ -169,7 +169,11 @@ return function(note) {
 
   var childTags = [];
 
-  processor.process(expandContractions(note.body), function(err, doc) {
+  // Convert to lower case so that retext-keywords doesn't think differently-cased uses of the same term are different
+  // @TODO/prog Filter out URLs - pieces of them get picked up sometimes
+  var text = expandContractions(note.body.toLowerCase());
+
+  processor.process(text, function(err, doc) {
     doc.data.keyphrases.forEach(function (phrase, i) {
       if (childTags.length >= 5) {
         return;
@@ -177,7 +181,6 @@ return function(note) {
 
       var childTagName = phrase.matches[0].nodes.map(nlcstToString)
         .join('')
-        .toLowerCase()
         .replace(/\\d([-'’])\\d/g, '$1'); // @HACK: nlcstToString seems to return these PunctuationNodes with numbers on either side, e.g. "feature2-2bloat";
 
       if (defaultBlacklist[childTagName] || _this.data.blacklist[childTagName]) {
