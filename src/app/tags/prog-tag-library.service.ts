@@ -162,7 +162,7 @@ function expandContractions(input) {
   return input.replace(contractionRegExp, contractionReplacer);
 }
 
-var punctuationFixRegExp = new RegExp('\\d([-’\\'])\\d', 'g');
+var punctuationFixRegExp = new RegExp('\\\\d([-’\\'])\\\\d', 'g');
 
 // And, finally, the actual classifier we run on each note
 return function(note) {
