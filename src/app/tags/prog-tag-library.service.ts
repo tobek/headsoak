@@ -340,8 +340,10 @@ return function(note) {
     if (localTag) {
       // This tag is being used by the user, so let's pick that up in order to get `docs` list etc.
 
-      // While we're at it we may need to update the tag
-      this.maybeUpdateLocalTag(localTag, tagData);
+      // While we're at it we may need to update the tag - but wait til we're initialized so that a) any toasters will be visible instead of blocked by full page loader, and b) re-running prog tag won't delay loading
+      this.tagsService.dataService.initialized$.filter(initialized => !! initialized).first().subscribe(() => {
+        this.maybeUpdateLocalTag(localTag, tagData);
+      });
 
       return localTag;
     }
@@ -355,12 +357,6 @@ return function(note) {
     let funcUpdated, nameUpdated, oldName;
 
     if (localTag.progFuncString !== latestTagData.progFuncString) {
-      // Function has been updated from official sources since user last used it, so let's update.
-      this._logger.info('Enabled smart tag library tag "' + localTag.id + '" source has been updated - re-running it now.');
-      localTag.updateProgFuncString(latestTagData.progFuncString);
-      localTag.runProgOnAllNotes();
-      localTag.updated(false);
-
       funcUpdated = true;
     }
 
@@ -394,19 +390,25 @@ return function(note) {
 
     message += '<p>Click for tag details.</p>';
 
-    // If we're not totally initialized yet then the full page loader will be obscuring everything, so don't show until then.
-    this.tagsService.dataService.initialized$.filter(initialized => !! initialized).first().subscribe(() => {
-      this.tagsService.dataService.toaster.info(
-        message,
-        'Smart tag <span class="static-tag">' + (oldName || localTag.name) + '</span> updated',
-        {
-          timeOut: 10000,
-          onclick: () => {
-            localTag.goTo();
-          }
+    this.tagsService.dataService.toaster.info(
+      message,
+      'Smart tag <span class="static-tag">' + (oldName || localTag.name) + '</span> updated',
+      {
+        timeOut: 10000,
+        onclick: () => {
+          localTag.goTo();
         }
-      );
-    });
+      }
+    );
+
+    // Wait til down here to do this so that toaster pops up first
+    if (funcUpdated) {
+      // Function has been updated from official sources since user last used it, so let's update.
+      this._logger.info('Enabled smart tag library tag "' + localTag.id + '" source has been updated - re-running it now.');
+      localTag.updateProgFuncString(latestTagData.progFuncString);
+      localTag.runProgOnAllNotes();
+      localTag.updated(false);
+    }
   }
 
   toggleTagById(tagId: string) {
