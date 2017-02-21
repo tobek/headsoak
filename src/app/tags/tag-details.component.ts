@@ -120,11 +120,13 @@ export class TagDetailsComponent {
     } 
   }
 
-  exploreStatsReset(): void {
+  exploreReset(): void {
     this.exploreStats = {
       topCooccurrences: <[{ tag: Tag, numNotes: number }]>[],
       bottomCooccurrences: <[{ tag: Tag, numNotes: number }]>[],
     };
+
+    delete this.sortedChildTags;
   }
 
   setUpChildTags(): void {
@@ -142,7 +144,7 @@ export class TagDetailsComponent {
 
     this._logger.time('Calculated explore stats');
 
-    this.exploreStatsReset();
+    this.exploreReset();
 
     this.setUpChildTags();
 
