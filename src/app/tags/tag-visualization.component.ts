@@ -70,32 +70,92 @@ export class TagVisualizationComponent {
     let links: GraphLink[];
     let nodes: GraphNode[];
 
-    // Index of processed Tags (which we can prune if we're using centralTag).
-    const nodeIndex: { [tagId: string]: GraphNode } = this.computeNodes(this.tagsService.tags);
+    this.childTagCutoffs = {};
 
     if (! this.centralTag) {
-      nodes = _.map(nodeIndex, (node) => node); // just turn into an array
       links = this.computeLinks(this.tagsService.tags, this.tagsService.dataService.notes.notes);
+
+      const nodeIndex: { [tagId: string]: GraphNode } = {};
+
+      let node: GraphNode;
+      _.each(this.tagsService.tags, (tag: Tag) => {
+        node = this.tagToNode(tag, true);
+        if (node) {
+          nodeIndex[node.id] = node;
+        }
+      });
+
+      // And now remove links to or from nodes that never made it in to `nodesToUse`
+      links = links.filter((link) => {
+        return nodeIndex[link.source] && nodeIndex[link.target];
+      });
+
+      nodes = _.values(nodeIndex);
     }
     else {
-      // This will hold only the nodes that have links to `centralTag`
-      const nodeIndexPruned: { [tagId: string]: GraphNode } = {};
+      links = this.computeLinks(this.tagsService.tags, this.centralTag.getChildInclusiveNotes());
 
-      // But we should make sure we always show all child tags of `centralTag` even if they have no links
+      // This will hold only the nodes that have links to `centralTag`
+      let nodesToUse: { [tagId: string]: GraphNode } = {};
+
+      // We should make sure we always show child tags of `centralTag` even if they have no links (as long as they have enough notes not to be excluded by `excludeChildTag`)
       if (this.centralTag.childTagIds.length) {
         this.centralTag.childTagIds.forEach((childTagId) => {
-          nodeIndexPruned[childTagId] = nodeIndex[childTagId];
+          if (! this.excludeChildTag(this.tagsService.tags[childTagId])) {
+            nodesToUse[childTagId] = this.tagToNode(this.tagsService.tags[childTagId]);
+          }
         });
       }
 
-      links = this.computeLinks(
-        this.tagsService.tags,
-        this.centralTag.getChildInclusiveNotes(),
-        nodeIndex,
-        nodeIndexPruned
-      );
+      // Populate `nodesToUse` with only nodes that link to central tags
+      let sourceTag: Tag;
+      let targetTag: Tag;
+      links.forEach((link) => {
+        sourceTag = this.tagsService.tags[link.source];
+        targetTag = this.tagsService.tags[link.target];
+        if (
+          [sourceTag, sourceTag.parentTag, targetTag, targetTag.parentTag]
+            .indexOf(this.centralTag) === -1
+        ) {
+          return;
+        }
 
-      nodes = _.map(nodeIndexPruned, (node) => node);
+        if (typeof nodesToUse[link.source] === 'undefined') {
+          if (this.excludeChildTag(sourceTag)) {
+            nodesToUse[link.source] = null;
+          }
+          else {
+            nodesToUse[link.source] = this.tagToNode(sourceTag);
+          }
+        }
+        if (typeof nodesToUse[link.target] === 'undefined') {
+          if (this.excludeChildTag(targetTag)) {
+            nodesToUse[link.target] = null;
+          }
+          else {
+            nodesToUse[link.target] = this.tagToNode(targetTag);
+          }
+        }
+      });
+
+      // Now that `nodesToUse` has been pruned to just the relevant nodes, we can determine what cutoffs, if any, are needed for child tags. In the branch above where we do *not* have a central tag, `excludeChildTag` works based on all child tags, e.g. if there are 1,000 topic tags then we need to exclude some. However, in this case there might only be 3 topic tags that are connected to the central tag being shown, in which case we should exclude based on that.
+      this.childTagCutoffs = {}; // Previously calculating by all tags, now we need to calculate from the tags we have so far
+      nodesToUse = _.pickBy(nodesToUse, (node: GraphNode) => {
+        if (! node) {
+          return false;
+        }
+        else if (node.central) {
+          return true;
+        }
+        return ! this.excludeChildTag(this.tagsService.tags[node.id], nodesToUse);
+      }) as { [tagId: string]: GraphNode };
+
+      // And now, finally, remove links to or from nodes that never made it in to `nodesToUse`
+      links = links.filter((link) => {
+        return nodesToUse[link.source] && nodesToUse[link.target];
+      });
+
+      nodes = _.values(nodesToUse);
     }
 
     this.tagGraph = {
@@ -106,45 +166,103 @@ export class TagVisualizationComponent {
     this._logger.timeEnd('Computed tags nodes and links');
   }
 
-  computeNodes(tags: { [tagId: string]: Tag }): { [tagId: string]: GraphNode } {
-    const nodeIndex: { [tagId: string]: GraphNode } = {};
+  tagToNode(tag: Tag, childTagCutoff?): GraphNode {
+    if (! tag) {
+      return null;
+    }
+
+    if (tag.childTagIds.length && tag.docs.length === 0) {
+      // Ignore parent tags that aren't used themselves
+      return null;
+    }
+
+    if (childTagCutoff && this.excludeChildTag(tag)) {
+      return null;
+    }
 
     let classAttr;
-    _(tags).each((tag: Tag) => {
-      if (tag.childTagIds.length && tag.docs.length === 0) {
-        // Ignore parent tags that aren't used themselves
-        return;
-      }
-      
-      if (tag.prog) {
-        classAttr = 'is--prog';
-      }
-      else if (tag.internal) {
-        classAttr = 'is--internal';
-      }
-      else {
-        classAttr = '';
-      }
+    if (tag.prog) {
+      classAttr = 'is--prog';
+    }
+    else if (tag.internal) {
+      classAttr = 'is--internal';
+    }
+    else {
+      classAttr = '';
+    }
 
-      nodeIndex[tag.id] = {
-        id: tag.id,
-        name: tag.name,
-        size: tag.noteCount,
-        classAttr: classAttr,
-        tagInstance: tag,
-        central: tag === this.centralTag || tag.parentTag === this.centralTag,
-      };
-    });
-
-    return nodeIndex;
+    return {
+      id: tag.id,
+      name: tag.name,
+      size: tag.noteCount,
+      classAttr: classAttr,
+      tagInstance: tag,
+      central: tag === this.centralTag || tag.parentTag === this.centralTag,
+    };
   }
 
-  /** If nodeIndexAll and nodeIndexToUse are supplied, nodeIndexToUse is populated with those nodes from nodeIndexAll that are found in links. nodeIndexToUse is modified as a side effect. */
+  /** Graph can get too crowded if a tag has many child tags, e.g. topic tag has 1,500 child tags on my 400 notes. So decide, based on noteCount and number of sibling child tags (either across all tags, or just the tags specified in `relativeTo`), whether we should show it. @TODO/polish @TODO/prog Would be cool to have a little indicator that some tags have been hidden. */
+  excludeChildTag(tag: Tag, relativeTo?: { [tagId: string]: Tag | GraphNode }): boolean {
+    if (! tag.parentTag) {
+      return false;
+    }
+
+    if (! relativeTo) {
+      relativeTo = this.tagsService.tags;
+    }
+
+    if (typeof this.childTagCutoffs[tag.parentTagId] === 'undefined') {
+      this.childTagCutoffs[tag.parentTagId] = this.calculateChildTagCutoffs(tag.parentTag, relativeTo);
+    }
+
+    return tag.noteCount < this.childTagCutoffs[tag.parentTagId];
+  }
+
+  /** Maps parent tag ID to minimum number of notes required for a child tag to be shown on graph. */
+  childTagCutoffs: { [parentTagId: string]: number } = {};
+  calculateChildTagCutoffs(parentTag: Tag, relativeTo: { [tagId: string]: Tag | GraphNode }) {
+    let baseCutoff = 20;
+    if (this.centralTag && this.centralTag !== parentTag) {
+      baseCutoff = 10;
+    }
+
+    if (parentTag.childTagIds.length <= baseCutoff) {
+      return 0;
+    }
+
+    let childTags: Tag[] = _.reduce(relativeTo, (tags: Tag[], tag: Tag | GraphNode): Tag[] => {
+      if (! tag) {
+        return tags;
+      }
+
+      if (! (tag instanceof Tag)) {
+        tag = this.tagsService.tags[tag.id];
+      }
+
+      if (tag.parentTag === parentTag) {
+        tags.push(tag);
+      }
+
+      return tags;
+    }, []);
+
+    let cutoff = 0;
+    while (childTags.length > baseCutoff) {
+      cutoff++;
+      childTags = childTags.filter((tag) => tag.noteCount >= cutoff);
+    }
+
+    if (this.centralTag === parentTag && childTags.length < 5) {
+      // We went too far!
+      cutoff--;
+    }
+
+    return cutoff;
+  }
+
   computeLinks(
     tags: { [tagId: string]: Tag },
     notes: { [noteId: string]: Note } | Note[],
-    nodeIndexAll?: { [tagId: string]: GraphNode },
-    nodeIndexToUse?: { [tagId: string]: GraphNode }
   ): GraphLink[] {
     const tagLinkIndex = {}; // maps from string (source tag + sep + target tag) to weight
     const separator = '👻🌚🌀🌱'; // need something unlikely to be in a child tag name
@@ -155,31 +273,22 @@ export class TagVisualizationComponent {
       }
 
       // Get actual Tag instances and filter out shared tags or broken stuff
-      const validTags: Tag[] = note.tags
+      const validTagNodes: GraphNode[] = note.tags
         .map(tagId => tags[tagId])
         .filter(tag => tag);
 
-      if (validTags.length < 2) {
+      if (validTagNodes.length < 2) {
         return;
       }
 
       // We want to get every pairing of tags on this note, but since links are bidirectional we don't need the reverse, e.g. tag 4 -> tag 8 and tag 8 -> tag 4.
-      for (let i = validTags.length - 1; i >= 1; i--) {
+      for (let i = validTagNodes.length - 1; i >= 1; i--) {
         for (let j = i - 1; j >= 0; j--) {
-          const sourceTag = validTags[i];
-          const targetTag = validTags[j];
+          const sourceTag = validTagNodes[i];
+          const targetTag = validTagNodes[j];
 
           let sourceTagId = sourceTag.id;
           let targetTagId = targetTag.id;
-
-          if (nodeIndexAll && nodeIndexToUse) {
-            if (! nodeIndexToUse[sourceTagId]) {
-              nodeIndexToUse[sourceTagId] = nodeIndexAll[sourceTagId];
-            }
-            if (! nodeIndexToUse[targetTagId]) {
-              nodeIndexToUse[targetTagId] = nodeIndexAll[targetTagId];
-            }
-          }
 
           const tagLink = sourceTagId + separator + targetTagId;
 

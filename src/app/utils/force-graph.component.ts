@@ -111,6 +111,8 @@ export class ForceGraphComponent {
 
   initGraph() {
     this._logger.time('Initialized D3 graph');
+    // this._logger.log('Graph data:', this.graph);
+    
     // this.graph.links = []
 
     const svgEl = this.svgRef.nativeElement;
