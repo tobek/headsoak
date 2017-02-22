@@ -105,15 +105,17 @@ if (! this.data.blacklist) {
   this.data.blacklist = {};
 }
 
-function confirmBlacklisting(childTag, tagDetailsComponent) {
+function confirmBlacklisting(childTag, event, tagDetailsComponent) {
+  if (event.shiftKey) {
+    blacklistChildTag(childTag, tagDetailsComponent);
+    return;
+  }
+
   api.modal.confirm(
-    '<p>Are you sure you want to blacklist the topic <span class="static-tag">' + _.escape(childTag.childTagName) + '</span>? It won\\'t be suggested again.</p><p>You can view and edit the list of blacklisted tags from the <span class="static-tag">' + _.escape(_this.name) + '</span> Explore page.</p>',
+    '<p>Are you sure you want to blacklist the topic <span class="static-tag">' + _.escape(childTag.childTagName) + '</span>? It won\\'t be suggested again.</p><p>You can view and edit the list of blacklisted tags from the <span class="static-tag">' + _.escape(_this.name) + '</span> Explore page.</p><p>Hold the shift key to skip this dialog in the future.</p>',
     function(confirmed) {
       if (confirmed) {
-        blacklistChildTag(childTag);
-        if (tagDetailsComponent && tagDetailsComponent.setUpChildTags) {
-          tagDetailsComponent.setUpChildTags();
-        }
+        blacklistChildTag(childTag, tagDetailsComponent);
       }
     },
     true,
@@ -121,9 +123,13 @@ function confirmBlacklisting(childTag, tagDetailsComponent) {
   );
 }
 
-function blacklistChildTag(childTag) {
+function blacklistChildTag(childTag, tagDetailsComponent) {
   _this.data.blacklist[childTag.childTagName] = true;
   childTag.delete(true);
+
+  if (tagDetailsComponent && tagDetailsComponent.setUpChildTags) {
+    tagDetailsComponent.setUpChildTags();
+  }
 }
 
 this.customActions.childTags = [{
