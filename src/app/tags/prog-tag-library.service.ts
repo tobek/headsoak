@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import {TagsService} from './tags.service';
 import {Tag, ClassifierResult, ClassifierReturnType} from './tag.model';
 import {ProgTagApiService} from './prog-tag-api.service';
+import {SizeMonitorService} from '../utils/size-monitor.service';
 import {Note} from '../notes/note.model';
 
 import {Logger} from '../utils/logger';
@@ -346,7 +347,9 @@ return function(note) {
   private _logger: Logger = new Logger(this.constructor.name);
 
 
-  constructor() {}
+  constructor(
+    private sizeMonitor: SizeMonitorService,
+  ) {}
 
   init(tagsService: TagsService) {
     this.tagsService = tagsService;
@@ -363,13 +366,15 @@ return function(note) {
       // This tag is being used by the user, so let's pick that up in order to get `docs` list etc.
 
       // While we're at it we may need to update the tag - but wait til we're initialized so that a) any toasters will be visible instead of blocked by full page loader, and b) re-running prog tag won't delay loading
-      // @TODO/optimization @TODO/soon @TODO/prog We should probably not do this on mobile for topic tag... and test re-running sentiment, maybe we shouldn't do it on any tags
-      this.tagsService.dataService.initialized$.filter(initialized => !! initialized).first().subscribe(() => {
-        // Seems like we  need to wait even longer... otherwise mysteriously can get loader forever while this runs
-        setTimeout(() => {
-          this.maybeUpdateLocalTag(localTag, tagData);
-        }, 7500);
-      });
+      // @TODO/optimization @TODO/soon @TODO/prog Topic tag is too heavy to run on mobile, maybe others too. This could be more sophisticated though, maybe something in tagData to indicate that it's too computationally heavy, or we should check number of user's notes... etc.
+      if (! this.sizeMonitor.isMobile) {
+        this.tagsService.dataService.initialized$.filter(initialized => !! initialized).first().subscribe(() => {
+          // Seems like we  need to wait even longer... otherwise mysteriously can get loader forever while this runs
+          setTimeout(() => {
+            this.maybeUpdateLocalTag(localTag, tagData);
+          }, 7500);
+        });
+      }
 
       return localTag;
     }
@@ -431,6 +436,7 @@ return function(note) {
     if (funcUpdated) {
       // Function has been updated from official sources since user last used it, so let's update.
       this._logger.info('Enabled smart tag library tag "' + localTag.id + '" source has been updated - re-running it now.');
+      this.tagsService.dataService.status = 'unsynced'; // We know we're going to have to update the tag, but if `runProgOnAllNotes` takes a long time (and is synchronous) we want the sync animation to change immediately before that starts.
       localTag.updateProgFuncString(latestTagData.progFuncString);
       localTag.runProgOnAllNotes();
       localTag.updated(false);
