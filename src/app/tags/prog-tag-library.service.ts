@@ -357,8 +357,12 @@ return function(note) {
       // This tag is being used by the user, so let's pick that up in order to get `docs` list etc.
 
       // While we're at it we may need to update the tag - but wait til we're initialized so that a) any toasters will be visible instead of blocked by full page loader, and b) re-running prog tag won't delay loading
+      // @TODO/optimization @TODO/soon @TODO/prog We should probably not do this on mobile for topic tag... and test re-running sentiment, maybe we shouldn't do it on any tags
       this.tagsService.dataService.initialized$.filter(initialized => !! initialized).first().subscribe(() => {
-        this.maybeUpdateLocalTag(localTag, tagData);
+        // Seems like we  need to wait even longer... otherwise mysteriously can get loader forever while this runs
+        setTimeout(() => {
+          this.maybeUpdateLocalTag(localTag, tagData);
+        }, 7500);
       });
 
       return localTag;
