@@ -96,6 +96,11 @@ return classifyNote;`;
     });
   }
 
+  setEditorValue(newVal: string) {
+    this.editor.setValue(newVal);
+    this.editor.gotoLine(0, 0); // deselect and go to beginning (setValue sometimes selects all and/or puts cursor at end)
+  }
+
   makeSmart(): void {
     if (this.tag.noteCount) {
       const singular = this.tag.noteCount === 1;
@@ -156,8 +161,7 @@ return classifyNote;`;
       return;
     }
 
-    this.editor.setValue(this.tag.progFuncString || this.DEFAULT_PROG_FUNC_STRING);
-    this.editor.gotoLine(0, 0); // deselect and go to beginning (setValue sometimes selects all and/or puts cursor at end)
+    this.setEditorValue(this.tag.progFuncString || this.DEFAULT_PROG_FUNC_STRING);
     this.editorUnchanged();
   }
 
@@ -188,13 +192,17 @@ return classifyNote;`;
             text: 'Revert to default smart tag boilerplate',
             cb: () => {
               this.tag.progFuncString = this.DEFAULT_PROG_FUNC_STRING;
-              this.editor.setValue(this.tag.progFuncString);
-              this.editor.gotoLine(0, 0); // deselect and go to beginning (setValue sometimes selects all and/or puts cursor at end)
+              this.setEditorValue(this.tag.progFuncString);
             }
           }
         ]
       });
       return;
+    }
+
+    // We might have updated it while validating it:
+    if (this.tag.progFuncString !== this.editor.getValue()) {
+      this.setEditorValue(this.tag.progFuncString);
     }
 
     this.isRunning = true;

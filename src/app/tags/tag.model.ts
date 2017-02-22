@@ -458,12 +458,29 @@ export class Tag {
   }
 
   // Returns error if there was an issue, otherwise returns null. Optionally announces error.
-  setAndValidateClassifier(alertOnError = false): Error {
+  setAndValidateClassifier(alertOnError = false, tryWrapping = true): Error {
     try {
       this.classifier = this.generateClassifier();
       return null;
     }
     catch (err) {
+      // @TODO/temp Should be able to remove after people have logged in after Feb 21. Not sure if this is useful for new users trying it out...
+      if (tryWrapping) {
+        const oldProgFuncString = this.progFuncString;
+        this.progFuncString = 'return function(note) {\n' + oldProgFuncString + '\n};';
+
+        const err = this.setAndValidateClassifier(alertOnError, false);
+        if (! err) {
+          this._logger.info('Fixed `progFuncString` by wrapping it in classifier function to return!');
+          this.updated(false);
+          return null;
+        }
+        else {
+          this.progFuncString = oldProgFuncString;
+          return err;
+        }
+      }
+
       this._logger.info('Failed to generate classifier', err, err.stack, 'Smart tag definition:', this.progFuncString);
 
       if (alertOnError) {
