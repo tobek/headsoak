@@ -72,6 +72,11 @@ tag-browser
       .name-wrapper
         max-width: 260px
 
+        +susy-breakpoint($screen-small + 1, $susy)
+          max-width: 150px
+        +susy-breakpoint($screen-large, $susy)
+          max-width: 180px
+
     .description
       +small
       width: calc(100% + 40px) // matches pane layout menu

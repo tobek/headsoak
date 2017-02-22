@@ -22,12 +22,16 @@ $pane-horizontal-padding: 60px
 
   .overview
     +span(4)
+    +susy-breakpoint($screen-small + 1, $susy)
+      +span(3)
     position: relative
     padding: $pane-overview-padding
     background-color: $panel-bg
 
   .pane
     +span(8 last)
+    +susy-breakpoint($screen-small + 1, $susy)
+      +span(9 last)
     position: relative
     padding: 20px $pane-horizontal-padding // @TODO/now Should get smaller on narrower screens
 

@@ -12,6 +12,9 @@ home
   note-browser
     +span(8)
 
+    +susy-breakpoint($screen-small + 1, $susy)
+      +span(9)
+
     // @REMOVED/write
     // +susy-breakpoint($tablet-large, $susy)
     //   +span(4 last)
@@ -27,6 +30,9 @@ home
   .route--scroll &
     tag-browser
       +span(4 last)
+
+      +susy-breakpoint($screen-small + 1, $susy)
+        +span(3 last)
 
       .overview
         width: auto

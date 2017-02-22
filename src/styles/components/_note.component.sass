@@ -138,7 +138,7 @@ $note-header-height: 2.5rem
   &.is--adding-tag,
   &.is--focused
     box-shadow: 0px 6px 10px 5px $shadow-color
-    border-bottom-color: $form-focused-stroke
+    border-bottom: 3px solid $form-focused-stroke
 
   &.is--expanded
     .expand-tags
@@ -369,6 +369,50 @@ $note-header-height: 2.5rem
     //     +susy-breakpoint($screen-small, $susy)
     //       padding-right: calc(75% - 450px - 12px)
     //       padding-left: calc(25% - 150px + 12px)
+
+  @media (min-width: $tablet-large)
+    padding-top: 1rem
+    padding-right: calc(33% + 10px)
+    padding-left: 1.5rem
+    border-bottom: none
+
+    .note-bg
+      height: 100%
+      width: 67%
+
+    .header
+      left: auto
+      right: 0
+      width: 33%
+      height: 100%
+
+    .tags
+      height: 100%
+      max-height: none
+      padding-top: 11px // magic number to align with note body first line from 1rem padding top on note
+      padding-left: 1rem
+      padding-right: 1rem
+      +box-shadowed // @TODO/ece This good? `small-light` seems practically invisible. And/or should we offset x by -1px?
+
+      &:hover
+        overflow-y: auto
+
+    .note-actions
+      padding-right: calc(33% + 4px)
+
+    &.has--tag-overflow .expand-tags
+      display: none
+
+    .route--list &
+      padding-top: 0.5rem
+
+      .tags
+        // maybe mouse events none and you have to click on note to expand and then do stuff with tags? cause tags don't fit
+        
+        padding-top: 3px // magic number too
+
+        &:hover
+          overflow-y: none
 
   modal .is--note &
     // @TODO/ece What do you think of this? Random but looks okay? Also the body input padding and mobile sizing (should it be the same as route--scroll?)
