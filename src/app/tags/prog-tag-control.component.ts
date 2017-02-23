@@ -21,8 +21,10 @@ function classifyNote(note) {
 }
 
 return classifyNote;`;
-
   @Input() tag: Tag;
+
+  /** Whether we're showing a smart tag library tag, in which case almost everything is hidden. */
+  @Input() progTagLibTag = false;
 
   @ViewChild('editorRef') editorRef: ElementRef;
 
@@ -72,7 +74,8 @@ return classifyNote;`;
     sesh.setTabSize(2);
     sesh.setUseSoftTabs(true);
 
-    // this.editor.resize(); // doesn't seem necessary
+    // Not always necessary, but for instance in prog tag library tag modal it is
+    setTimeout(this.editor.resize.bind(this.editor), 0);
 
     this.editorUnchanged();
 

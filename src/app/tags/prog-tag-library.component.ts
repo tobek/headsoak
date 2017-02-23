@@ -1,6 +1,7 @@
 import {Component, Inject, forwardRef} from '@angular/core';
 
 import {AnalyticsService} from '../analytics.service';
+import {ModalService} from '../modals/modal.service';
 import {Tag} from './';
 import {ProgTagLibraryService} from './prog-tag-library.service';
 import {TagsService} from './tags.service'; // Dunno why we can't import from tags/index.ts
@@ -19,6 +20,7 @@ export class ProgTagLibraryComponent {
 
   constructor(
     private analyticsService: AnalyticsService,
+    @Inject(forwardRef(() => ModalService)) private modalService: ModalService,
     @Inject(forwardRef(() => TagsService)) private tagsService: TagsService,
     private progTagLibraryService: ProgTagLibraryService,
   ) {
@@ -37,5 +39,9 @@ export class ProgTagLibraryComponent {
     event.preventDefault();
 
     this.progTagLibraryService.toggleTag(tag);
+  }
+
+  viewCode(tag: Tag) {
+    this.modalService.progTagLibTag(tag);
   }
 }

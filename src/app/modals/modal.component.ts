@@ -9,8 +9,9 @@ import {DataService} from '../data.service';
 import {Logger, SizeMonitorService} from '../utils/';
 
 import {Note, NoteComponent} from '../notes/';
+import {Tag} from '../tags/';
 
-export type ModalType = null | 'loading' | 'login' | 'feedback' | 'privateMode' | 'note' | 'generic';
+export type ModalType = null | 'loading' | 'login' | 'feedback' | 'privateMode' | 'progTagLibTag' | 'note' | 'generic';
 
 export interface ModalConfig {
   /**
@@ -77,6 +78,8 @@ export class ModalComponent {
 
   note?: Note;
   @ViewChild(NoteComponent) noteComponent: NoteComponent;
+
+  tag?: Tag;
 
   private activeModalSub: Subscription;
   private noteUpdatedSub: Subscription;
@@ -161,6 +164,7 @@ export class ModalComponent {
     this.promptValue = '';
 
     delete this.note;
+    delete this.tag;
   }
 
   okButtonShowLoading() {

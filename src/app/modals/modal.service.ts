@@ -4,6 +4,7 @@ import {Subject, ReplaySubject, Subscription} from 'rxjs';
 
 import {ModalComponent, ModalType, ModalConfig} from './modal.component';
 import {Note} from '../notes/';
+import {Tag} from '../tags/';
 import {Logger} from '../utils/';
 
 import * as _ from 'lodash';
@@ -130,6 +131,10 @@ export class ModalService {
   }
   privateMode(): void {
     this.setActiveModal$.next('privateMode');
+  }
+  progTagLibTag(tag: Tag): void {
+    this.modal.tag = tag;
+    this.setActiveModal$.next('progTagLibTag');
   }
 
   note(note: Note): void {

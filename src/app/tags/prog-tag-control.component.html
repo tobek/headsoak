@@ -1,21 +1,23 @@
-<p>
-  This tag is <b>{{ tag.prog ? '' : 'not' }} smart</b>.<span *ngIf="tag.prog"> It is on <b>{{ tag.noteCount || 0 }}</b> note{{ tag.noteCount === 1 ? '' : 's' }}.</span>
+<div *ngIf="! progTagLibTag">
+  <p>
+    This tag is <b>{{ tag.prog ? '' : 'not' }} smart</b>.<span *ngIf="tag.prog"> It is on <b>{{ tag.noteCount || 0 }}</b> note{{ tag.noteCount === 1 ? '' : 's' }}.</span>
 
-  <span *ngIf="tag.fromLib">It comes from the <a [routerLink]="['/tags/smart-tags/library']">smart tag library</a>, so it can't be modified. You can <a [routerLink]="['/tags/tag', tag.id, tag.name, 'delete']">delete</a> it though.</span>
-</p>
-<p *ngIf="! tag.fromLib">
-  Smart tags let you write your own algorithms that determine which notes the tag is assigned to, and perform custom actions on those notes.
-</p>
+    <span *ngIf="tag.fromLib">It comes from the <a [routerLink]="['/tags/smart-tags/library']">smart tag library</a>, so it can't be modified. You can <a [routerLink]="['/tags/tag', tag.id, tag.name, 'delete']">delete</a> it though.</span>
+  </p>
+  <p *ngIf="! tag.fromLib">
+    Smart tags let you write your own algorithms that determine which notes the tag is assigned to, and perform custom actions on those notes.
+  </p>
 
-<button class="btn btn-secondary"
-  *ngIf="tag.prog && ! tag.readOnly"
-  (click)="makeDumb()"
->Revert to normal tag</button>
+  <button class="btn btn-secondary"
+    *ngIf="tag.prog && ! tag.readOnly"
+    (click)="makeDumb()"
+  >Revert to normal tag</button>
 
-<button class="btn btn-secondary"
-  *ngIf="! tag.prog && ! tag.readOnly"
-  (click)="makeSmart()"
->Make smart</button>
+  <button class="btn btn-secondary"
+    *ngIf="! tag.prog && ! tag.readOnly"
+    (click)="makeSmart()"
+  >Make smart</button>
+</div>
 
 <div class="code-container" [class.is--disabled]="! tag.prog">
   <div class="disabled-cover"></div>
@@ -38,7 +40,7 @@
   </div>
 </div>
 
-<div class="documentation">
+<div class="documentation" *ngIf="! progTagLibTag">
   <h1>Documentation</h1>
 
   <p>Headsoak will test each of your notes against the function you return above in order to determine if a note should have the <span class="static-tag">{{ tag.name }}</span> tag.</p>

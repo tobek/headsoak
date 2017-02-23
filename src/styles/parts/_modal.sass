@@ -53,6 +53,15 @@ modal
     margin: 0 auto
     background-color: $dropdown-bg
 
+    &.is--progTagLibTag
+      +span(9)
+      float: none
+      margin-left: auto
+      margin-right: auto
+
+      prog-tag-control .code-container .code-editor
+        height: 60vh
+
     &.is--login,
     &.is--loading
       background-color: $panel-bg
@@ -141,17 +150,17 @@ modal
       input
         width: 100%
 
-    .buttons
-      @extend .clearfix
-      text-align: right
-      margin-bottom: -1rem // so that the margin-bottom on the buttons doesn't actually add spacing to the bottom of the modal
+  .buttons
+    @extend .clearfix
+    text-align: right
+    margin-bottom: -1rem // so that the margin-bottom on the buttons doesn't actually add spacing to the bottom of the modal
 
-      .btn
-        margin-bottom: 1rem // in case the buttons break onto multiple lines
+    .btn
+      margin-bottom: 1rem // in case the buttons break onto multiple lines
 
-      .btn-primary
-        float: right
-        margin-left: 1rem
+    .btn-primary
+      float: right
+      margin-left: 1rem
 
 
 .loading-modal
