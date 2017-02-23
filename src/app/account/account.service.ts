@@ -251,9 +251,9 @@ export class AccountService {
 
     this.ref.createUser({ email: email, password: password}, (err, userData) => { this.zone.run(() => {
       if (err) {
-        this.analytics.event('Account', 'create_account.error', err.code);
         switch (err.code) {
           case 'INVALID_EMAIL':
+            this.analytics.event('Account', 'create_account.error', err.code);
             cb('That\'s an invalid email address!');
             break;
           case 'EMAIL_TAKEN':
@@ -261,14 +261,16 @@ export class AccountService {
             this.login(email, password, (errMessage) => {
               if (errMessage) {
                 // I guess just throw this default message at them, then they'll try to sign in and maybe get wrong password again, and then will see password reset.
+                this.analytics.event('Account', 'create_account.error', err.code);
                 cb('There\'s already an account registered with that email! Please sign in.');
               }
               else {
-                this.toaster.info('There\'s already an account registered with that email! Logging you in...', { timeOut: 7500 });
+                this.analytics.event('Account', 'create_account.logged_in_instead');
               }
             });
             return;
           default:
+            this.analytics.event('Account', 'create_account.error', err.code);
             cb('Sorry, something went wrong trying to create your account. Please try again!<br><br><code>[' + (err.message || err.code || err) + ']</code><br><br>Please try again later or get in touch at <a href="mailto:support@headsoak.com">support@headsoak.com</a>.');
             this._logger.error('Error creating account:', err);
         }
