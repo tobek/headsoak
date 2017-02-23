@@ -38,6 +38,7 @@ export class TagsService {
     { id: '5-created-false', field: 'created', rev: false, text: 'Oldest created'},
     { id: '6-name-false', field: 'name', rev: false, text: 'Alphabetically'},
     { id: '7-name-true', field: 'name', rev: true, text: 'Alpha (reversed)'},
+    { id: '8-prog-only', text: 'Smart tags only'},
   ];
 
   dataService: DataService;
@@ -182,6 +183,10 @@ export class TagsService {
     if (! sortOpt) {
       // Just get the "first" sort option
       sortOpt = this.sortOpts[0];
+    }
+
+    if (sortOpt.id === '8-prog-only') {
+      return this.sortTags(this.sortOpts[6], _.filter(tagsToSort, (tag) => tag.prog));
     }
 
     this._logger.time('Sorting tags');
