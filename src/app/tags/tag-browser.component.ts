@@ -13,7 +13,7 @@ import {Tag, TagComponent} from './';
 import {TagDetailsComponent} from './tag-details.component'
 import {TagsService} from './tags.service'; // no idea why importing this separately is necessary
 import {Logger/*, ScrollMonitorService, AutocompleteService*/} from '../utils/';
-import {SizeMonitorService} from '../utils/size-monitor.service';
+import {ScrollMonitorService, SizeMonitorService} from '../utils/';
 
 import * as _ from 'lodash';
 
@@ -74,12 +74,12 @@ export class TagBrowserComponent {
   constructor(
     private router: Router,
     private elRef: ElementRef,
-    private sizeMonitorService: SizeMonitorService,
+    @Inject(forwardRef(() => SizeMonitorService)) private sizeMonitor: SizeMonitorService,
+    @Inject(forwardRef(() => ScrollMonitorService)) private scrollMonitor: ScrollMonitorService,
     private analyticsService: AnalyticsService,
     private activeUIs: ActiveUIsService,
     @Inject(forwardRef(() => SettingsService)) private settings: SettingsService,
     // private autocompleteService: AutocompleteService,
-    // private scrollMonitor: ScrollMonitorService,
     // private notesService: NotesService,
     @Inject(forwardRef(() => TagsService)) private tagsService: TagsService
   ) {
@@ -156,13 +156,13 @@ export class TagBrowserComponent {
       this.expandedTag = this.activeTag;
 
       // @HACK @TODO/tags @TODO/polish @TODO/soon This REALLY shouldn't be necessary, but for now, especially e.g. if you scroll to bottom of notes or tag list and then click on a tag, you don't see shit. They need to scroll independently. It also means you lose your place in your notes when you go back. Bah.
-      if (this.activeTag || this.activePane) {
+      if (! this.sizeMonitor.isMobile && (this.activeTag || this.activePane)) {
         // We were already looking at tags, so animate scroll so you don't lose your place
-        jQuery('html, body').animate({ scrollTop: 0 }, 250);
+        this.scrollMonitor.scrollToTop();
       }
       else {
         // We were elsewhere, animating will look weird
-        document.querySelector('main').scrollTop = 0;
+        this.scrollMonitor.scrollToTop(0);
       }
 
       // This whole activeTagPane thing is a hack (reading tagDetailsComponent.activePane directly from template was causing that debug mode error where expression changed while checking it)
@@ -185,7 +185,7 @@ export class TagBrowserComponent {
         this.activePane = 'viz';
       }
       else {
-        if (! this.sizeMonitorService.isMobile) {
+        if (! this.sizeMonitor.isMobile) {
           // On desktop we default to showing vizualization on main tag browser page
           this.activePane = 'viz';
         }
@@ -270,7 +270,7 @@ export class TagBrowserComponent {
       return;
     }
 
-    if (this.sizeMonitorService.isMobile) {
+    if (this.sizeMonitor.isMobile) {
       this.toggleTagDropdown(tag);
       return;
     }

@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 
+import {SizeMonitorService} from '../utils/size-monitor.service';
+
 import * as _ from 'lodash';
 
 // @TODO/optimization This should be run outside zone I think, it's triggering change detection on every check? Also maybe set up listener using `Observable`, see <http://stackoverflow.com/a/36849347/458614>
@@ -18,7 +20,9 @@ export class ScrollMonitorService {
     { leading: true, trailing: true }
   );
 
-  constructor() {}
+  constructor(
+    private sizeMonitor: SizeMonitorService,
+  ) {}
 
   init() {
     this.desktopScrollingEl = document.querySelector('main');
@@ -41,6 +45,12 @@ export class ScrollMonitorService {
     this.scroll$.next(this.newScrollY);
 
     this.lastScrollY = this.newScrollY;
+  }
+
+  scrollToTop(duration = 250) {
+    const $target = jQuery(this.sizeMonitor.isMobile ? 'html, body' : 'main');
+
+    $target.animate({ scrollTop: 0 }, duration);
   }
 
 }

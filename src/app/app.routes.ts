@@ -17,6 +17,7 @@ export const NOTE_BROWSER_ROUTES = [
 export const DEFAULT_NOTE_ROUTE = '/';
 
 export const routingInfo = {
+  previousRoute: null,
   /** The most recently-visited note-related route. */
   lastNoteRoute: DEFAULT_NOTE_ROUTE,
 };

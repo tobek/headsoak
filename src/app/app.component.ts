@@ -62,7 +62,7 @@ export class App {
     private zone: NgZone,
     private activeUIs: ActiveUIsService,
     private modalService: ModalService,
-    private sizeMonitorService: SizeMonitorService,
+    private sizeMonitor: SizeMonitorService,
     private scrollMonitor: ScrollMonitorService,
     private tooltipService: TooltipService,
     private router: Router,
@@ -172,6 +172,10 @@ export class App {
       this.isBackable = false;
 
       this.routingInfo.lastNoteRoute = event.url;
+
+      if (this.routingInfo.previousRoute && NOTE_BROWSER_ROUTES.indexOf(this.routingInfo.previousRoute) === -1) {
+        this.scrollMonitor.scrollToTop(0);
+      }
     }
     else {
       this.isBackable = true;
@@ -184,6 +188,8 @@ export class App {
     this.isHeaderless = false;
 
     this.setRouteClass(event);
+
+    this.routingInfo.previousRoute = event.url;
   }
 
   /** Sets class on app wrapper element to reflect current route. @NOTE Right now only supporting "root" routes e.g. /home or /tags. This is because if we get a route like `/tags/199` it's less trivial to match that to the `/tags/:tagId` route, so we'll just match it  to `/tags`. */
@@ -207,7 +213,7 @@ export class App {
   }
 
   logoClick(): void {
-    if (this.sizeMonitorService.isMobile && this.isBackable) {
+    if (this.sizeMonitor.isMobile && this.isBackable) {
       this.backClick();
       return;
     }
@@ -307,7 +313,7 @@ export class App {
   }
 
   noteNavTouchend(event: Event): void {
-    if  (! this.sizeMonitorService.isMobile) {
+    if  (! this.sizeMonitor.isMobile) {
       return;
     }
     if (NOTE_BROWSER_ROUTES.indexOf(this.router.url) === -1) {
@@ -337,7 +343,7 @@ export class App {
   }
 
   tagNavClick(): void {
-    if (this.sizeMonitorService.isMobile) {
+    if (this.sizeMonitor.isMobile) {
       this.router.navigateByUrl('/tags');
       return;
     }
@@ -356,7 +362,7 @@ export class App {
   }
 
   onScroll(newScrollY: number) {
-    if (! this.sizeMonitorService.isMobile) {
+    if (! this.sizeMonitor.isMobile) {
       return;
     }
 

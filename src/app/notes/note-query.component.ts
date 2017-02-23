@@ -9,7 +9,7 @@ import {SettingsService} from '../settings/settings.service';
 import {Note} from './note.model';
 import {NotesService} from './notes.service';
 import {Tag, ChildTag, TagsService} from '../tags';
-import {Logger, AutocompleteService, AutocompleteSuggestion, ToasterService} from '../utils/';
+import {Logger, AutocompleteService, AutocompleteSuggestion, ScrollMonitorService, ToasterService} from '../utils/';
 import {NOTE_BROWSER_ROUTES, routingInfo} from '../app.routes';
 
 import * as _ from 'lodash';
@@ -52,6 +52,7 @@ export class NoteQueryComponent {
     private analyticsService: AnalyticsService,
     private autocompleteService: AutocompleteService,
     private modalService: ModalService,
+    private scrollMonitor: ScrollMonitorService,
     private toaster: ToasterService,
     private settings: SettingsService,
     private notesService: NotesService,
@@ -100,6 +101,7 @@ export class NoteQueryComponent {
 
   queryUpdated(): void {
     this.queryUpdated$.next(null);
+    this.scrollMonitor.scrollToTop();
   }
 
   focus(): void {

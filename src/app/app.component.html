@@ -32,7 +32,7 @@
         </div>
 
         <div class="search-mode-indicator"
-          *ngIf="sizeMonitorService.isMobile"
+          *ngIf="sizeMonitor.isMobile"
           [class.is--active]="! noteQueryComponent.isEmpty()"
           (click)="searchModeClick()"
         ><i class="fa fa-search"></i></div>
