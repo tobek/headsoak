@@ -124,7 +124,7 @@ export class AccountService {
   }
 
   /** User has initiated login attempt. */
-  login(email: string, password: string, errCb: (errMessage: string) => void) {
+  login(email: string, password: string, cb: (errMessage?: string) => void) {
     this.analytics.event('Account', 'login.attempt');
 
     this.ref.authWithPassword({
@@ -138,11 +138,11 @@ export class AccountService {
           case 'INVALID_EMAIL':
           case 'INVALID_PASSWORD':
           case 'INVALID_USER':
-            errCb('Wrong credentials, please try again.'); // @TODO friendlier message
+            cb('Wrong credentials, please try again.'); // @TODO/copy friendlier message
             break;
           default:
             this._logger.warn('Login failed: ', error);
-            errCb('Error logging in, try again!<br><br>[' + (error.message || error.code || JSON.stringify(error)) + ']');
+            cb('Error logging in, try again!<br><br>[' + (error.message || error.code || JSON.stringify(error)) + ']');
         }
 
         this.loginState$.next('error');
@@ -150,6 +150,8 @@ export class AccountService {
       }
 
       this.analytics.event('Account', 'login.success');
+
+      cb();
 
       // Actual login logic handled in `onAuth` callback from this.init
     })}, {
@@ -244,7 +246,7 @@ export class AccountService {
     });
   }
 
-  createAccount(email: string, password: string, errCb: (errMessage: string) => void) {
+  createAccount(email: string, password: string, cb: (errMessage?: string) => void) {
     this.analytics.event('Account', 'create_account.attempt');
 
     this.ref.createUser({ email: email, password: password}, (err, userData) => { this.zone.run(() => {
@@ -252,13 +254,22 @@ export class AccountService {
         this.analytics.event('Account', 'create_account.error', err.code);
         switch (err.code) {
           case 'INVALID_EMAIL':
-            errCb('That\'s an invalid email address!');
+            cb('That\'s an invalid email address!');
             break;
           case 'EMAIL_TAKEN':
-            errCb('There\'s already an account with that email! Please sign in.');
-            break;
+            // Just try to log them in
+            this.login(email, password, (errMessage) => {
+              if (errMessage) {
+                // I guess just throw this default message at them, then they'll try to sign in and maybe get wrong password again, and then will see password reset.
+                cb('There\'s already an account registered with that email! Please sign in.');
+              }
+              else {
+                this.toaster.info('There\'s already an account registered with that email! Logging you in...', { timeOut: 7500 });
+              }
+            });
+            return;
           default:
-            errCb('Sorry, something went wrong trying to create your account. Please try again!<br><br><code>[' + (err.message || err.code || err) + ']</code><br><br>Please try again later or get in touch at <a href="mailto:support@headsoak.com">support@headsoak.com</a>.');
+            cb('Sorry, something went wrong trying to create your account. Please try again!<br><br><code>[' + (err.message || err.code || err) + ']</code><br><br>Please try again later or get in touch at <a href="mailto:support@headsoak.com">support@headsoak.com</a>.');
             this._logger.error('Error creating account:', err);
         }
 
@@ -270,7 +281,7 @@ export class AccountService {
       this.analytics.event('Account', 'create_account.success');
 
       this._logger.info('New account created with user id', userData.id);
-      this.login(email, password, errCb);
+      this.login(email, password, cb);
     })});
   }
 

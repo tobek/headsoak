@@ -136,7 +136,9 @@ export class LoginComponent {
     });
 
     this.accountService.login(this.email, this.password, (errMessage: string) => {
-      this.tooltipService.justTheTip(errMessage, this.signInButton.nativeElement, 'error');
+      if (errMessage) {
+        this.tooltipService.justTheTip(errMessage, this.signInButton.nativeElement, 'error');
+      }
     });
 
     this.pseudoLogin(loginIframe);
@@ -194,7 +196,9 @@ export class LoginComponent {
     // }
 
     this.accountService.createAccount(this.email, this.pass1, (errMessage) => {
-      this.tooltipService.justTheTip(errMessage, this.signUpButton.nativeElement, 'error');
+      if (errMessage) {
+        this.tooltipService.justTheTip(errMessage, this.signUpButton.nativeElement, 'error');
+      }
     });
   }
 }
