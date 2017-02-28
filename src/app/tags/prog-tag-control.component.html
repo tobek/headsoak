@@ -61,12 +61,14 @@
 
   <pre>id: string;
 name: string;
-created: number; // unix timestamp
-modified: number; // unix timestamp
-docs: string[]; // array of note IDs tagged with this tag
-data: Object; // free-form persistent data store for saving anything you want to associate with this tag
-prog: boolean; // whether this tag is programmatic (i.e. a smart tag)
-fromLib: boolean; // whether this tag came from the Smart Tag Library</pre>
+created: number; // Unix timestamp
+modified: number; // Unix timestamp
+docs: string[]; // Array of note IDs tagged with this tag
+prog: boolean; // Whether this tag is programmatic (i.e. a smart tag)
+fromLib: boolean; // Whether this tag came from the Smart Tag Library<!--
+getNotes: function() => Note[]; // function that returns array of all the Note instances tagged with this tag -->
+setData: function(key, data); // Persistent key-value data store for saving any data you want to associate with this tag. You must call this function when you change data or else it won't be saved.
+getData: function(key); // Retrieve data for a specific key</pre>
 
   <h3><code>note</code></h3>
 

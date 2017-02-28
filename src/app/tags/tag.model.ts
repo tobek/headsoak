@@ -3,6 +3,7 @@ import {DataService} from '../data.service';
 import {Logger} from '../utils/logger';
 
 import {ChildTag} from './';
+import {PublicTag} from './public-tag.model';
 import {Note} from '../notes/';
 
 import * as _ from 'lodash';
@@ -59,17 +60,29 @@ export class Tag {
   progFuncString?: string; // string representing programmatic ta@Tg function to be eval'd. This ccould be present even though `prog` is false, saving the function for potential future use.
 
   private _data: Object = {};
-  /** Free-form persistent data store for prog tags to use */
+  /** Free-form persistent data store for prog tags to use. */
   get data(): Object {
     return this._data || {};
   }
   set data(newData: Object) {
-    // @NOTE This might not ever really get called if instead we just set properties on this object instead of re-assigning entire thing. So either a) maybe it should be immutable and smart tag developers will have to accommodate, or b) we need to make sure to tell smart tag developers about changes functions they might want to call when modifying `data`.
     if (! _.isEqual(newData, this._data)) {
       this._data = newData;
       this.prog && this.runProgOnAllNotes();
       this.updated();
     }
+  }
+
+  // @TODO/now @TODO/prog THE UPDATE AND RUN PROG SHOULD BE THROTTLED
+  /** These should be used by prog tags to ensure that changes are saved to data store and trigger re-running of prog stuff. We use `_.cloneDeep` and vanilla equality test as a kind of poor man's immutability. */
+  setData(key: string, data: any) {
+    if (data !== this._data[key]) {
+      this._data[key] = _.cloneDeep(data);
+      this.prog && this.runProgOnAllNotes();
+      this.updated();
+    }
+  }
+  getData(key: string): any {
+    return _.cloneDeep(this._data[key]);
   }
 
   /** Serialized version of `data` that's safe to store in Firebase. */
@@ -79,6 +92,15 @@ export class Tag {
     }
 
     return safeStringify(this.data);
+  }
+
+  _publicTag: PublicTag;
+  get publicTag(): PublicTag {
+    if (! this._publicTag) {
+      this._publicTag = new PublicTag(this);
+    }
+
+    return this._publicTag;
   }
 
   /**
@@ -515,10 +537,10 @@ export class Tag {
   }
 
   generateClassifier(): (note: Note) => ClassifierReturnType {
-    const smartTagDef = new Function('api', '_', this.progFuncString); // (this line excites me)
+    const progTagDef = new Function('api', '_', this.progFuncString); // (this line excites me)
 
     // Smart tag should be set up to return the classifier function, so we call the eval'd function immediately and pass in API and lodash:
-    const classifierFunc = smartTagDef.call(this, this.dataService.tags.progTagApi, _);
+    const classifierFunc = progTagDef.call(this.publicTag, this.dataService.tags.progTagApi, _);
 
     if (typeof classifierFunc !== 'function') {
       throw Error('Smart tag code did not return a function');
@@ -528,7 +550,7 @@ export class Tag {
     return (note: Note): boolean => {
       try {
         // Passing in this tag as the this arg
-        return classifierFunc.call(this, note);
+        return classifierFunc.call(this.publicTag, note);
       }
       catch (err) {
         this.progTagError(err, note);

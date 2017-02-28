@@ -17,10 +17,13 @@ code
 .syntax
   white-space: pre-wrap
   overflow-y: auto
-  max-height: 50vh
+  max-height: 30vh
   padding: 1rem
   background: $panel-bg
   color: $panel-text
+
+  &:only-of-type
+    max-height: 50vh
   
   .string
     color: $accent-color

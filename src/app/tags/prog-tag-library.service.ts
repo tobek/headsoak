@@ -102,9 +102,7 @@ var defaultBlacklist = {
 };
 
 // And the user can add their own:
-if (! this.data.blacklist) {
-  this.data.blacklist = {};
-}
+var blacklist = this.getData('blacklist') || {};
 
 function confirmBlacklisting(childTag, event, tagDetailsComponent) {
   if (event.shiftKey) {
@@ -125,7 +123,8 @@ function confirmBlacklisting(childTag, event, tagDetailsComponent) {
 }
 
 function blacklistChildTag(childTag, tagDetailsComponent) {
-  _this.data.blacklist[childTag.childTagName] = true;
+  blacklist[childTag.childTagName] = true;
+  _this.setData('blacklist', blacklist); // we have to call this otherwise the update won't be saved 
   childTag.delete(true);
 
   if (tagDetailsComponent && tagDetailsComponent.setUpChildTags) {
@@ -204,7 +203,7 @@ return function(note) {
         return;
       }
 
-      if (defaultBlacklist[childTagName] || _this.data.blacklist[childTagName]) {
+      if (defaultBlacklist[childTagName] || blacklist[childTagName]) {
         return;
       }
 

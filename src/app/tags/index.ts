@@ -10,3 +10,4 @@ export * from './tag-details.component';
 export * from './tag-visualization.component';
 export * from './tag.model';
 export * from './child-tag.model';
+export * from './public-tag.model';
