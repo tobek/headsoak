@@ -230,7 +230,7 @@ return function(note) {
       id: 'lib--remember',
       fromLib: true,
       name: 'remember this',
-      description: '@TODO/now',
+      description: 'Employ spaced repetition learning to better remember notes. Whenever you add this tag to one of your notes, Headsoak will email you that note in a day, a week, a month, 4 months, and 18 months after tagging.',
       prog: true,
       // progFunc: function(api: ProgTagApiService, _): ProgTagDef { const _this: Tag = this;
       // @TODO/ece @TODO/prog Too many exclamation marks in the email copy - also general feedback on copy
@@ -258,6 +258,7 @@ function queueEmail(note, sendAt, i) {
 
   body += '<p>If you have any feedback about this feature, or Headsoak in general, just reply to this email!</p>';
 
+  // This will send an email to the current user's email address at the specified time.
   return api.queueUserEmail(sendAt, {
     subject: 'Remember this?',
     bodyTemplate: body,
@@ -266,8 +267,11 @@ function queueEmail(note, sendAt, i) {
   });
 }
 
+// Note that this smart tag does not return a classifier function. This tag isn't automatically assigned to notes - the user assigns it manually. We do, however, attach functions to specific hooks:
+
 return {
   hooks: {
+    // This gets run every time this tag is added to a note:
     added: function(note) {
       var now = Date.now();
       var queuedEmails = [];
@@ -275,6 +279,7 @@ return {
       for (var i = 0; i < timeConfig.length; ++i) {
         var sendAt = now + timeConfig[i].hours*60*60*1000;
 
+        // We need to grab and store the queued email ID so that if the user later removes this tag, we can cancel the email
         var emailId = queueEmail(note, sendAt, i);
 
         queuedEmails.push({
@@ -283,11 +288,14 @@ return {
         });
       }
 
+      // We can then save this info in this tag's data store, keyed by this particular note's ID
       _this.setData(note.id, queuedEmails);
     },
 
+    // This gets run every time this tag is removed from a note:
     removed: function(note) {
-      (_this.getData(note.id) || []).forEach(function(queuedEmail) {
+      var queuedEmails = _this.getData(note.id) || [];
+      queuedEmails.forEach(function(queuedEmail) {
         api.cancelQueuedEmail(queuedEmail.id);
       });
 
@@ -449,6 +457,7 @@ return function(note) {
     }
   }
 
+  // @TODO/refactor @TODO/prog It might be cleaner to simply not save `progFuncString` and others to the data store, and just refetch them from the hard-coded library on app load. This has the benefit of not needlessly storing long `progFuncString` and transmitting it with every update. However, we'd need to keep track of a version number or something to make sure we alert user and re-run when things change.
   maybeUpdateLocalTag(localTag: Tag, latestTagData) {
     let funcUpdated, nameUpdated, oldName;
 

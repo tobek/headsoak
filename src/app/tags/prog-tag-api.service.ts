@@ -81,6 +81,7 @@ export class ProgTagApiService {
     return localId;
   }
 
+  // @TODO/polish @TODO/prog @TODO/account Delete all user's queued emails when user deletes account
   cancelQueuedEmail(id: string, cb?: (err?) => {}) {
     if (! id) {
       throw new Error('Must supply "id" parameter');
