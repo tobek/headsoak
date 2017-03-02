@@ -43,41 +43,42 @@ export class ProgTagApiService {
 
   // @TODO/polish This won't actually send an email until the nearest hour when server cron runs. We could have a separate Firebase location for immediate emails that the server watcher could listen to instead.
   sendUserEmail(
-    id: string,
     email: { subject: string, bodyTemplate: string, tagId: string, noteId?: string, },
     cb?: (err?) => {}
-  ) {
-    if (! id || ! email || ! email.subject || typeof email.bodyTemplate === 'undefined' || ! email.tagId) {
-      throw new Error('Failed to supply required arguments. Must supply: "id", and an "email" object with "subject", "bodyTemplate", and "tagId" properties.');
+  ): string {
+    if (! email || ! email.subject || typeof email.bodyTemplate === 'undefined' || ! email.tagId) {
+      throw new Error('Failed to supply required arguments. Must supply an "email" object with "subject", "bodyTemplate", and "tagId" properties.');
     }
 
-    this.queueUserEmail(id, Date.now(), email, cb);
+    return this.queueUserEmail(Date.now(), email, cb);
   }
 
   queueUserEmail(
-    id: string,
-    when: number, // in ms
+    sendAt: number, // in ms
     email: { subject: string, bodyTemplate: string, tagId: string, noteId?: string, },
     cb?: (err?) => {}
-  ) {
-    if (! id || ! when || ! email || ! email.subject || typeof email.bodyTemplate === 'undefined' || ! email.tagId) {
-      throw new Error('Failed to supply required arguments. Must supply: "id", "when", and an "email" object with "subject", "bodyTemplate", and "tagId" properties.');
+  ): string {
+    if (! sendAt || ! email || ! email.subject || typeof email.bodyTemplate === 'undefined' || ! email.tagId) {
+      throw new Error('Failed to supply required arguments. Must supply: "sendAt" timestamp and an "email" object with "subject", "bodyTemplate", and "tagId" properties.');
     }
-    const actualId = _dataService.user.uid + ':' + id;
+    const localId = Math.floor((Date.now() + Math.random()) * 100).toString(36);
+    const globalId = _dataService.user.uid + ':' + localId;
 
-    _dataService.ref.root().child('queuedEmails/' + actualId).set({
+    _dataService.ref.root().child('queuedEmails/' + globalId).set({
       uid: _dataService.user.uid,
       type: 'prog',
-      when: Math.round(when / 1000),
+      sendAt: Math.round(sendAt / 1000),
       subject: email.subject,
       template: email.bodyTemplate,
       tagId: email.tagId,
       noteId: email.noteId || null,
     }, (err?) => {
-      err && this._logger.warn('Failed to queue email for user', _dataService.user.uid, 'with email id', actualId, ' - error:', err);
+      err && this._logger.warn('Failed to queue email for user', _dataService.user.uid, 'with email id', globalId, ' - error:', err);
 
       cb && cb(err);
     });
+
+    return localId;
   }
 
   cancelQueuedEmail(id: string, cb?: (err?) => {}) {
