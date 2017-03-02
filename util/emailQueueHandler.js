@@ -52,9 +52,8 @@ function init() {
       }
       else {
         logger.log('Queued emails handled successfully\n');
+        process.exit();
       }
-
-      process.exit();
     });
   });
 }
@@ -85,7 +84,7 @@ function prepareEmail(config, emailId, cb) {
     },
   ], function(err) {
     if (err) {
-      logger.error('Failed to ensure necessary data fetched for email id ' + emailId, err);
+      logger.error('Failed to ensure necessary data fetched for email id ' + emailId);
       return cb(err);
     }
 
@@ -107,23 +106,22 @@ function handleEmail(uid, emailId, config, cb) {
   emailer.send({
     to: users[uid].user.email,
     toName: users[uid].user.displayName || null,
-    templateId: '00d5673d-9573-4d71-bbda-4118869c2570', // @TODO/now
-    templateData: {
-      body: body,
-      user: users[uid].user,
-      tag: users[uid].tags[config.tagId],
-    },
+    templateId: '80545ca6-e2a6-4d87-808d-ffeca653bb67',
     subject: config.subject,
-    body: '.', // unused for this template, but sendgrid requires we include something
+    body: body,
+    templateData: {
+      '%#tag.name#%': users[uid].tags[config.tagId].name,
+      '%#tag.id#%': users[uid].tags[config.tagId].id,
+    },
   }, function(err) {
     if (err) {
-      logger.error('Failed to send email with id ' + id, err);
+      logger.error('Failed to send email with id ' + emailId);
       return cb(err);
     }
 
     ref.child('queuedEmails/' + emailId).remove(function(err) {
       if (err) {
-        logger.error('Sent email but failed to remove record with id ' + emailId, err);
+        logger.error('Sent email but failed to remove record with id ' + emailId);
         return cb(err);
       }
 
@@ -179,7 +177,14 @@ function ensureNoteFetched(uid, noteId, cb) {
   }
 
   ref.child('/users/' + uid + '/nuts/' + noteId).once('value', (snapshot) => {
-    users[uid].notes[noteId] = snapshot.val();
+    const note = snapshot.val();
+
+    if (note.body) {
+      // @TODO/polish @TODO/prog Lodash-template-y looking things could break here. Amongst several things we might want to disable variable interpolation: <https://github.com/lodash/lodash/issues/772>
+      note.body = _.escape(note.body).replace(/\n/g, '<br>');
+    }
+
+    users[uid].notes[noteId] = note;
     cb();
   }, cb);
 }

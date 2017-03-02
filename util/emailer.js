@@ -17,8 +17,8 @@ const defaultOptions = {
   subject: 'Headsoak notification',
   isHtml: true,
   templateId: null,
-  templateData: null, // object mapping from keys (e.g. `'-name-'`) to values to replace them with in the template
-  // @NOTE If using a template, the given subject and body replace `<%subject%>` and `<%body%>` in the template, if they exist
+  templateData: null, // object mapping from keys (e.g. `'%#name#%'`) to values to replace them with in the template
+  // @NOTE If using a template, the given subject and body replace the special/built-in substitution tags `<%subject%>` and `<%body%>` in the template, if they exist
   subManagement: undefined, // whether to include unsubscribe link
 };
 
@@ -92,16 +92,18 @@ function sendMail(opts, cb) {
       if (response && response.body && response.body.errors) {
         logger.error('[emailer] Errors:', response.body.errors);
       }
-    }
-    else {
-      logger.log('[emailer] Email sent successfully');
+
+      cb && cb({
+        message: 'Error response received from Sendgrid API',
+        response: response,
+      });
+
+      return;
     }
 
-    logger.log('[emailer] Response:', response);
+    logger.log('[emailer] Email sent successfully');
 
-    if (cb) {
-      cb(error, response);
-    }
+    cb && cb();
   });
 }
 
