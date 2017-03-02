@@ -233,24 +233,64 @@ return function(note) {
       description: '@TODO/now',
       prog: true,
       // progFunc: function(api: ProgTagApiService, _): ProgTagDef { const _this: Tag = this;
+      // @TODO/ece @TODO/prog Too many exclamation marks in the email copy - also general feedback on copy
       progFuncString: `var _this = this;
+
+var timeConfig = [
+  { hours: 24, words: '1 day', next: '6 days' },
+  { hours: 7*24, words: '1 week', next: '3 weeks' },
+  { hours: 30*24, words: '1 month', next: '3 months' },
+  { hours: 4*30.5*24, words: '4 months', next: 'about a year' },
+  { hours: 18*30.5*24, words: '18 months' },
+];
+
+function queueEmail(note, sendAt, i) {
+  var body = '<p>' + timeConfig[i].words + ' ago you added the <span style="color: #BBB">#</span><span style="color: #888">remember this</span> tag to this note:</p>';
+
+  body += '<blockquote><%= note.body %></blockquote>';
+
+  if (timeConfig[i].next) {
+    body += '<p>We\\'ll next send this note to you in ' + timeConfig[i].next + '. Until then, keep remembering!</p>';
+  }
+  else {
+    body += '<p>This is your last email! Hopefully you remember it pretty well by now.</p>';
+  }
+
+  body += '<p>If you have any feedback about this feature, or Headsoak in general, just reply to this email!</p>';
+
+  return api.queueUserEmail(sendAt, {
+    subject: 'Remember this?',
+    bodyTemplate: body,
+    tagId: _this.id,
+    noteId: note.id,
+  });
+}
 
 return {
   hooks: {
     added: function(note) {
-      var now = Math.round(Date.now() / 1000);
-      _this.setData(note.id, {
-        added: now,
-        times: [
-          now + 24*60*60,
-          now + 7*24*60*60,
-          now + 30*24*60*60,
-          now + 180*24*60*60,
-          now + 2*365*24*60*60,
-        ]
-      });
+      var now = Date.now();
+      var queuedEmails = [];
+
+      for (var i = 0; i < timeConfig.length; ++i) {
+        var sendAt = now + timeConfig[i].hours*60*60*1000;
+
+        var emailId = queueEmail(note, sendAt, i);
+
+        queuedEmails.push({
+          id: emailId,
+          sendAt: sendAt,
+        });
+      }
+
+      _this.setData(note.id, queuedEmails);
     },
+
     removed: function(note) {
+      (_this.getData(note.id) || []).forEach(function(queuedEmail) {
+        api.cancelQueuedEmail(queuedEmail.id);
+      });
+
       _this.removeData(note.id);
     },
   }
@@ -438,6 +478,7 @@ return function(note) {
       return;
     }
 
+    // @TODO/now @TODO/prog Message shouldn't talk about re-running unless it has a classifier
     let message: string;
     if (funcUpdated && nameUpdated) {
       message = '<p>Re-running tag on all your notes now. Also, it has been renamed to <span class="static-tag">' + latestTagData.name + '</span>.</p>';
