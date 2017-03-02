@@ -1,5 +1,11 @@
 /**
  * Script that grabs emails from `queuedEmails` whose `sendAt` value (unix timestamp in seconds) is in the past, and then processes and sends emails and deletes records, then exits. Logs output to stdout.
+ *
+ * Example hourly invocation in cron:
+ *
+ *     0 * * * * /usr/local/bin/node /home/ubuntu/nutmeg/util/emailQueueHandler.js >> /var/log/nutmeg/email-queue-handler.log
+ *
+ * @TODO/prog @TODO/polish We should periodically check that `queuedEmails` isn't getting too huge or weird...
  */
 
 const Firebase = require('firebase');
