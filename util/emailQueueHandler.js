@@ -88,13 +88,18 @@ function prepareEmail(config, emailId, cb) {
       return cb(err);
     }
 
-    handleEmail(uid, emailId, config, cb);
+    try {
+      handleEmail(uid, emailId, config, cb);
+    }
+    catch (err) {
+      logger.error('Error thrown during handleEmail:', err);
+      cb(err);
+    }
   });
 }
 
 // Assumes all required data is present
 function handleEmail(uid, emailId, config, cb) {
-  // @TODO/now try/catch
   const compiledTemplate = _.template(config.template);
 
   const body = compiledTemplate({
