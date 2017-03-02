@@ -5,6 +5,8 @@ const sendgrid = require('sendgrid')(config.SENDGRID_API_KEY);
 
 const logger = require('./logger');
 
+const debug = false;
+
 
 const defaultOptions = {
   from: 'support@headsoak.com', // @TODO/email More interesting from address (especially for welcome emails)
@@ -15,7 +17,7 @@ const defaultOptions = {
   subject: 'Headsoak notification',
   isHtml: true,
   templateId: null,
-  templateData: null, // object maping from keys (e.g. `'-name-'`) to values to replace them with in the template
+  templateData: null, // object mapping from keys (e.g. `'-name-'`) to values to replace them with in the template
   // @NOTE If using a template, the given subject and body replace `<%subject%>` and `<%body%>` in the template, if they exist
   subManagement: undefined, // whether to include unsubscribe link
 };
@@ -76,6 +78,13 @@ function sendMail(opts, cb) {
     path: '/v3/mail/send',
     body: mailData,
   });
+
+  if (debug) {
+    if (cb) {
+      cb();
+    }
+    return;
+  }
    
   sendgrid.API(request, function(error, response) {
     if (error) {

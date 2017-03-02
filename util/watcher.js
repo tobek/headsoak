@@ -33,7 +33,7 @@ ref.authWithCustomToken(firebaseToken, function(err, authData) {
   if (err) {
     ohShit('Firebase authentication failed', err);
   } else {
-    logger.log('Authenticated successfully with payload:', authData);
+    logger.log('Authenticated successfully');
   }
 });
 
@@ -103,6 +103,7 @@ ref.child('users').orderByChild('userSince').startAt(Date.now()).on('child_added
 
 
 
+// @TODO/refactor We use this here and in emailQueueHandler.js - if we need to use it again just break it out into a module, along with process.on uncaughtException
 function ohShit(fuck, err) {
   const antiSpamQuote = `
     <hr>
@@ -125,7 +126,7 @@ function ohShit(fuck, err) {
     body: '<p>Hey Toby,</p><p>There\'s a problem, and the problem is that the Headsoak Firebase watcher has crashed. Here\'s the error:</p><pre>' + (err.stack ? err.stack : JSON.stringify(err, null, 2)) + '</pre>' + antiSpamQuote,
     subManagement: false,
   }, function() {
-    logger.error('Exiting...');
+    logger.error('Exiting...\n');
     process.exit(1);
   });
 }

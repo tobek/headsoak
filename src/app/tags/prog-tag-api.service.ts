@@ -56,7 +56,7 @@ export class ProgTagApiService {
 
   queueUserEmail(
     id: string,
-    when: number,
+    when: number, // in ms
     email: { subject: string, bodyTemplate: string, tagId: string, noteId?: string, },
     cb?: (err?) => {}
   ) {
@@ -68,7 +68,7 @@ export class ProgTagApiService {
     _dataService.ref.root().child('queuedEmails/' + actualId).set({
       uid: _dataService.user.uid,
       type: 'prog',
-      when: when,
+      when: Math.round(when / 1000),
       subject: email.subject,
       template: email.bodyTemplate,
       tagId: email.tagId,

@@ -2,6 +2,8 @@
   "rules": {
 
     "users": {
+      ".indexOn": ["userSince"],
+
       "$uid": {
         // you can only read/write your own stuff:
         ".read": "$uid === auth.uid",
@@ -47,6 +49,8 @@
 
     // This is for user's smart tags to be able to queue up emails to send. We enforce uid being their own uid so that they can only email to their own email address.
     "queuedEmails": {
+      ".indexOn": ["when"],
+
       ".read": false,
       "$emailInfo": {
         ".write": "(data.child('uid').val() === auth.uid || ! data.exists()) && (newData.child('uid').val() === auth.uid || ! newData.exists())",
