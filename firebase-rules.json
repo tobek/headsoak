@@ -37,10 +37,20 @@
         }
       }
     },
+
     "emailToId": {
       ".read": true,
       "$email": {
         ".write": "newData.val() === auth.uid"
+      }
+    },
+
+    // This is for user's smart tags to be able to queue up emails to send. We enforce uid being their own uid so that they can only email to their own email address.
+    "queuedEmails": {
+      ".read": false,
+      "$emailInfo": {
+        ".write": "newData.child('uid').val() === auth.uid",
+        ".validate": "newData.hasChildren(['type', 'when', 'subject', 'tagId']) && newData.child('when').isNumber()"
       }
     },
 
