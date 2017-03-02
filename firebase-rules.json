@@ -49,7 +49,7 @@
     "queuedEmails": {
       ".read": false,
       "$emailInfo": {
-        ".write": "newData.child('uid').val() === auth.uid",
+        ".write": "(data.child('uid').val() === auth.uid || ! data.exists()) && (newData.child('uid').val() === auth.uid || ! newData.exists())",
         ".validate": "newData.hasChildren(['type', 'when', 'subject', 'tagId']) && newData.child('when').isNumber()"
       }
     },

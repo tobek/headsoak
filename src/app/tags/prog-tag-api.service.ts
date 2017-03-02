@@ -65,7 +65,7 @@ export class ProgTagApiService {
     }
     const actualId = _dataService.user.uid + ':' + id;
 
-    _dataService.ref.root().child('queuedEmails/' + actualId).update({
+    _dataService.ref.root().child('queuedEmails/' + actualId).set({
       uid: _dataService.user.uid,
       type: 'prog',
       when: when,
@@ -74,7 +74,20 @@ export class ProgTagApiService {
       tagId: email.tagId,
       noteId: email.noteId || null,
     }, (err?) => {
-      err && this._logger.warn('Failed to queue email for user', _dataService.user.uid, 'with email id', id, ' - error:', err);
+      err && this._logger.warn('Failed to queue email for user', _dataService.user.uid, 'with email id', actualId, ' - error:', err);
+
+      cb && cb(err);
+    });
+  }
+
+  cancelQueuedEmail(id: string, cb?: (err?) => {}) {
+    if (! id) {
+      throw new Error('Must supply "id" parameter');
+    }
+    const actualId = _dataService.user.uid + ':' + id;
+
+    _dataService.ref.root().child('queuedEmails/' + actualId).remove((err?) => {
+      err && this._logger.warn('Failed to cancel queued email for user', _dataService.user.uid, 'with email id', actualId, ' - error:', err);
 
       cb && cb(err);
     });
