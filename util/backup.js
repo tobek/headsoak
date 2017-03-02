@@ -5,9 +5,14 @@
  *
  *     filename=backups/firebase_dump_`date +"%Y-%m-%d"`.json && node util/backup.js > $filename && gzip $filename
  *
- * Example cron invocation (note, %'s need to be escaped in cron jobs):
+ * Example cron invocation for hourly backups (note, %'s need to be escaped in cron jobs):
  *
- *     0 0 * * * filename=/home/ubuntu/nutmeg/backups/firebase_dump_`date +"\%Y-\%m-\%d"`.json && node /home/ubuntu/nutmeg/util/backup.js > $filename && gzip $filename
+ *     0 * * * * filename=/home/ubuntu/nutmeg/backups/firebase_dump_`date +"\%Y-\%m-\%d-\%H"`.json && /usr/local/bin/node /home/ubuntu/nutmeg/util/backup.js > $filename && gzip $filename
+ *
+ * Example cron for deleting month+ old hourly backups (The two commands are a silly way to delete all except the midnight ("00") backup so we still have one per day)
+ *
+ *     0 0 * * * find /home/ubuntu/nutmeg/backups/ -name "firebase_dump_$(date --date="$(date +\%Y-\%m-\%d) -31 day" +'\%Y-\%m-\%d')-[1-9]*" -delete
+ *     0 0 * * * find /home/ubuntu/nutmeg/backups/ -name "firebase_dump_$(date --date="$(date +\%Y-\%m-\%d) -31 day" +'\%Y-\%m-\%d')-0[1-9]*" -delete
  */
 
 var Firebase = require('firebase');
