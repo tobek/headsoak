@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 
 import {TagsService} from './tags.service';
-import {Tag, ClassifierResult, ClassifierReturnType} from './tag.model';
+import {Tag, ProgTagDef} from './tag.model';
 import {ProgTagApiService} from './prog-tag-api.service';
 import {SizeMonitorService} from '../utils/size-monitor.service';
 import {Note} from '../notes/note.model';
@@ -23,7 +23,7 @@ export class ProgTagLibraryService {
       description: 'Tag notes that show a markedly positive or negative sentiment. Hover over the tag on a note to see the calculated strength of that note\'s sentiment. Only works on English text.',
       prog: true,
       // @NOTE Can use this function definition to write the library tag with the benefits of type checking and general JS linting, and then just comment out and use backticks (and comment/update the last line of func as well, AND make sure to double escape as necessary)
-      // progFunc: function(api, _): (note: Note) => ClassifierReturnType {
+      // progFunc: function(api: ProgTagApiService, _): ProgTagDef {
       progFuncString: `// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`sentiment\` module) have been bundled with the app.
 var sentiment = api.lib.sentiment;
 
@@ -46,7 +46,8 @@ return function(note) {
     childTag: value,
     score: Math.round(score * 1000) / 10 + '%',
   }
-};` // }
+};`
+// };}
     },
     {
       id: 'lib--topic',
@@ -54,7 +55,7 @@ return function(note) {
       name: 'topic',
       description: 'Automatically identify topics relevant to each note and tag as such. Only works on English text.',
       prog: true,
-      // progFunc: function(api: ProgTagApiService, _): (note: Note) => ClassifierReturnType {
+      // progFunc: function(api: ProgTagApiService, _): ProgTagDef {
       progFuncString:`// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (e.g. npm's \`retext-keywords\` module) have been bundled with the app.
 var retext = api.lib.retext;
 var retextKeywords = api.lib.retextKeywords;
@@ -222,8 +223,39 @@ return function(note) {
   });
 
   return result;
-}`
-// }}
+};`
+// };}
+    },
+    {
+      id: 'lib--remember',
+      fromLib: true,
+      name: 'remember this',
+      description: '@TODO/now',
+      prog: true,
+      // progFunc: function(api: ProgTagApiService, _): ProgTagDef { const _this: Tag = this;
+      progFuncString: `var _this = this;
+
+return {
+  hooks: {
+    added: function(note) {
+      var now = Math.round(Date.now() / 1000);
+      _this.setData(note.id, {
+        added: now,
+        times: [
+          now + 24*60*60,
+          now + 7*24*60*60,
+          now + 30*24*60*60,
+          now + 180*24*60*60,
+          now + 2*365*24*60*60,
+        ]
+      });
+    },
+    removed: function(note) {
+      _this.setData(note.id, null);
+    },
+  }
+};`
+// };}
     },
     {
       id: 'lib--nsfw',
@@ -231,7 +263,7 @@ return function(note) {
       name: 'nsfw',
       description: 'Automatically tags NSFW (not safe for work) notes and makes them private. (To err on the safe side, if this smart tag previously detected NSFW content in a note and then later no longer does, the note will remain private - though this tag will be removed.) Only works on English text.',
       prog: true,
-      // progFunc: function(api: ProgTagApiService, _): (note: Note) => ClassifierReturnType {
+      // progFunc: function(api: ProgTagApiService, _): ProgTagDef {
       progFuncString:`// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`retext-profanities\` module) have been bundled with the app.
 var retext = api.lib.retext;
 var retextProfanities = api.lib.retextProfanities;
