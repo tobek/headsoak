@@ -1,5 +1,5 @@
 /**
- * Script that grabs emails from `queuedEmails` whose `when` value (unix timestamp in seconds) is in the past, and then processes and sends emails and deletes records, then exits. Logs output to stdout.
+ * Script that grabs emails from `queuedEmails` whose `sendAt` value (unix timestamp in seconds) is in the past, and then processes and sends emails and deletes records, then exits. Logs output to stdout.
  */
 
 const Firebase = require('firebase');
@@ -37,8 +37,8 @@ ref.authWithCustomToken(firebaseToken, function(err, authData) {
 const users = {};
 
 function init() {
-  // This gets object with all queued emails whose `when` values are in the past
-  ref.child('queuedEmails').orderByChild('when').endAt(Date.now() / 1000).once('value', function(snapshot) {
+  // This gets object with all queued emails whose `sendAt` values are in the past
+  ref.child('queuedEmails').orderByChild('sendAt').endAt(Date.now() / 1000).once('value', function(snapshot) {
     const emails = snapshot.val();
 
     if (_.isEmpty(emails)) {
@@ -60,6 +60,10 @@ function init() {
 
 function prepareEmail(config, emailId, cb) {
   logger.log('Handling queued email', emailId, JSON.stringify(config));
+
+  if (config.type !== 'prog') {
+    throw new Error('Unknown email type "' + config.type + '"');
+  }
 
   const uid = config.uid;
 
@@ -142,7 +146,14 @@ function ensureUserInfoFetched(uid, cb) {
   }
 
   ref.child('/users/' + uid + '/user').once('value', (snapshot) => {
-    users[uid].user = snapshot.val();
+    let user = snapshot.val();
+
+    user = _.mapValues(user, function(val) {
+      return typeof prop === 'string' ? _.escape(val) : val;
+    });
+
+    users[uid].user = user;
+
     cb();
   }, cb);
 }
@@ -157,7 +168,7 @@ function ensureTagFetched(uid, tagId, cb) {
   }
 
   ref.child('/users/' + uid + '/tags/' + tagId).once('value', (snapshot) => {
-    const tag = snapshot.val();
+    let tag = snapshot.val();
 
     if (tag.dataStr) {
       tag.data = JSON.parse(tag.dataStr);
@@ -165,6 +176,10 @@ function ensureTagFetched(uid, tagId, cb) {
     }
 
     delete tag.progFuncString; // unneeded and gums up the logs
+
+    tag = _.mapValues(tag, function(val) {
+      return typeof prop === 'string' ? _.escape(val) : val;
+    });
 
     users[uid].tags[tagId] = tag;
 
@@ -182,11 +197,15 @@ function ensureNoteFetched(uid, noteId, cb) {
   }
 
   ref.child('/users/' + uid + '/nuts/' + noteId).once('value', (snapshot) => {
-    const note = snapshot.val();
+    let note = snapshot.val();
+
+    note = _.mapValues(note, function(val) {
+      return typeof prop === 'string' ? _.escape(val) : val;
+    });
 
     if (note.body) {
       // @TODO/polish @TODO/prog Lodash-template-y looking things could break here. Amongst several things we might want to disable variable interpolation: <https://github.com/lodash/lodash/issues/772>
-      note.body = _.escape(note.body).replace(/\n/g, '<br>');
+      note.body = note.body.replace(/\n/g, '<br>');
     }
 
     users[uid].notes[noteId] = note;

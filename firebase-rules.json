@@ -49,12 +49,12 @@
 
     // This is for user's smart tags to be able to queue up emails to send. We enforce uid being their own uid so that they can only email to their own email address.
     "queuedEmails": {
-      ".indexOn": ["when"],
+      ".indexOn": ["sendAt"],
 
       ".read": false,
       "$emailInfo": {
         ".write": "(data.child('uid').val() === auth.uid || ! data.exists()) && (newData.child('uid').val() === auth.uid || ! newData.exists())",
-        ".validate": "newData.hasChildren(['type', 'when', 'subject', 'tagId']) && newData.child('when').isNumber()"
+        ".validate": "newData.hasChildren(['type', 'sendAt', 'subject', 'tagId']) && newData.child('sendAt').isNumber()"
       }
     },
 
