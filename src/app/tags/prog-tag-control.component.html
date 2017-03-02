@@ -70,6 +70,7 @@ prog: boolean; // Whether this tag is programmatic (i.e. a smart tag)
 fromLib: boolean; // Whether this tag came from the Smart Tag Library<!--
 getNotes: function() => Note[]; // function that returns array of all the Note instances tagged with this tag -->
 setData: function(key, data); // Persistent key-value data store for saving any data you want to associate with this tag. You must call this function when you change data or else it won't be saved.
+removeData: function(key); // Removes any data held under this key.
 getData: function(key); // Retrieve data for a specific key</pre>
 
   <h3><code>note</code></h3>

@@ -42,6 +42,7 @@ export class PublicTag {
     'forDataStore',
     // 'updated', // nah let's take care of this ourselves
     'setData',
+    'removeData',
     'getData',
     'rename',
     'delete',

@@ -251,7 +251,7 @@ return {
       });
     },
     removed: function(note) {
-      _this.setData(note.id, null);
+      _this.removeData(note.id);
     },
   }
 };`

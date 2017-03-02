@@ -83,7 +83,7 @@ export class Tag {
   set data(newData: Object) {
     if (! _.isEqual(newData, this._data)) {
       this._data = newData;
-      this.prog && this.runClassifierOnAllNotes();
+      this.classifier && this.runClassifierOnAllNotes();
       this.updated();
     }
   }
@@ -93,9 +93,16 @@ export class Tag {
   setData(key: string, data: any) {
     if (data !== this._data[key]) {
       this._data[key] = _.cloneDeep(data);
-      this.prog && this.runClassifierOnAllNotes();
+      this.classifier && this.runClassifierOnAllNotes();
       this.updated();
     }
+  }
+  removeData(key: string) {
+    if (typeof this._data[key] !== 'undefined') {
+      delete this._data[key];
+      this.classifier && this.runClassifierOnAllNotes();
+      this.updated();
+    }    
   }
   getData(key: string): any {
     return _.cloneDeep(this._data[key]);
