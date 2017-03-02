@@ -103,7 +103,7 @@ var defaultBlacklist = {
 // And the user can add their own:
 var blacklist = this.getData('blacklist') || {};
 
-function confirmBlacklisting(childTag, event, tagDetailsComponent) {
+function confirmBlacklisting(childTag, event, noteId, tagDetailsComponent) {
   if (event.shiftKey) {
     blacklistChildTag(childTag, tagDetailsComponent);
     return;

@@ -85,11 +85,17 @@
     Explore
   </a>
 
-  <a class="tag-action"
-    *ngFor="let action of (tag.parentTag && tag.parentTag.customActions.childTags) || []"
-    (click)="action.func(tag, $event); $event.stopPropagation()"
-  >
-    <i class="fa fa-fw fa-{{ action.icon }}"></i>
-    {{ action.text }}
-  </a>
+  <span *ngFor="let action of getCustomActions()">
+    <a *ngIf="action.func" class="tag-action"
+      (click)="action.func(tag, $event, ofNoteId); $event.stopPropagation()"
+    >
+      <i class="fa fa-fw fa-{{ action.icon }}" *ngIf="action.icon"></i>
+      {{ (action.text && action.text.call) ? action.text(tag, ofNoteId) : action.text }}
+    </a>
+    <span *ngIf="! action.func" class="tag-dropdown-static-item" (click)="$event.stopPropagation()">
+      <!-- @TODO/polish If `action.text` is a function and returns falsey, we still show a gap for this thing - ideally we wouldn't, but to check it we'd have to call it twice in the template, or call it from the component code and pass it in to the template. -->
+      <i class="fa fa-fw fa-{{ action.icon }}" *ngIf="action.icon"></i>
+      <span class="tag-dropdown-text">{{ (action.text && action.text.call) ? action.text(tag, ofNoteId) : action.text }}</span>
+    </span>
+  </span>
 </div>

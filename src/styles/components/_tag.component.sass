@@ -144,3 +144,20 @@ tag
 
       &:hover
         +dropdown-menu-link-hover
+
+    .tag-dropdown-static-item
+      +menu-link-padding
+      cursor: default
+      display: inline-block
+      width: 100%
+      min-height: 30px // magic number - happens to be the height of normal `.tag-action`s
+      color: $panel-text-secondary
+
+      .fa
+        margin-right: 0.25rem // hack, this is copied from `+menu-link` mixin
+
+      .tag-dropdown-text
+        +small
+        cursor: text
+        display: inline-block
+        white-space: pre-line

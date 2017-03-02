@@ -3,7 +3,7 @@ import {Subscription} from 'rxjs';
 
 import {AnalyticsService} from '../analytics.service';
 import {ActiveUIsService} from '../active-uis.service';
-import {Tag} from './tag.model';
+import {Tag, CustomAction} from './tag.model';
 import {ChildTag} from './child-tag.model';
 import {TagsService} from './tags.service';
 
@@ -246,6 +246,18 @@ export class TagComponent {
     if (this.tag.delete(noConfirm)) {
       this.deleted.emit(this.tag);
     }
+  }
+
+  getCustomActions(): CustomAction[] {
+    let actions: CustomAction[];
+
+    actions = this.tag.customActions.noteTagDropdown || [];
+
+    if (this.tag.parentTag && this.tag.parentTag.customActions.childTags) {
+      actions = actions.concat(this.tag.parentTag.customActions.childTags)
+    }
+
+    return actions;
   }
 
   // @TODO/refactor Very similar code for note nav in AppComponent - if we need this again, should share logic

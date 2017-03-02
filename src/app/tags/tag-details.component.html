@@ -27,8 +27,8 @@
 
           <span class="child-tag-action"
             *ngFor="let action of tag.customActions.childTags || []"
-            [attr.data-tooltip]="action.text"
-            (click)="action.func(childTag, $event, component); setUpChildTags(); $event.stopPropagation()"
+            [attr.data-tooltip]="(action.text && action.text.call) ? action.text(childTag) : action.text"
+            (click)="action.func && action.func(childTag, $event, null, component); setUpChildTags(); $event.stopPropagation()"
             ><i class="fa fa-{{ action.icon }}"></i
           ></span>
         </span>

@@ -41,10 +41,10 @@ interface Hooks {
   noteUpdated?: (note: Note) => void;
 }
 
-interface CustomAction { // operation?
-  icon: string,
-  text: string, // in `childTagOnNote` location this is used in the list of tag actions, in `childTagListing` location it's used as tooltip text
-  func: Function,
+export interface CustomAction {
+  text: string | ((tag: Tag, noteId?: string) => string),
+  icon?: string,
+  func?: (tag: Tag, event: Event, noteId?: string) => {},
 }
 
 export type ProgTagDef = ((note: Note) => ClassifierReturnType) | {
@@ -129,13 +129,16 @@ export class Tag {
   /**
    * Custom actions that prog tags can register, e.g. new stuff in the note tag dropdown.
    *
-   * Locations supported so far: just 'childTags' (shows up in list of child tags in TagDetailsComponent, and on child tags on a note)
-   *
    * @TODO/prog Document this, e.g. that for both of these `Tag` instance is sent in, and `TagDetailsComponent` is sent in too when in tag details page (that's a big @HACK though so we can update child tags after blacklist, @TODO/soon if tag details could listen for tag updates it could know when to udpate).
    *
-   * @TODO/now @TODO/ece It's confusing that both these and prog tag operations are referred to as actions. Should these be `customOperations`? `customHandlers`?
+   * @TODO/now @TODO/ece It's confusing that both these and prog tag operations/hooks are referred to as actions (are they even?). Should these be `customOperations`? `customHandlers`? `customizations`? `customEntries`? Also now that we allow just plain text...
    */
-  customActions: { [location: string]: CustomAction[] } = {};
+  customActions: {
+    /** Shows up in tag dropdown on a note. */
+    noteTagDropdown?: CustomAction[],
+    /** Shows up in list of child tags in TagDetailsComponent, and on child tags on a note. */
+    childTags?: CustomAction[],
+  } = {};
 
   /** If this is true then you can't change *anything* about this tag - no adding/removing from notes, no renaming, no changing smart tag settings, etc. */
   readOnly?: boolean; // @TODO/sharing handle other permissions
