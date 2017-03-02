@@ -35,7 +35,7 @@ interface Hooks {
   init?: (note: Note) => void;
   /** When the tag is first added to a note. */
   added?: (note: Note) => void;
-  /** When the tag is removed from a note. */
+  /** When the tag is removed from a note. Also, when the tag is deleted, this is called for every note the tag is on. */
   removed?: (note: Note) => void;
   /** When the note is updated (specifically a `fullUpdate`). NOT IMPLEMENTED YET. */
   noteUpdated?: (note: Note) => void;
@@ -607,7 +607,7 @@ export class Tag {
           return func.call(this.publicTag, note);
         }
         catch (err) {
-          this.progTagError(err, note); // @TODO/now Test this
+          this.progTagError(err, note);
         }
       }
     }
@@ -617,7 +617,7 @@ export class Tag {
           return func.call(this.publicTag, note);
         }
         catch (err) {
-          this.progTagError(err, note); // @TODO/now Test this
+          this.progTagError(err, note);
         }
       }
     }

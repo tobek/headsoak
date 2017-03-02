@@ -157,6 +157,7 @@ export class TagsService {
     tag.created = Date.now();
 
     if (tag.prog) {
+      tag.setUpAndValidateProgTag();
       tag.runClassifierOnAllNotes();
     }
     
