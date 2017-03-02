@@ -13,15 +13,17 @@
     </p>
   </div>
 
-  <button class="btn btn-secondary"
-    *ngIf="tag.prog && ! tag.readOnly"
-    (click)="makeDumb()"
-  >Revert to normal tag</button>
+  <div *ngIf="! tag.readOnly && ! tag.fromLib">
+    <button class="btn btn-secondary"
+      *ngIf="tag.prog"
+      (click)="makeDumb()"
+    >Revert to normal tag</button>
 
-  <button class="btn btn-secondary"
-    *ngIf="! tag.prog && ! tag.readOnly"
-    (click)="makeSmart()"
-  >Make smart</button>
+    <button class="btn btn-secondary"
+      *ngIf="! tag.prog"
+      (click)="makeSmart()"
+    >Make smart</button>
+  </div>
 </div>
 
 <div class="code-container" [class.is--disabled]="! tag.prog">
@@ -31,7 +33,7 @@
   <pre ref-editorRef class="code-editor">{{ tag.progFuncString || DEFAULT_PROG_FUNC_STRING }}</pre>
   <pre class="function-wrapper">{{ '}' }}</pre> 
 
-  <div *ngIf="! tag.readOnly">
+  <div *ngIf="! tag.readOnly && ! tag.fromLib">
     <button class="btn btn-primary"
       [class.is--loading]="isRunning"
       [disabled]="! changed || isRunning"

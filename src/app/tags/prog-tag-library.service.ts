@@ -19,7 +19,6 @@ export class ProgTagLibraryService {
     {
       id: 'lib--sentiment',
       fromLib: true,
-      readOnly: true,
       name: 'sentiment',
       description: 'Tag notes that show a markedly positive or negative sentiment. Hover over the tag on a note to see the calculated strength of that note\'s sentiment. Only works on English text.',
       prog: true,
@@ -52,7 +51,6 @@ return function(note) {
     {
       id: 'lib--topic',
       fromLib: true,
-      readOnly: true,
       name: 'topic',
       description: 'Automatically identify topics relevant to each note and tag as such. Only works on English text.',
       prog: true,
@@ -230,7 +228,6 @@ return function(note) {
     {
       id: 'lib--nsfw',
       fromLib: true,
-      readOnly: true,
       name: 'nsfw',
       description: 'Automatically tags NSFW (not safe for work) notes and makes them private. (To err on the safe side, if this smart tag previously detected NSFW content in a note and then later no longer does, the note will remain private - though this tag will be removed.) Only works on English text.',
       prog: true,
@@ -273,7 +270,6 @@ return function(note) {
     {
       id: 'lib--untagged',
       fromLib: true,
-      readOnly: true,
       name: 'untagged',
       description: 'Tag all notes which have no tags',
       prog: true,
@@ -293,7 +289,6 @@ return function(note) {
     {
       id: 'lib--has-quote',
       fromLib: true,
-      readOnly: true,
       name: 'has quote',
       description: 'Tag all notes which contain quotes. This is calculated by looking to see if at least one line in the note follows the Markdown syntax for blockquotes: starting a line with "> ".',
       prog: true,
@@ -320,7 +315,6 @@ return function(note) {
     {
       id: 'lib--nutmeg',
       fromLib: true,
-      readOnly: true,
       name: 'mentions headsoak', // @TODO/prog Mention or show that this is a "tutorial" tag or something. BETTER: Make it customizable for search string
       description: 'Tag all notes which contain the text "headsoak"',
       prog: true,
@@ -403,6 +397,11 @@ return function(note) {
       localTag.updated(false);
     }
 
+    if (! funcUpdated) {
+      // For existing prog tags, TagsService runs this, but it does *not* run this on library tags in case the function has updated. Otherwise we could get a spurious error when running old function before we update to new function. But it hasn't updated, so just run this now.
+      localTag.setUpAndValidateProgTag(true);
+    }
+
     if (! funcUpdated && ! nameUpdated) {
       return;
     }
@@ -435,9 +434,9 @@ return function(note) {
     if (funcUpdated) {
       // Function has been updated from official sources since user last used it, so let's update.
       this._logger.info('Enabled smart tag library tag "' + localTag.id + '" source has been updated - re-running it now.');
-      this.tagsService.dataService.status = 'unsynced'; // We know we're going to have to update the tag, but if `runProgOnAllNotes` takes a long time (and is synchronous) we want the sync animation to change immediately before that starts.
+      this.tagsService.dataService.status = 'unsynced'; // We know we're going to have to update the tag, but if `runClassifierOnAllNotes` takes a long time (and is synchronous) we want the sync animation to change immediately before that starts.
       localTag.updateProgFuncString(latestTagData.progFuncString);
-      localTag.runProgOnAllNotes();
+      localTag.runClassifierOnAllNotes();
       localTag.updated(false);
     }
   }

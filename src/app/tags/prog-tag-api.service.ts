@@ -32,7 +32,7 @@ export class ProgTagApiService {
   ) {
   }
 
-  init(dataService: DataService): void {
+  _init(dataService: DataService): void {
     this.tags = dataService.tags.tags;
     this.notes = dataService.notes.notes;
   }

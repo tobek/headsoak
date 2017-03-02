@@ -255,7 +255,7 @@ export class Note {
     let tag = this.dataService.tags.getTagByName(tagName);
 
     // Exclude library tags here cause that'll get caught by `tag.prog` check in `addTag()` @TODO/share This logic hasn't been tested since we don't have sharing yet
-    if (tag && tag.readOnly && ! tag.fromLib) {
+    if (tag && tag.sharedBy && tag.readOnly && ! tag.fromLib) {
       if (! confirm('The tag "' + tag.name + '" is a tag that has been shared with you and is read-only. Do you want to create a new tag in your account with this name and add it to this note?')) {
         return null;
       }
@@ -292,13 +292,13 @@ export class Note {
 
     this._logger.log('Adding tag', tag);
 
-    if (tag.prog && ! evenIfProg) {
+    if (tag.classifier && ! evenIfProg) {
       this.progTagCantChangeAlert(tag);
       return null;
     }
 
     // Need to reassign this.tags for angular's pure pipes pick up the change
-    if (! tag.prog && ! tag.internal) {
+    if (! tag.classifier && ! tag.internal) {
       // Add at the front - this makes tags on notes ordered by most-recently-added, which a) is fine, and b) looks good when you add a new tag. Later order could be smarter.
       this.tags = ['' + tag.id].concat(this.tags);
     }
@@ -330,7 +330,7 @@ export class Note {
       return;
     }
 
-    if (tag.prog && ! evenIfProg) {
+    if (tag.classifier && ! evenIfProg) {
       this.progTagCantChangeAlert(tag);
       return;
     }
@@ -495,10 +495,10 @@ export class Note {
     }
 
     _.each(this.dataService.tags.tags, (tag) => {
-      if (tag && tag.prog && ! (tag instanceof ChildTag)) {
-        // @NOTE Currently child tags only exist on prog tags, and don't need/can't have their own programmatic stuff (but still have `tag.prog` and are styled as such)
+      if (tag && tag.classifier && ! (tag instanceof ChildTag)) {
+        // @NOTE Currently child tags only exist on prog tags, and don't need/can't have their own programmatic stuff (but still return true for `tag.hasClassifier` and are styled as such)
         // @TODO/prog We could probably identify which tags are causing any infinite loops by keeping track of which tags are going back and forth somehow
-        tag.runProgOnNote(this);
+        tag.runClassifierOnNote(this);
       }
     });
 

@@ -180,7 +180,7 @@ export class NoteBrowserComponent {
 
     if (this.activeUIs.noteQuery) {
       this.newNote.tags = this.activeUIs.noteQuery.tags
-        .filter((tag: Tag) => ! tag.prog && ! tag.readOnly)
+        .filter((tag: Tag) => ! tag.classifier && ! tag.readOnly)
         .map((tag: Tag) => tag.id);
     }
   }
@@ -236,7 +236,7 @@ export class NoteBrowserComponent {
     
     this.newNote.tags = note.tags.filter((tagId: string) => {
       const tag = this.notesService.dataService.tags.tags[tagId];
-      return ! tag.prog && ! tag.readOnly;
+      return ! tag.classifier && ! tag.readOnly;
     });
   }
 

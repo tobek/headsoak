@@ -67,7 +67,7 @@ export class Tag {
   set data(newData: Object) {
     if (! _.isEqual(newData, this._data)) {
       this._data = newData;
-      this.prog && this.runProgOnAllNotes();
+      this.prog && this.runClassifierOnAllNotes();
       this.updated();
     }
   }
@@ -77,7 +77,7 @@ export class Tag {
   setData(key: string, data: any) {
     if (data !== this._data[key]) {
       this._data[key] = _.cloneDeep(data);
-      this.prog && this.runProgOnAllNotes();
+      this.prog && this.runClassifierOnAllNotes();
       this.updated();
     }
   }
@@ -112,6 +112,7 @@ export class Tag {
    */
   customActions: { [location: string]: CustomAction[] } = {};
 
+  /** If this is true then you can't change *anything* about this tag - no adding/removing from notes, no renaming, no changing smart tag settings, etc. */
   readOnly?: boolean; // @TODO/sharing handle other permissions
 
   share?: any; // map of recipient (shared-with) user ID to their permissions
@@ -326,14 +327,13 @@ export class Tag {
   }
 
   updateProgFuncString(newFuncString: string): void {
-    delete this.classifier; // will be regenerated next time we need it
     this.progFuncString = newFuncString;
+    this.setUpAndValidateProgTag(true);
   }
 
   /** See if given note should be tagged by this programmatic tag. */
-  runProgOnNote(note: Note, doneCb = (err?) => {}): void {
-    if (! this.prog || ! this.progFuncString) {
-      this._logger.info('Can\'t run prog tag on note - this tag is not programmatic or has no programmatic function string!', this);
+  runClassifierOnNote(note: Note, doneCb = (err?) => {}): void {
+    if (! this.classifier) {
       return doneCb();;
     }
 
@@ -343,7 +343,7 @@ export class Tag {
     }
 
     if (! this.classifier) {
-      const err = this.setAndValidateClassifier(true);
+      const err = this.setUpAndValidateProgTag(true);
       if (err) {
         return doneCb(err);
       }
@@ -460,29 +460,27 @@ export class Tag {
     }
   }
 
-  runProgOnAllNotes(cb = (err?) => {}): void {
-    if (! this.prog || ! this.progFuncString) {
-      const errMesg = 'Can\'t run prog tag on notes - this tag is not programmatic or has no programmatic function string!';
-      this._logger.info(errMesg, this);
-      return cb(errMesg);
+  runClassifierOnAllNotes(cb = (err?) => {}): void {
+    if (! this.classifier) {
+      return cb();
     }
 
     this._logger.log('Running smart tag on all notes');
     this._logger.time('Ran smart tag on all notes in');
     console.groupCollapsed();
 
-    asyncEach(this.dataService.notes.notes, this.runProgOnNote.bind(this), (err?) => {
+    asyncEach(this.dataService.notes.notes, this.runClassifierOnNote.bind(this), (err?) => {
       // @NOTE Since these are potentially async and could take unknown amount of time to complete (maybe they should be time limited?) then other console output could get stuck in here. Not sure what to do! Not that important though since it's just for dev use.
       console.groupEnd();
       this._logger.timeEnd('Ran smart tag on all notes in');
-      cb();
+      cb(err);
     });
   }
 
   // Returns error if there was an issue, otherwise returns null. Optionally announces error.
-  setAndValidateClassifier(alertOnError = false, tryWrapping = true): Error {
+  setUpAndValidateProgTag(alertOnError = false, tryWrapping = true): Error {
     try {
-      this.classifier = this.generateClassifier();
+      this.initializeProgTag();
       return null;
     }
     catch (err) {
@@ -491,7 +489,7 @@ export class Tag {
         const oldProgFuncString = this.progFuncString;
         this.progFuncString = 'return function(note) {\n' + oldProgFuncString + '\n};';
 
-        const err = this.setAndValidateClassifier(alertOnError, false);
+        const err = this.setUpAndValidateProgTag(alertOnError, false);
         if (! err) {
           this._logger.info('Fixed `progFuncString` by wrapping it in classifier function to return!');
           this.updated(false);

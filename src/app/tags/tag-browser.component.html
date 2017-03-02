@@ -113,6 +113,7 @@
           <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'delete']" routerLinkActive="is--active">
             <!-- @TODO/tags @TODO/soon This should open up a modal -->
             <i class="fa fa-fw fa-lg fa-trash-o"></i>
+            <!-- @TODO/ece Should this be called "disable" for smart tag library tags? Also the "you can delete it though" message in smartness, and delete page itself should be changed -->
             Delete
           </li>
         </ul>

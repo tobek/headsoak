@@ -79,7 +79,7 @@ return classifyNote;`;
 
     this.editorUnchanged();
 
-    if (this.tag.readOnly) {
+    if (this.tag.readOnly || this.tag.fromLib) {
       this.editor.setOptions({
         readOnly: true,
         highlightActiveLine: false,
@@ -185,7 +185,8 @@ return classifyNote;`;
   }
 
   run(): void {
-    const err = this.tag.setAndValidateClassifier();
+    this.isRunning = true;
+    const err = this.tag.setUpAndValidateProgTag();
 
     if (err) {
       this.tagsService.dataService.modalService.generic({
@@ -200,6 +201,7 @@ return classifyNote;`;
           }
         ]
       });
+      this.isRunning = false;
       return;
     }
 
@@ -208,10 +210,19 @@ return classifyNote;`;
       this.setEditorValue(this.tag.progFuncString);
     }
 
-    this.isRunning = true;
+    if (! this.tag.classifier) {
+      // We're done now
+      this.tag.updated();
+      this.isRunning = false;
+      return;
+    }
+
     // @TODO/webworkers @TODO/prog Wait 200ms (length of the transition to button loading state, which would pause while JS is busy) before starting, because running prog tags is synchronous (barring async calls written into them). Not ideal, and timeout can be removed when we're using web workers for running prog tags.
     setTimeout(() => {
-      this.tag.runProgOnAllNotes(() => {
+      this.tag.runClassifierOnAllNotes((err?) => {
+        if (err) {
+          // @TODO/prog Do we want to handle this here?
+        }
         this.isRunning = false;
         this.tag.updated();
         // @TODO/prog Should show the results of running it here! Like # of notes it was tagged on. And a success message. Tooltip or toaster?

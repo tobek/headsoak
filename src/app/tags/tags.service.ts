@@ -62,7 +62,7 @@ export class TagsService {
 
     this.setUpInternalTags();
 
-    this.progTagApi.init(this.dataService);
+    this.progTagApi._init(this.dataService);
     // this.progTagLibraryService.init(this); // This requires notes to be set up, so is now initialized by DataService
 
     this.initialized$.next(null);
@@ -107,7 +107,7 @@ export class TagsService {
       tagData.fromLib = tagData.isLibraryTag;
     }
 
-    let newTag;
+    let newTag: Tag;
     if (tagData.parentTagId) {
       newTag = new ChildTag(tagData, this.dataService);
     }
@@ -116,9 +116,9 @@ export class TagsService {
     }
     this.tags[newTag.id] = newTag;
 
-    if (newTag.prog && newTag.progFuncString) {
-      // @HACK We permit/encourage/document that initialization code can go in progFuncString, so we have to generate them now. (Library tags get run as soon as they're added to a user's account so `setAndValidateClassifier` will get run then.)
-      newTag.setAndValidateClassifier(true);
+    if (newTag.prog && newTag.progFuncString && ! newTag.fromLib) {
+      // @HACK We permit/encourage/document that initialization code can go in progFuncString, so we have to generate them now. (Library tags get run as soon as they're added to a user's account so `setUpAndValidateProgTag` will get run then. For pre-existing library tags, don't run this until ProgTagLibraryService has checked if function has updated - then it handles running this itself.)
+      newTag.setUpAndValidateProgTag(true);
     }
 
     // No need to sync to data store if we're initializing tags from data store.
@@ -139,8 +139,9 @@ export class TagsService {
       prog: parentTag.prog,
       fromLib: parentTag.fromLib,
       readOnly: parentTag.readOnly,
-      share: parentTag.share,
-      sharedBy: parentTag.sharedBy,
+      // @TODO/sharing
+      // share: parentTag.share,
+      // sharedBy: parentTag.sharedBy,
     };
 
     return this.createTag(tagData, true) as ChildTag;
@@ -156,7 +157,7 @@ export class TagsService {
     tag.created = Date.now();
 
     if (tag.prog) {
-      tag.runProgOnAllNotes();
+      tag.runClassifierOnAllNotes();
     }
     
     tag.updated(); // sync to data store
