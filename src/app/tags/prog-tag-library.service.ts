@@ -239,7 +239,7 @@ return {
       // @TODO/ece @TODO/prog Too many exclamation marks in the email copy - also general feedback on copy
       progFuncString: `var _this = this;
 
-var timeConfig = [
+var defaultSchedule = [
   { hours: 24, words: '1 day', next: '6 days' },
   { hours: 7*24, words: '1 week', next: '3 weeks' },
   { hours: 30*24, words: '1 month', next: '3 months' },
@@ -247,15 +247,17 @@ var timeConfig = [
   { hours: 18*30.5*24, words: '18 months' },
 ];
 
-this.setData('schedule', timeConfig);
+if (! this.getData('schedule')) {
+  this.setData('schedule', defaultSchedule);
+}
 
-function queueEmail(note, sendAt, i) {
-  var body = '<p>' + timeConfig[i].words + ' ago you added the <span style="color: #BBB">#</span><span style="color: #888">remember this</span> tag to this note:</p>';
+function queueEmail(note, sendAt, words, nextInterval) {
+  var body = '<p>' + words + ' ago you added the <span style="color: #BBB">#</span><span style="color: #888">remember this</span> tag to this note:</p>';
 
   body += '<blockquote><%= note.body %></blockquote>';
 
-  if (timeConfig[i].next) {
-    body += '<p>We\\'ll next send this note to you in ' + timeConfig[i].next + '. Until then, keep remembering!</p>';
+  if (nextInterval) {
+    body += '<p>We\\'ll next send this note to you in ' + nextInterval + '. Until then, keep remembering!</p>';
   }
   else {
     body += '<p>This is your last email! Hopefully you remember it pretty well by now.</p>';
@@ -278,14 +280,15 @@ return {
   hooks: {
     // This gets run every time this tag is added to a note:
     added: function(note) {
+      var schedule = _this.getData('schedule', defaultSchedule);
       var now = Date.now();
       var queuedEmails = [];
 
-      for (var i = 0; i < timeConfig.length; ++i) {
-        var sendAt = now + timeConfig[i].hours*60*60*1000;
+      for (var i = 0; i < schedule.length; ++i) {
+        var sendAt = now + schedule[i].hours*60*60*1000;
 
         // We need to grab and store the queued email ID so that if the user later removes this tag, we can cancel the email
-        var emailId = queueEmail(note, sendAt, i);
+        var emailId = queueEmail(note, sendAt, schedule[i].words, schedule[i].next);
 
         queuedEmails.push({
           id: emailId,
