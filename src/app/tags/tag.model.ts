@@ -333,6 +333,7 @@ export class Tag {
   /** Really just a hack for fixing bugs if you add/remove same tag from smart tag library in same session. */
   reset() {
     this._data = {};
+    this.noteData = {};
     delete this.isDeleting;
     delete this.classifier;
   }
@@ -381,20 +382,13 @@ export class Tag {
 
   /** See if given note should be tagged by this programmatic tag. */
   runClassifierOnNote(note: Note, doneCb = (err?) => {}): void {
-    if (! this.classifier) {
-      return doneCb();;
+    if (! this.classifier || this.isDeleting) {
+      return doneCb();
     }
 
     if (note.new) {
       // Unsaved empty note
       return doneCb();;
-    }
-
-    if (! this.classifier) {
-      const err = this.setUpAndValidateProgTag(true);
-      if (err) {
-        return doneCb(err);
-      }
     }
 
     const result = this.classifier(note);
@@ -509,7 +503,7 @@ export class Tag {
   }
 
   runClassifierOnAllNotes(cb = (err?) => {}): void {
-    if (! this.classifier) {
+    if (! this.classifier || this.isDeleting) {
       return cb();
     }
 
