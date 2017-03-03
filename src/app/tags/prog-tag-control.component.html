@@ -61,39 +61,45 @@
 
   <p>The smart tag object <span class="static-tag">{{ tag.name }}</span> is supplied as <code>this</code> to this function. The public <code>Tag</code> model is as follows:</p>
 
-  <pre>id: string;
-name: string;
-created: number; // Unix timestamp
-modified: number; // Unix timestamp
-docs: string[]; // Array of note IDs tagged with this tag
-prog: boolean; // Whether this tag is programmatic (i.e. a smart tag)
-fromLib: boolean; // Whether this tag came from the Smart Tag Library<!--
-getNotes: function() => Note[]; // function that returns array of all the Note instances tagged with this tag -->
-setData: function(key, data); // Persistent key-value data store for saving any data you want to associate with this tag. You must call this function when you change data or else it won't be saved.
-removeData: function(key); // Removes any data held under this key.
-getData: function(key); // Retrieve data for a specific key</pre>
+  <!-- @TODO/poliish Syntax highlight these offline and insert here with markup? -->
+  <ul>
+    <li><code>id: string</code></li>
+    <li><code>name: string</code></li>
+    <li><code>created: number</code> &ndash;&nbsp; Unix timestamp</li>
+    <li><code>modified: number</code> &ndash;&nbsp; Unix timestamp</li>
+    <li><code>docs: string[]</code> &ndash;&nbsp; Array of note IDs tagged with this tag</li>
+    <li><code>prog: boolean</code> &ndash;&nbsp; Whether this tag is programmatic (i.e. a smart tag)</li>
+    <li><code>fromLib: boolean</code> &ndash;&nbsp; Whether this tag came from the Smart Tag Library</li>
+    <li><code>getNotes: function() => Note[]</code> &ndash;&nbsp; function that returns array of all the Note instances tagged with this tag</li>
+    <li><code>setData: function(key, data) => void</code> &ndash;&nbsp; Persistent key-value data store for saving data you want to associate with this tag. You must call this function when you change data or else it won't be saved.<ul><li>Note that this gets saved as stringified JSON, so functions, prototypes, and any circular object references will be lost.</li></ul></li>
+    <li><code>removeData: function(key) => void</code> &ndash;&nbsp; Removes any data held under this key.</li>
+    <li><code>getData: function(key, default) => any</code> &ndash;&nbsp; Retrieve data for a specific key. If it does not exist, function returns the provided  default value, or <code>undefined</code> if there is none.<ul><li>Note that the user can manually update tag data as JSON on the tag Explore page, in which case a previous value or object reference retrieved from this function will no longer be accurate. For this reason you should call <code>getData</code> each time you need it rather than storing it for use across asynchronous calls.</li></ul></li>
+    <li><code>delete: function(skipConfirmation) => boolean</code> &ndash;&nbsp; Deletes the tag. If <code>skipConfirmation</code> is false, the user is prompted to confirm deletion. Returns boolean indicating whether tag was actually deleted.</li>
+  </ul>
 
   <h3><code>note</code></h3>
 
   <p>Each function is passed the current note being tested for membership in this tag. The public <code>Note</code> model is as follows:</p>
 
-  <pre>id: string;
-body: string; // text of the name
-created: number; // unix timestamp
-modified: number; // unix timestamp
-tags: string[]; // array of tag IDs this note is tagged with
-private: boolean; // whether this note is a private note</pre>
+  <ul>
+    <li><code>id: string</code></li>
+    <li><code>body: string</code> &ndash;&nbsp; text of the name</li>
+    <li><code>created: number</code> &ndash;&nbsp; unix timestamp</li>
+    <li><code>modified: number</code> &ndash;&nbsp; unix timestamp</li>
+    <li><code>tags: string[]</code> &ndash;&nbsp; array of tag IDs this note is tagged with</li>
+    <li><code>private: boolean</code> &ndash;&nbsp; whether this note is a private note</li>
+  </ul>
 
   <h3><code>api</code></h3>
   <p><i>(under development)</i></p>
   <p>You are also provided an API to access various capabilities of Headsoak.</p>
 
   <ul>
-    <li><code>api.notes</code> - All of your notes in an object mapping IDs to <code>Note</code> instances.</li>
-    <li><code>api.tags</code> - All of your tags in an object mapping IDs to <code>Tag</code> instances.</li>
-    <li><code>api.formatDate</code> - Helper function for formatting dates. Example invocation: <code>api.formatDate(Date.now(), 'medium')</code>. <a href="https://angular.io/docs/ts/latest/api/common/index/DatePipe-pipe.html" target="_blank">Documentation</a>.</li>
+    <li><code>api.notes</code> &ndash;&nbsp; All of your notes in an object mapping IDs to <code>Note</code> instances.</li>
+    <li><code>api.tags</code> &ndash;&nbsp; All of your tags in an object mapping IDs to <code>Tag</code> instances.</li>
+    <li><code>api.formatDate</code> &ndash;&nbsp; Helper function for formatting dates. Example invocation: <code>api.formatDate(Date.now(), 'medium')</code>. <a href="https://angular.io/docs/ts/latest/api/common/index/DatePipe-pipe.html" target="_blank">Documentation</a>.</li>
     <li>
-      <code>api.modal</code> - Service for launching modals and prompts. Example invocations:
+      <code>api.modal</code> &ndash;&nbsp; Service for launching modals and prompts. Example invocations:
       <ul>
         <li><code>api.modal.alert('Some alert message')</code></li>
         <li><code>api.modal.confirm('Are you sure you want to xyz?', function(confirmed) {{ '{' }}...{{ '}' }})</code></li>
