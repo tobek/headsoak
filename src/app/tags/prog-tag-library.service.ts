@@ -236,6 +236,42 @@ return function(note) {
       // @TODO/ece @TODO/prog Too many exclamation marks in the email copy - also general feedback on copy
       progFuncString: `var _this = this;
 
+this.customActions.noteTagDropdown = [{
+  text: function(tag, noteId) {
+    var queuedEmails = _this.getData(noteId);
+    if (! queuedEmails) {
+      return '';
+    }
+
+    var prevEmail, nextEmail;
+    var now = Date.now();
+    for (var i = 0; i < queuedEmails.length; ++i) {
+      if (queuedEmails[i].sendAt <= now) {
+        prevEmail = queuedEmails[i];
+      }
+      else if (! nextEmail) {
+        nextEmail = queuedEmails[i];
+        break;
+      }
+    }
+
+    var text = '';
+
+    if (prevEmail) {
+      text += 'Last email: ' + api.formatDate(prevEmail.sendAt, 'mediumDate') + '\\n';
+    }
+
+    if (nextEmail) {
+      text += 'Next email: ' + api.formatDate(nextEmail.sendAt, 'mediumDate')
+    }
+    else {
+      text += 'No more emails coming! (Remove and add this tag again to restart the schedule.)';
+    }
+
+    return text;
+  }
+}];
+
 var timeConfig = [
   { hours: 24, words: '1 day', next: '6 days' },
   { hours: 7*24, words: '1 week', next: '3 weeks' },
@@ -243,6 +279,8 @@ var timeConfig = [
   { hours: 4*30.5*24, words: '4 months', next: 'about a year' },
   { hours: 18*30.5*24, words: '18 months' },
 ];
+
+this.setData('schedule', timeConfig);
 
 function queueEmail(note, sendAt, i) {
   var body = '<p>' + timeConfig[i].words + ' ago you added the <span style="color: #BBB">#</span><span style="color: #888">remember this</span> tag to this note:</p>';
