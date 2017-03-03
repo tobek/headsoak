@@ -292,7 +292,7 @@ export class Note {
 
     this._logger.log('Adding tag', tag);
 
-    if (tag.classifier && ! evenIfProg) {
+    if (tag.fromClassifier && ! evenIfProg) {
       this.progTagCantChangeAlert(tag);
       return null;
     }
@@ -330,7 +330,7 @@ export class Note {
       return;
     }
 
-    if (tag.classifier && ! evenIfProg) {
+    if (tag.fromClassifier && ! evenIfProg) {
       this.progTagCantChangeAlert(tag);
       return;
     }

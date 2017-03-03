@@ -179,6 +179,7 @@ export class TagComponent {
 
   remove() {
     this.removed.emit(this.tag);
+    this.hovered = false;
   }
 
   // @TODO/polish If you get here by clicking on .name-wrapper, it would be cool if the cursor position was set properly!
