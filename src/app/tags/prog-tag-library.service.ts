@@ -100,9 +100,6 @@ var defaultBlacklist = {
   'ten': 1,
 };
 
-// And the user can add their own:
-var blacklist = this.getData('blacklist') || {};
-
 function confirmBlacklisting(childTag, event, noteId, tagDetailsComponent) {
   if (event.shiftKey) {
     blacklistChildTag(childTag, tagDetailsComponent);
@@ -122,6 +119,7 @@ function confirmBlacklisting(childTag, event, noteId, tagDetailsComponent) {
 }
 
 function blacklistChildTag(childTag, tagDetailsComponent) {
+  var blacklist = _this.getData('blacklist', {});
   blacklist[childTag.childTagName] = true;
   _this.setData('blacklist', blacklist); // we have to call this otherwise the update won't be saved 
   childTag.delete(true);
@@ -195,7 +193,7 @@ function classifier(note) {
         return;
       }
 
-      if (defaultBlacklist[childTagName] || blacklist[childTagName]) {
+      if (defaultBlacklist[childTagName] || _this.getData('blacklist', {})[childTagName]) {
         return;
       }
 
