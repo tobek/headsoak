@@ -221,7 +221,7 @@ function classifier(note) {
 return {
   classifier: classifier,
 
-  customActions: {
+  customEntries: {
     childTags: [{
       icon: 'minus-circle',
       text: 'Blacklist this topic',
@@ -311,7 +311,7 @@ return {
   },
 
   // Display text in tag dropdown on notes to show users when the previous/next emails were/will be sent:
-  customActions: {
+  customEntries: {
     noteTagDropdown: [{
       text: function(tag, noteId) {
         var queuedEmails = _this.getData(noteId);

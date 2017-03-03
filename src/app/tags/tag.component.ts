@@ -3,7 +3,7 @@ import {Subscription} from 'rxjs';
 
 import {AnalyticsService} from '../analytics.service';
 import {ActiveUIsService} from '../active-uis.service';
-import {Tag, CustomAction} from './tag.model';
+import {Tag, CustomEntry} from './tag.model';
 import {ChildTag} from './child-tag.model';
 import {TagsService} from './tags.service';
 
@@ -248,16 +248,16 @@ export class TagComponent {
     }
   }
 
-  getCustomActions(): CustomAction[] {
-    let actions: CustomAction[];
+  getCustomEntries(): CustomEntry[] {
+    let entries: CustomEntry[];
 
-    actions = this.tag.customActions.noteTagDropdown || [];
+    entries = this.tag.customEntries.noteTagDropdown || [];
 
-    if (this.tag.parentTag && this.tag.parentTag.customActions.childTags) {
-      actions = actions.concat(this.tag.parentTag.customActions.childTags)
+    if (this.tag.parentTag && this.tag.parentTag.customEntries.childTags) {
+      entries = entries.concat(this.tag.parentTag.customEntries.childTags)
     }
 
-    return actions;
+    return entries;
   }
 
   // @TODO/refactor Very similar code for note nav in AppComponent - if we need this again, should share logic

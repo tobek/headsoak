@@ -35,7 +35,7 @@ export class PublicTag {
   ];
 
   static WRITABLE_PROPS = [
-    'customActions',
+    'customEntries',
   ];
 
   static FUNCS = [

@@ -41,7 +41,7 @@ interface Hooks {
   noteUpdated?: (note: Note) => void;
 }
 
-export interface CustomAction {
+export interface CustomEntry {
   text: string | ((tag: Tag, noteId?: string) => string),
   icon?: string,
   func?: (tag: Tag, event: Event, noteId?: string) => {},
@@ -50,7 +50,7 @@ export interface CustomAction {
 export type ProgTagDef = ((note: Note) => ClassifierReturnType) | {
   classifier?: (note: Note) => ClassifierReturnType,
   hooks?: Hooks,
-  customActions?: { [location: string]: CustomAction[] },
+  customEntries?: { [location: string]: CustomEntry[] },
 };
 
 export class Tag {
@@ -132,13 +132,13 @@ export class Tag {
    *
    * @TODO/prog Document this, e.g. that for both of these `Tag` instance is sent in, and `TagDetailsComponent` is sent in too when in tag details page (that's a big @HACK though so we can update child tags after blacklist, @TODO/soon if tag details could listen for tag updates it could know when to udpate).
    *
-   * @TODO/now @TODO/ece It's confusing that both these and prog tag operations/hooks are referred to as actions (are they even?). Should these be `customOperations`? `customHandlers`? `customizations`? `customEntries`? Also now that we allow just plain text...
+   * @TODO/soon @TODO/prog @TODO/ece Is this the right now? Also could be actions, operations,  handlers, customizations...
    */
-  customActions: {
+  customEntries: {
     /** Shows up in tag dropdown on a note. */
-    noteTagDropdown?: CustomAction[],
-    /** Shows up in list of child tags in TagDetailsComponent, and on child tags on a note. */
-    childTags?: CustomAction[],
+    noteTagDropdown?: CustomEntry[],
+    /** Shows up in list of child tags in TagDetailsComponent, and on dropdowns of child tags on a note. */
+    childTags?: CustomEntry[],
   } = {};
 
   /** If this is true then you can't change *anything* about this tag - no adding/removing from notes, no renaming, no changing smart tag settings, etc. */
@@ -607,7 +607,7 @@ export class Tag {
       this.hooks = {};
     }
 
-    this.customActions = progTagDef.customActions || {};
+    this.customEntries = progTagDef.customEntries || {};
   }
 
   wrappedProgFunc(func: Function, log = '') {

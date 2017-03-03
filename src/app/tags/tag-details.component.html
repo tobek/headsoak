@@ -26,10 +26,10 @@
           <span class="count">{{ childTag.noteCount }}</span>
 
           <span class="child-tag-action"
-            *ngFor="let action of tag.customActions.childTags || []"
-            [attr.data-tooltip]="(action.text && action.text.call) ? action.text(childTag) : action.text"
-            (click)="action.func && action.func(childTag, $event, null, component); setUpChildTags(); $event.stopPropagation()"
-            ><i class="fa fa-{{ action.icon }}"></i
+            *ngFor="let entry of tag.customEntries.childTags || []"
+            [attr.data-tooltip]="(entry.text && entry.text.call) ? entry.text(childTag) : entry.text"
+            (click)="entry.func && entry.func(childTag, $event, null, component); setUpChildTags(); $event.stopPropagation()"
+            ><i class="fa fa-{{ entry.icon }}"></i
           ></span>
         </span>
       </li>
