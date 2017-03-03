@@ -98,4 +98,9 @@
       <span class="tag-dropdown-text">{{ (entry.text && entry.text.call) ? entry.text(tag, ofNoteId) : entry.text }}</span>
     </span>
   </span>
+
+  <span *ngIf="hasClassifier" class="tag-dropdown-static-item" (click)="$event.stopPropagation()">
+    <!-- @TODO/copy @TODO/prog @TODO/ece Also, should we *not* show the parent tag name on hover now? -->
+    <span class="tag-dropdown-text">This smart tag was automatically applied to this note<span *ngIf="tag.parentTag"> by the <span class="static-tag tag-link" (click)="tag.parentTag.goTo()">{{ tag.parentTag.name }}</span> tag</span>.</span>
+  </span>
 </div>
