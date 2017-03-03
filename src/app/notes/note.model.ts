@@ -311,7 +311,9 @@ export class Note {
 
     this.rebuildNoteSharing();
 
-    this.updated(this.dataService.settings.get('tagChangesChangeNutModifiedTimestamp'), fullUpdate);
+    const updateNoteModified = ! tag.fromClassifier && this.dataService.settings.get('tagChangesChangeNutModifiedTimestamp');
+
+    this.updated(updateNoteModified, fullUpdate);
 
     return tag;
   }
@@ -342,7 +344,10 @@ export class Note {
     tag.removeNoteId(this.id);
 
     this.rebuildNoteSharing();
-    this.updated(this.dataService.settings.get('tagChangesChangeNutModifiedTimestamp'), fullUpdate);
+
+    const updateNoteModified = ! tag.fromClassifier && this.dataService.settings.get('tagChangesChangeNutModifiedTimestamp');
+
+    this.updated(updateNoteModified, fullUpdate);
   }
 
   progTagCantChangeAlert(tag: Tag): void {

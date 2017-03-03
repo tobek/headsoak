@@ -94,7 +94,7 @@ export class SettingsService {
       id: 'tagChangesChangeNutModifiedTimestamp',
       default: false,
       name: 'Tagging updates note timestamps',
-      description: 'If this is checked then adding or removing a tag to/from a note will update the "modified" timestamp of that note.',
+      description: 'If this is checked, then adding or removing a tag to/from a note will update the "modified" timestamp of that note. Regardless of this value, smart tags never update the "modified" timestamp.', // @TODO/prog @TODO/soon However we decide to refer to classifiers we should reference it here. Or, maybe even non-classifier prog tags should slide as well? You could argue that a normal tag is adding information in a way that something like "remember this" or "post to blog" is not - the latter are just functions you're running, so maybe they shouldn't update timestamp.
       type: 'boolean',
       section: 'settings'
     },
