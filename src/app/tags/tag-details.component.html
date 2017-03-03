@@ -90,7 +90,7 @@
 
   <div *ngIf="! _.isEmpty(tag.data)">
     <h4>Tag data</h4>
-    <pre contenteditable ref-tagDataRef (blur)="tagDataUpdated()">{{ safeStringify(tag.data, null, 2) }}</pre>
+    <pre contenteditable ref-tagDataRef (blur)="tagDataUpdated()" [innerHTML]="safeStringify(tag.data, null, 2)"></pre>
   </div>
 </div>
 
