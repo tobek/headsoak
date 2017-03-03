@@ -36,8 +36,8 @@ export class TagComponent {
   @Input() @HostBinding('class.is--self-active') isSelfActive: boolean;
 
   @HostBinding('class.renaming') renaming = false;
-  @HostBinding('class.has--classifier') get hasClassifier() {
-    return this.tag && (this.tag.classifier || (this.tag.parentTag && this.tag.parentTag.classifier));
+  @HostBinding('class.from--classifier') get fromClassifier() {
+    return this.tag && this.tag.fromClassifier;
   }
   @HostBinding('hidden') hidden = false;
 

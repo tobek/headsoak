@@ -298,12 +298,12 @@ export class Note {
     }
 
     // Need to reassign this.tags for angular's pure pipes pick up the change
-    if (! tag.classifier && ! tag.internal) {
+    if (! tag.fromClassifier && ! tag.internal) {
       // Add at the front - this makes tags on notes ordered by most-recently-added, which a) is fine, and b) looks good when you add a new tag. Later order could be smarter.
       this.tags = ['' + tag.id].concat(this.tags);
     }
     else {
-      // We'll leave prog and internal tags at the back
+      // We'll leave prog classified and internal tags at the back
       this.tags = this.tags.concat(['' + tag.id]);
     }
 
@@ -496,7 +496,7 @@ export class Note {
 
     _.each(this.dataService.tags.tags, (tag) => {
       if (tag && tag.classifier && ! (tag instanceof ChildTag)) {
-        // @NOTE Currently child tags only exist on prog tags, and don't need/can't have their own programmatic stuff (but still return true for `tag.hasClassifier` and are styled as such)
+        // @NOTE Currently child tags only exist on prog tags, and don't need/can't have their own programmatic stuff (but still return true for `tag.fromClassifier` and are styled as such)
         // @TODO/prog We could probably identify which tags are causing any infinite loops by keeping track of which tags are going back and forth somehow
         tag.runClassifierOnNote(this);
       }

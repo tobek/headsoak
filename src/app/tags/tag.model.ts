@@ -183,6 +183,10 @@ export class Tag {
   /** If this is a programmatic tag, this object caches the functions to be run at various times. */
   hooks?: Hooks = {};
 
+  get fromClassifier(): boolean {
+    return !! (this.classifier || (this.parentTag && this.parentTag.classifier));
+  }
+
   protected _logger: Logger;
 
   /** Properties that we save to data store */
