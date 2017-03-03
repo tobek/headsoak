@@ -131,13 +131,6 @@ function blacklistChildTag(childTag, tagDetailsComponent) {
   }
 }
 
-this.customActions.childTags = [{
-  icon: 'minus-circle',
-  text: 'Blacklist this topic',
-  func: confirmBlacklisting
-}];
-
-
 // The part-of-speech tagger that the retext library uses doesn't handle contractions, so they're "unknown" words and can turn up as keywords. Here's a quick contraction replacer.
 // (These can all be lower case since we convert note body to lower case before processing anyway)
 var contractions = {
@@ -170,7 +163,7 @@ function expandContractions(input) {
 var punctuationFixRegExp = new RegExp('\\\\d([-’\\'])\\\\d', 'g');
 
 // And, finally, the actual classifier we run on each note
-return function(note) {
+function classifier(note) {
   var resolve, reject;
   var result = new Promise(function(res, rej) {
     resolve = res;
@@ -223,6 +216,18 @@ return function(note) {
   });
 
   return result;
+};
+
+return {
+  classifier: classifier,
+
+  customActions: {
+    childTags: [{
+      icon: 'minus-circle',
+      text: 'Blacklist this topic',
+      func: confirmBlacklisting
+    }]
+  }
 };`
 // };}
     },
@@ -235,42 +240,6 @@ return function(note) {
       // progFunc: function(api: ProgTagApiService, _): ProgTagDef { const _this: Tag = this;
       // @TODO/ece @TODO/prog Too many exclamation marks in the email copy - also general feedback on copy
       progFuncString: `var _this = this;
-
-this.customActions.noteTagDropdown = [{
-  text: function(tag, noteId) {
-    var queuedEmails = _this.getData(noteId);
-    if (! queuedEmails) {
-      return '';
-    }
-
-    var prevEmail, nextEmail;
-    var now = Date.now();
-    for (var i = 0; i < queuedEmails.length; ++i) {
-      if (queuedEmails[i].sendAt <= now) {
-        prevEmail = queuedEmails[i];
-      }
-      else if (! nextEmail) {
-        nextEmail = queuedEmails[i];
-        break;
-      }
-    }
-
-    var text = '';
-
-    if (prevEmail) {
-      text += 'Last email: ' + api.formatDate(prevEmail.sendAt, 'mediumDate') + '\\n';
-    }
-
-    if (nextEmail) {
-      text += 'Next email: ' + api.formatDate(nextEmail.sendAt, 'mediumDate')
-    }
-    else {
-      text += 'No more emails coming! (Remove and add this tag again to restart the schedule.)';
-    }
-
-    return text;
-  }
-}];
 
 var timeConfig = [
   { hours: 24, words: '1 day', next: '6 days' },
@@ -305,7 +274,7 @@ function queueEmail(note, sendAt, i) {
   });
 }
 
-// Note that this smart tag does not return a classifier function. This tag isn't automatically assigned to notes - the user assigns it manually. We do, however, attach functions to specific hooks:
+// Note that this smart tag does not return a classifier function. This tag isn't automatically assigned to notes - the user assigns it manually. We do, however, implement this tag by attaching functions to specific hooks:
 
 return {
   hooks: {
@@ -339,6 +308,45 @@ return {
 
       _this.removeData(note.id);
     },
+  },
+
+  // Display text in tag dropdown on notes to show users when the previous/next emails were/will be sent:
+  customActions: {
+    noteTagDropdown: [{
+      text: function(tag, noteId) {
+        var queuedEmails = _this.getData(noteId);
+        if (! queuedEmails) {
+          return '';
+        }
+
+        var prevEmail, nextEmail;
+        var now = Date.now();
+        for (var i = 0; i < queuedEmails.length; ++i) {
+          if (queuedEmails[i].sendAt <= now) {
+            prevEmail = queuedEmails[i];
+          }
+          else if (! nextEmail) {
+            nextEmail = queuedEmails[i];
+            break;
+          }
+        }
+
+        var text = '';
+
+        if (prevEmail) {
+          text += 'Last email: ' + api.formatDate(prevEmail.sendAt, 'mediumDate') + '\\n';
+        }
+
+        if (nextEmail) {
+          text += 'Next email: ' + api.formatDate(nextEmail.sendAt, 'mediumDate')
+        }
+        else {
+          text += 'No more emails coming! (Remove and add this tag again to restart the schedule.)';
+        }
+
+        return text;
+      }
+    }]
   }
 };`
 // };}
@@ -481,6 +489,7 @@ return function(note) {
       if (! this.sizeMonitor.isMobile) {
         this.tagsService.dataService.initialized$.filter(initialized => !! initialized).first().subscribe(() => {
           // Seems like we  need to wait even longer... otherwise mysteriously can get loader forever while this runs
+          // @TODO/now @TODO/prog Since we don't run `setUpAndValidateProgTag` until after checking for update, that means some stuff isn't set up in the first 7.5s and is weird... do it earlier if possible
           setTimeout(() => {
             this.maybeUpdateLocalTag(localTag, tagData);
           }, 7500);
@@ -525,7 +534,7 @@ return function(note) {
       return;
     }
 
-    // @TODO/now @TODO/prog Message shouldn't talk about re-running unless it has a classifier
+    // @TODO/now @TODO/prog Message shouldn't talk about re-running unless it has a classifier - actually we don't  need to re-run at all unless *classifier* has changed, but that's hard, we'd have to run the old one and `toString` the classifier, and then check it against the new one... nah.
     let message: string;
     if (funcUpdated && nameUpdated) {
       message = '<p>Re-running tag on all your notes now. Also, it has been renamed to <span class="static-tag">' + latestTagData.name + '</span>.</p>';

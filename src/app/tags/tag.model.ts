@@ -49,7 +49,8 @@ export interface CustomAction {
 
 export type ProgTagDef = ((note: Note) => ClassifierReturnType) | {
   classifier?: (note: Note) => ClassifierReturnType,
-  hooks?: Hooks
+  hooks?: Hooks,
+  customActions?: { [location: string]: CustomAction[] },
 };
 
 export class Tag {
@@ -539,11 +540,11 @@ export class Tag {
         }
       }
 
-      this._logger.info('Failed to generate classifier', err, err.stack, 'Smart tag definition:', this.progFuncString);
+      this._logger.info('Failed to generate smart tag definition', err, err.stack, 'Smart tag definition:', this.progFuncString);
 
       if (alertOnError) {
         this.dataService.toaster.error(
-          'Could not generate classifier. Click for details.',
+          'Could not generate smart tag definition. Click for details.',
           'Error running smart tag <span class="static-tag">' + this.name + '</span>',
           {
             timeOut: 10000,
@@ -576,37 +577,37 @@ export class Tag {
     const progTagCreator = new Function('api', '_', this.progFuncString); // (this line excites me)
 
     // Smart tag should be set up to return the classifier function or prog tag def object, so we call the eval'd function immediately and pass in API and lodash:
-    const progTagDef: ProgTagDef = progTagCreator.call(this.publicTag, this.dataService.tags.progTagApi, _);
+    let progTagDef: ProgTagDef = progTagCreator.call(this.publicTag, this.dataService.tags.progTagApi, _);
 
-    let classifierFunc;
     if (typeof progTagDef === 'function') {
-      classifierFunc = progTagDef;
+      progTagDef = {
+        classifier: progTagDef
+      };
     }
-    else if (typeof progTagDef === 'object') {
-      classifierFunc = progTagDef.classifier;
-
-      if (progTagDef.hooks) {
-        _.each(progTagDef.hooks, (func, hookName) => {
-          if (typeof func !== 'function') {
-            throw new Error('Invalid value for "' + hookName + '" - must be a function'); // @TODO/now Test this
-          }
-          this.hooks[hookName] = this.wrappedProgFunc(func, hookName);
-        });
-      }
-      else {
-        this.hooks = {};
-      }
-    }
-    else {
+    else if (typeof progTagDef !== 'object') {
       throw Error('Smart tag code did not return a classifier function or smart tag definition object');
     }
 
-    if (classifierFunc) {
-      this.classifier = this.wrappedProgFunc(classifierFunc);
+    if (progTagDef.classifier) {
+      this.classifier = this.wrappedProgFunc(progTagDef.classifier);
     }
     else {
       delete this.classifier;
     }
+
+    if (progTagDef.hooks) {
+      _.each(progTagDef.hooks, (func, hookName) => {
+        if (typeof func !== 'function') {
+          throw new Error('Invalid value for "' + hookName + '" - must be a function'); // @TODO/now Test this
+        }
+        this.hooks[hookName] = this.wrappedProgFunc(func, hookName);
+      });
+    }
+    else {
+      this.hooks = {};
+    }
+
+    this.customActions = progTagDef.customActions || {};
   }
 
   wrappedProgFunc(func: Function, log = '') {
