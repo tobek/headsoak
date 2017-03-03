@@ -99,14 +99,19 @@ export class Tag {
     }
   }
   removeData(key: string) {
-    if (typeof this._data[key] !== 'undefined') {
+    if (key in this._data) {
       delete this._data[key];
       this.classifier && this.runClassifierOnAllNotes();
       this.updated();
     }    
   }
-  getData(key: string): any {
-    return _.cloneDeep(this._data[key]);
+  getData(key: string, defaultValue: any = undefined): any {
+    if (key in this._data) {
+      return _.cloneDeep(this._data[key]);
+    }
+    else {
+      return defaultValue;
+    }
   }
 
   /** Serialized version of `data` that's safe to store in Firebase. */
