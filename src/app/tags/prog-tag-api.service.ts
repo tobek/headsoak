@@ -1,4 +1,5 @@
 import {Injectable, Inject, forwardRef} from '@angular/core';
+import {DatePipe} from '@angular/common';
 
 import {DataService} from '../data.service';
 import {ModalService} from '../modals/modal.service';
@@ -21,8 +22,10 @@ let _dataService: DataService;
 
 @Injectable()
 export class ProgTagApiService {
-  tags: { [tagId: string]: Tag } = {}; // id -> Tag instance
-  notes: { [noteId: string]: Note } = {}; // id -> Note instance
+  tags: { [tagId: string]: Tag } = {};
+  notes: { [noteId: string]: Note } = {};
+  
+  formatDate: (timestamp: number, format?: string) => string;
 
   lib = {
     sentiment: sentiment,
@@ -37,8 +40,10 @@ export class ProgTagApiService {
   private _logger = new Logger('ProgTagApiService');
 
   constructor(
-    @Inject(forwardRef(() => ModalService)) public modal: ModalService // @TODO/prog Add to documentation
+    @Inject(forwardRef(() => ModalService)) public modal: ModalService,
+    datePipe: DatePipe
   ) {
+    this.formatDate = datePipe.transform.bind(datePipe)
   }
 
   // @TODO/polish This won't actually send an email until the nearest hour when server cron runs. We could have a separate Firebase location for immediate emails that the server watcher could listen to instead.
