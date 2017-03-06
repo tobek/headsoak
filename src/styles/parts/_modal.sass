@@ -100,8 +100,11 @@ modal
       transform: translateY(-50%)
       transition-timing-function: ease-out
 
-  &.full-height .modal-content
-    height: 100%
+  &.full-height
+    overflow-x: hidden
+    
+    .modal-content
+      height: 100%
 
   &.dark-solo
     @media (min-width: $tablet-large)

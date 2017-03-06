@@ -12,6 +12,34 @@ homepage
     h2
       margin-top: 0
 
+  .ribbon
+    position: relative
+    width: 100%
+    padding: 0.5rem
+    color: $note-text
+    background-color: $note-bg
+    font-weight: bold
+    // @TODO/hp Styles
+
+    &:before,
+    &:after
+      content: ''
+      position: absolute
+      top: 0
+      height: 100%
+      width: 500px
+      background-color: $note-bg
+
+    &:before
+      left: -500px
+    &:after
+      right: -500px
+
+
+  .steps
+    display: flex
+    justify-content: space-around
+    text-align: center
 
   .demo-container
     +span(6)
