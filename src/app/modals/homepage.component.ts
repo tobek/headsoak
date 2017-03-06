@@ -1,7 +1,7 @@
 import {Component, ViewChild, ElementRef, HostBinding} from '@angular/core';
 
 import {AnalyticsService} from '../analytics.service';
-import {Logger} from '../utils/logger';
+import {Logger} from '../utils/';
 
 import {Tag, ChildTag} from '../tags/';
 import {ForceGraph} from '../utils/force-graph.component';
@@ -31,7 +31,8 @@ export class HomepageComponent {
 
   addingTag = false;
 
-  @HostBinding('class.is--tag-explore-stage') tagExploreStage = false;
+  // @HostBinding('class.is--tag-explore-stage') tagExploreStage = false;
+  showVis = false;
 
   @ViewChild('noteBody') noteBody: ElementRef;
   // @ViewChild('noteTags') noteTags: ElementRef;
@@ -201,9 +202,9 @@ export class HomepageComponent {
       text: '\n\nThen, explore your data.',
       delay: 1000
     },
-    {
-      function: this.setUpTagExplore,
-    },
+    // {
+    //   function: this.setUpTagExplore,
+    // },
     // {
     //   function: this.write,
     //   text: '\n\nOur public beta is launching soon, sign up to get notified!',
@@ -224,6 +225,13 @@ export class HomepageComponent {
 
   ngAfterViewInit() {
     this.play();
+
+    // When the graph is first set up it bounces around a bit which looks dynamic and invites user to play. It's just below the fold so we can wait until first scroll to trigger.
+    jQuery('modal').first().one('scroll', () => {
+      setTimeout(() => {
+        this.showVis = true;
+      }, 250);
+    });
   }
 
   play(i = 0) {
@@ -361,9 +369,9 @@ export class HomepageComponent {
     }, 1000);
   }
 
-  setUpTagExplore() {
-    this.tagExploreStage = true;
-  }
+  // setUpTagExplore() {
+  //   this.tagExploreStage = true;
+  // }
 
 
 }

@@ -21,6 +21,7 @@ homepage
     font-weight: bold
     // @TODO/hp Styles
 
+  .full-width-edges
     &:before,
     &:after
       content: ''
@@ -28,13 +29,17 @@ homepage
       top: 0
       height: 100%
       width: 500px
-      background-color: $note-bg
+      background-color: $panel-bg
 
     &:before
       left: -500px
     &:after
       right: -500px
 
+    &.ribbon
+      &:before,
+      &:after
+        background-color: $note-bg
 
   .steps
     display: flex
@@ -50,16 +55,16 @@ homepage
     @media (max-height: 750px)
       padding-top:  0
 
-  .note,
-  .tag-explore-wrapper
-    transition: opacity $transition-med, visibility $transition-med
-  .tag-explore-wrapper,
-  &.is--tag-explore-stage .note
-    opacity: 0
-    visibility: hidden
-  &.is--tag-explore-stage .tag-explore-wrapper
-    opacity: 1
-    visibility: visible
+  // .note,
+  // .tag-explore-wrapper
+  //   transition: opacity $transition-med, visibility $transition-med
+  // .tag-explore-wrapper,
+  // &.is--tag-explore-stage .note
+  //   opacity: 0
+  //   visibility: hidden
+  // &.is--tag-explore-stage .tag-explore-wrapper
+  //   opacity: 1
+  //   visibility: visible
 
   .note
     margin-top: 170px // size of login header height/margin
@@ -103,33 +108,29 @@ homepage
 
   .tag-explore
     +card
-    position: absolute
-    overflow-y: scroll
+    // position: absolute
+    // overflow-y: scroll
     width: 100%
-    height: 450px
+    height: 400px // @TODO/hp
     max-height: 90vh
-    padding-top: 25px
-    padding-bottom: 25px
+    // padding-top: 25px
+    // padding-bottom: 25px
+    padding: 1rem
 
-    margin-top: 100px
-    @media (max-height: 550px)
-      margin-top: 50px
-
-    .heading
-      +h3
+    // .heading
+    //   +h3
 
     force-graph
       display: block
       width: 100%
-      height: 300px
-      margin-top: 15px
+      height: 100%
 
-    .note-count-heading
-      +h3
-      margin: -10px 0 0
+    // .note-count-heading
+    //   +h3
+    //   margin: -10px 0 0
 
-    .cooccurrences .static-tag:before
-      margin-right: 1px
+    // .cooccurrences .static-tag:before
+    //   margin-right: 1px
 
   .teaser
     +span(6)
