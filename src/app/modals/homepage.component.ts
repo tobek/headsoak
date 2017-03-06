@@ -254,7 +254,7 @@ export class HomepageComponent {
     jQuery('modal').first().one('scroll', () => {
       setTimeout(() => {
         this.showVis = true;
-      }, 250);
+      }, 200);
     });
   }
 

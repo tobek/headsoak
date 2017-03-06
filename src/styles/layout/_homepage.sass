@@ -157,7 +157,23 @@ homepage
       padding-right: 25px
 
   .static-notes
-    margin-top: 2rem
+    @extend .clearfix
+    padding: 1.5rem 0
+
+  .screenshots
+    margin: 2rem 0
+
+    .shot
+      @extend .clearfix
+      margin-bottom: 2rem
+
+      img
+        +span(4)
+        height: auto
+      .text
+        +span(7 last)
+        text-align: left
+        font-weight: normal
 
   .features
     +span(12)
