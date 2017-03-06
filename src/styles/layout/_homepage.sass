@@ -161,7 +161,7 @@ homepage
     padding: 1.5rem 0
 
   .screenshots
-    margin: 2rem 0
+    padding: 2rem 0
 
     .shot
       @extend .clearfix
@@ -176,7 +176,7 @@ homepage
         font-weight: normal
 
   .features
-    +span(12)
+    @extend .clearfix
     margin-top: gutter() * 3
 
   .feature
@@ -194,22 +194,22 @@ homepage
       margin-bottom: 0
 
 
-.homepage-outro
-  clear: both
-  width: 100%
-  padding-top: 50px
+  .homepage-outro
+    clear: both
+    width: 100%
+    margin-top: 50px
 
-  h4
-    position: relative
-    margin: 0
-    padding: 50px 25px
-    text-align: center
-    background-color: $panel-bg
-    text-shadow: 2px 2px 5px $shadow-color
-    letter-spacing: 1.8px
+    h4
+      position: relative
+      margin: 0
+      padding: 50px 25px
+      // text-align: center
+      // background-color: $panel-bg
+      // text-shadow: 2px 2px 5px $shadow-color
+      letter-spacing: 1.8px
 
-    a
-      +text-link
+      a
+        +text-link
 
 // .modal-content.outro-login
 //   float: right
