@@ -38,17 +38,41 @@ export class HomepageComponent {
   // @ViewChild('noteTags') noteTags: ElementRef;
   @ViewChild('noteAddTagInput') noteAddTagInput: ElementRef;
 
-  tagSent = new Tag({ id: 'sent', name: 'sentiment', prog: true }, null);
+  tagSent = new Tag({ id: 'sent', name: 'sentiment', prog: true, classifier: true }, null);
   tagSentPos = new ChildTag({ id: 'sentPos', childTagName: 'positive', _parentTag: this.tagSent, parentTagId: this.tagSent.id, prog: true }, null);
   tagSentNeg = new ChildTag({ id: 'sentNeg', childTagName: 'negative', _parentTag: this.tagSent, parentTagId: this.tagSent.id, prog: true }, null);
 
-  tagLoc = new Tag({ id: 'loc', name: 'location', prog: true }, null);
+  tagTopic = new Tag({ id: 'top', name: 'topic', prog: true, classifier: true }, null);
+  tagTopTag = new ChildTag({ id: 'topTag', childTagName: 'tag', _parentTag: this.tagTopic, parentTagId: this.tagTopic.id, prog: true }, null);
+  tagTopNote = new ChildTag({ id: 'topNote', childTagName: 'note', _parentTag: this.tagTopic, parentTagId: this.tagTopic.id, prog: true }, null);
+  tagTopLearn = new ChildTag({ id: 'topLearn', childTagName: 'learning', _parentTag: this.tagTopic, parentTagId: this.tagTopic.id, prog: true }, null);
+  tagTopSent = new ChildTag({ id: 'topSent', childTagName: 'sentiment', _parentTag: this.tagTopic, parentTagId: this.tagTopic.id, prog: true }, null);
+  tagTopInsight = new ChildTag({ id: 'topInisight', childTagName: 'insights', _parentTag: this.tagTopic, parentTagId: this.tagTopic.id, prog: true }, null);
+
+  tagLoc = new Tag({ id: 'loc', name: 'location', prog: true, classifier: true }, null);
   tagLocGaia = new ChildTag({ id: 'locGaia', childTagName: 'Gaia Cafe', _parentTag: this.tagLoc, parentTagId: this.tagLoc.id, prog: true }, null);
 
-  tagQuote = new Tag({ id: 'quote', name: 'quote', prog: true }, null);
+  tagQuote = new Tag({ id: 'quote', name: 'quote', prog: true, classifier: true }, null);
+  tagSD = new Tag({ id: 'sd', name: 'self destruct', prog: true }, null);
+  tagRT = new Tag({ id: 'rt', name: 'remember this', prog: true }, null);
+
   tagFut = new Tag({ id: 'fut', name: 'futurism' }, null);
   tagShare = new Tag({ id: 'share', name: '@napoleon', share: true }, null);
   tagBlog = new Tag({ id: 'blog', name: 'post to blog', prog: true }, null);
+
+  staticNote1Tags = [
+    this.tagSentPos,
+    this.tagTopSent,
+    this.tagTopTag,
+    this.tagTopInsight,
+  ];
+  staticNote2Tags = [
+    this.tagSD,
+    this.tagRT,
+    this.tagTopTag,
+    this.tagTopLearn,
+    this.tagTopNote,
+  ];
 
   tagGraph: ForceGraph = {
     nodes: [

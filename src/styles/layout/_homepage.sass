@@ -19,6 +19,7 @@ homepage
     color: $note-text
     background-color: $note-bg
     font-weight: bold
+    text-align: center
     // @TODO/hp Styles
 
   .full-width-edges
@@ -44,16 +45,19 @@ homepage
   .steps
     display: flex
     justify-content: space-around
-    text-align: center
 
   .demo-container
     +span(6)
-    height: 100vh
-    padding-top: 10vh // matches login top margin
-    padding-right: 50px
+    &:nth-child(2n)
+      +span(6 last)
 
-    @media (max-height: 750px)
-      padding-top:  0
+    &.hero
+      height: 100vh
+      padding-top: 10vh // matches login top margin
+      padding-right: 50px
+
+      @media (max-height: 750px)
+        padding-top:  0
 
   // .note,
   // .tag-explore-wrapper
@@ -66,13 +70,16 @@ homepage
   //   opacity: 1
   //   visibility: visible
 
-  .note
-    margin-top: 170px // size of login header height/margin
+  .hero .note
+    // margin-top: 170px // size of login header height/margin
+    margin-top: 8rem
     height: 300px
 
     @media (max-height: 550px)
-      margin-top: 140px
+      // margin-top: 140px
+      margin-top: 6rem
 
+  .note
     .note-wrapper .body-input // extra specificity to overcome route-related classes
       height: 100%
       max-height: none !important
@@ -98,9 +105,6 @@ homepage
         transition-duration: $transition-med
         &.is--highlighted
           opacity: 1
-
-      &:hover .tag-actions
-        display: inline // overrides normal tag style that makes the tag wider on hover here // @TODO/now I think this same problem exists in tag browser list, why do we even need it?
 
   .tag-explore-wrapper
     position: relative
@@ -151,6 +155,9 @@ homepage
     .demo-container,
     .teaser
       padding-right: 25px
+
+  .static-notes
+    margin-top: 2rem
 
   .features
     +span(12)

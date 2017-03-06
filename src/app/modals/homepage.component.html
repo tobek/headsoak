@@ -1,4 +1,4 @@
-<div class="demo-container">
+<div class="demo-container hero">
   <div class="intro">
     <h2>Don't just takes notes. Utilize them.</h2>
     <h3>Augmented note-taking with smart tags</h3>
@@ -13,6 +13,8 @@
           ><tag
             *ngFor="let tag of tags"
             [tag]="tag"
+            [ofNoteId]="0"
+            context="note"
             [class.is--highlighted]="tag.highlight"
             [class.is--being-removed]="tag.beingRemoved"
           ></tag>
@@ -67,6 +69,55 @@
       </div>
     </div>
     -->
+  </div>
+</div>
+
+<div class="ribbon full-width-edges">HARNESS SMART TAGS</div>
+
+<div class="static-notes">
+  <div class="demo-container">
+    <div class="note">
+      <div class="note-wrapper">
+        <div class="note-bg"></div>
+        <div class="header">
+          <div class="tags"
+            ><span class="tag-like"><input type="text" placeholder="add tag" class ="new-tag-input" ref-noteAddTagInput /><span class="new-tag-button"><i class="fa fa-plus"></i></span></span
+            ><tag
+              *ngFor="let tag of staticNote1Tags"
+              [tag]="tag"
+              [ofNoteId]="1"
+              context="note"
+            ></tag>
+          </div>
+        </div>
+        <div class="body-input" autocorrect="off" autocapitalize="off" spellcheck="false">Extract insights from your notes.
+
+Use the #auto tag to automatically tag your notes with keywords.
+
+Or the #sentiment tag to see where your notes fall on the positive and negative spectrum.</div>
+      </div>
+    </div>
+  </div>
+  <div class="demo-container">
+    <div class="note">
+      <div class="note-wrapper">
+        <div class="note-bg"></div>
+        <div class="header">
+          <div class="tags"
+            ><span class="tag-like"><input type="text" placeholder="add tag" class ="new-tag-input" ref-noteAddTagInput /><span class="new-tag-button"><i class="fa fa-plus"></i></span></span
+            ><tag
+              *ngFor="let tag of staticNote2Tags"
+              [tag]="tag"
+              [ofNoteId]="2"
+              context="note"
+            ></tag>
+          </div>
+        </div>
+        <div class="body-input" autocorrect="off" autocapitalize="off" spellcheck="false">Perform actions on your notes.
+
+Use the #remember this tag to reap the benefits of spaced repetition learning. Yada yada.</div>
+      </div>
+    </div>
   </div>
 </div>
 
