@@ -149,21 +149,21 @@ export class TagBrowserComponent {
 
     this.inSidebar = false;
     
+    // @HACK @TODO/tags @TODO/polish @TODO/soon This REALLY shouldn't be necessary, but for now, especially e.g. if you scroll to bottom of notes or tag list and then click on a tag, you don't see shit. They need to scroll independently. It also means you lose your place in your notes when you go back. Bah.
+    if (! this.sizeMonitor.isMobile && (this.activeTag || this.activePane)) {
+      // We were already looking at tags, so animate scroll so you don't lose your place
+      this.scrollMonitor.scrollToTop();
+    }
+    else {
+      // We were elsewhere, animating will look weird
+      this.scrollMonitor.scrollToTop(0);
+    }
+
     if (pathParts[1] === 'tag') {
       // We're browsing details of a specific tag
       this.activeTag = this.tagsService.tags[pathParts[2]];
       this.activePane = 'tagDetails';
       this.expandedTag = this.activeTag;
-
-      // @HACK @TODO/tags @TODO/polish @TODO/soon This REALLY shouldn't be necessary, but for now, especially e.g. if you scroll to bottom of notes or tag list and then click on a tag, you don't see shit. They need to scroll independently. It also means you lose your place in your notes when you go back. Bah.
-      if (! this.sizeMonitor.isMobile && (this.activeTag || this.activePane)) {
-        // We were already looking at tags, so animate scroll so you don't lose your place
-        this.scrollMonitor.scrollToTop();
-      }
-      else {
-        // We were elsewhere, animating will look weird
-        this.scrollMonitor.scrollToTop(0);
-      }
 
       // This whole activeTagPane thing is a hack (reading tagDetailsComponent.activePane directly from template was causing that debug mode error where expression changed while checking it)
       setTimeout(() => {
