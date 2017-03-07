@@ -107,13 +107,38 @@ export class DataService {
     // An initial check to see if anything needs updating after initialization (pretty sure this is impossible since we haven't fetched data, but why not):
     this.throttledSync();
 
-    // @TODO/rewrite also sync (without throttle) before unload
-
     this.fetchData(uid);
+
+    this.monitorOnlineState();
   }
 
+  monitorOnlineState() {
+    var onlineStateRef = this.ref.root().child('.info/connected');
+
+    setInterval(() => {
+      onlineStateRef.on('value', this.onlineStateHandler);
+    }, 5000);
+  }
+
+  onlineStateHandler = (snap) => {
+    const online = snap.val();
+    if (this.status === 'offline' && online) {
+      this.sync();
+    }
+    else if (this.status !== 'offline' && ! online) {
+      this.status = 'offline';
+    }
+  };
+
   confirmLeaving = (event) => {
-    this.sync(); // sync now!
+    if (this.isDigestEmpty(this.digest) && this.isDigestEmpty(this.digestSyncing)) {
+      // It's ok, they can leave
+      return;
+    }
+
+    if (this.status !== 'offline') {
+      this.sync(); // sync now!
+    }
     event.returnValue = 'Are you sure you want to leave? You have unsaved changes.';
     return event.returnValue;
   };
@@ -251,7 +276,6 @@ export class DataService {
             extendTimeOut: 0,
             closeButton: true,
             onclick: () => {
-              debugger;
               this.modalService.alert('<p>We ran into an error while syncing changes you made in the last 10 seconds. While this error continues, we may be unable to save all your changes. Please see the sync indicator in the top right of the app - red indicates an error.</p><p>It is with shame and regret that we suggest you reload the app if the indicator remains red for a while.</p><p>We have logged this error and are working to fix it. You can email us at <a href="mailto:support@headsoak.com">support@headsoak.com</a> if this keeps happening.</p><pre class="syntax">' + err + '</pre>', true);
             }
           }
@@ -320,6 +344,11 @@ export class DataService {
           }
         );
       }
+    }
+
+    if (newStatus === 'unsynced' && this._status === 'offline') {
+      // Updates are in `digest` so we know there's stuff that needs syncing, but we can't right now. When `onlineStateHandler` detects we're online again it will try to sync.
+      return;
     }
 
     this.zone.run(() => {

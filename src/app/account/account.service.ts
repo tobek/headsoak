@@ -59,7 +59,7 @@ export class AccountService {
       this.handleLoggedOut();
 
       setTimeout(() => {
-        this.offlineHandler();
+        this.devOfflineHandler();
         this.ref.authWithPassword({ email: 'email@example.com', password: 'abc' });
       }, 0);
 
@@ -67,22 +67,6 @@ export class AccountService {
     }
 
     this.setUpAuthHandlers();
-
-    // @TODO in theory this is where, later, we can listen for connection state always and handle online/offline. For now we have an offline mode just when on local
-    if (document.location.href.indexOf('localhost:3000') !== -1){
-      const onlineStateTimeout = window.setTimeout(this.offlineHandler.bind(this), 5000);
-      
-      this.onlineStateRef = this.ref.root().child('.info/connected');
-      this.onlineStateRef.on('value', (snap) => {
-        const online = snap.val();
-        this._logger.log('Online state callback fired with:', online ? 'online' : 'offline');
-
-        if (online) {
-          window.clearTimeout(onlineStateTimeout);
-          this.onlineStateRef.off();
-        }
-      });
-    }
   }
 
   setUpAuthHandlers(): void {
@@ -108,16 +92,8 @@ export class AccountService {
     })});
   }
 
-  offlineHandler(): void {
-    this._logger.log('Still offline after 5 seconds');
-
-    if (this.onlineStateRef) {
-      this.onlineStateRef.off();
-    }
-
-    // @TODO/rewrite This should be dev only, otherwise should init from localStorage or something
-    // @TODO/rewrite When it's no longer dev only, this.dataService.status needs to indicate offline.
-
+  /** A developer version of offline state for testing. @TODO/polish Remove this code from prod builds. */
+  devOfflineHandler(): void {
     this.ref = <any>(new FirebaseMock());
     this.dataService.ref = <any>(new FirebaseMock());
     this.setUpAuthHandlers(); // need to set up again on new this.ref
