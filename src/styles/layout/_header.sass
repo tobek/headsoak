@@ -55,7 +55,7 @@ $menu-padding: 3px
 
     .sync-animation-border
       height: $menu-size
-      border: 2px solid $form-stroke
+      border: 1px solid $form-stroke
       border-radius: 50%
       transition: border-color $transition-slow, border-width $transition-slow, box-shadow $transition-slow
 
@@ -88,7 +88,6 @@ $menu-padding: 3px
 
     &.status--synced
       .sync-animation-border
-        border-width: 1px
         border-color: $success-color
         box-shadow: inset 0 0 10px 0px rgba($success-color, 0.5)
       .status
@@ -105,12 +104,14 @@ $menu-padding: 3px
     &.status--error,
     &.status--offline
       .sync-animation-border
+        border-width: 2px
         border-color: $danger-color
         box-shadow: inset 0 0 10px 0px rgba($danger-color, 0.5)
       .status
         color: $danger-color
 
     &.status--synced,
+    &.status--unsynced,
     &.status--error,
     &.status--offline
       .sync-animation,
