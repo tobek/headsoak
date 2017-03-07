@@ -236,16 +236,27 @@ export class DataService {
 
   syncCb(err, field: string): void {
     if (err) {
+      // For testing, we can trigger this error manually with: `dataService.tags.tags['lib--sentiment'].noteData['foo'] = function() {}; dataService.tags.tags['lib--sentiment'].updated(false)`
       this._logger.error('Sync to Firebase threw or returned error:', err);
       const stuffChanged = field === 'nuts' ? 'notes' : field;
-      this.toaster.error(
-        'Some ' + stuffChanged + ' may not have been saved. We\'ll keep trying though. You can email us at <a href="mailto:support@headsoak.com">support@headsoak.com</a> if this keeps happening.',
-        'Error syncing ' + stuffChanged + ' to the cloud',
-        {
-          preventDuplicates: true,
-          timeOut: 10000,
-        }
-      );
+
+      // If we're already in an error state, no need to show toaster again, but when we first arrive, do:
+      if (! this.syncProblem) {
+        this.toaster.error(
+          'Changes you just made to some ' + stuffChanged + ' may not have been saved, and future changes may not be saved. We\'ll keep trying though, and let you know when we\'re back online.<br><br>Click for more info.',
+          'Error syncing ' + stuffChanged + ' to the cloud',
+          {
+            preventDuplicates: true,
+            timeOut: 0,
+            extendTimeOut: 0,
+            closeButton: true,
+            onclick: () => {
+              debugger;
+              this.modalService.alert('<p>We ran into an error while syncing changes you made in the last 10 seconds. While this error continues, we may be unable to save all your changes. Please see the sync indicator in the top right of the app - red indicates an error.</p><p>It is with shame and regret that we suggest you reload the app if the indicator remains red for a while.</p><p>We have logged this error and are working to fix it. You can email us at <a href="mailto:support@headsoak.com">support@headsoak.com</a> if this keeps happening.</p><pre class="syntax">' + err + '</pre>', true);
+            }
+          }
+        );
+      }
       this.status = 'error'; // triggers sync
 
       // Merge syncing stuff back into current digest (current digest overrides) and then try to sync it again
@@ -280,15 +291,19 @@ export class DataService {
       if (! this.syncProblem) {
         // We've gone from a normal state to an error state
         this.syncProblem = true;
-        this.toaster.error(
-          newStatus === 'error' ? '<p>There was a problem connecting to Headsoak. Changes you make to your notes will not be saved.</p><p>We\'ll keep trying to reconnect.</p>' : '<p>Your computer seems to be no longer connected to the internet. Changes to your notes will not be saved until you are reconnected.</p>',
-          newStatus === 'error' ? 'Error syncing to Headsoak' : 'Disconnected from Headsoak',
-          {
-            timeOut: 0,
-            extendTimeOut: 0,
-            closeButton: true,
-          }
-        );
+
+        if (newStatus === 'offline') {
+          // Error status fires its own toaster
+          this.toaster.error(
+            '<p>Your computer seems to be no longer connected to the internet. Changes to your notes will not be saved until you are reconnected.</p>',
+            'Disconnected from Headsoak',
+            {
+              timeOut: 0,
+              extendTimeOut: 0,
+              closeButton: true,
+            }
+          );
+        }
       }
     }
     else if (newStatus === 'synced') {
