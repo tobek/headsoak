@@ -107,7 +107,7 @@
     "reflect-metadata": "^0.1.9",
     "rxjs": "~5.0.2",
     "sendgrid": "^4.7.1",
-    "sentiment": "github:tobek/sentiment#03b7442",
+    "sentiment": "^3.0.1",
     "toastr": "^2.1.2",
     "zone.js": "~0.7.4"
   },
