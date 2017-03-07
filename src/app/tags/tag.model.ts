@@ -395,7 +395,7 @@ export class Tag {
 
     if (result instanceof Promise) {
       result.then((result) => {
-        this.handleProgResult(note, result);
+        this.handleClassifierResult(note, result);
         doneCb();
       })
       .catch((err) => {
@@ -404,31 +404,30 @@ export class Tag {
       });
     }
     else {
-      this.handleProgResult(note, result);
+      this.handleClassifierResult(note, result);
       doneCb();
     }
   }
 
-  handleProgResult(note: Note, result: ClassifierResult): void {
+  handleClassifierResult(note: Note, result: ClassifierResult): void {
     // We need to detect which tags should *no longer* be on this note. We do that by starting here with a list of all the relevant tags on the note. As we handle the classifier result, tags that get added/remain are removed from this list, such that anything left on it at the end should be removed
     const tagsToRemove = this.getTagAndChildTagsOnNote(note);
 
-    if (result === true) {
-      // @TODO/prog Check/make clear that it has to be strict boolean true
+    if ((result instanceof Array) || (typeof result === 'object')) {
+      this._logger.log('User classifier returned data for note ID', note.id, result);
+
+      (result instanceof Array ? result : [result]).forEach((noteDatum) => {
+        this.handleClassifierResultDatum(note, noteDatum, tagsToRemove);
+      });
+    }
+    else if (result) {
       this._logger.log('User classifier returned true for note ID', note.id);
       note.addTag(this, true, true);
       _.pull(tagsToRemove, this);
     }
-    else if (! (result instanceof Array) && ! (typeof result === 'object')) {
+    else {
       this._logger.log('User classifier returned false for note ID', note.id);
       // `tagsToRemove` will handle the removal
-    }
-    else {
-      this._logger.log('User classifier returned data for note ID', note.id, result);
-
-      (result instanceof Array ? result : [result]).forEach((noteDatum) => {
-        this.handleProgResultDatum(note, noteDatum, tagsToRemove);
-      });
     }
 
     tagsToRemove.forEach((tag) => {
@@ -438,7 +437,7 @@ export class Tag {
     });
   }
 
-  handleProgResultDatum(note: Note, noteDatum: NoteSpecificDatum | NoteSpecificDatumForChildTag, tagsToRemove: Tag[]): void {
+  handleClassifierResultDatum(note: Note, noteDatum: NoteSpecificDatum | NoteSpecificDatumForChildTag, tagsToRemove: Tag[]): void {
     if (typeof noteDatum.score === 'number') {
       noteDatum.score = Math.round(noteDatum.score * 1000) / 1000;
     }

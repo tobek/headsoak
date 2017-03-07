@@ -51,7 +51,7 @@
   <h1>Documentation</h1>
 
   <p>Headsoak will test each of your notes against the function you return above in order to determine if a note should have the <span class="static-tag">{{ tag.name }}</span> tag.</p>
-  <p>If the function returns <code>true</code> for a note, that note is tagged with this tag - otherwise it's not tagged, and is untagged if it previously was tagged. You may also return a <code>Promise</code> object and resolve the result asynchronously.</p>
+  <p>If the function returns a truthy value for a note, that note is tagged with this tag - otherwise it's not tagged, and is untagged if it previously was tagged. (You may also return a <code>Promise</code> object and resolve the result asynchronously, and/or use more complicated return types as documented below.)</p><!-- @TODO/polish "below" should link to appropriate area but angular hash routing precludes normal url fragments so we have to use JS - should make a helper for this. -->
   <p>This function is run on every note when the tag is updated, and whenever a note is modified in the future it is retested against all smart tags.</p>
   <p>See example code in the <a [routerLink]="['/tags/smart-tags/library']">Smart Tag Library</a>.</p>
 
