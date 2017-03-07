@@ -456,6 +456,18 @@ export class Tag {
       // No need to keep `childTag` on note data we add to the child tag - but if there's anything else there we can attach it
       delete noteDatum.childTag;
 
+      // @TODO/temp Check in analytics if this happens in the future and probably can remove or replace with `progTagError`
+      if (noteDatum['hooks']) {
+        this._logger.error('Smart tag classifier returned result with `hooks` in it!', noteDatum);
+
+        if (window['hsDebugError'] && ! window['hsClassifierHooks']) {
+          this.dataService.modalService.alert('Yo Ece, can you let me know this happened and I want to check it out your computer please. (That weird error with classifier returning object with `hooks` happened again.)')
+          window['hsClassifierHooks'] = true;
+        }
+
+        delete noteDatum['hooks'];
+      }
+
       childTag.attachNoteDatum(note, noteDatum);
 
       if (! _.includes(this.childTagIds, childTag.id)) {
