@@ -99,8 +99,8 @@ export class ForceGraphComponent {
   }
 
   ngOnDestroy() {
-    this.svg.selectAll('*').remove();
-    this.simulation.stop();
+    this.svg && this.svg.selectAll('*').remove();
+    this.simulation && this.simulation.stop();
     delete this.svg;
     delete this.simulation;
   }
