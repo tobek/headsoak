@@ -17,43 +17,10 @@ export class ProgTagLibraryService {
   /** @NOTE Changing IDs in source code here could really mess things up for users who are using them. */
   librarySourceData = [
     {
-      id: 'lib--sentiment',
+      id: 'lib--auto',
       fromLib: true,
-      name: 'sentiment',
-      description: 'Tag notes that show a markedly positive or negative sentiment. Hover over the tag on a note to see the calculated strength of that note\'s sentiment. Only works on English text.',
-      prog: true,
-      // @NOTE Can use this function definition to write the library tag with the benefits of type checking and general JS linting, and then just comment out and use backticks (and comment/update the last line of func as well, AND make sure to double escape as necessary)
-      // progFunc: function(api: ProgTagApiService, _): ProgTagDef {
-      progFuncString: `// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`sentiment\` module) have been bundled with the app.
-var sentiment = api.lib.sentiment;
-
-return function(note) {
-  var result = sentiment(note.body);
-  var score = result && result.comparative ? result.comparative : 0;
-
-  var value;
-  if (score >= 0.1) {
-    value = 'positive';
-  }
-  else if (score <= -0.1) {
-    value = 'negative';
-  }
-  else {
-    return false;
-  }
-
-  return {
-    childTag: value,
-    score: Math.round(score * 1000) / 10 + '%',
-  }
-};`
-// };}
-    },
-    {
-      id: 'lib--topic',
-      fromLib: true,
-      name: 'topic',
-      description: 'Automatically identify topics relevant to each note and tag as such. Only works on English text.',
+      name: 'auto',
+      description: 'Automatically tags notes based on their content. Only works on English text.',
       prog: true,
       // progFunc: function(api: ProgTagApiService, _): ProgTagDef {
       progFuncString:`// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (e.g. npm's \`retext-keywords\` module) have been bundled with the app.
@@ -107,7 +74,7 @@ function confirmBlacklisting(childTag, event, noteId, tagDetailsComponent) {
   }
 
   api.modal.confirm(
-    '<p>Are you sure you want to blacklist the topic <span class="static-tag">' + _.escape(childTag.childTagName) + '</span>? It won\\'t be suggested again.</p><p>You can view and edit the list of blacklisted tags from the <span class="static-tag">' + _.escape(_this.name) + '</span> Explore page.</p><p>Hold the shift key to skip this dialog in the future.</p>',
+    '<p>Are you sure you want to blacklist the auto tag <span class="static-tag">' + _.escape(childTag.childTagName) + '</span>? It won\\'t be suggested again.</p><p>You can view and edit the list of blacklisted tags from the <span class="static-tag">' + _.escape(_this.name) + '</span> Explore page.</p><p>Hold the shift key to skip this dialog in the future.</p>',
     function(confirmed) {
       if (confirmed) {
         blacklistChildTag(childTag, tagDetailsComponent);
@@ -220,11 +187,47 @@ return {
   classifier: classifier,
 
   customEntries: {
-    childTags: [{
-      icon: 'minus-circle',
-      text: 'Blacklist this topic',
-      func: confirmBlacklisting
-    }]
+    childTags: [
+      {
+        icon: 'minus-circle',
+        text: 'Blacklist this tag',
+        func: confirmBlacklisting
+      }
+      // @TODO/prog It wouldn't be hard to add a "Rename this tag" custom entry. Just pops up a prompt for new name, saves the value in tag data, and then substitutes it whenever it finds it in the future.
+    ]
+  }
+};`
+// };}
+    },
+    {
+      id: 'lib--sentiment',
+      fromLib: true,
+      name: 'sentiment',
+      description: 'Tag notes that show a markedly positive or negative sentiment. Hover over the tag on a note to see the calculated strength of that note\'s sentiment. Only works on English text.',
+      prog: true,
+      // @NOTE Can use this function definition to write the library tag with the benefits of type checking and general JS linting, and then just comment out and use backticks (and comment/update the last line of func as well, AND make sure to double escape as necessary)
+      // progFunc: function(api: ProgTagApiService, _): ProgTagDef {
+      progFuncString: `// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`sentiment\` module) have been bundled with the app.
+var sentiment = api.lib.sentiment;
+
+return function(note) {
+  var result = sentiment(note.body);
+  var score = result && result.comparative ? result.comparative : 0;
+
+  var value;
+  if (score >= 0.1) {
+    value = 'positive';
+  }
+  else if (score <= -0.1) {
+    value = 'negative';
+  }
+  else {
+    return false;
+  }
+
+  return {
+    childTag: value,
+    score: Math.round(score * 1000) / 10 + '%',
   }
 };`
 // };}
@@ -506,7 +509,7 @@ return function(note) {
       // This tag is being used by the user, so let's pick that up in order to get `docs` list etc.
 
       // While we're at it we may need to update the tag - but wait til we're initialized so that a) any toasters will be visible instead of blocked by full page loader, and b) re-running prog tag won't delay loading
-      // @TODO/optimization @TODO/soon @TODO/prog Topic tag is too heavy to run on mobile, maybe others too. This could be more sophisticated though, maybe something in tagData to indicate that it's too computationally heavy, or we should check number of user's notes... etc.
+      // @TODO/optimization @TODO/soon @TODO/prog Auto tag is too heavy to run on mobile, maybe others too. This could be more sophisticated though, maybe something in tagData to indicate that it's too computationally heavy, or we should check number of user's notes... etc.
       if (! this.sizeMonitor.isMobile) {
         this.tagsService.dataService.initialized$.filter(initialized => !! initialized).first().subscribe(() => {
           // Seems like we  need to wait even longer... otherwise mysteriously can get loader forever while this runs
