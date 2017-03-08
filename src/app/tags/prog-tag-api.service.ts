@@ -6,6 +6,7 @@ import {ModalService} from '../modals/modal.service';
 
 import {Tag} from './tag.model';
 import {Note} from '../notes/note.model';
+import {UserService} from '../account/user.service';
 
 import {Logger} from '../utils/';
 
@@ -24,7 +25,8 @@ let _dataService: DataService;
 export class ProgTagApiService {
   tags: { [tagId: string]: Tag } = {};
   notes: { [noteId: string]: Note } = {};
-  
+  user: UserService;
+
   formatDate: (timestamp: number, format?: string) => string;
 
   lib = {
@@ -105,5 +107,6 @@ export class ProgTagApiService {
     _dataService = dataService;
     this.tags = dataService.tags.tags;
     this.notes = dataService.notes.notes;
+    this.user = dataService.user.getPublicUser() as UserService;
   }
 }

@@ -19,7 +19,7 @@ export class UserService {
   /** Whether this user's data has undergone (second attempt at) migration of IDs from numbers to strings. True for new users. */
   idsMigrated2016: boolean;
 
-  SAMPLE_DISPLAY_NAMES: Array<string> = ['Napoléon Bonaparte', 'Marco Polo', 'Nikola Tesla', 'Edgar Allan Poe', 'Florence Nightingale', 'Marilyn Monroe', 'Joan of Arc', 'Catherine the Great', 'Vlad the Impaler'];
+  static SAMPLE_DISPLAY_NAMES = ['Napoléon Bonaparte', 'Marco Polo', 'Nikola Tesla', 'Edgar Allan Poe', 'Florence Nightingale', 'Marilyn Monroe', 'Joan of Arc', 'Catherine the Great', 'Vlad the Impaler'];
 
   private _logger: Logger = new Logger(this.constructor.name);
 
@@ -30,7 +30,7 @@ export class UserService {
       this.displayNameSet = true; // silly tidbit for changing account dialog text
     }
     else {
-      this.displayNamePlaceholder = 'e.g. ' + _.sample(this.SAMPLE_DISPLAY_NAMES);
+      this.displayNamePlaceholder = 'e.g. ' + _.sample(UserService.SAMPLE_DISPLAY_NAMES);
     }
 
     this._logger.log('Data is now', this);
@@ -41,5 +41,15 @@ export class UserService {
     this.uid = null;
     this.email = null;
     this.provider = null;
+  }
+
+  /** Accessible from prog tags. */
+  getPublicUser(): {} {
+    return {
+      uid: this.uid,
+      email: this.email,
+      displayName: this.displayName,
+      lastLogin: this.lastLogin,
+    }
   }
 }

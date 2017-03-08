@@ -483,12 +483,6 @@ export class DataService {
     // In theory we should probably not fire this.initialized$ until all the different services are done, but right now the notes service is the only one that takes any real time (cause it also has to calculate lunr index) so we can just wait for that. @TODO/refactor We should really wait for everything...
     this.notes.initialized$.first().subscribe(this.everythingInitialized.bind(this));
 
-    // @NOTE that we have to initalize tags service before notes service because notes service needs to look up tag names for indexing tag field in notes.
-    // @TODO Passing ourselves to notes/tags services who in turn pass us to note/tag models is kind of a cruddy paradigm, but it's partially a holdover from first version of nutmeg and really it makes MVP rewrite a lot easier right now, instead of figuring out how to properly listen to updates and propagate changes accordingly.
-    this.settings.init(data.settings, this);
-    this.tags.init(data.tags, this);
-    this.notes.init(data.nuts, this);
-
     if (data.user.email !== this.user.email) {
       // User has changed their email and this change isn't reflected in data store yet.
       data.user.email = this.user.email;
@@ -502,6 +496,12 @@ export class DataService {
       });
     }
     this.user.setData(data.user);
+
+    // @NOTE that we have to initalize tags service before notes service because notes service needs to look up tag names for indexing tag field in notes.
+    // @TODO Passing ourselves to notes/tags services who in turn pass us to note/tag models is kind of a cruddy paradigm, but it's partially a holdover from first version of nutmeg and really it makes MVP rewrite a lot easier right now, instead of figuring out how to properly listen to updates and propagate changes accordingly.
+    this.settings.init(data.settings, this);
+    this.tags.init(data.tags, this);
+    this.notes.init(data.nuts, this);
 
     // $s.users.fetchShareRecipientNames();
 
@@ -523,6 +523,7 @@ export class DataService {
     }
 
     // This relies on both notes and tags being present!
+    this.tags.progTagApi._init(this);
     this.tags.progTagLibraryService.init(this.tags);
 
     this.isInitialized = true;

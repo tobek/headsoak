@@ -98,7 +98,10 @@
   <ul>
     <li><code>api.notes</code> &ndash;&nbsp; All of your notes in an object mapping IDs to <code>Note</code> instances.</li>
     <li><code>api.tags</code> &ndash;&nbsp; All of your tags in an object mapping IDs to <code>Tag</code> instances.</li>
-    <li><code>api.formatDate</code> &ndash;&nbsp; Helper function for formatting dates. Example invocation: <code>api.formatDate(Date.now(), 'medium')</code>. <a href="https://angular.io/docs/ts/latest/api/common/index/DatePipe-pipe.html" target="_blank">Documentation</a>.</li>
+    <li><code>api.user</code> &ndash;&nbsp; Information about the current user (properties: <code>uid</code>, <code>email</code>, <code>displayName</code>, <code>lastLogin</code>).</li>
+    <li><code>api.formatDate</code> &ndash;&nbsp; Helper function for formatting dates. <a href="https://angular.io/docs/ts/latest/api/common/index/DatePipe-pipe.html" target="_blank">Documentation</a>.
+      <ul><li>Example invocation: <code>api.formatDate(Date.now(), 'medium')</code></li></ul>
+    </li>
     <li>
       <code>api.modal</code> &ndash;&nbsp; Service for launching modals and prompts. Example invocations:
       <ul>
