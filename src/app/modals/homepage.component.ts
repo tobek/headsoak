@@ -91,7 +91,7 @@ export class HomepageComponent {
     { childTagName: 'negative', parentTagId: 'lib--sentiment' },
 
     { childTagName: 'tag', parentTagId: 'lib--auto' },
-    { childTagName: 'note', parentTagId: 'lib--auto' },
+    { childTagName: 'notes', parentTagId: 'lib--auto' },
     { childTagName: 'learning', parentTagId: 'lib--auto' },
     { childTagName: 'sentiment', parentTagId: 'lib--auto' },
     { childTagName: 'insights', parentTagId: 'lib--auto' },
@@ -365,7 +365,7 @@ export class HomepageComponent {
       this.fakeDataService.tags.tags['sd'],
       this.fakeDataService.tags.tags['rt'],
       this.fakeDataService.tags.getTagByName('auto: tag'),
-      this.fakeDataService.tags.getTagByName('auto: note'),
+      this.fakeDataService.tags.getTagByName('auto: notes'),
       this.fakeDataService.tags.getTagByName('auto: learning'),
     ];
   }
