@@ -4,6 +4,13 @@
     <h3>Augmented note-taking with smart tags</h3>
   </div>
 
+  <note class="note"
+    style="touch-action: manipulation"
+    ref-demoNoteRef
+    [note]="demoNote"
+  ></note>
+
+  <!--
   <div class="note" [class.is--adding-tag]="addingTag">
     <div class="note-wrapper">
       <div class="note-bg"></div>
@@ -23,6 +30,7 @@
       <textarea class="body-input" autocorrect="off" autocapitalize="off" spellcheck="false" ref-noteBody (keydown)="false"></textarea>
     </div>
   </div>
+  -->
 
   <!-- only shown on mobile -->
   <login></login>

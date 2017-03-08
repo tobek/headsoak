@@ -59,7 +59,7 @@ export class Note {
 
   private _logger: Logger;
 
-  constructor(noteData: any, private dataService: DataService) {
+  constructor(noteData: any, public dataService: DataService) {
     if (! noteData.id) {
       throw new Error('Must supply a note id');
     }

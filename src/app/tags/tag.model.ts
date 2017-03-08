@@ -393,7 +393,7 @@ export class Tag {
 
   /** See if given note should be tagged by this programmatic tag. */
   runClassifierOnNote(note: Note, doneCb = (err?) => {}): void {
-    if (! this.classifier || this.isDeleting) {
+    if (typeof this.classifier !== 'function' || this.isDeleting) {
       return doneCb();
     }
 
@@ -525,7 +525,7 @@ export class Tag {
   }
 
   runClassifierOnAllNotes(cb = (err?) => {}): void {
-    if (! this.classifier || this.isDeleting) {
+    if (typeof this.classifier !== 'function' || this.isDeleting) {
       return cb();
     }
 
