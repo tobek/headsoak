@@ -27,7 +27,7 @@ import * as _ from 'lodash';
   encapsulation: ViewEncapsulation.None,
   template: require('./app.component.html')
 })
-export class App {
+export class AppComponent {
   NOTE_BROWSER_ROUTES = NOTE_BROWSER_ROUTES; // make available to template
   routes: Route[] = ROUTES;
   noteToggleNavRoutes: Route[];
@@ -91,7 +91,7 @@ export class App {
     this.subscriptions.push(this.dataService.initialized$.subscribe(this.appInitialization.bind(this)));
 
     this.subscriptions.push(router.events
-      .filter(event => event instanceof NavigationEnd)
+      .filter((event) => event instanceof NavigationEnd)
       .subscribe(this.routeUpdated.bind(this)));
 
     this.subscriptions.push(this.scrollMonitor.scroll$.subscribe(this.onScroll.bind(this)));
@@ -111,8 +111,8 @@ export class App {
     }
   }
   ngOnDestroy() {
-    for (var i = 0; i < this.subscriptions.length; ++i) {
-      this.subscriptions[i].unsubscribe();
+    for (let sub of this.subscriptions) {
+      sub.unsubscribe();
     }
 
     this._logger.log('App component destroyed!');
@@ -143,8 +143,8 @@ export class App {
 
         // @HACK Our angular select dropdown library has a field to type in what you want to select. You shouldn't be able to tab to it.
         const noTabPlease = document.querySelectorAll('ng-select [tabindex="0"]');
-        for (let i = 0; i < noTabPlease.length; ++i) {
-          noTabPlease[i].setAttribute('tabindex', '-1');
+        for (let noTab of (noTabPlease as any as HTMLElement[])) {
+          noTab.setAttribute('tabindex', '-1');
         }
       }, 0);
     }

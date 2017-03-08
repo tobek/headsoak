@@ -19,7 +19,7 @@ import * as _ from 'lodash';
   template: require('./note-query.component.html')
 })
 export class NoteQueryComponent {
-  _notes: Array<Note> = [];
+  _notes: Note[] = [];
 
   routingInfo = routingInfo;
   ensureCorrectRoute = _.throttle(this._ensureCorrectRoute, 1000);
@@ -153,7 +153,7 @@ export class NoteQueryComponent {
       this.addTag(suggestion.data.tag);
     }
     else {
-      this._logger.error('Invalid suggestion returned: No data or tag found:', suggestion)
+      this._logger.error('Invalid suggestion returned: No data or tag found:', suggestion);
       throw Error('Invalid suggestion returned: No data or tag found');
     }
 

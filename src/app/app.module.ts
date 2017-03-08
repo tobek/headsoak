@@ -20,7 +20,7 @@ import { ROUTES } from './app.routes';
 
 // App is our top level component
 
-import { App } from './app.component';
+import { AppComponent } from './app.component';
 import { HomeComponent } from './home';
 import { NoContentComponent } from './no-content';
 
@@ -40,7 +40,7 @@ import {SettingsComponent, SettingComponent} from './settings/';
 import {EmptyComponent, ForceGraphComponent} from './utils/';
 
 const APP_COMPONENTS = [
-  App,
+  AppComponent,
   HomeComponent,
   NoContentComponent,
   EmptyComponent,
@@ -70,11 +70,11 @@ const APP_COMPONENTS = [
 ];
 
 
-import {ContenteditableModel, TouchOrClick} from './directives';
+import {ContenteditableModelDirective, TouchOrClickDirective} from './directives';
 
 const APP_DIRECTIVES = [
-  ContenteditableModel,
-  TouchOrClick,
+  ContenteditableModelDirective,
+  TouchOrClickDirective,
 ];
 
 
@@ -128,7 +128,6 @@ const APP_PIPES = [
 ];
 
 
-
 import '../styles/main.sass';
 
 
@@ -136,7 +135,7 @@ import '../styles/main.sass';
  * `AppModule` is the main entry point into Angular2's bootstraping process
  */
 @NgModule({
-  bootstrap: [ App ],
+  bootstrap: [ AppComponent ],
   declarations: [
     ...APP_COMPONENTS,
     ...APP_DIRECTIVES,

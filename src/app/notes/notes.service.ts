@@ -152,7 +152,7 @@ export class NotesService {
     }
 
     // Arrays of note id's:
-    var filteredByTags: string[],
+    let filteredByTags: string[],
         filteredByString: string[],
         filteredByPrivate: string[];
 
@@ -161,7 +161,7 @@ export class NotesService {
       filteredByTags = _.intersection(... tags.map((tag) => {
         // @TODO/ece Should this be controllable by a setting? How to phrase? (If this is put under a setting, `isActive` calculation in TagComponent needs to be as well)
         let relevantTags = _.filter(this.tagsService.tags, (otherTag: Tag) => {
-          return (<ChildTag>otherTag).childTagName === tag.name;
+          return (<ChildTag> otherTag).childTagName === tag.name;
         });
 
         if (relevantTags.length) {
@@ -185,7 +185,7 @@ export class NotesService {
 
     // NEXT get the docs filtered by any string
     if (query && query.length > 2) { // only start live searching once 3 chars have been entered
-      var results = this.index.search(query); // by default ANDs spaces: "foo bar" will search foo AND bar
+      const results = this.index.search(query); // by default ANDs spaces: "foo bar" will search foo AND bar
       // results is array of objects each containing `ref` (note id) and `score`
       // ignoring score for now
       filteredByString = results.map((doc) => doc.ref); // gives us an array
@@ -200,8 +200,8 @@ export class NotesService {
     if (! this.dataService.accountService.privateMode) {
       // Private mode off, so hide private notes. Get array of note IDs that aren't private:
       // @TODO/optimization Would probably be faster to filter the inverse and subtract from other lists? because probably few private notes
-      filteredByPrivate = _.filter(this.notes, note => ! note.private)
-        .map(note => note.id);
+      filteredByPrivate = _.filter(this.notes, (note) => ! note.private)
+        .map((note) => note.id);
 
       if (filteredByPrivate.length === 0) {
         // *every* note is private (and private mode is off), so we're done:
@@ -215,12 +215,18 @@ export class NotesService {
 
     let filteredNotes;
     const filterArrays = [];
-    if (filteredByTags) filterArrays.push(filteredByTags);
-    if (filteredByString) filterArrays.push(filteredByString);
-    if (filteredByPrivate) filterArrays.push(filteredByPrivate);
+    if (filteredByTags) {
+      filterArrays.push(filteredByTags);
+    }
+    if (filteredByString) {
+      filterArrays.push(filteredByString);
+    }
+    if (filteredByPrivate) {
+      filterArrays.push(filteredByPrivate);
+    }
 
     if (filterArrays.length) {
-      var filteredNoteIds = _.intersection(...filterArrays);
+      const filteredNoteIds = _.intersection(...filterArrays);
 
       // now build an array pointing to just the nuts that we want to display
       filteredNotes = _.map(filteredNoteIds, (noteId: string) => this.notes[noteId]);
@@ -243,7 +249,7 @@ export class NotesService {
   }
 
   /** Call if no results during `doQuery` */
-  noQueryResults(): Array<Note> {
+  noQueryResults(): Note[] {
     this._logger.timeEnd('doing query');
     return [];
     // @TODO/rewrite - this function may not be necessary
@@ -253,12 +259,16 @@ export class NotesService {
 
   /**
    * Returns array of notes (either all notes or a passed-in subset) sorted according to given criteria.
-   * 
+   *
    * Note that we don't want sort order updating *while* you're editing some property that we're sorting on, e.g. you're sorting on recently modified and as you start typing, that note shoots to the top. So we need to control this separately and only change order when we want to.
    */
   sortNotes(sortOpt?, notesToSort?: Note[] | {[k: string]: Note}): Note[] {
-    if (! notesToSort) notesToSort = this.notes;
-    if (_.isEmpty(notesToSort)) return [];
+    if (! notesToSort) {
+      notesToSort = this.notes;
+    }
+    if (_.isEmpty(notesToSort)) {
+      return [];
+    }
 
     if (! sortOpt) {
       // Just get the "first" sort option
@@ -271,7 +281,7 @@ export class NotesService {
     let sortedNotes: Note[];
 
     if (sortOpt.field.indexOf('.') !== -1 ) { // e.g. field might be `tags.length`
-      var fields = sortOpt.field.split('.');
+      const fields = sortOpt.field.split('.');
 
       sortedNotes = _.sortBy(notesToSort, function(note: Note) {
         if (fields[0] === 'body' && ! note.body && note.sharedBody) {
@@ -288,7 +298,9 @@ export class NotesService {
     }
     // @NOTE: Here is a more generic way to deal with this indexing of sub-objects by dot-notation string: http://stackoverflow.com/a/6394168. _.get might do it too.
 
-    if (sortOpt.rev) sortedNotes.reverse();
+    if (sortOpt.rev) {
+      sortedNotes.reverse();
+    }
 
     // Pinned notes first and archived notes last. Lodash sort is stable, so it'll preserve original order within each group.
     sortedNotes = _.sortBy(sortedNotes, (note) => {
@@ -296,7 +308,7 @@ export class NotesService {
         return -1;
       }
       else if (note.archived) {
-        return 1
+        return 1;
       }
       else {
         return 0;

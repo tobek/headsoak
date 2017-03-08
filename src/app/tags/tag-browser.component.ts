@@ -10,7 +10,7 @@ import {SettingsService} from '../settings/settings.service';
 // import {NoteComponent} from '../notes/note.component';
 // import {NotesService} from '../notes/notes.service';
 import {Tag, TagComponent} from './';
-import {TagDetailsComponent} from './tag-details.component'
+import {TagDetailsComponent} from './tag-details.component';
 import {TagsService} from './tags.service'; // no idea why importing this separately is necessary
 import {Logger/*, ScrollMonitorService, AutocompleteService*/} from '../utils/';
 import {ScrollMonitorService, SizeMonitorService} from '../utils/';
@@ -34,7 +34,7 @@ export class TagBrowserComponent {
   set tags(tags: Tag[]) {
     this._tags = _.filter(tags, (tag) => tag && ! tag.parentTag);
   }
-  
+
   activeTag: Tag; // Tag that's currently being show in details view
   hoveredTag?: Tag; // Tag that's currently hovered in the tag list (used to highlight tag in the visualization)
   expandedTag?: Tag; // Tag that's currently expanded to show rename/delete/explore/etc
@@ -129,7 +129,7 @@ export class TagBrowserComponent {
     );
 
     this.routerSub = this.router.events
-      .filter(event => event instanceof NavigationEnd)
+      .filter((event) => event instanceof NavigationEnd)
       .subscribe(this.routeUpdated.bind(this));
     // Above won't trigger with current router state, so let's do so manually:
     this.routeUpdated(this.router);
@@ -148,7 +148,7 @@ export class TagBrowserComponent {
     }
 
     this.inSidebar = false;
-    
+
     // @HACK @TODO/tags @TODO/polish @TODO/soon This REALLY shouldn't be necessary, but for now, especially e.g. if you scroll to bottom of notes or tag list and then click on a tag, you don't see shit. They need to scroll independently. It also means you lose your place in your notes when you go back. Bah.
     if (! this.sizeMonitor.isMobile && (this.activeTag || this.activePane)) {
       // We were already looking at tags, so animate scroll so you don't lose your place
@@ -282,7 +282,7 @@ export class TagBrowserComponent {
     else {
       this.activeTag = null;
       this.router.navigateByUrl('/tags');
-      this.expandedTag = null
+      this.expandedTag = null;
     }
   }
 
@@ -300,7 +300,7 @@ export class TagBrowserComponent {
       this.expandedTag = tag;
     }
     else {
-      this.expandedTag = null
+      this.expandedTag = null;
     }
   }
 

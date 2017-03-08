@@ -9,44 +9,45 @@ import {Selection} from 'd3-selection';
 
 import * as _ from 'lodash';
 
-const d3 = require('d3');
-const bboxCollide = require('d3-bboxCollide').bboxCollide;
+import * as d3 from 'd3';
+import * as bboxCollideLib from 'd3-bboxCollide';
+const bboxCollide = bboxCollideLib.bboxCollide;
 
 /** For non-centered labels, distance between edge of node and its label. */
 const NODE_LABEL_SPACING = 3;
 
 export interface ForceGraph {
-  nodes: GraphNode[],
-  links: GraphLink[],
+  nodes: GraphNode[];
+  links: GraphLink[];
 }
 
 export interface GraphNode {
-  id: string,
-  name: string,
-  size: number,
+  id: string;
+  name: string;
+  size: number;
 
-  classAttr?: string,
-  tagInstance?: Tag,
-  central?: boolean,
+  classAttr?: string;
+  tagInstance?: Tag;
+  central?: boolean;
 }
 interface NodeDatum extends GraphNode, SimulationNodeDatum {
-  radius: number,
-  textWidth: number,
-  centeredText: boolean,
-  isFixed?: boolean,
+  radius: number;
+  textWidth: number;
+  centeredText: boolean;
+  isFixed?: boolean;
 }
 
-/** Each link maps from node ID to node ID (in reality they're bidirectional but this is how the data is stored) while weight is the number coocurrences on notes. **/
+/** Each link maps from node ID to node ID (in reality they're bidirectional but this is how the data is stored) while weight is the number coocurrences on notes. */
 export interface GraphLink {
-  source: string,
-  target: string,
-  weight: number,
+  source: string;
+  target: string;
+  weight: number;
 }
 interface LinkDatum extends SimulationLinkDatum<NodeDatum> {
-  source: NodeDatum,
-  target: NodeDatum,
-  weight: number,
-  width: number,
+  source: NodeDatum;
+  target: NodeDatum;
+  weight: number;
+  width: number;
 }
 
 @Component({
@@ -112,7 +113,7 @@ export class ForceGraphComponent {
   initGraph() {
     this._logger.time('Initialized D3 graph');
     // this._logger.log('Graph data:', this.graph);
-    
+
     // this.graph.links = []
 
     const svgEl = this.svgRef.nativeElement;
@@ -185,12 +186,12 @@ export class ForceGraphComponent {
             node.vx += (constrainedX - node.x) * alpha;
             node.vy += (constrainedY - node.y) * alpha;
           }
-        }
+        };
 
         // Our custom force gets passed the simulation's nodes to an optional `initialize` attribute
         force['initialize'] = function(nodes) {
           _nodes = nodes;
-        }
+        };
 
         return force;
       })())
@@ -267,10 +268,10 @@ export class ForceGraphComponent {
           // let baseDistance = 20 + 5 * Math.sqrt(linkCounts[link.source.id] + linkCounts[link.target.id]);
 
           // normalized across 25-150 - the more connections the looser it is
-          let baseDistance = 25 + 125 * minConnections/mostConnections;
+          let baseDistance = 25 + 125 * minConnections / mostConnections;
 
           // heavier links are a little closer:
-          baseDistance -= 25 * link.weight/this.heaviestLinkWeight;
+          baseDistance -= 25 * link.weight / this.heaviestLinkWeight;
 
 
           if (this.numNodes <= 10) {
@@ -364,7 +365,7 @@ export class ForceGraphComponent {
 
     this.nodeEls.append('text')
       .attr('text-anchor', function(d) {
-        return d.centeredText ? 'middle' : null
+        return d.centeredText ? 'middle' : null;
       })
       .attr('dx', (d) => {
         return d.centeredText ? 0 : (NODE_LABEL_SPACING + d.radius);
@@ -374,7 +375,7 @@ export class ForceGraphComponent {
         // Fade (until hover) certain tags to make it less crowded
         // (Used to not fade ones with no pairs, cause those float to the outside so plenty of room for text. But that's a bit confusing looking.)
         // return d.size <= 1 && this.pairCount[d.id])
-        return d.size <=1;
+        return d.size <= 1;
       })
       .html(function(d) {
         return '<tspan class="hash">#</tspan>' + d.name;
@@ -405,9 +406,11 @@ export class ForceGraphComponent {
       }
     }
 
-    const simulation = this.simulation
+    const simulation = this.simulation;
     function dragStarted (d) {
-      if (! d3.event.active) simulation.alphaTarget(0.3).restart();
+      if (! d3.event.active) {
+        simulation.alphaTarget(0.3).restart();
+      }
       d.fx = d.x;
       d.fy = d.y;
     }
@@ -416,14 +419,16 @@ export class ForceGraphComponent {
       d.fy = d3.event.y;
     }
     function dragEnded (d) {
-      if (! d3.event.active) simulation.alphaTarget(0);
+      if (! d3.event.active) {
+        simulation.alphaTarget(0);
+      }
 
       if (d.isFixed) {
         // now unfix it
         d.fx = null;
         d.fy = null;
       }
-        
+
       d.isFixed = ! d.isFixed;
 
       this.classList[d.isFixed ? 'add' : 'remove']('is--fixed');
@@ -539,7 +544,7 @@ export class ForceGraphComponent {
     }
     else {
       // 1.5th root - steeper at first so larger radii for tags with fewer notes, but still levels off
-      return Math.pow(node.size, 1/1.5) * 4 || 4;
+      return Math.pow(node.size, 1 / 1.5) * 4 || 4;
     }
   }
 

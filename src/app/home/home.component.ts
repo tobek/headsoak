@@ -28,7 +28,7 @@ export class HomeComponent {
 
   _tagBrowserCollapsed = false;
   @HostBinding('class.is--tag-browser-collapsed') get tagBrowserCollapsed(): boolean {
-    return this._tagBrowserCollapsed
+    return this._tagBrowserCollapsed;
   }
   set tagBrowserCollapsed(newVal: boolean) {
     this._tagBrowserCollapsed = newVal;

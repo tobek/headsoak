@@ -126,7 +126,7 @@ export class SettingsComponent {
   }
 
   /** Trying to pass args directly from SettingComponent to here - seemingly can't use ES6 splats/parameter magic in template, and had some issues with `this`, so this is where we ended up. */
-  settingUpdatedProxy(args){
+  settingUpdatedProxy(args) {
     this.settingUpdated.apply(this, args);
   }
 
@@ -322,7 +322,7 @@ export class SettingsComponent {
   deleteAccount(): void {
     // @TODO/modals Use non-native prompt when sequential modals is done
     // @TODO/polish We should ask for password first and then for REALLY REALLY SURE
-    var answer = prompt('Are you really really sure you want to delete the account belonging to ' + this.dataService.user.email + '? All of your data will be deleted. This can\'t be undone.\n\nType "I\'M REALLY REALLY SURE" (yes, all caps) to proceed:');
+    const answer = prompt('Are you really really sure you want to delete the account belonging to ' + this.dataService.user.email + '? All of your data will be deleted. This can\'t be undone.\n\nType "I\'M REALLY REALLY SURE" (yes, all caps) to proceed:');
 
     if (answer !== 'I\'M REALLY REALLY SURE') {
       // @TODO/modals Use non-native alert for this when sequential modals is implemented.
@@ -343,7 +343,7 @@ export class SettingsComponent {
 
         this.dataService.accountService.deleteAccount(this.dataService.user.email, password, (err) => {
           hideLoading();
-          
+
           // @TODO/modal The errors that this fires are done in native `alert`s - should be passed back to CB maybe and then shown in the modal?
           // if (err) {
           // }

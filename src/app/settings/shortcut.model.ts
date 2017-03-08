@@ -63,7 +63,7 @@ export class Shortcut extends Setting {
         }
         else {
           this.dataService.router.events
-            .filter(event => event instanceof NavigationEnd)
+            .filter((event) => event instanceof NavigationEnd)
             .first().subscribe((event) => {
             // Changing route requires we run in ngZone after route change, regardless of the this.ngZone setting
             this.dataService.zone.run(() => {
@@ -129,7 +129,7 @@ export class Shortcut extends Setting {
     if (typeof newVal !== 'string') {
       throw new Error('Invalid setting for shortcut ' + this.id + ': ' + JSON.stringify(newVal));
     }
-    
+
     const oldBinding = this.noMod ? this.value : this.dataService.settings['sMod'] + '+' + this.value;
     const unbindFuncName = this.global ? 'unbindGlobal' : 'unbind';
     Mousetrap[unbindFuncName](oldBinding);

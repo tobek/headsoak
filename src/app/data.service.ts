@@ -20,16 +20,16 @@ import * as _ from 'lodash';
 declare type DataItem = Note | Tag | Setting;
 
 interface DataDigest {
-  'nuts': { [noteId: string]: Note },
-  'tags': { [tagId: string]: Tag },
-  'settings': { [settingId: string]: Setting },
+  nuts: { [noteId: string]: Note };
+  tags: { [tagId: string]: Tag };
+  settings: { [settingId: string]: Setting };
 }
 
 @Injectable()
 export class DataService {
   NEW_FEATURE_COUNT = 12; // Hard-coded so that it only updates when user actually receives updated code with the features
   SYNC_THROTTLE = 5000; // As soon as data is updated it is synced to the server after SYNC_DELAY, but immediately-subsequent updates don't trigger a new sync until this time, in ms, has passed
-  SYNC_DELAY = 500
+  SYNC_DELAY = 500;
   SYNC_ERROR_DELAY = 6000; // How long to wait after an error before trying to sync again
 
   // online: boolean; // @TODO/rewrite connection widget should show if offline
@@ -47,7 +47,7 @@ export class DataService {
 
   digest$ = new EventEmitter<DataItem>();
 
-  /** Whether there is currently some sync problem, e.g. we're offline or there was an error syncing. **/
+  /** Whether there is currently some sync problem, e.g. we're offline or there was an error syncing. */
   syncProblem = false;
 
   statusNameMap = {
@@ -103,7 +103,7 @@ export class DataService {
   init(uid: string, accountService: AccountService) {
     this.accountService = accountService;
     this.ref = accountService.ref;
-    
+
     // An initial check to see if anything needs updating after initialization (pretty sure this is impossible since we haven't fetched data, but why not):
     this.throttledSync();
 
@@ -113,7 +113,7 @@ export class DataService {
   }
 
   monitorOnlineState() {
-    var onlineStateRef = this.ref.root().child('.info/connected');
+    const onlineStateRef = this.ref.root().child('.info/connected');
 
     setInterval(() => {
       onlineStateRef.on('value', this.onlineStateHandler);
@@ -128,7 +128,7 @@ export class DataService {
     else if (this.status !== 'offline' && ! online) {
       this.status = 'offline';
     }
-  };
+  }
 
   confirmLeaving = (event) => {
     if (this.isDigestEmpty(this.digest) && this.isDigestEmpty(this.digestSyncing)) {
@@ -141,7 +141,7 @@ export class DataService {
     }
     event.returnValue = 'Are you sure you want to leave? You have unsaved changes.';
     return event.returnValue;
-  };
+  }
 
   getDataStoreName(item: DataItem): string {
     if (item instanceof Note) {
@@ -178,7 +178,7 @@ export class DataService {
   }
 
   getEmptyDigest(): DataDigest {
-    return { 'nuts': {}, 'tags': {}, 'settings': {} };
+    return { nuts: {}, tags: {}, settings: {} };
   }
   isDigestEmpty(digest: DataDigest): boolean {
     return (_.isEmpty(digest['nuts']) && _.isEmpty(digest['tags']) && _.isEmpty(digest['settings']));
@@ -381,7 +381,7 @@ export class DataService {
     this.ref = this.ref.root().child('users/' + uid);
 
     this.ref.once('value', (snapshot) => { this.zone.run(() => {
-      var data = snapshot.val();
+      const data = snapshot.val();
       this._logger.log('Got data:', data);
       // this._logger.log('Data is', JSON.stringify(data).length, 'chars long');
 
@@ -392,7 +392,7 @@ export class DataService {
       else {
         this.initFromData(data);
       }
-    })}, (err) => {
+    }); }, (err) => {
       this._logger.error('Failed to fetch data for user ' + uid + ' on app load:', err);
     });
 
@@ -424,41 +424,41 @@ export class DataService {
     });
 
 
-    this.initialized$.filter(val => !! val).first().subscribe(this.newUserPostInit.bind(this));
+    this.initialized$.filter((val) => !! val).first().subscribe(this.newUserPostInit.bind(this));
 
     this.initFromData({
       nuts: {
-        '0': {
-          'id':'0',
-          'body':'This example note has been automatically tagged with a sentiment analysis "smart tag", because it\'s a really sad miserable horrid awful bad note.\n\nSmart tags are indicated by the wand symbol. You can find more like these in the Smart Tag Library from the Tags screen, and you can even make your own.',
-          'created':1475642885139,
-          'modified':1475643994229,
+        0: {
+          id: '0',
+          body: 'This example note has been automatically tagged with a sentiment analysis "smart tag", because it\'s a really sad miserable horrid awful bad note.\n\nSmart tags are indicated by the wand symbol. You can find more like these in the Smart Tag Library from the Tags screen, and you can even make your own.',
+          created: 1475642885139,
+          modified: 1475643994229,
         },
-        '1': {
-          'id':'1',
-          'body':'This note has a regular tag. You can remove it by hovering over it and pressing the X icon. You can add more tags by pressing the + button above.',
-          'created':1475643969089,
-          'modified':1475644103580,
-          'tags':['0'],
+        1: {
+          id: '1',
+          body: 'This note has a regular tag. You can remove it by hovering over it and pressing the X icon. You can add more tags by pressing the + button above.',
+          created: 1475643969089,
+          modified: 1475644103580,
+          tags: ['0'],
         },
-        '2': {
-          'id':'2',
-          'body':'Welcome to Headsoak! We\'re delighted to have you. Please click around and explore!',
-          'created':1475642863010,
-          'modified':1475683264156,
+        2: {
+          id: '2',
+          body: 'Welcome to Headsoak! We\'re delighted to have you. Please click around and explore!',
+          created: 1475642863010,
+          modified: 1475683264156,
         },
       },
       tags: {
-        '0': {
-          'id':'0',
-          'name':'example tag',
-          'created':1475642802518,
-          'modified':1475644006309,
-          'docs':['1'],
+        0: {
+          id: '0',
+          name: 'example tag',
+          created: 1475642802518,
+          modified: 1475644006309,
+          docs: ['1'],
         },
       },
       user: {
-        'idsMigrated2016': true
+        idsMigrated2016: true
       },
       settings: {},
     });
@@ -468,11 +468,11 @@ export class DataService {
     // Sync starter tags and notes to data store for this new user
 
     _.each(
-      _.filter(this.notes.notes, note => ! note.new),
-      note => note.updated(false, false)
+      _.filter(this.notes.notes, (note) => ! note.new),
+      (note) => note.updated(false, false)
     );
 
-    _.each(this.tags.tags, tag => tag.updated(false));
+    _.each(this.tags.tags, (tag) => tag.updated(false));
 
     // Smart tags that are enabled by default for new users:
     this.tags.progTagLibraryService.toggleTagById('lib--sentiment');
@@ -538,13 +538,13 @@ export class DataService {
       this.ref.root().child('newFeatures').once('value', (snapshot) => { this.zone.run(() => {
         this._logger.log('[latestFeatures] Fetched new feautures list');
 
-        var feats = snapshot.val();
+        const feats = snapshot.val();
         feats.splice(0, featuresSeen); // cuts off the ones they've already seen;
 
         // $s.u.loading = false; // hide full-page login loading spinner so we can show modal // @TODO/rewrite
 
         // @TODO/rewrite
-        // var list = feats.map(function(val) { return '<li>' + val + '</li>'; }).join('');
+        // const list = feats.map(function(val) { return '<li>' + val + '</li>'; }).join('');
         // $s.m.alert({
         //   title: 'Since you\'ve been gone...',
         //   bodyHTML: '<p>In addition to tweaks and fixes, here\'s what\'s new:</p><ul>' + list + '</ul><p>As always, you can send along feedback and bug reports from the menu, which is at the bottom right of the page.</p>',
@@ -560,7 +560,7 @@ export class DataService {
         this.ref.child('featuresSeen').set(this.NEW_FEATURE_COUNT);
 
         cb();
-      })}, function(err) {
+      }); }, function(err) {
         this._logger.error('[latestFeatures] Failed to get new features', err);
         cb();
       });

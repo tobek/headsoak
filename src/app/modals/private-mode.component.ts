@@ -16,7 +16,7 @@ import {Logger} from '../utils/logger';
 export class PrivateModeComponent {
 
   password = '';
-  
+
   isLoading = false;
 
   @Input('isModal') isModal?: boolean;

@@ -9,8 +9,6 @@ import {Tag} from './';
  * @TODO/prog Make PublicNote too, and PublicNotesService for that, etc.
  */
 export class PublicTag {
-  private _t: Tag;
-
   static READ_ONLY_PROPS = [
     '_logger',
     'id',
@@ -53,6 +51,8 @@ export class PublicTag {
     // 'getChildTags', // ditto
   ];
 
+  private _t: Tag;
+
   constructor(tag: Tag) {
     Object.defineProperty(this, '_t', {
       value: tag,
@@ -90,5 +90,5 @@ PublicTag.WRITABLE_PROPS.forEach((prop) => {
 PublicTag.FUNCS.forEach((func) => {
   PublicTag.prototype[func] = function() {
     return this._t[func].apply(this._t, arguments);
-  }
+  };
 });

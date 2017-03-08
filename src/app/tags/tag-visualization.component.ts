@@ -27,6 +27,9 @@ export class TagVisualizationComponent {
 
   isCrowded = false;
 
+  /** Maps parent tag ID to minimum number of notes required for a child tag to be shown on graph. */
+  childTagCutoffs: { [parentTagId: string]: number } = {};
+
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
@@ -45,7 +48,7 @@ export class TagVisualizationComponent {
       }
       else {
         // Kind of a hack but not sure how to reset the d3 viz so let's just destroy and recreate whole component
-        this.tagGraph = null // will destroy the component via ngIf
+        this.tagGraph = null; // will destroy the component via ngIf
         this.highlightedTag = null; // because the currently highlighted tag might not be present in the new viz
         setTimeout(this.setUpGraph.bind(this), 0);
       }
@@ -218,8 +221,6 @@ export class TagVisualizationComponent {
     return tag.noteCount < this.childTagCutoffs[tag.parentTagId];
   }
 
-  /** Maps parent tag ID to minimum number of notes required for a child tag to be shown on graph. */
-  childTagCutoffs: { [parentTagId: string]: number } = {};
   calculateChildTagCutoffs(parentTag: Tag, relativeTo: { [tagId: string]: Tag | GraphNode }) {
     let baseCutoff = 20;
     if (this.centralTag && this.centralTag !== parentTag) {
@@ -274,8 +275,8 @@ export class TagVisualizationComponent {
 
       // Get actual Tag instances and filter out shared tags or broken stuff
       const validTagNodes: GraphNode[] = note.tags
-        .map(tagId => tags[tagId])
-        .filter(tag => tag);
+        .map((tagId) => tags[tagId])
+        .filter((tag) => tag);
 
       if (validTagNodes.length < 2) {
         return;

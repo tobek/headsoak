@@ -1,7 +1,7 @@
 // Stuff needed for smart tags
 
 /** @TODO/build/smartness @TODO/refactor
- * 
+ *
  * We are currently packaging this as a separate bundle, but we want to a) load this asynchronously when necessary, and b) ensure that common code between this and the `vendor` bundle are put in `vendro` (this may already be the case, haven't checked.)
  *
  * This is important since the size of just retext and retext-keywords is 2.4mb (600k gzipped) because it includes a part of speech tagger with entire english lexicon in it.

@@ -27,12 +27,12 @@ export class Setting {
   value: any; // current value used in app
 
   /** Custom function called to make setting take effect - e.g. called when setting first initialized and every time it's updated. Called with setting model as `this`. */
-  enact = () => {};
+  enact: Function;
 
   /** The <body> element will be classed with `'setting--' + setting.id` when `setting.value === true`. */
   bodyClass: boolean;
 
-  /** Raw HTML spit out after setting label. @TODO/settings There is a much better way to do this. Setting should be a componenton its own with its own instantiations and views and actions. **/
+  /** Raw HTML spit out after setting label. @TODO/settings There is a much better way to do this. Setting should be a componenton its own with its own instantiations and views and actions. */
   postSettingHtml = '';
 
   /** This gets attached to the SettingComponent element and will catch any clicks as they bubble up. */
@@ -82,7 +82,7 @@ export class Setting {
     }
 
     // Call any custom `enact` function we have
-    this.enact();
+    this.enact && this.enact();
   }
 
   /** Outputs rendition of setting that we want to save to the data store. */

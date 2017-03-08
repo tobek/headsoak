@@ -1,7 +1,7 @@
 import {Injectable, NgZone, ChangeDetectorRef} from '@angular/core';
 import {ReplaySubject} from 'rxjs/ReplaySubject';
 
-const Firebase = require('firebase');
+import * as Firebase from 'firebase';
 
 import {utils, Logger, ToasterService, TooltipService} from '../utils/';
 import {AnalyticsService} from '../analytics.service';
@@ -71,7 +71,7 @@ export class AccountService {
 
   setUpAuthHandlers(): void {
     // onAuth immediately fires with current auth state, so let's capture that specifically
-    var isInitialAuthState = true;
+    let isInitialAuthState = true;
 
     this.ref.onAuth((authData) => { this.zone.run(() => {
       if (isInitialAuthState) {
@@ -89,13 +89,13 @@ export class AccountService {
         // They're logged out
         this.handleLoggedOut();
       }
-    })});
+    }); });
   }
 
   /** A developer version of offline state for testing. @TODO/polish Remove this code from prod builds. */
   devOfflineHandler(): void {
-    this.ref = <any>(new FirebaseMock());
-    this.dataService.ref = <any>(new FirebaseMock());
+    this.ref = <any> (new FirebaseMock());
+    this.dataService.ref = <any> (new FirebaseMock());
     this.setUpAuthHandlers(); // need to set up again on new this.ref
   }
 
@@ -130,7 +130,7 @@ export class AccountService {
       cb();
 
       // Actual login logic handled in `onAuth` callback from this.init
-    })}, {
+    }); }, {
       remember: 'default' // @TODO - should let user choose not to remember, in which case should be 'none'
     });
   }
@@ -260,7 +260,7 @@ export class AccountService {
 
       this._logger.info('New account created with user id', userData.id);
       this.login(email, password, cb);
-    })});
+    }); });
   }
 
   changeEmail(newEmail: string, doneCb: () => void): void {
@@ -283,7 +283,7 @@ export class AccountService {
           hideLoading();
           this.changeEmailResponseHandler(newEmail, err);
           doneCb();
-        })});
+        }); });
 
         return false; // don't close modal, wait for Firebase response so we can keep it open if wrong password
       },
@@ -345,7 +345,7 @@ export class AccountService {
       if (err) {
         // @TODO/modals @TODO/tooltip Not sure which
         alert(err);
-        cb(err)
+        cb(err);
         return;
       }
 
@@ -402,7 +402,9 @@ export class AccountService {
   }
 
   userDataUpdated(newUserChild: FirebaseDataSnapshot) {
-    if (newUserChild.key() !== 'lastLogin') return;
+    if (newUserChild.key() !== 'lastLogin') {
+      return;
+    }
 
     // lastLogin changed!
     this._logger.info('Headsoak session started from elsewhere at ' + newUserChild.val() + '!');
@@ -429,7 +431,9 @@ export class AccountService {
 
   /** Calls cb with error message if password is incorrect or with null if password is correct. */
   checkPassword(password: string, cb: Function): void {
-    if (! password) return cb('Please enter your password.');
+    if (! password) {
+      return cb('Please enter your password.');
+    }
 
     if (! this.user.uid || ! this.user.email) {
       this._logger.error('User not logged in or there was a problem initializing user info');
@@ -444,19 +448,19 @@ export class AccountService {
     }, (err) => { this.zone.run(() => {
       if (err) {
         this._logger.warn('Password didn\'t check out:', err);
-        
+
         if (err.code === 'INVALID_PASSWORD') {
           return cb('Wrong password');
         }
         else {
-          this._logger.error('Error while "changing" password in order to check password:', err)
+          this._logger.error('Error while "changing" password in order to check password:', err);
           return cb('Something went wrong, sorry! Give it another shot or try refreshing the page.');
         }
       }
       else {
         return cb();
       }
-    })});
+    }); });
   }
 
   // @TODO/ece The messaging is maybe switched here. "Private mode on" could be interpreted as privacy features are activated, meaning private notes are now hidden. That's why I'm adding the full text in toaster after title text - however, copy in the private mode modal itself (and toasters when making note private) has this same problem. Also, we can consider using warning or error toaster for enabling/disabling/both.

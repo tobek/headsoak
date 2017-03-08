@@ -129,7 +129,7 @@ export class NoteComponent {
     if (! this.note) {
       return;
     }
-    
+
     if (this.isTextless !== ! this.note.body) {
       setTimeout(() => {
         if (this.isTextless !== ! this.note.body) {
@@ -269,7 +269,7 @@ export class NoteComponent {
 
     this.closeAddTagField();
   }
-  
+
   closeAddTagField(focusOnBody = false) {
     window.removeEventListener('click', this.boundCloseAddTagFieldHandler);
     this.addingTag = false;
@@ -339,7 +339,7 @@ export class NoteComponent {
 
   toggleExpandTags(event: MouseEvent) {
     event.stopPropagation();
-    this.tooltipService.reloadOnClick(event)
+    this.tooltipService.reloadOnClick(event);
 
     this.hasExpandedTags = ! this.hasExpandedTags;
 
@@ -372,7 +372,7 @@ export class NoteComponent {
     }
     else {
       this._logger.error('Unexepected lack of support for execCommands `insertText` or `paste` - pasting as normal instead');
-      return; 
+      return;
     }
 
     // Stop data actually being pasted
@@ -393,12 +393,12 @@ export class NoteComponent {
   togglePinned(event: MouseEvent) {
     this.note.pinned = ! this.note.pinned;
     this.tooltipService.reloadOnClick(event);
-    event.stopPropagation()
+    event.stopPropagation();
   }
   togglePrivate(event: MouseEvent) {
     this.note.togglePrivate();
     this.tooltipService.reloadOnClick(event);
-    event.stopPropagation()
+    event.stopPropagation();
 
     if (this.note.private && ! this.notesService.dataService.accountService.privateMode) {
       this.unopenNote(); // @TODO/ece Is this (and same with archiving note) the right behavior?
@@ -421,7 +421,7 @@ export class NoteComponent {
       noConfirm = eventOrNoConfirm.shiftKey;
     }
     else {
-      noConfirm = eventOrNoConfirm
+      noConfirm = eventOrNoConfirm;
     }
 
     this.note.delete(noConfirm);
@@ -442,10 +442,10 @@ export class NoteComponent {
 
     let html = '<div class="explore-note">';
 
-      html += '<div class="time-chunk"><h5>Created</h5> '
+      html += '<div class="time-chunk"><h5>Created</h5> ';
         html += this.datePipe.transform(this.note.created, 'medium');
       html += '</div>';
-      html += '<div class="time-chunk"><h5>Modified</h5> '
+      html += '<div class="time-chunk"><h5>Modified</h5> ';
         html += this.datePipe.transform(this.note.modified, 'medium');
       html += '</div>';
 

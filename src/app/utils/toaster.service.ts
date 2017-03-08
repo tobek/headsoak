@@ -26,7 +26,7 @@ export class ToasterService {
       hideEasing: 'linear',
       showMethod: 'fadeIn',
       hideMethod: 'fadeOut',
-    }
+    };
   }
 
   toast(method: 'success' | 'info' | 'warning' | 'error', text: string, titleOrOpts?: string | Object, opts?: Object): void {

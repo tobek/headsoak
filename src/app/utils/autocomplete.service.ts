@@ -6,16 +6,16 @@ import {Tag} from '../tags';
 
 import * as _ from 'lodash';
 
-const jQuery = require('jquery');
+import * as jQuery from 'jquery';
 // window['jQuery'] = jQuery;
 
 export interface AutocompleteSuggestion {
-  value: string,
+  value: string;
   score?: number;
-  highlighted?: string,
+  highlighted?: string;
   data?: {
     tag?: Tag,
-  },
+  };
 }
 
 @Injectable()
@@ -44,7 +44,7 @@ export class AutocompleteService {
     context: '',
     autocompleteOpts: {}, // should be `any` but can't be found...?
   }) {
-    var lookupArray: AutocompleteSuggestion[] = _.filter(this.tagsService.tags, (tag: Tag) => {
+    const lookupArray: AutocompleteSuggestion[] = _.filter(this.tagsService.tags, (tag: Tag) => {
 
       if (context === 'note') {
         if (tag.readOnly || tag.internal) {
@@ -77,16 +77,16 @@ export class AutocompleteService {
       allowBubblingOnKeyCodes: [27], // escape key
 
       customLookup: (query: string, suggestions: AutocompleteSuggestion[]): AutocompleteSuggestion[] => {
-        var results = fuzzyMatchSort(query, suggestions);
+        const results = fuzzyMatchSort(query, suggestions);
 
         // On notes, offer option to add new tag with currently-entered query
         if (context === 'note') {
-          var newTagOption = {
+          const newTagOption = {
             value: query,
             highlighted: '<i>new tag "<b>' + query + '</b>"</i>' // what is actually displayed
           };
 
-          for (var i = 0; i < results.length + 1; i++) { // length+1 to go past end and see if we haven't hit threshold yet
+          for (let i = 0; i < results.length + 1; i++) { // length+1 to go past end and see if we haven't hit threshold yet
             if (i === results.length || results[i].score > this.NEW_TAG_AUTOCOMPLETE_SCORE_THRESHOLD) {
               results.splice(i, 0, newTagOption);
               break;

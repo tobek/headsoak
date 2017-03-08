@@ -7,12 +7,12 @@ import {Directive, ElementRef, Output, EventEmitter, HostListener} from '@angula
  *
  * Tried using `hammerjs`'s `tap` event but that didn't let us preventDefault. Another option specifically for preventing tooltips from firing would be to do something like add `data-tooltip-type="not-on-mobile"` and style that class to hide it on mobile, but that's not a very nuanced way to handle touch, and doesn't prevent spurious hover states.
  *
- * @TODO/QA Test this on various mobile devices 
+ * @TODO/QA Test this on various mobile devices
  */
 @Directive({
   selector: '[touchOrClick]'
 })
-export class TouchOrClick {
+export class TouchOrClickDirective {
   @Output('touchOrClick') output = new EventEmitter<Event>();
 
   constructor(

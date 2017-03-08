@@ -42,7 +42,7 @@ export class FirebaseMock {
       cb({
         code: 'INVALID_PASSWORD',
         message: 'Wrong credentials, but this is a mock Firebase instance - try password "abc".'
-      })
+      });
     }
   }
 
@@ -54,7 +54,7 @@ export class FirebaseMock {
       cb({
         code: 'INVALID_PASSWORD',
         message: 'Wrong credentials, but this is a mock Firebase instance - try password "abc".'
-      })
+      });
     }
   }
 

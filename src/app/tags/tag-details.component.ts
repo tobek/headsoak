@@ -21,7 +21,7 @@ export class TagDetailsComponent {
   safeStringify = safeStringify; // for use in template
   component = this; // for use in template
 
-  DEFAULT_PANE = 'explore'
+  DEFAULT_PANE = 'explore';
   activePane = this.DEFAULT_PANE;
 
   /** ID of tag that has been explored, if any. */
@@ -70,7 +70,7 @@ export class TagDetailsComponent {
 
   ngOnInit() {
     this.routerSub = this.router.events
-      .filter(event => event instanceof NavigationEnd)
+      .filter((event) => event instanceof NavigationEnd)
       .subscribe(this.routeUpdated.bind(this));
     // Above won't trigger with current router state, so let's do so manually:
     this.routeUpdated(this.router);
@@ -114,16 +114,16 @@ export class TagDetailsComponent {
       this.activePane = this.DEFAULT_PANE;
     }
 
-    if (this.activePane === 'explore') { 
+    if (this.activePane === 'explore') {
       // Wait a tick while router change hits TagBrowserComponent and changes the tag that gets @Input into us. (We could do this on ngOnChanges instead, but since that fires before activePane is set up, we end up calculating states even if user isn't going to explore pane, and workaround for this is messy.)
-      setTimeout(this.computeExplore.bind(this), 0); 
-    } 
+      setTimeout(this.computeExplore.bind(this), 0);
+    }
   }
 
   exploreReset(): void {
     this.exploreStats = {
-      topCooccurrences: <[{ tag: Tag, numNotes: number }]>[],
-      bottomCooccurrences: <[{ tag: Tag, numNotes: number }]>[],
+      topCooccurrences: <[{ tag: Tag, numNotes: number }]> [],
+      bottomCooccurrences: <[{ tag: Tag, numNotes: number }]> [],
     };
 
     delete this.sortedChildTags;
@@ -153,7 +153,7 @@ export class TagDetailsComponent {
     this.tag.getChildInclusiveNotes().forEach((note) => {
       // Now let's see what other tags these notes hav
       note.tags.forEach((tagId) => {
-        if (tagId == this.tag.id) { // intentional == (we have some integer IDs floating around in data store)
+        if (tagId == this.tag.id) { // intentional == (we have some integer IDs floating around in data store) @TODO/refactor We should find-and-replace in firebase and get rid of these!
           return;
         }
 
@@ -186,7 +186,7 @@ export class TagDetailsComponent {
       let tagId: string;
       let tag: Tag;
 
-      while(_.size(sortedCooccurrences) && this.exploreStats.topCooccurrences.length < 5) {
+      while (_.size(sortedCooccurrences) && this.exploreStats.topCooccurrences.length < 5) {
         tagId = sortedCooccurrences.pop();
         tag = this.tagsService.tags[tagId];
 
@@ -200,7 +200,7 @@ export class TagDetailsComponent {
         });
       }
 
-      while(_.size(sortedCooccurrences) && this.exploreStats.bottomCooccurrences.length < 5) {
+      while (_.size(sortedCooccurrences) && this.exploreStats.bottomCooccurrences.length < 5) {
         tagId = sortedCooccurrences.shift();
         tag = this.tagsService.tags[tagId];
 

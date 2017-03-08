@@ -1,3 +1,4 @@
+/* tslint:disable */
 import {AutocompleteSuggestion} from './autocomplete.service';
 
 // One situation in which this algorithm isn't quite optimal: you search "ep" against "extra special powers" - after matching `e` it will look ahead to the `s` in "special", not match `p`, and iterate through `special` until matching the `p` there, increasing score in the process. this could be fixed by look at every char after space in the remaining substring, which i didn't bother to do

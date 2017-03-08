@@ -24,7 +24,7 @@ export class NoteBrowserComponent {
   el: HTMLElement;
 
   /** The elements in this array reference Note objects from NotesService. @NOTE Since we feed this through the pure ArrayLimitPipe, the pipe won't re-evaluate if this array is mutated, only if this.notes is actually reassigned to a different array (unless we make it an unpure pipe, which is costly). */
-  notes: Array<Note> = [];
+  notes: Note[] = [];
 
   newNote: Note;
 
@@ -61,8 +61,8 @@ export class NoteBrowserComponent {
   }
 
   ngOnDestroy() {
-    for (var i = 0; i < this.subscriptions.length; ++i) {
-      this.subscriptions[i].unsubscribe();
+    for (let sub of this.subscriptions) {
+      sub.unsubscribe();
     }
 
     if (this.activeUIs.noteBrowser === this) {
@@ -76,7 +76,7 @@ export class NoteBrowserComponent {
     ));
 
     this.subscriptions.push(this.router.events
-      .filter(event => event instanceof NavigationEnd)
+      .filter((event) => event instanceof NavigationEnd)
       .subscribe(this.routeUpdated.bind(this)));
 
     this.activeUIs.noteBrowser = this;
@@ -139,7 +139,8 @@ export class NoteBrowserComponent {
 
   /** Makes sure we have set up a blank new note for the user to be able to use as soon as they open the app. Optionally can replace the existing "new" note, shunting that into `this.notes` if desired.
    *
-   * We pass no second argument to `createNote` so that the note isn't saved to data store. As soon as they make anything that calls `note.update` (editing text, adding tag, sharing), it'll get saved to data store. */
+   * We pass no second argument to `createNote` so that the note isn't saved to data store. As soon as they make anything that calls `note.update` (editing text, adding tag, sharing), it'll get saved to data store.
+   */
   ensureNewNoteSetUp(forceNewNote = false, preserveExisting = false): void {
     if (this.newNote && this.newNote.new && ! this.newNote.body) {
       // Untouched new note in here so no need to do anything, let's just make sure it has the right tags
@@ -233,7 +234,7 @@ export class NoteBrowserComponent {
 
   goToNewNoteWithSameTags(note: Note): void {
     this.goToNewNote();
-    
+
     this.newNote.tags = note.tags.filter((tagId: string) => {
       const tag = this.notesService.dataService.tags.tags[tagId];
       return ! tag.classifier && ! tag.readOnly;

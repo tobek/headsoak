@@ -160,7 +160,7 @@ export class TagsService {
       tag.setUpAndValidateProgTag();
       tag.runClassifierOnAllNotes();
     }
-    
+
     tag.updated(); // sync to data store
     this.tagCreated$.next(tag);
   }
@@ -178,8 +178,12 @@ export class TagsService {
   }
 
   sortTags(sortOpt?, tagsToSort?: Tag[] | {[k: string]: Tag}): Tag[] {
-    if (! tagsToSort) tagsToSort = this.tags;
-    if (_.isEmpty(tagsToSort)) return [];
+    if (! tagsToSort) {
+      tagsToSort = this.tags;
+    }
+    if (_.isEmpty(tagsToSort)) {
+      return [];
+    }
 
     if (! sortOpt) {
       // Just get the "first" sort option
@@ -196,7 +200,7 @@ export class TagsService {
     let sortedTags;
 
     if (sortOpt.field.indexOf('.') !== -1 ) { // e.g. field might be `docs.length`
-      var fields = sortOpt.field.split('.');
+      const fields = sortOpt.field.split('.');
 
       sortedTags = _.sortBy(tagsToSort, function(tag: Tag) {
         return tag[fields[0]] ? tag[fields[0]][fields[1]] : 0;
@@ -207,7 +211,9 @@ export class TagsService {
     }
     // @NOTE: Here is a more generic way to deal with this indexing of sub-objects by dot-notation string: http://stackoverflow.com/a/6394168. _.get might do it too.
 
-    if (sortOpt.rev) sortedTags.reverse();
+    if (sortOpt.rev) {
+      sortedTags.reverse();
+    }
 
     this._logger.timeEnd('Sorting tags');
 

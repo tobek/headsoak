@@ -15,7 +15,7 @@ import {Logger} from '../utils/logger';
 export class FeedbackComponent {
 
   feedbackText = '';
-  
+
   isLoading = false;
 
   @ViewChild('submitButton') submitButton: ElementRef;
@@ -82,7 +82,7 @@ export class FeedbackComponent {
         'success'
       );
       this.feedbackText = '';
-    })});
+    }); });
   }
 
 }

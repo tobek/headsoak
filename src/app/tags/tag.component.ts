@@ -18,8 +18,8 @@ import * as _ from 'lodash';
   template: require('./tag.component.html')
 })
 export class TagComponent {
-  INTERNAL_TAG_DATA = Tag.INTERNAL_TAG_DATA // expose to template
-  
+  INTERNAL_TAG_DATA = Tag.INTERNAL_TAG_DATA; // expose to template
+
   @Input() tag: Tag;
 
   /** Optional, supplied if this tag component is being shown on a specific note. */
@@ -165,7 +165,7 @@ export class TagComponent {
         // If ourselves or a parent or child of ourselves is in the query, we should be highlighted too
         return true;
       }
-      else if (tag.name === (<ChildTag>this.tag).childTagName) {
+      else if (tag.name === (<ChildTag> this.tag).childTagName) {
         return true;
       }
     });
@@ -255,7 +255,7 @@ export class TagComponent {
     entries = this.tag.customEntries.noteTagDropdown || [];
 
     if (this.tag.parentTag && this.tag.parentTag.customEntries.childTags) {
-      entries = entries.concat(this.tag.parentTag.customEntries.childTags)
+      entries = entries.concat(this.tag.parentTag.customEntries.childTags);
     }
 
     return entries;

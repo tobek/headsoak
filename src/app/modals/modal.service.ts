@@ -57,7 +57,7 @@ export class ModalService {
     if (! this.modal || ! this.modal.visible) {
       return;
     }
-    
+
     this.modal.cancel(evenIfUncancellable);
   }
 
@@ -65,7 +65,7 @@ export class ModalService {
     if (! this.modal || ! this.modal.visible) {
       return;
     }
-    
+
     this.modal.close();
   }
 
@@ -95,8 +95,8 @@ export class ModalService {
       message: trustAsHtml ? this.sanitizer.bypassSecurityTrustHtml(message) : message,
       okButtonText: okButtonText,
       cancelButton: true,
-      okCb: () => { cb(true) },
-      cancelCb: () => { cb(false) },
+      okCb: () => { cb(true); },
+      cancelCb: () => { cb(false); },
     });
   }
 

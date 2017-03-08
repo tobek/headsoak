@@ -1,3 +1,4 @@
+/* tslint:disable */
 /*
  * originally: https://github.com/devbridge/jQuery-Autocomplete
  * modified with customLookup: https://github.com/tobek/jQuery-Autocomplete

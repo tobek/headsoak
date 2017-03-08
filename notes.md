@@ -673,7 +673,50 @@ could have user collection which stored name of note collection. multiple users 
 
 # Dev Tools and Snippets
 
-testing firebase in console:
+### testing firebase in console:
+
+set up
+
+    _ = require('lodash');
+    data = require('./back.json');
+
+get notes for user sorted by size, from node:
+
+    _.sortBy(_.filter(data.users['simplelogin:11'].nuts, note => note.body && note.body.length > 300 && parseInt(note.id) > 250 && note.id !== '258'), note => note.body ? note.body.length : 0);
+
+get IDs of all private notes
+
+    _.map(_.filter(data.users['simplelogin:11'].nuts, note => note.private), note => note.id)
+
+see which users have a tag enabled:
+
+    _.map(_.filter(data.users, (user) => { return user.tags && 'lib--topic' in user.tags }), (user) => user.user)
+
+check for non-string tag IDs (there are also non-string note IDs!):
+
+    _.each(data.users, (userData, uid) => {
+        _.each(userData.nuts, (note, noteId) => {
+            if (! note) {
+                return;
+            }
+            _.each(note.tags, (tagId) => {
+                if (typeof tagId !== 'string') {
+                    console.log('non string tag id in note', uid, noteId, tagId);
+                }
+            });
+        });
+
+        _.each(userData.tags, (tag, tagId) => {
+            if (! tag) {
+                return;
+            }
+            if (typeof tag.id !== 'string') {
+                console.log('non string tag id in tag', uid, tagId);
+            }
+        });
+    }) && null;
+
+from browser:
 
     function fbGet(childRef) {
       new Firebase('https://nutmeg.firebaseio.com/' + childRef).once('value', function foo(data) {console.log(data.val())}, function(err) {console.warn(err)});

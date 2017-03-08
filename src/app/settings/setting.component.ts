@@ -12,7 +12,7 @@ import {SettingsService, Setting, Shortcut} from './';
 export class SettingComponent {
   @Input() setting: Setting;
   @Input() settings: SettingsService;
-  @Output() updated = new EventEmitter<Array<any>>();
+  @Output() updated = new EventEmitter<any[]>();
 
   private removeHandler: Function;
   private _logger = new Logger(this.constructor.name);

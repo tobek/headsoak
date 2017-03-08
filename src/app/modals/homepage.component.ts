@@ -7,7 +7,7 @@ import {Tag, ChildTag} from '../tags/';
 import {ForceGraph} from '../utils/force-graph.component';
 
 import * as _ from 'lodash';
-const jQuery = require('jquery');
+import * as jQuery from 'jquery';
 
 type SceneType = {
   function: Function, // gets bound to HomepageComponent
@@ -273,7 +273,7 @@ export class HomepageComponent {
           this.addTag(tag);
           cb();
         }, 500);
-      }, 0, 0.25, this.noteAddTagInput.nativeElement)
+      }, 0, 0.25, this.noteAddTagInput.nativeElement);
     }, 500);
   }
 

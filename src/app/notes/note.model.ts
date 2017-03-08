@@ -8,8 +8,22 @@ import {Tag, ChildTag} from '../tags';
 import * as _ from 'lodash';
 
 export class Note {
+  /** Properties that we save to data store. The ordering is also the order in which data is shown in the explore note raw data dropdown. */
+  static DATA_PROPS = [
+    'id',
+    'tags',
+    'created',
+    'modified',
+    'fullUpdateRequired',
+    'private',
+    'readOnly',
+    'share',
+    'sharedBy',
+    'body',
+  ];
+
   id: string;
-  
+
   body = '';
 
   created = Date.now(); // doesn't actually get called til object is instantiated so time is correct (and of course can be overridden by data passed to constructor)
@@ -40,24 +54,10 @@ export class Note {
   /** Stores what the note body was before focusing, in order to determine, upon blurring, whether anything has changed. */
   private oldBody?: string;
 
-  /** Used to prevent infinite loops when running prog tags.*/
+  /** Used to prevent infinite loops when running prog tags. */
   private progTagDepth = 0;
 
   private _logger: Logger;
-
-  /** Properties that we save to data store. The ordering is also the order in which data is shown in the explore note raw data dropdown. */
-  static DATA_PROPS = [
-    'id',
-    'tags',
-    'created',
-    'modified',
-    'fullUpdateRequired',
-    'private',
-    'readOnly',
-    'share',
-    'sharedBy',
-    'body',
-  ];
 
   constructor(noteData: any, private dataService: DataService) {
     if (! noteData.id) {
@@ -96,7 +96,7 @@ export class Note {
       this.pinned = false;
     }
     this.setToInternalTag('archived', Tag.INTERNAL_TAG_DATA.ARCHIVED.id, newVal);
-    
+
     this.updateSortHack = true;
   }
 
@@ -126,7 +126,7 @@ export class Note {
 
       // Also, for any tags we put on here, we haven't actually updated the tag models with this note, so do that now.
       this.tags.forEach((tagId: string) => {
-        this.dataService.tags.tags[tagId].addNoteId(this.id);          
+        this.dataService.tags.tags[tagId].addNoteId(this.id);
       });
     }
 
@@ -190,7 +190,7 @@ export class Note {
           return;
         }
 
-        this.dataService.tags.tags[tagId].updated();          
+        this.dataService.tags.tags[tagId].updated();
       });
     }
 
@@ -225,7 +225,7 @@ export class Note {
     if (blurred && (this.fullUpdateRequired || bodyChanged)) {
       // We don't update index/prog tags/etc while typing/focused because it can be slow. If there was any change detected while focused, we have to do that now
       this._logger.log('Note has changed since focus. Was `' + this.oldBody + '`, now is `' + this.body + '`');
-      
+
       this.updated(bodyChanged, true);
 
       this.oldBody = this.body;
@@ -510,7 +510,7 @@ export class Note {
         console.groupEnd();
         this.progTagDepth--;
       }
-      this._logger.error('Recursive depth of 5 exceeded when working out programmatic tags.')
+      this._logger.error('Recursive depth of 5 exceeded when working out programmatic tags.');
       throw Error('Recursive depth of 5 exceeded when working out programmatic tags on note ID ' + this.id);
     }
 

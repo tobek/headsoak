@@ -7,14 +7,14 @@ import * as _ from 'lodash';
 @Directive({
   selector: '[contenteditableModel]'
 })
-export class ContenteditableModel {
+export class ContenteditableModelDirective {
   @Input('contenteditableModel') model: string;
   @Output('contenteditableModelChange') update = new EventEmitter();
 
   private debouncedOnKeyup: () => void;
 
   private keyupSubscription: Subscription;
-  
+
   /**
    * By updating `lastViewModel` on keyup, and checking against it during `ngOnChanges`, we can rule out change events fired by our own onKeyup.
    *
@@ -59,12 +59,12 @@ export class ContenteditableModel {
   }
 
   onKeyup() {
-    var value = this.elRef.nativeElement.innerText;
+    const value = this.elRef.nativeElement.innerText;
     this.lastViewModel = value;
     this.update.emit(value);
   }
 
   private refreshView() {
-    this.elRef.nativeElement.innerText = this.model
+    this.elRef.nativeElement.innerText = this.model;
   }
 }

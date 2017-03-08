@@ -6,6 +6,8 @@ import * as _ from 'lodash';
 
 @Injectable()
 export class UserService {
+  static SAMPLE_DISPLAY_NAMES = ['Napoléon Bonaparte', 'Marco Polo', 'Nikola Tesla', 'Edgar Allan Poe', 'Florence Nightingale', 'Marilyn Monroe', 'Joan of Arc', 'Catherine the Great', 'Vlad the Impaler'];
+
   loggedIn: boolean = false;
   displayNameSet: boolean;
   displayNamePlaceholder: string;
@@ -18,8 +20,6 @@ export class UserService {
 
   /** Whether this user's data has undergone (second attempt at) migration of IDs from numbers to strings. True for new users. */
   idsMigrated2016: boolean;
-
-  static SAMPLE_DISPLAY_NAMES = ['Napoléon Bonaparte', 'Marco Polo', 'Nikola Tesla', 'Edgar Allan Poe', 'Florence Nightingale', 'Marilyn Monroe', 'Joan of Arc', 'Catherine the Great', 'Vlad the Impaler'];
 
   private _logger: Logger = new Logger(this.constructor.name);
 
@@ -50,6 +50,6 @@ export class UserService {
       email: this.email,
       displayName: this.displayName,
       lastLogin: this.lastLogin,
-    }
+    };
   }
 }

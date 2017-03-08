@@ -14,8 +14,8 @@ export * from './jquery.autocomplete.mod';
 export * from './logger';
 export * from './sample-data';
 
-export var utils = {
-  objFromArray: function(arr: Array<any>) {
+export const utils = {
+  objFromArray: function(arr: any[]) {
     if (typeof arr === 'object') {
       return arr;
     }
@@ -41,7 +41,7 @@ export var utils = {
 
   /** Finds a key not currently in given object. */
   getUnusedKeyFromObj: function(obj: Object): string {
-    var key = _.keys(obj).length; // best guess
+    let key = _.keys(obj).length; // best guess
 
     while (obj[key]) {
       key++;
@@ -54,15 +54,15 @@ export var utils = {
     el.focus();
     if (typeof window.getSelection !== 'undefined'
         && typeof document.createRange !== 'undefined') {
-      var range = document.createRange();
+      const range = document.createRange();
       range.selectNodeContents(el);
       range.collapse(false);
-      var sel = window.getSelection();
+      const sel = window.getSelection();
       sel.removeAllRanges();
       sel.addRange(range);
     }
     else if (typeof document.body['createTextRange'] !== 'undefined') {
-      var textRange = document.body['createTextRange']();
+      const textRange = document.body['createTextRange']();
       textRange.moveToElementText(el);
       textRange.collapse(false);
       textRange.select();
@@ -72,9 +72,9 @@ export var utils = {
   /** Returns true if click went through, false if a click handler called preventDefault. */
   simulateClick(el: HTMLElement | Window): boolean {
     const event = new MouseEvent('click', {
-      'view': window,
-      'bubbles': true,
-      'cancelable': true
+      view: window,
+      bubbles: true,
+      cancelable: true
     });
 
     return el.dispatchEvent(event);

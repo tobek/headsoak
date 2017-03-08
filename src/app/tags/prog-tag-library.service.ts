@@ -12,8 +12,6 @@ import * as _ from 'lodash';
 
 @Injectable()
 export class ProgTagLibraryService {
-  private tagsService: TagsService;
-
   /** @NOTE Changing IDs in source code here could really mess things up for users who are using them. */
   librarySourceData = [
     {
@@ -23,7 +21,7 @@ export class ProgTagLibraryService {
       description: 'Automatically tags notes based on their content. Only works on English text.',
       prog: true,
       // progFunc: function(api: ProgTagApiService, _): ProgTagDef {
-      progFuncString:`// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (e.g. npm's \`retext-keywords\` module) have been bundled with the app.
+      progFuncString: `// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (e.g. npm's \`retext-keywords\` module) have been bundled with the app.
 var retext = api.lib.retext;
 var retextKeywords = api.lib.retextKeywords;
 var nlcstToString = api.lib.nlcstToString;
@@ -382,7 +380,7 @@ return {
       description: 'Automatically tags NSFW (not safe for work) notes and makes them private. (To err on the safe side, if this smart tag previously detected NSFW content in a note and then later no longer does, the note will remain private - though this tag will be removed.) Only works on English text.',
       prog: true,
       // progFunc: function(api: ProgTagApiService, _): ProgTagDef {
-      progFuncString:`// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`retext-profanities\` module) have been bundled with the app.
+      progFuncString: `// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`retext-profanities\` module) have been bundled with the app.
 var retext = api.lib.retext;
 var retextProfanities = api.lib.retextProfanities;
 
@@ -415,7 +413,7 @@ return function(note) {
   });
 
   return result;
-}`//}
+}`// }
     },
     {
       id: 'lib--untagged',
@@ -487,6 +485,8 @@ return function(note) {
 
   library: Tag[];
 
+  private tagsService: TagsService;
+
   private _logger: Logger = new Logger(this.constructor.name);
 
 
@@ -511,7 +511,7 @@ return function(note) {
       // While we're at it we may need to update the tag - but wait til we're initialized so that a) any toasters will be visible instead of blocked by full page loader, and b) re-running prog tag won't delay loading
       // @TODO/optimization @TODO/soon @TODO/prog Auto tag is too heavy to run on mobile, maybe others too. This could be more sophisticated though, maybe something in tagData to indicate that it's too computationally heavy, or we should check number of user's notes... etc.
       if (! this.sizeMonitor.isMobile) {
-        this.tagsService.dataService.initialized$.filter(initialized => !! initialized).first().subscribe(() => {
+        this.tagsService.dataService.initialized$.filter((initialized) => !! initialized).first().subscribe(() => {
           // Seems like we  need to wait even longer... otherwise mysteriously can get loader forever while this runs
           // @TODO/now @TODO/prog Since we don't run `setUpAndValidateProgTag` until after checking for update, that means some stuff isn't set up in the first 7.5s and is weird... do it earlier if possible
           setTimeout(() => {

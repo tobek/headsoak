@@ -7,22 +7,45 @@
   ],
   "rules": {
     // Headsoak custom
-    "member-ordering": [
-      true,
-      "public-before-private",
-      "static-before-instance",
-      "variables-before-functions"
-    ],
-    "no-trailing-whitespace": true,
+    "align": false,
+    "import-spacing": false,
     "indent": [
       true,
       "spaces"
     ],
     "jsdoc-format": true,
+    "max-line-length": false, // would be great to have, but it covers comments too, which I don't prefer
+    "no-consecutive-blank-lines": [true, 2],
+    "no-empty": false,
+    "no-trailing-whitespace": true,
+    "no-unused-expression": [true, "allow-fast-null-checks"],
+    "object-literal-shorthand": false,
+    "one-line": false,
+    "one-variable-per-declaration": false,
+    "only-arrow-functions": false,
     "triple-equals": [
       true,
       "allow-null-check"
     ],
+
+    // Headsoak custom for Angular 2
+    "import-destructuring-spacing": false,
+    "no-forward-ref": false,
+    // "pipe-naming": [true, "camelCase", "my"],
+    "pipe-naming": false,
+    "use-life-cycle-interface": false, // @TODO/refactor This makes sense (https://goo.gl/w1Nwk3) but is a lot of overhead - let's leave out for now
+
+    // @TODO/polish Would be nice to change these in the future?
+    "member-access": false,
+    // "member-ordering": [
+    //   true,
+    //   "public-before-private",
+    //   "static-before-instance",
+    //   "variables-before-functions"
+    // ],
+    "member-ordering": false,
+    "no-console": false,
+    "no-shadowed-variable": false,
 
     // Custom
     "trailing-comma": [false, {"multiline": "always", "singleline": "never"}],
@@ -33,31 +56,18 @@
     // "component-selector": [true, "element", "my", "kebab-case"],
     "directive-class-suffix": true,
     // "directive-selector": [true, "attribute", "my", "camelCase"],
-    "import-destructuring-spacing": true,
     "invoke-injectable": true,
     "no-access-missing-member": true,
     "no-attribute-parameter-decorator": true,
-    "no-forward-ref": true,
     "no-input-rename": true,
     "no-output-rename": true,
-    "pipe-naming": [true, "camelCase", "my"],
     "templates-use-public": true,
     "use-host-property-decorator": true,
     "use-input-property-decorator": true,
-    "use-life-cycle-interface": true,
     "use-output-property-decorator": true,
     "use-pipe-transform-interface": true,
     
     // General
-    "no-console": [true,
-      "time",
-      "timeEnd",
-      "trace"
-    ],
-    "max-line-length": [
-      true,
-      100
-    ],
     "no-string-literal": false,
     "no-use-before-declare": true,
     "object-literal-sort-keys": false,

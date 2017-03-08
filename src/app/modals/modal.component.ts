@@ -17,22 +17,23 @@ export interface ModalConfig {
   /**
    * Called when OK is pressed (or enter in prompt), just before modal is closed. If it's a prompt and not cancelled, prompt contents is passed in, otherwise falsey value passed. Return explicit false to prevent modal from being closed. Callback is also passed two functions that control loading state of button.
    *
-   * @NOTE @TODO/polish Since we have to run this before actually closing in order to see if we *should* close, navigation is impossible in `okCb` (because modal is closed via `window.history.back`, which will fire after `okCb`). For cancel and additional button callbacks, which can't control whether modal closes, this isn't an issue. One fix would be to have a separate `canOk` cb and then a `didOk` cb. */
-  okCb?: (result?: any, showLoadingState?: Function, hideLoadingState?: Function) => any,
+   * @NOTE @TODO/polish Since we have to run this before actually closing in order to see if we *should* close, navigation is impossible in `okCb` (because modal is closed via `window.history.back`, which will fire after `okCb`). For cancel and additional button callbacks, which can't control whether modal closes, this isn't an issue. One fix would be to have a separate `canOk` cb and then a `didOk` cb.
+   */
+  okCb?: (result?: any, showLoadingState?: Function, hideLoadingState?: Function) => any;
 
-  message?: string | SafeHtml,
-  okButtonText?: string,
-  cancelButton?: boolean, // whether to show or not
-  cancelCb?: () => any,
+  message?: string | SafeHtml;
+  okButtonText?: string;
+  cancelButton?: boolean; // whether to show or not
+  cancelCb?: () => any;
 
-  prompt?: boolean,
-  promptPlaceholder?: string,
-  promptInputType?: string,
+  prompt?: boolean;
+  promptPlaceholder?: string;
+  promptInputType?: string;
 
   additionalButtons?: [{
     text: string,
     cb: Function, // called when button is pressed (modal is closed first)
-  }]
+  }];
 }
 
 @Component({
@@ -127,7 +128,7 @@ export class ModalComponent {
   }
   set activeModal(modalName: ModalType) {
     if (this.closeTimeout) {
-      // Something else set up a modal before a previous close's timeout had cleared it, so clear it now 
+      // Something else set up a modal before a previous close's timeout had cleared it, so clear it now
       clearTimeout(this.closeTimeout);
       this.clear();
     }
@@ -182,7 +183,7 @@ export class ModalComponent {
         this.okButtonShowLoading.bind(this),
         this.okButtonHideLoading.bind(this)
       );
-      
+
       if (shouldClose === false) {
         return;
       }

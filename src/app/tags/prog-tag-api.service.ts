@@ -45,7 +45,7 @@ export class ProgTagApiService {
     @Inject(forwardRef(() => ModalService)) public modal: ModalService,
     datePipe: DatePipe
   ) {
-    this.formatDate = datePipe.transform.bind(datePipe)
+    this.formatDate = datePipe.transform.bind(datePipe);
   }
 
   // @TODO/polish This won't actually send an email until the nearest hour when server cron runs. We could have a separate Firebase location for immediate emails that the server watcher could listen to instead.

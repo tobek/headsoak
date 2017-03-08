@@ -172,7 +172,7 @@ return classifyNote;`;
     if (! this.changed) {
       return;
     }
-    
+
     this.tag.updateProgFuncString(this.editor.getValue());
     this.editorUnchanged();
 
