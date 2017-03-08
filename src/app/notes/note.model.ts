@@ -318,6 +318,21 @@ export class Note {
     return tag;
   }
 
+  // @TODO/refactor This should probably be combined with how tags are processed in *ngFor in component template.
+  get tagInstances(): Tag[] {
+    const tags: Tag[] = [];
+
+    let tag: Tag;
+    this.tags.forEach((tagId) => {
+      tag = this.dataService.tags.tags[tagId];
+      if (tag) {
+        tags.push(tag);
+      }
+    });
+
+    return tags;
+  }
+
   hasTag(tag: Tag): boolean {
     return _.includes(this.tags, '' + tag.id);
   }
