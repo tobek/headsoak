@@ -159,7 +159,9 @@ $note-header-height: 2.5rem
   .body-input
     resize: none
     width: 100%
-    max-height: 133px // 6.5 lines of text (so that clipping is obvious)
+    overflow-y: auto // goes with max-height being full height now?
+    // max-height: 133px // 6.5 lines of text (so that clipping is obvious)
+    max-height: calc(#{$full-height-nestable} - 100px) // magic numbers - 100px is about the vertical padding of note element plus a bit to spare
     padding: 2px 20px 2px 2px // see note about right padding in base .note styles // @NOTE if right padding changes here it must also be changed for .body-input overrides in .route--list
     border: 0
     outline: none
@@ -167,11 +169,23 @@ $note-header-height: 2.5rem
     color: $note-text
 
     transition: min-height $transition-fast, max-height $transition-fast, padding $transition-fast
+    
+    @media (max-width: $tablet-large - 1px)
+      // @TODO/soon Is this the right behavior on mobile?
+      // @TODO/soon I think these need to be nestable, but some browsers manage without, I think?
+      max-height: calc(#{$mobile-full-height} - 100px)
+      .route--note-route.is--note-query-visible &
+        max-height: calc(#{$mobile-full-height--with-note-query} - 100px)
+      .is--headerless &
+        max-height: calc(#{$mobile-full-height--headerless} - 100px)
+      .is--headerless.route--note-route.is--note-query-visible &
+        max-height: calc(#{$mobile-full-height--headerless-with-note-query} - 100px)
 
-  @media (min-width: $tablet-large)
-    &.is--adding-tag .body-input,
-    &.is--focused .body-input
-      max-height: calc(#{$full-height-nestable} - 100px) // magic numbers - 100px is about the vertical padding of note element plus a bit to spare
+  // @REMOVED and max-height changed above
+  // @media (min-width: $tablet-large)
+  //   &.is--adding-tag .body-input,
+  //   &.is--focused .body-input
+  //     max-height: calc(#{$full-height-nestable} - 100px) // magic numbers - 100px is about the vertical padding of note element plus a bit to spare
 
   .route--list &,
   .route--browse &
@@ -332,8 +346,10 @@ $note-header-height: 2.5rem
         width: 1.3em
 
 
-    .body-input
-      overflow: hidden
+    // Changed with max-height changes
+    .route--browse &
+      .body-input
+        overflow: hidden
 
     @media (min-width: $tablet-large)
       &.is--focused,
