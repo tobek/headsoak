@@ -58,6 +58,7 @@ export class ProgTagApiService {
     return this.queueUserEmail(Date.now(), email, cb);
   }
 
+  /** If your email needs to use the contents of a note, and you'd like your email to reflect the note at the time the email is *sent* as opposed to the time you queue the email, you must access the note through lodash template syntax. This way, at the time the email is to be sent, Headsoak servers will fetch the current version of the note and feed it into the template. Also: all string properties of tags and notes are HTML-escaped (by `_.escape`) before being passed to the template. */
   queueUserEmail(
     sendAt: number, // in ms
     email: { subject: string, bodyTemplate: string, tagId: string, noteId?: string, },

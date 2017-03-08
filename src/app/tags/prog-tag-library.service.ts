@@ -252,22 +252,40 @@ if (! this.getData('schedule')) {
 }
 
 function queueEmail(note, sendAt, words, nextInterval) {
-  var body = '<p>' + words + ' ago you added the <span style="color: #BBB">#</span><span style="color: #888">remember this</span> tag to this note:</p>';
+  var subject = 'Remember this? ';
+  subject += '"' + _.truncate(note.body, { length: 100, separator: /,? +/ }) + '"';
 
-  body += '<blockquote><%= note.body %></blockquote>';
+  var body = '<p>Hello!</p><p>' + words + ' ago you added the <span style="color: #F26B57"><span style="opacity: 0.33; margin-right: 1px">#</span>remember this</span> tag to this note:</p>';
+
+  body += '<p>\\xa0</p><blockquote>';
+
+  body += '<% if (note.tagInstances.length) { %>';
+    body += '<p style="color: #F26B57">'
+    body += '<% note.tagInstances.forEach(function(tag) { %>';
+      body += '<span style="opacity: 0.33; margin-right: 1px">#</span>';
+      body += '<%= tag.name %>';
+      // body += '<% if (tag.prog) { %>⚡<% } %>'
+      body += ' \\xa0';
+    body += '<% }); %>';
+    body += '</p>';
+  body += '<% } %>';
+
+  body += '<%= note.body %>';
+
+  body += '</blockquote><p>\\xa0</p>';
 
   if (nextInterval) {
-    body += '<p>We\\'ll next send this note to you in ' + nextInterval + '. Until then, keep remembering!</p>';
+    body += '<p>The next time you receive this note will be in ' + nextInterval + '.</p>';
   }
   else {
     body += '<p>This is your last email! Hopefully you remember it pretty well by now.</p>';
   }
 
-  body += '<p>If you have any feedback about this feature, or Headsoak in general, just reply to this email!</p>';
+  body += '<p>Thanks for using Headsoak! We always love hearing from you, so feel free to reply with any feedback.</p>';
 
   // This will send an email to the current user's email address at the specified time.
   return api.queueUserEmail(sendAt, {
-    subject: 'Remember this?',
+    subject: subject,
     bodyTemplate: body,
     tagId: _this.id,
     noteId: note.id,

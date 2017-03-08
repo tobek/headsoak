@@ -214,8 +214,24 @@ function ensureNoteFetched(uid, noteId, cb) {
       note.body = note.body.replace(/\n/g, '<br>');
     }
 
-    users[uid].notes[noteId] = note;
-    cb();
+    note.tags = note.tags || [];
+    note.tagInstances = [];
+    async.each(note.tags, _.partial(ensureTagFetched, uid), function(err) {
+      if (err) {
+        logger.error('Failed to fetch tags on note ' + noteId);
+        return cb(err);
+      }
+
+      note.tags.forEach(function(tagId) {
+        var tag = users[uid].tags[tagId];
+        if (tag) {
+          note.tagInstances.push(tag)
+        }
+      });
+
+      users[uid].notes[noteId] = note;
+      cb();
+    });
   }, cb);
 }
 
