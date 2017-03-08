@@ -303,14 +303,14 @@ export class HomepageComponent {
   }
 
   ngOnInit() {
-    jQuery(window).one('mousedown touchstart', () => {
+    jQuery(window).one('mousedown.hsHp touchstart.hsHp', () => {
       this.stealFocus = false;
     });
   }
 
   ngAfterViewInit() {
     // When the graph is first set up it bounces around a bit which looks dynamic and invites user to play. It's just below the fold so we can wait until first scroll to trigger.
-    jQuery('modal').first().one('scroll', () => {
+    jQuery('modal').first().one('scroll.hsHp', () => {
       setTimeout(() => {
         this.showVis = true;
       }, 200);
@@ -319,12 +319,18 @@ export class HomepageComponent {
     this.demoNoteBody = this.demoNoteRef.el.nativeElement.querySelector('.body-input');
     this.demoNoteAddTagInput = this.demoNoteRef.el.nativeElement.querySelector('.new-tag-input');
 
-    this.demoNoteBody.addEventListener('click', () => {
+    jQuery(this.demoNoteBody).one('click.hsHp', () => {
       this.scriptStopped = true;
       utils.placeCaretAtEnd(this.demoNoteBody);
     });
 
     setTimeout(this.play.bind(this), 0);
+  }
+
+  ngOnDestroy() {
+    jQuery(window).off('.hsHp');
+    jQuery('modal').off('.hsHp');
+    jQuery(this.demoNoteBody).off('.hsHp');
   }
 
   initTags() {
