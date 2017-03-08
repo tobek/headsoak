@@ -35,7 +35,7 @@ interface Hooks {
   init?: (note: Note) => void;
   /** When the tag is first added to a note. */
   added?: (note: Note) => void;
-  /** When the tag is removed from a note. Also, when the tag is deleted, this is called for every note the tag is on. */
+  /** When the tag is removed from a note. This is also fired when a note the tag is on is deleted, and when the tag itself is deleted it's fired for every note the tag is on. */
   removed?: (note: Note) => void;
   /** When the note is updated (specifically a `fullUpdate`). NOT IMPLEMENTED YET. */
   noteUpdated?: (note: Note) => void;
