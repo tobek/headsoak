@@ -255,7 +255,9 @@ function queueEmail(note, sendAt, words, nextInterval) {
   var subject = 'Remember this? ';
   subject += '"' + _.truncate(note.body, { length: 100, separator: /,? +/ }) + '"';
 
-  var body = '<p>Hello!</p><p>' + words + ' ago you added the <span style="color: #F26B57"><span style="opacity: 0.33; margin-right: 1px">#</span>remember this</span> tag to this note:</p>';
+  var body = '<p>Hello' + (api.user.displayName ? ' ' + api.user.displayName : '') + '!</p>';
+
+  body += '<p>' + words + ' ago you added the <span style="color: #F26B57"><span style="opacity: 0.33; margin-right: 1px">#</span>remember this</span> tag to this note:</p>';
 
   body += '<p>\\xa0</p><blockquote>';
 
