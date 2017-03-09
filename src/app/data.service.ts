@@ -26,10 +26,10 @@ interface DataDigest {
 }
 
 export interface SortOption {
-  id: string,
-  text: string,
-  field?: string,
-  rev?: boolean,
+  id: string;
+  text: string;
+  field?: string;
+  rev?: boolean;
 }
 
 @Injectable()
@@ -280,7 +280,7 @@ export class DataService {
           {
             preventDuplicates: true,
             timeOut: 0,
-            extendTimeOut: 0,
+            extendedTimeOut: 0,
             closeButton: true,
             onclick: () => {
               this.modalService.alert('<p>We ran into an error while syncing changes you made in the last 10 seconds. While this error continues, we may be unable to save all your changes. Please see the sync indicator in the top right of the app - red indicates an error.</p><p>It is with shame and regret that we suggest you reload the app if the indicator remains red for a while.</p><p>We have logged this error and are working to fix it. You can email us at <a href="mailto:support@headsoak.com">support@headsoak.com</a> if this keeps happening.</p><pre class="syntax">' + err + '</pre>', true);
@@ -330,7 +330,7 @@ export class DataService {
             'Disconnected from Headsoak',
             {
               timeOut: 0,
-              extendTimeOut: 0,
+              extendedTimeOut: 0,
               closeButton: true,
             }
           );
@@ -346,7 +346,7 @@ export class DataService {
           'Back online!',
           {
             timeOut: 0,
-            extendTimeOut: 0,
+            extendedTimeOut: 0,
             closeButton: true,
           }
         );
