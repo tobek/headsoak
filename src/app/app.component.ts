@@ -25,7 +25,7 @@ import * as _ from 'lodash';
   selector: 'app',
   providers: [ ],
   encapsulation: ViewEncapsulation.None,
-  template: require('./app.component.html')
+  templateUrl: './app.component.html'
 })
 export class AppComponent {
   NOTE_BROWSER_ROUTES = NOTE_BROWSER_ROUTES; // make available to template
@@ -59,18 +59,18 @@ export class AppComponent {
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
-    private zone: NgZone,
-    private activeUIs: ActiveUIsService,
-    private modalService: ModalService,
-    private sizeMonitor: SizeMonitorService,
-    private scrollMonitor: ScrollMonitorService,
-    private tooltipService: TooltipService,
-    private router: Router,
+    public sizeMonitor: SizeMonitorService,
+    public router: Router,
     public changeDetector: ChangeDetectorRef,
     public accountService: AccountService,
     public analyticsService: AnalyticsService,
+    public modalService: ModalService,
     public settings: SettingsService,
-    public dataService: DataService
+    public dataService: DataService,
+    private zone: NgZone,
+    private activeUIs: ActiveUIsService,
+    private scrollMonitor: ScrollMonitorService,
+    private tooltipService: TooltipService
    ) {
     this.zone.onError.subscribe((err) => {
       window['hsErrorReportVal']('zoneErr', err);

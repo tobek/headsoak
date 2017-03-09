@@ -14,7 +14,7 @@ import * as _ from 'lodash';
 
 @Component({
   selector: 'note',
-  template: require('./note.component.html')
+  templateUrl: './note.component.html'
 })
 export class NoteComponent {
   /** Currently entered text in the "add tag" field */
@@ -58,16 +58,16 @@ export class NoteComponent {
   constructor(
     // public cdrRef: ChangeDetectorRef,
     public el: ElementRef,
+    public sizeMonitor: SizeMonitorService,
+    public tooltipService: TooltipService,
+    public settings: SettingsService,
     private renderer: Renderer,
     private datePipe: DatePipe,
     private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
     private autocompleteService: AutocompleteService,
-    private sizeMonitorService: SizeMonitorService,
-    private tooltipService: TooltipService,
     private modalService: ModalService,
     private syntaxService: SyntaxService,
-    private settings: SettingsService,
     private notesService: NotesService
   ) {}
 
@@ -163,7 +163,7 @@ export class NoteComponent {
       event.stopPropagation();
     }
 
-    if (wholeTagClick && this.sizeMonitorService.isMobile) {
+    if (wholeTagClick && this.sizeMonitor.isMobile) {
       // On mobile, click on the whole (unhovered) tag pops up dropdown, and then you have to click inside the dropdown to toggle the tag
       // @TODO/polish What should happen when you click on the tag itself while it *does* have hover dropdown open? Currently nothing. It could, instead, toggle it or close dropdown.
       return;
@@ -193,7 +193,7 @@ export class NoteComponent {
   }
 
   bodyFocused(event: Event) {
-    if (this.sizeMonitorService.isMobile && ! this.isOpened) {
+    if (this.sizeMonitor.isMobile && ! this.isOpened) {
       this.openNote();
 
       if (event) {
@@ -278,7 +278,7 @@ export class NoteComponent {
       this.activeUIs.focusedNoteComponent = null;
     }
 
-    if (focusOnBody && ! this.sizeMonitorService.isMobile) {
+    if (focusOnBody && ! this.sizeMonitor.isMobile) {
       this.bodyFocus();
     }
   }
@@ -323,7 +323,7 @@ export class NoteComponent {
       this.checkTagOverflow();
     }
 
-    if (addAnother && ! this.sizeMonitorService.isMobile) {
+    if (addAnother && ! this.sizeMonitor.isMobile) {
       setTimeout(() => {
         this.addTagSetUpAutocomplete();
         this.initializeAddTag();

@@ -7,7 +7,7 @@ import {SettingsService, Setting, Shortcut} from './';
 
 @Component({
   selector: 'setting',
-  template: require('./setting.component.html')
+  templateUrl: './setting.component.html'
 })
 export class SettingComponent {
   @Input() setting: Setting;
@@ -18,9 +18,9 @@ export class SettingComponent {
   private _logger = new Logger(this.constructor.name);
 
   constructor(
+    public dataService: DataService,
     private elementRef: ElementRef,
-    private renderer: Renderer,
-    private dataService: DataService
+    private renderer: Renderer
   ) {
   }
 

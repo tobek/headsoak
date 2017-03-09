@@ -42,7 +42,7 @@ export class HomeComponent {
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
-    private router: Router,
+    public router: Router,
     public activeUIs: ActiveUIsService,
     public analyticsService: AnalyticsService,
     public notesService: NotesService,

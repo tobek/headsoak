@@ -16,7 +16,7 @@ import * as _ from 'lodash';
 
 @Component({
   selector: 'settings',
-  template: require('./settings.component.html')
+  templateUrl: './settings.component.html'
 })
 export class SettingsComponent {
   section: string;
@@ -31,6 +31,10 @@ export class SettingsComponent {
   };
 
   initialized = false;
+
+  displayedSettings: Setting[] = [];
+  subSections: string[] = [];
+  subSectionedSettings: { [settingId: string]: Setting[] } = {};
 
   // @ViewChildren(SettingComponent) settingComponents: QueryList<SettingComponent>;
 
@@ -53,10 +57,6 @@ export class SettingsComponent {
 
   private _modKeyError = '';
 
-  private displayedSettings: Setting[] = [];
-  private subSections: string[] = [];
-  private subSectionedSettings: { [settingId: string]: Setting[] } = {};
-
   private showLinuxInstr = false;
   private showMacInstr = false;
   private showWinInstr = false;
@@ -66,11 +66,11 @@ export class SettingsComponent {
   private _logger = new Logger(this.constructor.name);
 
   constructor(
+    public dataService: DataService,
     private route: ActivatedRoute,
     private modalService: ModalService,
     @Inject(forwardRef(() => SettingsService)) private settings: SettingsService,
-    private tooltipService: TooltipService,
-    private dataService: DataService
+    private tooltipService: TooltipService
   ) {
   }
 

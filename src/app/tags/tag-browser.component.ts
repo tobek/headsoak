@@ -10,6 +10,7 @@ import {SettingsService} from '../settings/settings.service';
 // import {NoteComponent} from '../notes/note.component';
 // import {NotesService} from '../notes/notes.service';
 import {Tag, TagComponent} from './';
+import {SortOption} from '../data.service';
 import {TagDetailsComponent} from './tag-details.component';
 import {TagsService} from './tags.service'; // no idea why importing this separately is necessary
 import {Logger/*, ScrollMonitorService, AutocompleteService*/} from '../utils/';
@@ -19,7 +20,7 @@ import * as _ from 'lodash';
 
 @Component({
   selector: 'tag-browser',
-  template: require('./tag-browser.component.html')
+  templateUrl: './tag-browser.component.html'
 })
 export class TagBrowserComponent {
   DEFAULT_TAGS_LIMIT: number = Infinity; // @TODO/tags There should prob be a limit?
@@ -43,7 +44,7 @@ export class TagBrowserComponent {
   limit: number = this.DEFAULT_TAGS_LIMIT;
 
   /** How tags in this list component are sorted on init. */
-  sortOpt: Object = this.tagsService.sortOpts[0];
+  sortOpt: SortOption = this.tagsService.sortOpts[0];
 
   /** Whether tag browser is shown alongside notes as a sidebar (`true`) or we're in full-page browsing of tags (`false`). */
   inSidebar = true;
@@ -72,16 +73,16 @@ export class TagBrowserComponent {
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
+    @Inject(forwardRef(() => SizeMonitorService)) public sizeMonitor: SizeMonitorService,
+    @Inject(forwardRef(() => TagsService)) public tagsService: TagsService,
     private router: Router,
     private elRef: ElementRef,
-    @Inject(forwardRef(() => SizeMonitorService)) private sizeMonitor: SizeMonitorService,
     @Inject(forwardRef(() => ScrollMonitorService)) private scrollMonitor: ScrollMonitorService,
     private analyticsService: AnalyticsService,
     private activeUIs: ActiveUIsService,
-    @Inject(forwardRef(() => SettingsService)) private settings: SettingsService,
+    @Inject(forwardRef(() => SettingsService)) private settings: SettingsService
     // private autocompleteService: AutocompleteService,
     // private notesService: NotesService,
-    @Inject(forwardRef(() => TagsService)) private tagsService: TagsService
   ) {
     this.el = elRef.nativeElement;
   }

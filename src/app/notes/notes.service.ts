@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {ReplaySubject, Subject} from 'rxjs';
 
 import {Logger, utils} from '../utils/';
-import {DataService} from '../data.service';
+import {DataService, SortOption} from '../data.service';
 import {Tag, ChildTag} from '../tags/';
 import {TagsService} from '../tags/tags.service';
 
@@ -10,6 +10,7 @@ import {Note} from './';
 
 import * as _ from 'lodash';
 const lunr = require('lunr');
+// import * as lunr from 'lunr';
 
 @Injectable()
 export class NotesService {
@@ -21,7 +22,7 @@ export class NotesService {
   /**
    * id format convention: `[desiredOrder] + '-' + field + '-' + rev` (not enforced, and changing IDs will break users' saved sort setting)
    */
-  sortOpts = [
+  sortOpts: SortOption[] = [
     { id: '0-modified-true', field: 'modified', rev: true, text: 'Recently modified' },
     { id: '1-modified-false', field: 'modified', rev: false, text: 'Oldest modified' },
     { id: '2-created-true', field: 'created', rev: true, text: 'Recently created' },

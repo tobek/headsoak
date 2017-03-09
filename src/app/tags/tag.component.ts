@@ -15,7 +15,7 @@ import * as _ from 'lodash';
 
 @Component({
   selector: 'tag',
-  template: require('./tag.component.html')
+  templateUrl: './tag.component.html'
 })
 export class TagComponent {
   INTERNAL_TAG_DATA = Tag.INTERNAL_TAG_DATA; // expose to template

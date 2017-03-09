@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Subject, ReplaySubject} from 'rxjs';
 
 import {Logger, utils} from '../utils/';
-import {DataService} from '../data.service';
+import {DataService, SortOption} from '../data.service';
 
 import {Tag} from './tag.model'; // For some reason this breaks with `TypeError: Cannot read property 'getOptional' of undefined` if I do `from './'`, which I think should work
 import {ChildTag} from './child-tag.model';
@@ -28,7 +28,7 @@ export class TagsService {
   /**
    * id format: `[desiredOrder] + '-' + field + '-' + rev`
    */
-  sortOpts = [
+  sortOpts: SortOption[] = [
     { id: '0-docs.length-true', field: 'noteCount', rev: true, text: 'Most used'},
     { id: '1-docs.length-false', field: 'noteCount', rev: false, text: 'Least used'},
     // @TODO should this be called used, modified, or something else? should name change depending on nutChangesChangeTagModifiedTimestamp setting? should we have both options?

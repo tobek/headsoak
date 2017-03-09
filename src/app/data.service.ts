@@ -25,6 +25,13 @@ interface DataDigest {
   settings: { [settingId: string]: Setting };
 }
 
+export interface SortOption {
+  id: string,
+  text: string,
+  field?: string,
+  rev?: boolean,
+}
+
 @Injectable()
 export class DataService {
   NEW_FEATURE_COUNT = 12; // Hard-coded so that it only updates when user actually receives updated code with the features

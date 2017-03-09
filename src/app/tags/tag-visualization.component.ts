@@ -11,7 +11,7 @@ import * as _ from 'lodash';
 
 @Component({
   selector: 'tag-visualization',
-  template: require('./tag-visualization.component.html')
+  templateUrl: './tag-visualization.component.html'
 })
 export class TagVisualizationComponent {
   /** If not input, visualize all tags. If input, only show those connected to this tag. */

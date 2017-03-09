@@ -14,7 +14,7 @@ import * as safeStringify from 'json-stringify-safe';
 
 @Component({
   selector: 'tag-details',
-  template: require('./tag-details.component.html')
+  templateUrl: './tag-details.component.html'
 })
 export class TagDetailsComponent {
   _ = _; // for use in template

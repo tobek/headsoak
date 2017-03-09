@@ -11,7 +11,7 @@ import * as ace from 'brace';
 
 @Component({
   selector: 'prog-tag-control',
-  template: require('./prog-tag-control.component.html')
+  templateUrl: './prog-tag-control.component.html'
 })
 export class ProgTagControlComponent {
   readonly DEFAULT_PROG_FUNC_STRING = `// Any initialization logic can go here - this is run each time the app is initialized, and whenever the smart tag is changed

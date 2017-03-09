@@ -16,7 +16,7 @@ import * as _ from 'lodash';
 
 @Component({
   selector: 'note-browser',
-  template: require('./note-browser.component.html')
+  templateUrl: './note-browser.component.html'
 })
 export class NoteBrowserComponent {
   DEFAULT_NOTES_LIMIT: number = 20;

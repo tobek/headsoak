@@ -52,7 +52,7 @@ interface LinkDatum extends SimulationLinkDatum<NodeDatum> {
 
 @Component({
   selector: 'force-graph',
-  template: require('./force-graph.component.html')
+  templateUrl: './force-graph.component.html'
 })
 export class ForceGraphComponent {
   @Input() graph: ForceGraph;

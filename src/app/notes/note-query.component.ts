@@ -8,6 +8,7 @@ import {ModalService} from '../modals/modal.service';
 import {SettingsService} from '../settings/settings.service';
 import {Note} from './note.model';
 import {NotesService} from './notes.service';
+import {SortOption} from '../data.service';
 import {Tag, ChildTag, TagsService} from '../tags';
 import {Logger, AutocompleteService, AutocompleteSuggestion, ScrollMonitorService, ToasterService} from '../utils/';
 import {NOTE_BROWSER_ROUTES, routingInfo} from '../app.routes';
@@ -16,7 +17,7 @@ import * as _ from 'lodash';
 
 @Component({
   selector: 'note-query',
-  template: require('./note-query.component.html')
+  templateUrl: './note-query.component.html'
 })
 export class NoteQueryComponent {
   _notes: Note[] = [];
@@ -25,7 +26,7 @@ export class NoteQueryComponent {
   ensureCorrectRoute = _.throttle(this._ensureCorrectRoute, 1000);
 
   /** How notes in this list component are sorted on init. */
-  sortOpt: Object = this.notesService.sortOpts[0];
+  sortOpt: SortOption = this.notesService.sortOpts[0];
 
   queriedNotes$ = new ReplaySubject<Note[]>(1);
 
@@ -47,6 +48,7 @@ export class NoteQueryComponent {
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
+    public notesService: NotesService,
     private elementRef: ElementRef,
     private activeUIs: ActiveUIsService,
     private analyticsService: AnalyticsService,
@@ -55,7 +57,6 @@ export class NoteQueryComponent {
     private scrollMonitor: ScrollMonitorService,
     private toaster: ToasterService,
     private settings: SettingsService,
-    private notesService: NotesService,
     private tagsService: TagsService,
   ) {
   }

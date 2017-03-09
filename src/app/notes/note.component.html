@@ -15,7 +15,7 @@
           (keydown.tab)="closeAddTagField()"
           (keydown.shift.tab)="closeAddTagField()"
         /><span class="new-tag-button"
-          [attr.data-tooltip]="sizeMonitorService.isMobile ? '' : (! addingTag ? 'Add a tag' : (! addTagName ? 'Close' : ('Add tag &quot;' + addTagName + '&quot;')))"
+          [attr.data-tooltip]="sizeMonitor.isMobile ? '' : (! addingTag ? 'Add a tag' : (! addTagName ? 'Close' : ('Add tag &quot;' + addTagName + '&quot;')))"
           (click)="newTagIconClick($event); tooltipService.reloadOnEvent($event, false)"
           (mouseleave)="tooltipService.reloadOnMouseleave($event)"
         ><i *ngIf="! addingTag" class="fa fa-plus"></i><i *ngIf="addingTag" class="fa fa-check"></i></span
@@ -45,8 +45,8 @@
   <div class="body-input" tabindex=0
     ref-bodyInput
     *ngIf="! note.sharedBody"
-    [attr.contenteditable]="! sizeMonitorService.isMobile || this.isOpened"
-    [attr.spellcheck]="isFocused || isOpen"
+    [attr.contenteditable]="! sizeMonitor.isMobile || isOpened"
+    [attr.spellcheck]="isFocused || isOpened"
     [attr.placeholder]="note.new ? 'Enter a new note' : 'This note has no text'"
     [contenteditableModel]="note.body"
     (contenteditableModelChange)="note.body = $event; note.changed()"

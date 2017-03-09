@@ -12,17 +12,17 @@ import * as _ from 'lodash';
 
 @Component({
   selector: 'prog-tag-library',
-  template: require('./prog-tag-library.component.html')
+  templateUrl: './prog-tag-library.component.html'
 })
 export class ProgTagLibraryComponent {
   checked = false;
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
+    public progTagLibraryService: ProgTagLibraryService,
+    @Inject(forwardRef(() => TagsService)) public tagsService: TagsService,
     private analyticsService: AnalyticsService,
-    @Inject(forwardRef(() => ModalService)) private modalService: ModalService,
-    @Inject(forwardRef(() => TagsService)) private tagsService: TagsService,
-    private progTagLibraryService: ProgTagLibraryService,
+    @Inject(forwardRef(() => ModalService)) private modalService: ModalService
   ) {
   }
 
