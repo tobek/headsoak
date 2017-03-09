@@ -41,12 +41,12 @@ export class HomepageComponent {
 
   // @TODO/refactor This is fucking stupid. May be better to spin up real version of DataService and initialize it with fake data, and then clear when user logs in. But that may be even more difficult than this route.
   fakeDataService = {
-    'digest$': {
+    digest$: {
       emit: function() {},
     },
     notes: {
       updateNoteInIndex: function() {},
-      'noteUpdated$': {
+      noteUpdated$: {
         next: function() {},
       },
     },
@@ -299,7 +299,7 @@ export class HomepageComponent {
     this.demoNote['_updated'] = this.demoNote.updated;
     this.demoNote.updated = function(updateModified, fullUpdate) {
       this['_updated'](updateModified, true);
-    }
+    };
   }
 
   ngOnInit() {
@@ -379,7 +379,7 @@ export class HomepageComponent {
         result['push']({ childTag: 'notes', score: '100%' });
       }
       return this['_handleClassifierResult'](note, result);
-    }
+    };
 
     tag['_handleClassifierResultDatum'] = tag.handleClassifierResultDatum;
     tag.handleClassifierResultDatum = function(note, noteDatum, tagsToRemove) {
@@ -387,7 +387,7 @@ export class HomepageComponent {
         return;
       }
       return this['_handleClassifierResultDatum'](note, noteDatum, tagsToRemove);
-    }
+    };
   }
 
   play(i = 0) {
@@ -440,7 +440,7 @@ export class HomepageComponent {
           this.demoNoteRef.completeAddTag(tagName, true);
           cb();
         }, 500);
-      }, 0, 0.33, this.demoNoteAddTagInput)
+      }, 0, 0.33, this.demoNoteAddTagInput);
     }, 500);
   }
 

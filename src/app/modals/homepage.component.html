@@ -1,44 +1,50 @@
-<div class="demo-container hero">
-  <div class="intro">
-    <h2>Don't just takes notes. Utilize them.</h2>
-    <h3>Augmented note-taking with smart tags</h3>
-  </div>
+<div class="hero full-width-edges">
+  <div class="clearfix">
+    <div class="demo-container hero">
+      <div class="intro">
+        <h2>Don't just takes notes. Utilize them.</h2>
+        <h3>Augmented note-taking with smart tags</h3>
+      </div>
 
-  <note class="note"
-    style="touch-action: manipulation"
-    ref-demoNoteRef
-    [note]="demoNote"
-  ></note>
+      <note class="note"
+        style="touch-action: manipulation"
+        ref-demoNoteRef
+        [note]="demoNote"
+      ></note>
 
-  <!--
-  <div class="note" [class.is--adding-tag]="addingTag">
-    <div class="note-wrapper">
-      <div class="note-bg"></div>
-      <div class="header">
-        <div class="tags"
-          ><span class="tag-like"><input type="text" placeholder="add tag" class ="new-tag-input" ref-noteAddTagInput /><span class="new-tag-button"><i class="fa fa-plus"></i></span></span
-          ><tag
-            *ngFor="let tag of tags"
-            [tag]="tag"
-            [ofNoteId]="0"
-            context="note"
-            [class.is--highlighted]="tag.highlight"
-            [class.is--being-removed]="tag.beingRemoved"
-          ></tag>
+      <!--
+      <div class="note" [class.is--adding-tag]="addingTag">
+        <div class="note-wrapper">
+          <div class="note-bg"></div>
+          <div class="header">
+            <div class="tags"
+              ><span class="tag-like"><input type="text" placeholder="add tag" class ="new-tag-input" ref-noteAddTagInput /><span class="new-tag-button"><i class="fa fa-plus"></i></span></span
+              ><tag
+                *ngFor="let tag of tags"
+                [tag]="tag"
+                [ofNoteId]="0"
+                context="note"
+                [class.is--highlighted]="tag.highlight"
+                [class.is--being-removed]="tag.beingRemoved"
+              ></tag>
+            </div>
+          </div>
+          <textarea class="body-input" autocorrect="off" autocapitalize="off" spellcheck="false" ref-noteBody (keydown)="false"></textarea>
         </div>
       </div>
-      <textarea class="body-input" autocorrect="off" autocapitalize="off" spellcheck="false" ref-noteBody (keydown)="false"></textarea>
+      -->
+
+      <!-- only shown on mobile -->
+      <login></login>
+
+      <!--
+      <div class="teaser">
+        Learn more
+        <br>
+        <i class="fa fa-chevron-down"></i>
+      </div>
+      -->
     </div>
-  </div>
-  -->
-
-  <!-- only shown on mobile -->
-  <login></login>
-
-  <div class="teaser">
-    Learn more
-    <br>
-    <i class="fa fa-chevron-down"></i>
   </div>
 </div>
 

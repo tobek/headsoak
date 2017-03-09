@@ -1,23 +1,29 @@
 // Styles for the logged-out marketing home page
 
+$homepage-main-bg: white
+
 homepage
   display: block
   position: relative
   color: $panel-text
 
   .intro
-    text-shadow: 2px 2px 5px black
-    color: $panel-text
+    // text-shadow: 2px 2px 5px black
+    // color: $panel-text
+    color: gray
     
     h2
       margin-top: 0
+      margin-bottom: 0.5rem
+    h3
+      margin-top: 0.5rem
 
   .ribbon
     position: relative
     width: 100%
     padding: 0.5rem
     color: $note-text
-    background-color: $note-bg
+    background-color: $homepage-main-bg
     font-weight: bold
     text-align: center
     // @TODO/hp Styles
@@ -29,6 +35,7 @@ homepage
       position: absolute
       top: 0
       height: 100%
+      max-height: 100vh // @TODO/hp This is dumb
       width: 500px
       background-color: $panel-bg
 
@@ -37,21 +44,25 @@ homepage
     &:after
       right: -500px
 
-    &.ribbon
+    &.ribbon,
+    &.hero
       &:before,
       &:after
-        background-color: $note-bg
+        background-color: $homepage-main-bg
 
   .steps
     display: flex
-    justify-content: space-around
+    justify-content: space-between
 
   .demo-container
     +span(6)
     &:nth-child(2n)
       +span(6 last)
 
-    &.hero
+  .hero
+    background-color: $homepage-main-bg
+
+    .demo-container
       height: 100vh
       padding-top: 10vh // matches login top margin
       padding-right: 50px

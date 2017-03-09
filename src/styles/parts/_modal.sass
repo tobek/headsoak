@@ -43,6 +43,9 @@ modal
     max-width: $screen-small
     height: 100%
 
+    &.is--login-container
+      max-width: $screen-large // @HACK This is the natural value from `outer-container`
+
   .modal-content
     +card
     +span(6)
@@ -65,10 +68,16 @@ modal
     &.is--login,
     &.is--loading
       z-index: 1
-      background-color: $panel-bg
 
       @media (min-width: $tablet-large)
         +span(6 last)
+
+    &.is--login
+      background: none
+      box-shadow: none
+
+    &.is--loading
+      background-color: $panel-bg
 
     @media (max-width: $tablet-large)
       +span(9)
