@@ -7,7 +7,7 @@ import {Logger, utils, sampleData} from './utils/';
 import {AccountService} from './account';
 import {ActiveUIsService} from './active-uis.service';
 import {ModalService} from './modals/modal.service';
-import {ToasterService} from './utils/toaster.service';
+import {Toast, ToasterService} from './utils/toaster.service';
 import {UserService} from './account/user.service';
 import {Note, NotesService} from './notes/';
 import {Tag} from './tags/';
@@ -69,6 +69,17 @@ export class DataService {
   ref: Firebase;
 
   accountService: AccountService;
+
+  private _errorToast: Toast;
+  private get errorToast(): Toast {
+    return this._errorToast;
+  }
+  private set errorToast(newToast: Toast) {
+    if (this._errorToast) {
+      this._errorToast.close();
+    }
+    this._errorToast = newToast;
+  }
 
   /** This stores data that needs to be synced to server. Checked by this.sync() */
   private digest: DataDigest;
@@ -274,7 +285,7 @@ export class DataService {
 
       // If we're already in an error state, no need to show toaster again, but when we first arrive, do:
       if (! this.syncProblem) {
-        this.toaster.error(
+        this.errorToast = this.toaster.error(
           'Changes you just made to some ' + stuffChanged + ' may not have been saved, and future changes may not be saved. We\'ll keep trying though, and let you know when we\'re back online.<br><br>Click for more info.',
           'Error syncing ' + stuffChanged + ' to the cloud',
           {
@@ -323,9 +334,9 @@ export class DataService {
         // We've gone from a normal state to an error state
         this.syncProblem = true;
 
+        // Error status fires its own toaster, but for offline let's do it here
         if (newStatus === 'offline') {
-          // Error status fires its own toaster
-          this.toaster.error(
+          this.errorToast = this.toaster.error(
             '<p>Your computer seems to be no longer connected to the internet. Changes to your notes will not be saved until you are reconnected.</p>',
             'Disconnected from Headsoak',
             {
@@ -341,12 +352,11 @@ export class DataService {
       if (this.syncProblem) {
         // We've gone from a problem state to a good state
         this.syncProblem = false;
+        this.errorToast = null;
         this.toaster.success(
           '<p>Your notes have synced and everything looks good.</p>',
           'Back online!',
           {
-            timeOut: 0,
-            extendedTimeOut: 0,
             closeButton: true,
           }
         );
