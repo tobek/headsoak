@@ -149,7 +149,7 @@ function classifier(note) {
         .join('')
         .replace(punctuationFixRegExp, '$1'); // @HACK: nlcstToString seems to return these PunctuationNodes with numbers on either side, e.g. "feature2-2bloat";
 
-      if (childTagName.length < 3) {
+      if (childTagName.length < 3 || childTagName.split(' ').length > 3) {
         return;
       }
 
