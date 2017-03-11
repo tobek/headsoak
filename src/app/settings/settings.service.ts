@@ -436,6 +436,19 @@ export class SettingsService {
     },
 
     {
+      id: 'sShowShortcuts',
+      name: 'Show shortcuts',
+      default: '?',
+      fn: () => {
+        this.modalService.shortcuts();
+      },
+      global: false,
+      ngZone: false, // @TODO/now not sure if this is needed
+      overkill: true, // @TODO/shortcuts See note on sSearchAlt
+      section: 'shortcuts',
+    },
+
+    {
       id: 'sUnfocus',
       name: 'Unfocus',
       description: 'Unfocuses from any input/textarea, closes any open modal.',

@@ -126,6 +126,9 @@ export class ModalService {
     this.modal.generic(config);
   }
 
+  shortcuts(): void {
+    this.setActiveModal$.next('shortcuts');
+  }
   feedback(): void {
     this.setActiveModal$.next('feedback');
   }
