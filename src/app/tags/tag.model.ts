@@ -7,7 +7,7 @@ import {PublicTag} from './public-tag.model';
 import {Note} from '../notes/';
 
 import * as _ from 'lodash';
-import {each as asyncEach} from 'async';
+import {each as asyncEach} from 'async'; // @TODO/optimization @TODO/build Looks like build isn't pruning things and is loading the entire async library.
 import * as safeStringify from 'json-stringify-safe';
 
 
@@ -205,6 +205,10 @@ export class Tag {
       this._data = newData;
       this.classifier && this.runClassifierOnAllNotes();
       this.updated();
+    }
+
+    if (! this._data) {
+      this._data = {};
     }
   }
 
