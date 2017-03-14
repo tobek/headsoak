@@ -58,7 +58,7 @@ module.exports = function (options) {
     entry: {
 
       'polyfills': './src/polyfills.browser.ts',
-      'smartness': './src/smartness.browser.ts', // @TODO/build/smartness This will probably have to be done  differently
+      // 'smartness': './src/smartness.browser.ts', // @REMOVED/smartness (this would prob have to be done differently anyway)
       'main':      AOT ? './src/main.browser.aot.ts' :
                   './src/main.browser.ts'
 
@@ -266,12 +266,12 @@ module.exports = function (options) {
         name: 'polyfills',
         chunks: ['polyfills']
       }),
-      new CommonsChunkPlugin({
-        // @TODO/build/smartness This probably will have to be done differently
-        name: 'smartness',
-        chunks: ['smartness'],
-        // minChunks: module => /node_modules/.test(module.resource)
-      }),
+      // @REMOVED/smartness (this would prob have to be done differently anyway - also, `'smartness'` was in the array in the last `CommonChunksPlugin` instance below, just before `'vendor'`)
+      // new CommonsChunkPlugin({
+      //   name: 'smartness',
+      //   chunks: ['smartness'],
+      //   // minChunks: module => /node_modules/.test(module.resource)
+      // }),
       // This enables tree shaking of the vendor modules
       new CommonsChunkPlugin({
         name: 'vendor',
@@ -280,8 +280,7 @@ module.exports = function (options) {
       }),
       // Specify the correct order the scripts will be injected in
       new CommonsChunkPlugin({
-        // @TODO/build/smartness This probably will have to be done differently
-        name: ['polyfills', 'smartness', 'vendor'].reverse()
+        name: ['polyfills', 'vendor'].reverse()
       }),
 
       /**

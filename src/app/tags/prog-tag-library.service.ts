@@ -21,13 +21,10 @@ export class ProgTagLibraryService {
       description: 'Automatically tags notes based on their content. Only works on English text.',
       prog: true,
       // progFunc: function(api: ProgTagApiService, _): ProgTagDef {
-      progFuncString: `// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (e.g. npm's \`retext-keywords\` module) have been bundled with the app.
-var retext = api.lib.retext;
-var retextKeywords = api.lib.retextKeywords;
+      progFuncString: `// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (e.g. npm's \`nlcstToString\` module) have been bundled with the app.
 var nlcstToString = api.lib.nlcstToString;
+var keywords = api.lib.keywords;
 var _this = this;
-
-var processor = retext().use(retextKeywords);
 
 // retext-keywords does use a stopword list, but for our purposes we need a stricter list:
 var defaultBlacklist = {
@@ -128,7 +125,7 @@ var punctuationFixRegExp = new RegExp('\\\\d([-’\\'])\\\\d', 'g');
 // And, finally, the actual classifier we run on each note
 function classifier(note) {
   var resolve, reject;
-  var result = new Promise(function(res, rej) {
+  var p = new Promise(function(res, rej) {
     resolve = res;
     reject = rej;
   });
@@ -139,7 +136,7 @@ function classifier(note) {
   // @TODO/prog Filter out URLs - pieces of them get picked up sometimes
   var text = expandContractions(note.body.toLowerCase());
 
-  processor.process(text, function(err, doc) {
+  keywords(text).then(function(doc) {
     doc.data.keyphrases.forEach(function (phrase, i) {
       if (childTags.length >= 5) {
         return;
@@ -178,7 +175,7 @@ function classifier(note) {
     }
   });
 
-  return result;
+  return p;
 };
 
 return {
@@ -209,24 +206,34 @@ return {
 var sentiment = api.lib.sentiment;
 
 return function(note) {
-  var result = sentiment(note.body);
-  var score = result && result.comparative ? result.comparative : 0;
+  var resolve, reject;
+  var p = new Promise(function(res, rej) {
+    resolve = res;
+    reject = rej;
+  });
 
-  var value;
-  if (score >= 0.1) {
-    value = 'positive';
-  }
-  else if (score <= -0.1) {
-    value = 'negative';
-  }
-  else {
-    return false;
-  }
+  sentiment(note.body).then(function(result) {
+    var score = result && result.comparative ? result.comparative : 0;
 
-  return {
-    childTag: value,
-    score: Math.round(score * 1000) / 10 + '%',
-  }
+    var value;
+    if (score >= 0.1) {
+      value = 'positive';
+    }
+    else if (score <= -0.1) {
+      value = 'negative';
+    }
+    else {
+      resolve(false);
+      return;
+    }
+
+    resolve({
+      childTag: value,
+      score: Math.round(score * 1000) / 10 + '%',
+    });
+  });
+
+  return p;
 };`
 // };}
     },
@@ -381,23 +388,16 @@ return {
       prog: true,
       // progFunc: function(api: ProgTagApiService, _): ProgTagDef {
       progFuncString: `// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`retext-profanities\` module) have been bundled with the app.
-var retext = api.lib.retext;
-var retextProfanities = api.lib.retextProfanities;
-
-var processor = retext().use(retextProfanities);
+var profanities = api.lib.profanities;
 
 return function(note) {
   var resolve, reject;
-  var result = new Promise(function(res, rej) {
+  var p = new Promise(function(res, rej) {
     resolve = res;
     reject = rej;
   });
 
-  processor.process(note.body, function(err, doc) {
-    if (err) {
-      throw err;
-    }
-
+  profanities(note.body).then(function(doc) {
     if (doc && _.size(doc.messages)) {
       var actualProfanities = _.filter(doc.messages, { profanitySeverity: 2 });
       if (_.size(actualProfanities)) {
@@ -412,8 +412,9 @@ return function(note) {
     resolve(false);
   });
 
-  return result;
-}`// }
+  return p;
+};`
+// };}
     },
     {
       id: 'lib--untagged',

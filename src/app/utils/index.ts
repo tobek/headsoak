@@ -14,6 +14,11 @@ export * from './jquery.autocomplete.mod';
 export * from './logger';
 export * from './sample-data';
 
+
+/** Used for generating random IDs. */
+const crypto: Crypto = window.crypto || window['msCrytpo'];
+const cryptoNums = new Uint32Array(2);
+
 export const utils = {
   objFromArray: function(arr: any[]) {
     if (typeof arr === 'object') {
@@ -79,4 +84,20 @@ export const utils = {
 
     return el.dispatchEvent(event);
   },
+
+  /** Not as random as a UUID (which has 122 bits of entropy) this has 64 bits of entropy. This is sufficient for our case (not to be used for uniqueness across all users, but just unique for this user). As worked out via birthday problem, there would be a 1-in-1000 chance of a single collision after generating about 200 million IDs, or a 1-in-a-million chance after generating ~6 million IDs. */
+  randomId(): string {
+    crypto.getRandomValues(cryptoNums);
+
+    return cryptoNums[0].toString(36) + cryptoNums[1].toString(36);
+
+    // @REMOVED Old version which was good cause it incorporated timestamp and base-36 for string shortness, but bad cause... it could generate collisions.
+    // const microseconds = (performance.timing.navigationStart + performance.now()) * 1000;
+    // return Math.floor((microseconds + Math.random()) * 1000).toString(36);
+  },
+
+  /** Not at all as random as `randomId`, as it's based on the number of microseconds since the app loaded, plus `Math.random`. Robust enough for session-specific stuff (you'd have to get the duplicate `Math.random` results in the same microsecond for a collision). The purpose of this is that it's faster than `randomId`, which can take about 1 millisecond on a phone. If you have 10k notes and need to create a random ID for each (in order to pass to web worker), then a 1 millisecond function call adds up. */
+  sessionRandomId(): number {
+    return performance.now() * 1000 + Math.random();
+  }
 };

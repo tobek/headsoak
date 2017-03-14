@@ -1,6 +1,6 @@
 // Stuff needed for smart tags
 
-/** @TODO/build/smartness @TODO/refactor
+/** @REMOVED/smartness: We no longer need this since everything is in separate worker file genius.ts. Leave this comment here in case we need something like this in the future. All stuff related to this is commented out through the app with @REMOVED/smartness.
  *
  * We are currently packaging this as a separate bundle, but we want to a) load this asynchronously when necessary, and b) ensure that common code between this and the `vendor` bundle are put in `vendro` (this may already be the case, haven't checked.)
  *
@@ -16,11 +16,10 @@
  * - http://stackoverflow.com/questions/35184240/webpack-error-in-commonschunkplugin-while-running-in-normal-mode-its-not-allow
  *
  * Maybe we can do it outside of webpack, just need to exclude the bundle from index.html and obtain the name of the bundle with hash in it, and load it manually (and either "ingest" it into webpack or have it be totally standalone).
- *
- * Search for `@TODO/build/smartness` throughout codebase for more notes
  */
 
-import 'nlcst-to-string';
-import 'retext';
-import 'retext-keywords';
-import 'retext-profanities';
+// import 'nlcst-to-string';
+// import 'retext';
+// import 'retext-keywords';
+// import 'retext-profanities';
+// import 'sentiment';

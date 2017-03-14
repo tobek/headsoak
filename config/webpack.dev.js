@@ -89,18 +89,18 @@ module.exports = function (options) {
     module: {
 
       rules: [
-       {
-         test: /\.ts$/,
-         use: [
-           {
-             loader: 'tslint-loader',
-             options: {
-               configFile: 'tslint.json'
-             }
-           }
-         ],
-         exclude: [/\.(spec|e2e)\.ts$/]
-       },
+        {
+          test: /\.ts$/,
+          use: [
+            {
+              loader: 'tslint-loader',
+              options: {
+                configFile: 'tslint.json'
+              }
+            }
+          ],
+          exclude: [/\.(spec|e2e)\.ts$/]
+        },
 
         /*
          * css loader support for *.css files (styles directory only)
@@ -223,18 +223,18 @@ module.exports = function (options) {
             'lunr',
             'mousetrap',
             'mousetrap-global-bind',
-            'sentiment',
+            'nlcst-to-string',
             'toastr',
 
             // This didn't work cause this plugin needs npm packages (for name and version to know how to cache them). See my comments here <https://github.com/shlomiassaf/webpack-dll-bundles-plugin/issues/8>. For now this library will just have to not be in the vendor bundle
             // process.cwd() + '/src/app/vendor/darsain-tooltips.min.js',
           ],
-          smartness: [
-            'nlcst-to-string',
-            'retext',
-            'retext-keywords',
-            'retext-profanities',
-          ],
+          // @REMOVED/smartness
+          // smartness: [
+          //   'retext',
+          //   'retext-keywords',
+          //   'retext-profanities',
+          // ],
         },
         dllDir: helpers.root('dll'),
         webpackConfig: webpackMergeDll(commonConfig({env: ENV}), {
@@ -255,8 +255,8 @@ module.exports = function (options) {
         { filepath: helpers.root(`dll/${DllBundlesPlugin.resolveFile('polyfills')}`) },
         { filepath: helpers.root(`dll/${DllBundlesPlugin.resolveFile('vendor')}`) },
 
-        // @TODO/build/smartness Eventually this shouldn't be here and should be loaded asynchronously
-        { filepath: helpers.root(`dll/${DllBundlesPlugin.resolveFile('smartness')}`) },
+        // @REMOVED/smartness (This shouldn't have been here and should have been loaded asynchronously)
+        // { filepath: helpers.root(`dll/${DllBundlesPlugin.resolveFile('smartness')}`) },
       ]),
 
       /**

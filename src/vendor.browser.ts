@@ -3,6 +3,10 @@
  *
  * To pack these in `vendor` bundle they have to go in `webpack.dev.js` too. See `src/app/vendor/README.md`. Dependencies specifically imported elsewhere can be omitted here (but must be in `webpack.dev.js`).
  *
+ * @NOTE: Vendor packages only used for smart tags (and happily not requiring many shared dependencies here, becuase I'm not sure how to make that work) are in `genius.ts` worker.
+ *
+ * @REMOVED/smartness More vendor packages required for smart tags used to be in `smartness.browser.ts`
+ *
  */
 
 // Ace editor
@@ -22,8 +26,5 @@ import 'lodash';
 import 'lunr';
 import 'mousetrap';
 import 'mousetrap-global-bind';
-import 'sentiment';
 import 'toastr';
 import 'app/vendor/darsain-tooltips.min';
-
-// @TODO/build/smartness More vendor packages required for smart tags are in `smartness.browser.ts`
