@@ -43,11 +43,11 @@ export class Logger {
 
       message += _.map(
         _.filter(args, (arg) => {
-          if (arg instanceof Error) {
-            err = arg;
+          if (! arg) {
             return false;
           }
-          else if (! arg) {
+          else if (! err && arg instanceof Error) {
+            err = arg;
             return false;
           }
           return true;
@@ -57,7 +57,7 @@ export class Logger {
             // notes, tags, and settings have a simpler representation so we can send up less data
             nonErrArg = nonErrArg.forDataStore();
           }
-          return (safeStringify(nonErrArg) || '').replace(/^"/, '').replace(/"$/, '');
+          return (safeStringify(nonErrArg) || '').replace(/^"|"$/g, '');
         }
       ).join(', ');
 
