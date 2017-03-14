@@ -606,7 +606,7 @@ export class Tag {
     const progTagCreator = new Function('api', '_', this.progFuncString); // (this line excites me)
 
     // Smart tag should be set up to return the classifier function or prog tag def object, so we call the eval'd function immediately and pass in API and lodash:
-    let progTagDef: ProgTagDef = progTagCreator.call(this.publicTag, this.dataService.tags.progTagApi, _);
+    let progTagDef: ProgTagDef = progTagCreator.call(this.publicTag, this.dataService.tags.progTagApi.publicApi, _); // @TODO/hp @TODO/soon In homepage branch we also use progTagApi... make sure we're sending in publicApi.
 
     if (typeof progTagDef === 'function') {
       progTagDef = {
