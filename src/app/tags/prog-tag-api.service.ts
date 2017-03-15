@@ -93,9 +93,10 @@ export class ProgTagApiService {
 
     this._worker.onerror = (e) => {
       e.preventDefault(); // This prevents normal logging of thrown error from within the worker (but execution is still stopped at the throw as normal)
-      this._logger.error('GeniusWorker threw uncaught error', {
-        message: e.message, filename: e.filename, lineno: e.lineno
-      });
+      this._logger.error(
+        'GeniusWorker threw uncaught error',
+        e.message ? { message: e.message, filename: e.filename, lineno: e.lineno } : e
+      );
     };
 
     this._requestQueue.forEach(this.postWorkerRequest.bind(this));
