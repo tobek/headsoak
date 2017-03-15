@@ -551,6 +551,8 @@ export class DataService {
 
     this.isInitialized = true;
     this.initialized$.next(true);
+
+    this._logger.logTime('Data initialized'); // @TODO/analytics (but need to subtract login time)
   }
 
   /** In user data we keep track of count of features seen, and then compare that to value hard-coded here in JS. if there are new features seen, display them to the user and update their count. */

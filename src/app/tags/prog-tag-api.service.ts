@@ -46,7 +46,7 @@ export class ProgTagApiService {
   /** Holds Promise functions for requests that we've sent to worker that we haven't received results for then. */
   private _requests: { [id: number]: { resolve: Function, reject: Function } } = {};
 
-  /** Holds Promise functions for requests that we can't send to worker yet since it's not initialized. */
+  /** Holds requests that we can't send to worker yet since it's not initialized. */
   private _requestQueue: GeniusRequest[] = [];
 
   private _dataService: DataService;
@@ -59,7 +59,7 @@ export class ProgTagApiService {
   ) {
     this.formatDate = datePipe.transform.bind(datePipe);
 
-    this.publicApi = this.getPublicApi();
+    this.initializePublicApi();
   }
 
   _init(dataService: DataService): void {
@@ -72,7 +72,7 @@ export class ProgTagApiService {
 
     this.initializeGeniusWorker();
     // this.lib.keywords('Star Wars is a sci fi opera').then((result) => {
-    //   this._logger.log('Worker returned keywords:', result);
+    //   this._logger.log('GeniusWorker returned keywords:', result);
     // });
   }
 
@@ -81,7 +81,7 @@ export class ProgTagApiService {
       throw new Error('Web worker not available!');
     }
 
-    this._logger.log('Starting genius worker...');
+    this._logger.log('Starting GeniusWorker...');
 
     // Webpack automagically picks this up and creates a bundle based on genius.ts, naming it with a hash for caching (e.g. `2e9912589ce947ab1cf5.worker.js`), and then this script loads that script using the normal `window.Worker` class.
     const GeniusWorker = require('worker-loader?name=genius.[hash].js!../../worker/genius.ts');
@@ -93,7 +93,7 @@ export class ProgTagApiService {
 
     this._worker.onerror = (e) => {
       e.preventDefault(); // This prevents normal logging of thrown error from within the worker (but execution is still stopped at the throw as normal)
-      this._logger.error('Genius worker threw uncaught error', {
+      this._logger.error('GeniusWorker threw uncaught error', {
         message: e.message, filename: e.filename, lineno: e.lineno
       });
     };
@@ -120,10 +120,15 @@ export class ProgTagApiService {
   }
 
   private onWorkerResponse(res: GeniusResponse) {
-    // this._logger.log('Received response from worker:', res);
+    // this._logger.log('Received response from GeniusWorker:', res);
+
+    if (! res.id && res.result === 'init') {
+      this._logger.logTime('GeniusWorker initialized');
+      return;
+    }
 
     if (res.err) {
-      this._logger.warn('Genius worker returned error:', res.err);
+      this._logger.warn('GeniusWorker returned error:', res.err);
       this._requests[res.id].reject(res.err);
     }
     else {
@@ -198,9 +203,9 @@ export class ProgTagApiService {
     });
   }
 
-  /** What users writing smart tags actually have access to. @TODO/prog They will still be able to access dataService via `tags` and `notes` but those should be hidden behind public versions in the future. */
-  private getPublicApi(): ProgTagApiService {
-    return {
+  /** What users writing smart tags actually have access to. @TODO/prog They will still be able to access dataService via `tags` and `notes` but those should be hidden behind public versions of tags/notes in the future. */
+  private initializePublicApi() {
+    this.publicApi = {
       tags: this.tags,
       notes: this.notes,
       user: this.user,

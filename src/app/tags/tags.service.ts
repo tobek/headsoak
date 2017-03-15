@@ -65,10 +65,10 @@ export class TagsService {
     // this.progTagApi._init(this.dataService); // This requires user data to have been initailized, so is now initialized by DataService
     // this.progTagLibraryService.init(this); // This requires notes to be set up, so is now initialized by DataService
 
+    this._logger.log('Got', _.size(this.tags), 'tags');
+
     this.initialized$.next(null);
     this.isInitialized = true;
-
-    this._logger.log('Got', _.size(this.tags), 'tags');
   }
 
   setUpInternalTags() {

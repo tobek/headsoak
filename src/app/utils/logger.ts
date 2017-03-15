@@ -32,6 +32,10 @@ export class Logger {
     console.timeEnd(this._prefix + ' ' + name);
   }
 
+  logTime(...args) {
+    this._log('debug', ...args.concat(['- at', Math.floor(performance.now()) / 1000, 'seconds']));
+  }
+
   private _log(level, ...args) {
     console[level](this._prefix, ...args);
 

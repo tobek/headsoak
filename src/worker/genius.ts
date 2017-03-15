@@ -80,3 +80,5 @@ function handleRequest(req: GeniusRequest, cb: (GeniusResponse) => void) {
   }
 }
 
+postResponse({ id: null, result: 'init' });
+

@@ -126,6 +126,8 @@ export class AppComponent {
       }, 2000);
 
       setTimeout(() => {
+        // @TODO/optimization The time between `appInitialization` being called (and this 0-time timeout being set) and the timeout actually being called is as much as 12 seconds on local - seems like a gazillion Angular detect changes run before the next tick. It might just be in debug mode? Anyway, something to investigate, and it's not really until *now* (or, end of this function) that the app is ready.
+
         if (this.accountService.loggedInWithTemporaryPassword) {
           this.modalService.alert(
             'You have logged in with a temporary password that is only valid for 24 hours. Please change your password now.',
@@ -146,6 +148,8 @@ export class AppComponent {
         for (let noTab of (noTabPlease as any as HTMLElement[])) {
           noTab.setAttribute('tabindex', '-1');
         }
+
+        this._logger.logTime('App ready'); // @TODO/analytics (but need to subtract login time)
       }, 0);
     }
     else {

@@ -191,6 +191,15 @@ export class AccountService {
 
     this.loginState$.next('logged-out');
 
+    if (! this.wasLoggedIn) {
+      this.modalService.modalChange$.filter((m) => m === 'login').first().subscribe(() => {
+        // Give a chance for any Angular change detection to run before we declare ourselves ready
+        setTimeout(() => {
+          this._logger.logTime('Logged-out homepage ready'); // @TODO/analytics
+        }, 0);
+      });
+    }
+
     this.modalService.login();
   }
 

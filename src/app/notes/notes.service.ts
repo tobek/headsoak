@@ -58,9 +58,9 @@ export class NotesService {
       .each(this.createNote.bind(this));
     this._logger.timeEnd('Initializing notes and index');
 
-    this.initialized$.next(null);
-
     this._logger.log('Got', _.size(this.notes), 'notes');
+
+    this.initialized$.next(null);
   }
 
   createNote(noteObj: any = {}, addToDataStore = false): Note {

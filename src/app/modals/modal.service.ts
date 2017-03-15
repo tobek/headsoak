@@ -22,10 +22,10 @@ export class ModalService {
 
   /** Emits whenever any modal changes state (whether initiated by us or by the modal itself). Currently no need to distinguish between the two modals. */
   modalChange$ = new Subject<ModalType>();
-  modalChangeSub: Subscription;
 
   closed$ = new Subject<void>();
 
+  private modalChangeSub: Subscription;
   private _logger: Logger = new Logger(this.constructor.name);
 
   constructor(
