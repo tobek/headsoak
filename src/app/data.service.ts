@@ -16,6 +16,7 @@ import {SettingsService} from './settings/settings.service';
 import {Setting} from './settings/setting.model';
 
 import * as _ from 'lodash';
+import {parallel as asyncParallel} from 'async'; // @TODO/optimization @TODO/build Looks like build isn't pruning things and is loading the entire async library.
 
 declare type DataItem = Note | Tag | Setting;
 
@@ -337,7 +338,7 @@ export class DataService {
         // Error status fires its own toaster, but for offline let's do it here
         if (newStatus === 'offline') {
           this.errorToast = this.toaster.error(
-            '<p>Your computer seems to be no longer connected to the internet. Changes to your notes will not be saved until you are reconnected.</p>',
+            '<p>Connection to the internet has been lost. Changes to your notes will not be saved until you are reconnected.</p>', // @TODO/copy
             'Disconnected from Headsoak',
             {
               timeOut: 0,
@@ -497,8 +498,17 @@ export class DataService {
   }
 
   initFromData(data) {
-    // In theory we should probably not fire this.initialized$ until all the different services are done, but right now the notes service is the only one that takes any real time (cause it also has to calculate lunr index) so we can just wait for that. @TODO/refactor We should really wait for everything...
-    this.notes.initialized$.first().subscribe(this.everythingInitialized.bind(this));
+    asyncParallel([
+      (cb) => {
+        this.notes.initialized$.first().subscribe(() => cb());
+      },
+      (cb) => {
+        this.tags.initialized$.first().subscribe(() => cb());
+      },
+      (cb) => {
+        this.settings.initialized$.first().subscribe(() => cb());
+      },
+    ], this.everythingInitialized.bind(this));
 
     if (data.user.email !== this.user.email) {
       // User has changed their email and this change isn't reflected in data store yet.
@@ -535,10 +545,6 @@ export class DataService {
   }
 
   everythingInitialized() {
-    if (! this.tags.isInitialized) {
-      this._logger.warn('Notes finished initializing before tags! This could result in unexpected behavior');
-    }
-
     // This relies on both notes and tags being present!
     this.tags.progTagApi._init(this);
     this.tags.progTagLibraryService.init(this.tags);
