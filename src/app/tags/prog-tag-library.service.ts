@@ -521,6 +521,10 @@ return function(note) {
           }, 7500);
         });
       }
+      else {
+        // Normally called in `maybeUpdateLocalTag` so on mobile just call this straight up
+        localTag.setUpAndValidateProgTag(true);
+      }
 
       return localTag;
     }
