@@ -2,7 +2,6 @@ import * as _ from 'lodash';
 import * as safeStringify from 'json-stringify-safe';
 
 // @TODO/rewrite Hide all but warnings and errors unless in dev mode?
-// @TODO/analytics Fire analytics events on warnings and errors. Maybe also pass in the class instance to the constructor so that we can log info about the instance?
 // @TODO/errors On staging we should maybe pop up errors in toasters or modals?
 export class Logger {
   private _prefix: string;
@@ -33,7 +32,21 @@ export class Logger {
   }
 
   logTime(...args) {
-    this._log('debug', ...args.concat(['- at', Math.floor(performance.now()) / 1000, 'seconds']));
+    const time = Math.floor(performance.now() - (window['hsLoginTime'] || 0)) / 1000;
+
+    this._log('debug', ...args.concat([
+      '- at',
+      time,
+      'seconds' + (window['hsLoginTime'] ? ' since login' : '')
+    ]));
+
+    // @TODO/analytics Log this
+  }
+
+  /** Set time since page load at which the user logged in. This is *only* set if the user logs in manually. If the user is cookied and logged in on page load, this remains 0. */
+  setLoginTime() {
+    // @HACK TERRIBLE HACK Since everyone has their own Logger instance, we need to set this somewhere global or else have a global Logger service that everthing attaches itself to. Anyway it's set up the way it is right now and this is a quick and shitty way to make it work. @TODO/refactor
+    window['hsLoginTime'] = performance.now();
   }
 
   private _log(level, ...args) {

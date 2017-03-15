@@ -149,7 +149,7 @@ export class AppComponent {
           noTab.setAttribute('tabindex', '-1');
         }
 
-        this._logger.logTime('App ready'); // @TODO/analytics (but need to subtract login time)
+        this._logger.logTime('App ready');
       }, 0);
     }
     else {

@@ -137,10 +137,18 @@ export class AccountService {
 
   /** Firebase is in a logged-in state, whether page loaded that way or user has just logged in. */
   handleLoggedIn(authData) {
-    if (this.modalService.activeModal === 'login') {
-      this.modalService.loading();
+    // @TODO/style @TODO/soon This is a good place to put a breakpoint to see flash of unstyled content
+
+    if (this.modalService.activeModal !== 'login') {
+      // They were logged in on page load so we never had to show login modal, so let's just leave the non-modal, pre-initialization loader visible until everything is initialized
+      this._logger.logTime('Logged in on load');
     }
-    // Otherwise (e.g. they were logged in on page load so we never had to show login modal) let's just leave the non-modal, pre-initialization loader visible until everything is initialized.
+    else {
+      this.modalService.loading();
+
+      this._logger.logTime('Logged in post load');
+      this._logger.setLoginTime();
+    }
 
     if (authData.password && authData.password.isTemporaryPassword) {
       this.loggedInWithTemporaryPassword = true;
@@ -195,7 +203,7 @@ export class AccountService {
       this.modalService.modalChange$.filter((m) => m === 'login').first().subscribe(() => {
         // Give a chance for any Angular change detection to run before we declare ourselves ready
         setTimeout(() => {
-          this._logger.logTime('Logged-out homepage ready'); // @TODO/analytics
+          this._logger.logTime('Logged-out homepage ready');
         }, 0);
       });
     }

@@ -511,6 +511,7 @@ return function(note) {
 
       // While we're at it we may need to update the tag - but wait til we're initialized so that a) any toasters will be visible instead of blocked by full page loader, and b) re-running prog tag won't delay loading
       // @TODO/optimization @TODO/soon @TODO/prog Auto tag is too heavy to run on mobile, maybe others too. This could be more sophisticated though, maybe something in tagData to indicate that it's too computationally heavy, or we should check number of user's notes... etc.
+      // @TODO/polish @TODO/prog Looks like this doesn't get run if you log out and log in again - I guess this service remains initialized. Could actually mess up stuff with local tags. When DataService uninitializes it should probably destroy and recreate this service.
       if (! this.sizeMonitor.isMobile) {
         this.tagsService.dataService.initialized$.filter((initialized) => !! initialized).first().subscribe(() => {
           // Seems like we  need to wait even longer... otherwise mysteriously can get loader forever while this runs
