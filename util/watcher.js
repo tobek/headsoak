@@ -1,11 +1,9 @@
 /**
- * watches FB ref and emails me if a new user signs up
+ * Watches FB ref and emails me if a new user signs up or feedback generated.
  *
- * example server invocation:
+ * See `config/server/upstart/nutmeg-watcher.conf` for Upstart job for this.
  *
- *     nohup node /home/ubuntu/nutmeg/watcher.js >> /var/log/nutmeg/watcher.log &
- *
- * @TODO There seems to be a slow memory leak here. Horrible hacky fix: schedule a cron to kill this process weekly, using watcher.sh to respawn.
+ * @TODO There seems to be a slow memory leak here. Horrible hacky fix: schedule a cron to kill this process weekly, using Upstart to respawn.
  */
 
 const fs = require('fs'); 
