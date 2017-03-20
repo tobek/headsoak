@@ -106,6 +106,7 @@
     "moment": "^2.17.1",
     "mousetrap": "^1.6.0",
     "mousetrap-global-bind": "^1.0.0",
+    "mysql": "^2.13.0",
     "ng2-select": "^1.1.2",
     "reflect-metadata": "^0.1.9",
     "rxjs": "5.0.2",

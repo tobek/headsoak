@@ -94,6 +94,8 @@ Set up DB:
     GRANT ALL PRIVILEGES ON headsoak.* TO "soaker"@"localhost" IDENTIFIED BY "[password]"; # wifi, PascalCase, !
     FLUSH PRIVILEGES;
 
+    USE headsoak;
+
     CREATE TABLE `user_app_session` (
       `id` int unsigned NOT NULL AUTO_INCREMENT,
       `timestamp` timestamp NOT NULL,
