@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Outputs complete JSON content of Firebase to stdout. All other output is to stderr
  *

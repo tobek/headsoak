@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Watches FB ref and emails me if a new user signs up or feedback generated.
  *

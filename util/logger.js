@@ -1,3 +1,5 @@
+'use strict';
+
 var moment = require('moment');
 
 var FORMAT = 'YYYY-MM-DD HH:mm:ss';

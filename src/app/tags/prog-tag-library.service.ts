@@ -244,7 +244,7 @@ return function(note) {
       description: 'Employ spaced repetition learning to better remember notes. Whenever you add this tag to one of your notes, Headsoak will email you that note in a day, a week, a month, 4 months, and 18 months after tagging.',
       prog: true,
       // progFunc: function(api: ProgTagApiService, _): ProgTagDef { const _this: Tag = this;
-      // @TODO/ece @TODO/prog Too many exclamation marks in the email copy - also general feedback on copy
+      // @TODO/ece @TODO/prog There should be other links back to Headsoak here
       // @TODO/prog The emails should have links for "actually, send me this again [sooner]" and "actually don't send me this until [later]" (and should this comment go in the prog tag code?)
       progFuncString: `var _this = this;
 

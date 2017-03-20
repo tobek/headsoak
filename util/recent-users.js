@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Outputs list of recently logged in users to stdout. All other output is to stderr.
  */
