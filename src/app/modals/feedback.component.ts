@@ -50,12 +50,14 @@ export class FeedbackComponent {
       return;
     }
 
-    this._logger.log('Submitting feedback:', this.feedbackText);
+    const feedback = this.feedbackText.substring(0, 10000); // limit to 10k chars to prevent abuse
+
+    this._logger.log('Submitting feedback:', feedback);
 
     this.isLoading = true;
 
     this.dataService.ref.root().child('feedback').push({
-      feedback: this.feedbackText,
+      feedback: feedback,
       timestamp: new Date().toString(),
       uid: this.dataService.user.uid,
       name: this.dataService.user.displayName,
