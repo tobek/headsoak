@@ -94,9 +94,21 @@ Set up DB:
     GRANT ALL PRIVILEGES ON headsoak.* TO "soaker"@"localhost" IDENTIFIED BY "[password]"; # wifi, PascalCase, !
     FLUSH PRIVILEGES;
 
+    CREATE TABLE `user_app_session` (
+      `id` int unsigned NOT NULL AUTO_INCREMENT,
+      `timestamp` timestamp NOT NULL,
+      `ip_address` varchar(45) DEFAULT NULL,
+      `user_agent` varchar(256) DEFAULT NULL COMMENT 'Truncate if necessary',
+      `language` varchar(64) DEFAULT NULL,
+      `timezone` varchar(64) DEFAULT NULL COMMENT 'Olsen database, e.g. America/New_York',
+      `viewport_x` int DEFAULT NULL COMMENT 'In pixels',
+      `viewport_y` int DEFAULT NULL COMMENT 'In pixels',
+      PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
     CREATE TABLE `user_app_events` (
       `id` int unsigned NOT NULL AUTO_INCREMENT,
-      `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
+      `timestamp` timestamp NOT NULL,
       `uid` varchar(256) DEFAULT NULL COMMENT 'Null for logged-out users',
       `category` varchar(64) NOT NULL,
       `action` text NOT NULL,
@@ -111,17 +123,5 @@ Set up DB:
         REFERENCES `user_app_session`(`id`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-    CREATE TABLE `user_app_session` (
-      `id` int unsigned NOT NULL AUTO_INCREMENT,
-      `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
-      `ip_address` varchar(45) DEFAULT NULL,
-      `user_agent` varchar(256) DEFAULT NULL COMMENT 'Truncate if necessary',
-      `language` varchar(64) DEFAULT NULL,
-      `timezone` varchar(64) DEFAULT NULL COMMENT 'Olsen database, e.g. America/New_York',
-      `viewport_x` int DEFAULT NULL COMMENT 'In pixels',
-      `viewport_y` int DEFAULT NULL COMMENT 'In pixels',
-      PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
