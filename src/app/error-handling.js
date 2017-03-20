@@ -35,6 +35,7 @@
     }
 
     // console.log('Handling error:', severity, info, label);
+    // @TODO/analytics This should go there as well (prob analytics should have a handler on window, which fires ga and other stuff, and we hit that here)
     ga('send', {
       hitType: 'event',
       eventCategory: 'JS' + severity,

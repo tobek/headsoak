@@ -245,6 +245,7 @@ return function(note) {
       prog: true,
       // progFunc: function(api: ProgTagApiService, _): ProgTagDef { const _this: Tag = this;
       // @TODO/ece @TODO/prog Too many exclamation marks in the email copy - also general feedback on copy
+      // @TODO/prog The emails should have links for "actually, send me this again [sooner]" and "actually don't send me this until [later]" (and should this comment go in the prog tag code?)
       progFuncString: `var _this = this;
 
 var defaultSchedule = [

@@ -2,6 +2,8 @@
 
 More details at <http://airbnb.io/superset/installation.html>.
 
+### Installation
+
 Python3 preferred.
 
     cd /tagalog/nutmeg
@@ -21,6 +23,8 @@ Python3 preferred.
 I moved db from `~/.superset/superset.db` to `/tagalog/nutmeg/superset/superset.db`
 
 Flask App Builder version installed as dependency by pip seems not that up to date, I fixed flask deprecation warnings by grepping for them in `/tagalog/nutmeg/virtualenvs/superset/lib/python3.4/site-packages/flask*` and just replacing import names.
+
+### Nginx
 
 Nginx server blocks (everything is basic except the proxy pass with headers):
 
@@ -70,10 +74,54 @@ Nginx server blocks (everything is basic except the proxy pass with headers):
         error_log    /var/log/nginx/brain.headsoak.com.error.log;
     }
 
+### Config
+
 Can set up file `superset_config.py` in PYTHONPATH. example: <https://github.com/airbnb/superset/blob/master/superset/config.py>. I put it in `/tagalog/nutmeg/superset/` and run `superset` from there.
+
+### Upstart service
 
 Final command:
 
     cd /tagalog/nutmeg/superset; source ../virtualenvs/superset/bin/activate; superset runserver -p 9001
 
 Upstart job to run this: put `config/server/upstart/superset.conf` from this repo into `/etc/init/` then do `sudo initctl reload-configuration` and `sudo start superset`.
+
+### Headsoak DB setup
+
+Set up DB:
+
+    CREATE DATABASE headsoak;
+    GRANT ALL PRIVILEGES ON headsoak.* TO "soaker"@"localhost" IDENTIFIED BY "[password]"; # wifi, PascalCase, !
+    FLUSH PRIVILEGES;
+
+    CREATE TABLE `user_app_events` (
+      `id` int unsigned NOT NULL AUTO_INCREMENT,
+      `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
+      `uid` varchar(256) DEFAULT NULL COMMENT 'Null for logged-out users',
+      `category` varchar(64) NOT NULL,
+      `action` text NOT NULL,
+      `label` text DEFAULT NULL,
+      `value` float DEFAULT NULL,
+      `route` varchar(256) DEFAULT NULL,
+      `time_since` int unsigned NOT NULL COMMENT 'Seconds since page load (if logged out, or user was logged in when page loaded) or since login',
+      `session_id` int unsigned NOT NULL,
+      PRIMARY KEY (`id`),
+      CONSTRAINT `fk_event_session`
+        FOREIGN KEY (`session_id`)
+        REFERENCES `user_app_session`(`id`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+    CREATE TABLE `user_app_session` (
+      `id` int unsigned NOT NULL AUTO_INCREMENT,
+      `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
+      `ip_address` varchar(45) DEFAULT NULL,
+      `user_agent` varchar(256) DEFAULT NULL COMMENT 'Truncate if necessary',
+      `language` varchar(64) DEFAULT NULL,
+      `timezone` varchar(64) DEFAULT NULL COMMENT 'Olsen database, e.g. America/New_York',
+      `viewport_x` int DEFAULT NULL COMMENT 'In pixels',
+      `viewport_y` int DEFAULT NULL COMMENT 'In pixels',
+      PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
