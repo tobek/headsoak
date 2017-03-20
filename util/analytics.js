@@ -54,11 +54,11 @@ server.route([{
       timestamp: new Date(request.payload.timestamp),
       session_id: request.payload.session_id,
       uid: request.payload.uid,
-      route: request.payload.route,
+      route: request.payload.route && request.payload.route.substring(0, 256),
 
-      category: request.payload.category,
-      action: request.payload.action,
-      label: request.payload.label,
+      category: request.payload.category.substring(0, 64),
+      action: request.payload.action.substring(0, 65535),
+      label: request.payload.label && request.payload.label.substring(0, 65535),
       value: request.payload.value,
       time_since: request.payload.time_since,
     };
@@ -95,7 +95,7 @@ server.route([{
   handler: function (request, reply) {
     const sessionData = {
       timestamp: new Date(request.payload.timestamp),
-      user_agent: request.headers['user-agent'],
+      user_agent: request.headers['user-agent'] && request.headers['user-agent'].substring(0, 256),
       ip_address: request.headers['x-forwarded-for'] || request.info.remoteAddress || request.info.address,
       timezone: request.payload.timezone,
       viewport_x: request.payload.viewport_x,
