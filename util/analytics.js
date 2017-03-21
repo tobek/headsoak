@@ -4,6 +4,11 @@
  * API for logging events and sessions into our analytics DB.
  *
  * See `config/server/upstart/nutmeg-analytics.conf` for Upstart job for this.
+ *
+ * Testing locally:
+ *
+ *     curl --data "timestamp=1490047902723&timezone=foo" http://localhost:7001/neurogenesis && echo -e '\n'
+ *     curl --data "category=asdf&action=foo&time_since=1234&session_id=1&timestamp=19387123" http://localhost:7001/axon && echo -e '\n'
  */
 
 const Hapi = require('hapi');
@@ -16,13 +21,33 @@ const ohShit = require('./oh-shit')('analytics receiver');
 
 const config = require('../config.json');
 
-const db = mysql.createConnection(config.analytics_db);
-db.connect(function(err) {
-  if (err) {
-    ohShit('Failed to connect to analytics database', err);
-  }
-  // logger.log('Connected to DB as id ' + db.threadId);
-});
+
+config.analytics_db.connectionLimit = 10;
+const db = mysql.createPool(config.analytics_db);
+
+// So that we can fail explicitly if it's down, rather than waiting until an actual request comes in and failing then, we maintain a single open connection in the pool and monitor it for errors:
+let testConn, oldTestConn;
+function testDbConnection() {
+  db.getConnection(function(err, connection) {
+    if (err) {
+      ohShit('Failed to initiate connection to analytics database: ' + err.code, err);
+    }
+
+    // logger.log('Connected to DB with id ' + connection.threadId);
+
+    oldTestConn = testConn;
+    testConn = connection;
+
+    testConn.on('error', function(err) {
+      ohShit('Analytics database connection error: ' + err.code, err);
+    });
+
+    oldTestConn && oldTestConn.release();
+  });
+}
+const connectionTestInterval = setInterval(testDbConnection, 10000);
+testDbConnection();
+
 
 const server = new Hapi.Server();
 server.connection({ 
@@ -142,10 +167,11 @@ server.start((err) => {
 
 
 function shutdown() {
-  server.stop(() => logger.log('Server shutdown successful'));
+  testConn && testConn.release();
+  clearInterval(connectionTestInterval);
 
-  db.destroy();
-  logger.log('DB connection terminated successfully');
+  db.end(() => logger.log('DB connection pool ended successfully'));
+  server.stop(() => logger.log('Server shutdown successful'));
 }
 process
   .once('SIGINT', shutdown)

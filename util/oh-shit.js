@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+ * Calling the `ohShit` function will log an error, email the admin with that error, and shut down the process. Including this module also attaches the ohShit function to uncaught exceptions in the process that would end the process anyway.
+ *
+ * Call this module with a module name to identify logging and emails that it logs/sends.
+ */
+
 const path = require('path');
 const _ = require('lodash');
 const safeStringify = require('json-stringify-safe');
