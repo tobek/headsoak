@@ -12,7 +12,7 @@ interface AnalyticsEvent {
   category: string;
   action: string;
   timestamp: number;
-  time_since: number;
+  time_since: number; // seconds
   session_id: number;
 
   uid?: string;
@@ -66,7 +66,7 @@ export class AnalyticsService {
     const eventData: AnalyticsEvent = {
       session_id: this.sessionId,
       timestamp: Date.now(),
-      time_since: performance.now() - (window['hsLoginTime'] || 0), // @HACK See comment in `utils/logger`
+      time_since: Math.floor(performance.now() - (window['hsLoginTime'] || 0)) / 1000, // @HACK See comment in `utils/logger`
       uid: this.user.uid,
       route: this.router.url,
 

@@ -119,7 +119,7 @@ Set up DB:
       `label` text DEFAULT NULL,
       `value` float DEFAULT NULL,
       `route` varchar(256) DEFAULT NULL,
-      `time_since` int unsigned NOT NULL COMMENT 'Seconds since page load (if logged out, or user was logged in when page loaded) or since login',
+      `time_since` float unsigned NOT NULL COMMENT 'Seconds since page load (if logged out, or user was logged in when page loaded) or since login',
       `session_id` int unsigned NOT NULL,
       PRIMARY KEY (`id`),
       CONSTRAINT `fk_event_session`
