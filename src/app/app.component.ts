@@ -164,7 +164,7 @@ export class AppComponent {
       document.querySelector('body').classList.add('hide-loader');
       setTimeout(function() {
         // Probably not necesssary, but the .hide-loader class just does opacity and visibility in order for fade to work, and it seems like loader remains animated. Fuck it just get rid of it.
-        outerLoader.remove();
+        outerLoader.parentNode.removeChild(outerLoader);
       }, 5000);
     }
 
