@@ -128,7 +128,7 @@ server.route([{
       timezone: request.payload.timezone,
       viewport_x: request.payload.viewport_x,
       viewport_y: request.payload.viewport_y,
-      referrer: request.payload.referrer.substring(0, 256),
+      referrer: request.payload.referrer && request.payload.referrer.substring(0, 256),
     };
 
     if (request.headers['accept-language']) {
