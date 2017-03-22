@@ -74,12 +74,6 @@ export class AccountService {
     let isInitialAuthState = true;
 
     this.ref.onAuth((authData) => { this.zone.run(() => {
-      if (isInitialAuthState) {
-        isInitialAuthState = false;
-
-        this.analytics.event('Account', 'initialized', authData ? 'logged_in' : 'logged_out');
-      }
-
       if (authData) {
         this._logger.info('Log in succeeded', authData);
 
@@ -88,6 +82,12 @@ export class AccountService {
       else {
         // They're logged out
         this.handleLoggedOut();
+      }
+
+      if (isInitialAuthState) {
+        isInitialAuthState = false;
+
+        this.analytics.event('Account', 'initialized', authData ? 'logged_in' : 'logged_out');
       }
     }); });
   }

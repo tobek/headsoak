@@ -1,15 +1,49 @@
+// @TODO/analytics Should disable on local!
 import {Injectable} from '@angular/core';
+import {Router} from '@angular/router';
 
-// @TODO/rewrite we want UserService here but seems to be creating a circular dependency ever since adding autocomplete, so commenting out for now.
-// import {UserService} from './account/user.service';
+import * as jQuery from 'jquery';
+
+import {Logger} from './utils/';
+
+import {UserService} from './account/user.service';
+
+// @TODO/refactor These two interfaces are basically used by joi in the analytics server, would be great to import from here!
+interface AnalyticsEvent {
+  category: string;
+  action: string;
+  timestamp: number;
+  time_since: number;
+  session_id: number;
+
+  uid?: string;
+  label?: string;
+  value?: number;
+  route?: string;
+}
+interface AnalyticsSession {
+  timestamp: number;
+  timezone: string;
+  viewport_x: number;
+  viewport_y: number;
+}
 
 @Injectable()
 export class AnalyticsService {
+  private sessionId: number;
+
+  private eventQueue: AnalyticsEvent[] = [];
+
   private ga: any;
 
+  private _logger: Logger = new Logger('AnalyticsService');
+
   constructor(
-    // user: UserService
+    private router: Router,
+    private user: UserService
   ) {
+    this.initSession();
+
     if (window['ga']) {
       this.ga = window['ga'];
     }
@@ -22,8 +56,23 @@ export class AnalyticsService {
     }, 10000);
   }
 
-  event(category: string, action: string, label: string = null, value: number = null) {
-    // console.log('Analytics event fired:', arguments);
+  event(category: string, action: string, label: string = undefined, value: number = undefined) {
+    const eventData: AnalyticsEvent = {
+      session_id: this.sessionId,
+      timestamp: Date.now(),
+      time_since: window['hsLoginTime'] = performance.now(), // @HACK See comment in `utils/logger`
+      uid: this.user.uid,
+      route: this.router.url,
+
+      category: category,
+      action: action,
+      label: label,
+      value: value,
+    };
+
+    this._logger.log('Firing analytics event', eventData);
+
+    this.postEvent(eventData);
 
     if (this.ga) {
       this.ga('send', {
@@ -34,5 +83,73 @@ export class AnalyticsService {
         eventValue: value,
       });
     }
+  }
+
+  postEvent(eventData: AnalyticsEvent) {
+    if (! this.sessionId) {
+      this.eventQueue.push(eventData);
+      return;
+    }
+
+    if (! eventData.session_id) {
+      // Event may have been queued before we had a session ID
+      eventData.session_id = this.sessionId;
+    }
+
+    jQuery.ajax({
+      method: 'POST',
+      url: 'https://brain.headsoak.com/axon',
+      data: eventData,
+      error: (jqXhr: JQueryXHR, textStatus: string, errString: string) => {
+        this.analyticsPostError('Error POSTing event:', textStatus, errString);
+      },
+    });
+  }
+
+  initSession() {
+    const sessionData: AnalyticsSession = {
+      timestamp: Date.now(),
+
+      /**
+       * @TODO/analytics `timezone` here just gets UTC offset, which varies with UTC, and doesn't properly identify timezone. Other options:
+       *
+       * - `(new Date().toTimeString()` and try to parse it... but it's implementation dependent. could be e.g. `"20:49:57 GMT-0400 (EDT)"`
+       * - <http://stackoverflow.com/a/2853535/458614>
+       * - <https://bitbucket.org/pellepim/jstimezonedetect/wiki/Home>
+       */
+      timezone: '' + -(new Date().getTimezoneOffset() / 60),
+      viewport_x: document.documentElement.clientWidth,
+      viewport_y: document.documentElement.clientHeight,
+    };
+
+    jQuery.ajax({
+      method: 'POST',
+      url: 'https://brain.headsoak.com/neurogenesis',
+      data: sessionData,
+      success: (data: any) => {
+        if (! data.session_id) {
+          this.analyticsPostError('No sesion_id in response!');
+          return;
+        }
+
+        this.sessionInitialized(data.session_id, sessionData);
+      },
+      error: (jqXhr: JQueryXHR, textStatus: string, errString: string) => {
+        this.analyticsPostError('Error POSTing session:', textStatus, errString);
+      },
+    });
+  }
+
+  sessionInitialized(sessionId: number, sessionData: AnalyticsSession) {
+    this._logger.log('Session initialized with ID', sessionId, sessionData);
+
+    this.sessionId = sessionId;
+
+    this.eventQueue.forEach(this.postEvent.bind(this));
+    this.eventQueue = [];
+  }
+
+  analyticsPostError(logMessage: string, textStatus?: string, errString?: string) {
+    this._logger.warn(logMessage, textStatus, errString);
   }
 }

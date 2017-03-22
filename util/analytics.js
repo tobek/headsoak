@@ -61,6 +61,7 @@ server.route([{
   config: {
     validate: {
       payload: {
+        // @TODO/refactor This interface is basically used by client-side analytics, would be great to import from there!
         category: joi.string().min(1).required(),
         action: joi.string().min(1).required(),
         timestamp: joi.number().required(),
@@ -109,6 +110,7 @@ server.route([{
   config: {
     validate: {
       payload: {
+        // @TODO/refactor This interface is basically used by client-side analytics, would be great to import from there!
         timestamp: joi.number().required(),
 
         timezone: joi.string(),

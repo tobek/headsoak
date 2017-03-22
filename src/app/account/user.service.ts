@@ -38,9 +38,9 @@ export class UserService {
 
   clear() {
     this.loggedIn = false;
-    this.uid = null;
-    this.email = null;
-    this.provider = null;
+    this.uid = undefined;
+    this.email = undefined;
+    this.provider = undefined;
   }
 
   /** Accessible from prog tags. */
