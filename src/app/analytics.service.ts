@@ -1,4 +1,3 @@
-// @TODO/analytics Should disable on local!
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 
@@ -59,6 +58,10 @@ export class AnalyticsService {
   }
 
   event(category: string, action: string, label: string = undefined, value: number = undefined) {
+    if (ENV !== 'production') {
+      return;
+    }
+
     const eventData: AnalyticsEvent = {
       session_id: this.sessionId,
       timestamp: Date.now(),
@@ -109,6 +112,10 @@ export class AnalyticsService {
   }
 
   initSession() {
+    if (ENV !== 'production') {
+      return;
+    }
+
     const sessionData: AnalyticsSession = {
       timestamp: Date.now(),
 
