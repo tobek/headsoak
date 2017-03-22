@@ -30,7 +30,7 @@ export class TagVisualizationComponent {
   /** Maps parent tag ID to minimum number of notes required for a child tag to be shown on graph. */
   childTagCutoffs: { [parentTagId: string]: number } = {};
 
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('TagVisualizationComponent');
 
   constructor(
     // private analyticsService: AnalyticsService,

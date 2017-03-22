@@ -42,7 +42,7 @@ export class TagsService {
   ];
 
   dataService: DataService;
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('TagsService');
 
   constructor(
     public progTagLibraryService: ProgTagLibraryService,

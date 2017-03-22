@@ -25,7 +25,7 @@ interface AnalyticsSession {
   timezone: string;
   viewport_x: number;
   viewport_y: number;
-  referrer: string,
+  referrer: string;
 }
 
 @Injectable()

@@ -39,7 +39,7 @@ export class HomeComponent {
   // private noteUpdatedSub: Subscription;
   // private queryTagsUpdatedSub: Subscription;
 
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('HomeComponent');
 
   constructor(
     public router: Router,

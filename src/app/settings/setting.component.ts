@@ -15,7 +15,7 @@ export class SettingComponent {
   @Output() updated = new EventEmitter<any[]>();
 
   private removeHandler: Function;
-  private _logger = new Logger(this.constructor.name);
+  private _logger = new Logger('SettingComponent');
 
   constructor(
     public dataService: DataService,

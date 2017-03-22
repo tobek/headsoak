@@ -39,7 +39,7 @@ export class NoteBrowserComponent {
 
   private subscriptions: Subscription[] = [];
 
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('NoteBrowserComponent');
 
   constructor(
     private elRef: ElementRef,

@@ -45,7 +45,7 @@ export class NoteQueryComponent {
   private noteInitializationSub: Subscription;
   private noteUpdatedSub: Subscription;
 
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('NoteQueryComponent');
 
   constructor(
     public notesService: NotesService,

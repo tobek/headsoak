@@ -31,7 +31,7 @@ export class AccountService {
 
   ref: Firebase;
 
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('AccountService');
 
   private onlineStateRef: Firebase;
 

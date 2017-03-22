@@ -70,7 +70,7 @@ export class TagBrowserComponent {
   private tagDeletionSub: Subscription;
   // private scrollSub: Subscription;
 
-  private _logger: Logger = new Logger(this.constructor.name);
+  // private _logger: Logger = new Logger('TagBrowserComponent');
 
   constructor(
     @Inject(forwardRef(() => SizeMonitorService)) public sizeMonitor: SizeMonitorService,

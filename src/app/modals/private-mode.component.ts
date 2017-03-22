@@ -25,7 +25,7 @@ export class PrivateModeComponent {
 
   // @HostBinding('class.on') visible = false;
 
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('PrivateModeComponent');
 
   constructor(
     public analyticsService: AnalyticsService,

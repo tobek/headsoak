@@ -37,7 +37,7 @@ export class NotesService {
   ];
 
   dataService: DataService;
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('NotesService');
 
   constructor(
     public tagsService: TagsService

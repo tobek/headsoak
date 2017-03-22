@@ -87,7 +87,7 @@ export class ModalComponent {
 
   private closeTimeout;
 
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('ModalComponent');
 
   constructor(
     private modalService: ModalService,

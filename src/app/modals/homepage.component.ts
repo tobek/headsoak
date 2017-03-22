@@ -210,7 +210,7 @@ export class HomepageComponent {
     // },
   ];
 
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('HomepageComponent');
 
   constructor(
     private analyticsService: AnalyticsService

@@ -16,7 +16,7 @@ import * as _ from 'lodash';
 })
 export class ProgTagLibraryComponent {
   checked = false;
-  private _logger: Logger = new Logger(this.constructor.name);
+  // private _logger: Logger = new Logger('ProgTagLibraryComponent');
 
   constructor(
     public progTagLibraryService: ProgTagLibraryService,

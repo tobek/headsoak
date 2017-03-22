@@ -489,7 +489,7 @@ return function(note) {
 
   private tagsService: TagsService;
 
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('ProgTagLibraryService');
 
 
   constructor(

@@ -36,7 +36,7 @@ return classifyNote;`;
   /** Holds Ace editor instance */
   private editor;
 
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('ProgTagControlComponent');
 
   constructor(
     private analyticsService: AnalyticsService,

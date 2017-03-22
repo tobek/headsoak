@@ -11,7 +11,7 @@ const erroredOnMissingTag: { [noteAndTagIds: string ]: boolean} = {};
 
 @Pipe({ name: 'mapIdsToTags' })
 export class MapIdsToTagsPipe implements PipeTransform {
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('MapIdsToTagsPipe');
 
   constructor(
     private tagsService: TagsService

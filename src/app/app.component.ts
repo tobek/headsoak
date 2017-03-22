@@ -56,7 +56,7 @@ export class AppComponent {
   private initializiationSub: Subscription;
   private routerSub: Subscription;
 
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('AppComponent');
 
   constructor(
     public sizeMonitor: SizeMonitorService,

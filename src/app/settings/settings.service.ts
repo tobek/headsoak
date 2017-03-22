@@ -459,7 +459,7 @@ export class SettingsService {
     // @TODO: scroll up/down note browser?
   ];
 
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('SettingsService');
   private dataService: DataService;
 
   constructor(

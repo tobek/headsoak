@@ -45,7 +45,7 @@ export class TagDetailsComponent {
 
   private routerSub: Subscription;
 
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('TagDetailsComponent');
 
   constructor(
     // private elRef: ElementRef,

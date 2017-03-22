@@ -63,7 +63,7 @@ export class SettingsComponent {
 
   private routeDataSub: Subscription;
 
-  private _logger = new Logger(this.constructor.name);
+  private _logger = new Logger('SettingsComponent');
 
   constructor(
     public dataService: DataService,

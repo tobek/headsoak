@@ -90,7 +90,7 @@ export class DataService {
   private throttledSync: Function;
   private cancelThrottledSync: Function;
 
-  private _logger = new Logger(this.constructor.name);
+  private _logger = new Logger('DataService');
 
   constructor(
     public zone: NgZone,

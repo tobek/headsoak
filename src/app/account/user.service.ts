@@ -21,7 +21,7 @@ export class UserService {
   /** Whether this user's data has undergone (second attempt at) migration of IDs from numbers to strings. True for new users. */
   idsMigrated2016: boolean;
 
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('UserService');
 
   setData(userData: any) {
     _.extend(this, userData);

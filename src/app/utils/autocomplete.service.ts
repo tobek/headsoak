@@ -21,7 +21,7 @@ export interface AutocompleteSuggestion {
 @Injectable()
 export class AutocompleteService {
 
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('AutocompleteService');
 
   // When adding tags to a note, option to create a new tag with the currently-entered text will appear above any suggestions with a score worse (great) than this threshold
   private NEW_TAG_AUTOCOMPLETE_SCORE_THRESHOLD = 5;

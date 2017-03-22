@@ -26,7 +26,7 @@ export class ModalService {
   closed$ = new Subject<void>();
 
   private modalChangeSub: Subscription;
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('ModalService');
 
   constructor(
     private sanitizer: DomSanitizer

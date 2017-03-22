@@ -109,7 +109,7 @@ export class TagComponent {
 
   private queryTagsUpdatedSub: Subscription;
 
-  private _logger = new Logger(this.constructor.name);
+  private _logger = new Logger('TagComponent');
 
   constructor(
     private analytics: AnalyticsService,

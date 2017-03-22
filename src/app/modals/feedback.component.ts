@@ -23,7 +23,7 @@ export class FeedbackComponent {
 
   // @HostBinding('class.on') visible = false;
 
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('FeedbackComponent');
 
   constructor(
     private analyticsService: AnalyticsService,

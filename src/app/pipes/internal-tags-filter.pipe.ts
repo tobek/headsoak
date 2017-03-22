@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 
 @Pipe({ name: 'internalTagsFilter' })
 export class InternalTagsFilterPipe implements PipeTransform {
-  private _logger: Logger = new Logger(this.constructor.name);
+  private _logger: Logger = new Logger('InternalTagsFilterPipe');
 
   transform(arr: Array<string | Tag>): Array<string | Tag> {
     if (! _.size(arr)) {
