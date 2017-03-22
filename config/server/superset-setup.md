@@ -105,6 +105,7 @@ Set up DB:
       `timezone` varchar(64) DEFAULT NULL COMMENT 'Olsen database, e.g. America/New_York',
       `viewport_x` int DEFAULT NULL COMMENT 'In pixels',
       `viewport_y` int DEFAULT NULL COMMENT 'In pixels',
+      `referrer` varchar(256) DEFAULT NULL,
       PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

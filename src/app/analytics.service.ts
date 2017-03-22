@@ -25,6 +25,7 @@ interface AnalyticsSession {
   timezone: string;
   viewport_x: number;
   viewport_y: number;
+  referrer: string,
 }
 
 @Injectable()
@@ -129,6 +130,7 @@ export class AnalyticsService {
       timezone: '' + -(new Date().getTimezoneOffset() / 60),
       viewport_x: document.documentElement.clientWidth,
       viewport_y: document.documentElement.clientHeight,
+      referrer: document.referrer || undefined,
     };
 
     jQuery.ajax({
