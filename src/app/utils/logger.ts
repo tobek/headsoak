@@ -40,7 +40,10 @@ export class Logger {
       'seconds' + (window['hsLoginTime'] ? ' since login' : '')
     ]));
 
-    // @TODO/analytics Log this
+    // @HACK
+    if (window['hsEvent']) {
+      window['hsEvent']('Timing', this.name, args.join(' - '), time);
+    }
   }
 
   /** Set time since page load at which the user logged in. This is *only* set if the user logs in manually. If the user is cookied and logged in on page load, this remains 0. */

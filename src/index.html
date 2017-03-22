@@ -60,7 +60,7 @@
   </script>
 
   <script>
-    !function(){var r={};window.hsErrorReport=function(o,n,e,t,i,a){var l,c;try{if(l=[n,e,t,i].filter(function(r){return!!r}).join(" - "),a&&(c=a.toString?""+a:a,a.stack&&(c+=" - "+a.stack)),r[l+c]=(r[l+c]||0)+1,10===r[l+c])o+="Overload";else if(r[l+c]>10)return;window.hsDebugError&&window.hsDebugError(o,l,c)}catch(s){o=(o||"")+"Failed",l=l?l+" - ":"",l+="error reporting failed: "+s}ga("send",{hitType:"event",eventCategory:"JS"+o,eventAction:l,eventLabel:c})},window.hsErrorReportVal=function(r,o){o instanceof Error?hsErrorReport(r,""+o,null,null,null,o.stack):hsErrorReport(r,o)},window.onerror=function(r,o,n,e,t){r&&-1!==r.indexOf("Script error.")||hsErrorReport("unhandled",r,o,n,e,t)}}();
+    !function(){var r={};window.hsErrorReport=function(n,o,e,t,i,a){var w,d;try{if(w=[o,e,t,i].filter(function(r){return!!r}).join(" - "),a&&(d=a.toString?""+a:a,a.stack&&(d+=" - "+a.stack)),r[w+d]=(r[w+d]||0)+1,10===r[w+d])n+="Overload";else if(r[w+d]>10)return;window.hsDebugError&&window.hsDebugError(n,w,d)}catch(s){n=(n||"")+"Failed",w=w?w+" - ":"",w+="error reporting failed: "+s}window.hsEvent?window.hsEvent("JS"+n,w,d):window.ga&&ga("send",{hitType:"event",eventCategory:"JS"+n,eventAction:w,eventLabel:d})},window.hsErrorReportVal=function(r,n){n instanceof Error?hsErrorReport(r,""+n,null,null,null,n.stack):hsErrorReport(r,n)},window.onerror=function(r,n,o,e,t){r&&-1!==r.indexOf("Script error.")||hsErrorReport("unhandled",r,n,o,e,t)}}();
   </script>
 
   <app class="app-outer"></app>

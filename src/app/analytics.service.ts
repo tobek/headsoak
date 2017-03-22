@@ -54,13 +54,15 @@ export class AnalyticsService {
         this.ga = null;
       }
     }, 10000);
+
+    window['hsEvent'] = this.event.bind(this); // @HACK
   }
 
   event(category: string, action: string, label: string = undefined, value: number = undefined) {
     const eventData: AnalyticsEvent = {
       session_id: this.sessionId,
       timestamp: Date.now(),
-      time_since: window['hsLoginTime'] = performance.now(), // @HACK See comment in `utils/logger`
+      time_since: performance.now() - (window['hsLoginTime'] || 0), // @HACK See comment in `utils/logger`
       uid: this.user.uid,
       route: this.router.url,
 
@@ -70,7 +72,7 @@ export class AnalyticsService {
       value: value,
     };
 
-    this._logger.log('Firing analytics event', eventData);
+    // this._logger.log('Firing analytics event', eventData);
 
     this.postEvent(eventData);
 
@@ -141,7 +143,7 @@ export class AnalyticsService {
   }
 
   sessionInitialized(sessionId: number, sessionData: AnalyticsSession) {
-    this._logger.log('Session initialized with ID', sessionId, sessionData);
+    // this._logger.log('Session initialized with ID', sessionId, sessionData);
 
     this.sessionId = sessionId;
 
