@@ -6,12 +6,13 @@ More details at <http://airbnb.io/superset/installation.html>.
 
 Python3 preferred.
 
+    sudo apt-get install python-dev libmysqlclient-dev # needed for python's mysqlclient, which superset will use to connect to DB
     cd /tagalog/nutmeg
     mkdir -p virtualenvs/superset
     virtualenv virtualenvs/superset/
     . virtualenvs/superset/bin/activate
     pip install --upgrade setuptools pip
-    pip install superset
+    pip install superset mysqlclient
     fabmanager create-admin --app superset # create admin user
     superset db upgrade
     superset load_examples # just for test data if you need it, into ~/.superset/superset.db
@@ -96,7 +97,7 @@ Set up DB:
 
     USE headsoak;
 
-    CREATE TABLE `user_app_session` (
+    CREATE TABLE `user_app_sessions` (
       `id` int unsigned NOT NULL AUTO_INCREMENT,
       `timestamp` timestamp NOT NULL,
       `ip_address` varchar(45) DEFAULT NULL,
@@ -123,7 +124,7 @@ Set up DB:
       PRIMARY KEY (`id`),
       CONSTRAINT `fk_event_session`
         FOREIGN KEY (`session_id`)
-        REFERENCES `user_app_session`(`id`)
+        REFERENCES `user_app_sessions`(`id`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

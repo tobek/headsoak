@@ -143,7 +143,7 @@ server.route([{
     }
 
     // See <https://github.com/mysqljs/mysql#escaping-query-values> for how passing an object replaces `?` with query id/value pairs (it also escapes them at the same time)
-    db.query('INSERT INTO user_app_session SET ?', sessionData, function(err, results) {
+    db.query('INSERT INTO user_app_sessions SET ?', sessionData, function(err, results) {
       if (err) {
         throw err;
       }
