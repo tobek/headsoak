@@ -16,150 +16,156 @@
 </div>
 
 <div class="main-browser pane-layout" [class.is--home]="! activePane">
-  <div class="overview tag-list">
-    <ul class="menu menu--tag-home">
-      <li class="item" [routerLink]="sizeMonitor.isMobile ? ['/tags/explore'] : ['/tags']" [class.is--active]="activePane === 'viz'">
-        <i class="fa fa-fw fa-lg fa-connectdevelop"></i>
-        EXPLORE TAGS
-        <!-- @TODO/ece Capitalzation of side menu (and tooltips in collapsed menu). We have "Private Mode" in settings, but "Smart tag" in tag details. -->
-      </li>
-      <li class="item" [routerLink]="['/tags/smart-tags/library']" routerLinkActive="is--active">
-        <i class="fa fa-fw fa-lg fa-book"></i>
-        SMART TAG LIBRARY
-      </li>
-    </ul>
+  <div class="overview">
+    <div class="main-tag-list" ref-mainTagList>
+      <div class="main-tag-list-header">
+        <ul class="menu menu--tag-home">
+          <li class="item" [routerLink]="sizeMonitor.isMobile ? ['/tags/explore'] : ['/tags']" [class.is--active]="activePane === 'viz'">
+            <i class="fa fa-fw fa-lg fa-connectdevelop"></i>
+            EXPLORE TAGS
+            <!-- @TODO/ece Capitalzation of side menu (and tooltips in collapsed menu). We have "Private Mode" in settings, but "Smart tag" in tag details. -->
+          </li>
+          <li class="item" [routerLink]="['/tags/smart-tags/library']" routerLinkActive="is--active">
+            <i class="fa fa-fw fa-lg fa-book"></i>
+            SMART TAG LIBRARY
+          </li>
+        </ul>
 
-    <div class="tag-query">
-      <div class="search-bar" [class.is--focused]="searchBarFocused">
-        <input class="text-input" tabindex=1 type="text" placeholder="Search tags"
-          ref-queryInput [(ngModel)]="query"
-          (ngModelChange)="queryUpdated()"
-          (focus)="searchBarFocused = true"
-          (blur)="searchBarFocused = false"
+        <div class="tag-query">
+          <div class="search-bar" [class.is--focused]="searchBarFocused">
+            <input class="text-input" tabindex=1 type="text" placeholder="Search tags"
+              ref-queryInput [(ngModel)]="query"
+              (ngModelChange)="queryUpdated()"
+              (focus)="searchBarFocused = true"
+              (blur)="searchBarFocused = false"
+            >
+
+            <span class="query-controls">
+              <span class="control-icon"
+                *ngIf="query"
+                (click)="queryClear()"
+              ><i class="fa fa-times"></i></span>
+              <span class="control-icon"
+                *ngIf="! query"
+                (click)="queryFocus()"
+              ><i class="fa fa-search"></i></span>
+            </span>
+          </div>
+
+          <div class="query-controls sort-count">
+            <span class="count">{{ tags.length }} TAG{{ tags.length !== 1 ? 'S' : '' }}</span>
+
+            <ng-select class="sort-dropdown"
+              [items]="tagsService.sortOpts"
+              [active]="[sortOpt]"
+              (selected)="sort($event)"
+              placeholder="{{ sortOpt.text }}"
+            ></ng-select>
+          </div>
+        </div>
+
+        <!-- @TODO/polish It would be slick if this had the exact same UI as adding a tag on a note, with the line sliding out etc. But that's harder. Prob would have to refactor stuff from NoteComponent into an AddTagComponent, or update how TagComponent handles its own new tag state so that it's always there and can morph into creating a tag, and then add that extra component to all notes and here, etc. -->
+        <div class="add-new-tag tag-like" (click)="newTag()" *ngIf="! addingNewTag">
+          <i class="fa fa-plus"></i>
+          <span class="text">Add new tag</span>
+        </div>
+      </div>
+
+      <div class="tags">
+        <div class="tag-wrapper"
+          *ngFor="let tag of (tags | arrayLimit:limit)"
+          [class.is--expanded]="expandedTag === tag"
         >
+          <!-- @TODO/refactor Copy-pasting from here to internal tags... -->
+          <div class="tag-header"
+            (click)="tagHeaderClick(tag)"
+            (mouseenter)="hoveredTag = tag.name ? tag : null"
+            (mouseleave)="hoveredTag = null"
+          >
+            <span *ngIf="tag.name" class="caret-wrapper" (click)="tagDropdownCaretClick(tag)"
+              ><i class="fa fa-caret-up go-up"></i
+              ><i class="fa fa-caret-down go-down"></i
+            ></span>
 
-        <span class="query-controls">
-          <span class="control-icon"
-            *ngIf="query"
-            (click)="queryClear()"
-          ><i class="fa fa-times"></i></span>
-          <span class="control-icon"
-            *ngIf="! query"
-            (click)="queryFocus()"
-          ><i class="fa fa-search"></i></span>
-        </span>
-      </div>
+            <tag class="tag tag-{{ tag.id }}"
+              [tag]="tag"
+              [renamable]="expandedTag === tag"
+              [renamableOnNameClick]="! inSidebar"
+              showCount=1
+              context="tagBrowser"
+              (click)="tagClick(tag, $event)"
+            ></tag><!-- checking tag.name in mouseenter to make sure it's not a new/unsaved tag -->
+          </div>
 
-      <div class="query-controls sort-count">
-        <span class="count">{{ tags.length }} TAG{{ tags.length !== 1 ? 'S' : '' }}</span>
+          <div class="tag-manager" *ngIf="expandedTag === tag">
+            <div *ngIf="tag.description" class="description">{{ tag.description }}</div>
+            <ul class="menu">
+              <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" routerLinkActive="is--active" [routerLinkActiveOptions]="{ exact: true }">
+                <i class="fa fa-fw fa-lg fa-bar-chart"></i>
+                Explore
+              </li>
+              <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'smartness']" routerLinkActive="is--active">
+                <i class="fa fa-fw fa-lg fa-bolt"></i>
+                Smart tag
+              </li>
+              <!-- @TODO/tags @TODO/privacy
+              <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'privacy']" routerLinkActive="is--active">
+                <i class="fa fa-fw fa-lg fa-lock"></i>
+                Private tag
+              </li>
+              -->
+              <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'delete']" routerLinkActive="is--active">
+                <!-- @TODO/tags @TODO/soon This should open up a modal -->
+                <i class="fa fa-fw fa-lg fa-trash-o"></i>
+                <!-- @TODO/ece Should this be called "disable" for smart tag library tags? Also the "you can delete it though" message in smartness, and delete page itself should be changed -->
+                Delete
+              </li>
+            </ul>
+          </div>
+        </div>
 
-        <ng-select class="sort-dropdown"
-          [items]="tagsService.sortOpts"
-          [active]="[sortOpt]"
-          (selected)="sort($event)"
-          placeholder="{{ sortOpt.text }}"
-        ></ng-select>
-      </div>
+        <hr style="width: 100%">
+        <h4>System Tags</h4>
+        <div class="tag-wrapper"
+          *ngFor="let tag of tagsService.internalTags"
+          [class.is--expanded]="expandedTag === tag"
+        >
+          <!-- @TODO/refactor Copy-pasting from normal tags... -->
+          <div class="tag-header"
+            (click)="tagHeaderClick(tag)"
+            (mouseenter)="hoveredTag = tag"
+            (mouseleave)="hoveredTag = null"
+          >
+            <span class="caret-wrapper" (click)="tagDropdownCaretClick(tag)"
+              ><i class="fa fa-caret-up go-up"></i
+              ><i class="fa fa-caret-down go-down"></i
+            ></span>
+
+            <tag class="tag tag-{{ tag.id }}"
+              [tag]="tag"
+              showCount=1
+              context="tagBrowser"
+              (click)="tagClick(tag, $event)"
+            ></tag>
+          </div>
+
+          <!-- @TODO/refactor Copy-pasting from normal tags... but a little different, cause you can't rename, delete, or smart tag these -->
+          <div class="tag-manager" *ngIf="expandedTag === tag">
+            <ul class="menu">
+              <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" routerLinkActive="is--active" [routerLinkActiveOptions]="{ exact: true }">
+                <i class="fa fa-fw fa-lg fa-bar-chart"></i>
+                Explore
+              </li>
+              <!-- @TODO/tags @TODO/privacy
+              <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'privacy']" routerLinkActive="is--active">
+                <i class="fa fa-fw fa-lg fa-lock"></i>
+                Private tag
+              </li>
+              -->
+            </ul>
+          </div>
+        </div>
     </div>
-
-    <!-- @TODO/polish It would be slick if this had the exact same UI as adding a tag on a note, with the line sliding out etc. But that's harder. Prob would have to refactor stuff from NoteComponent into an AddTagComponent, or update how TagComponent handles its own new tag state so that it's always there and can morph into creating a tag, and then add that extra component to all notes and here, etc. -->
-    <div class="add-new-tag tag-like" (click)="newTag()" *ngIf="! addingNewTag">
-      <i class="fa fa-plus"></i>
-      <span class="text">Add new tag</span>
-    </div>
-
-    <div class="tag-wrapper"
-      *ngFor="let tag of (tags | arrayLimit:limit)"
-      [class.is--expanded]="expandedTag === tag"
-    >
-      <!-- @TODO/refactor Copy-pasting from here to internal tags... -->
-      <div class="tag-header"
-        (click)="tagHeaderClick(tag)"
-        (mouseenter)="hoveredTag = tag.name ? tag : null"
-        (mouseleave)="hoveredTag = null"
-      >
-        <span *ngIf="tag.name" class="caret-wrapper" (click)="tagDropdownCaretClick(tag)"
-          ><i class="fa fa-caret-up go-up"></i
-          ><i class="fa fa-caret-down go-down"></i
-        ></span>
-
-        <tag class="tag tag-{{ tag.id }}"
-          [tag]="tag"
-          [renamable]="expandedTag === tag"
-          [renamableOnNameClick]="! inSidebar"
-          showCount=1
-          context="tagBrowser"
-          (click)="tagClick(tag, $event)"
-        ></tag><!-- checking tag.name in mouseenter to make sure it's not a new/unsaved tag -->
-      </div>
-
-      <div class="tag-manager" *ngIf="expandedTag === tag">
-        <div *ngIf="tag.description" class="description">{{ tag.description }}</div>
-        <ul class="menu">
-          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" routerLinkActive="is--active" [routerLinkActiveOptions]="{ exact: true }">
-            <i class="fa fa-fw fa-lg fa-bar-chart"></i>
-            Explore
-          </li>
-          <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'smartness']" routerLinkActive="is--active">
-            <i class="fa fa-fw fa-lg fa-bolt"></i>
-            Smart tag
-          </li>
-          <!-- @TODO/tags @TODO/privacy
-          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'privacy']" routerLinkActive="is--active">
-            <i class="fa fa-fw fa-lg fa-lock"></i>
-            Private tag
-          </li>
-          -->
-          <li *ngIf="! tag.internal" class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'delete']" routerLinkActive="is--active">
-            <!-- @TODO/tags @TODO/soon This should open up a modal -->
-            <i class="fa fa-fw fa-lg fa-trash-o"></i>
-            <!-- @TODO/ece Should this be called "disable" for smart tag library tags? Also the "you can delete it though" message in smartness, and delete page itself should be changed -->
-            Delete
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <hr style="width: 100%">
-    <h4>System Tags</h4>
-    <div class="tag-wrapper"
-      *ngFor="let tag of tagsService.internalTags"
-      [class.is--expanded]="expandedTag === tag"
-    >
-      <!-- @TODO/refactor Copy-pasting from normal tags... -->
-      <div class="tag-header"
-        (click)="tagHeaderClick(tag)"
-        (mouseenter)="hoveredTag = tag"
-        (mouseleave)="hoveredTag = null"
-      >
-        <span class="caret-wrapper" (click)="tagDropdownCaretClick(tag)"
-          ><i class="fa fa-caret-up go-up"></i
-          ><i class="fa fa-caret-down go-down"></i
-        ></span>
-
-        <tag class="tag tag-{{ tag.id }}"
-          [tag]="tag"
-          showCount=1
-          context="tagBrowser"
-          (click)="tagClick(tag, $event)"
-        ></tag>
-      </div>
-
-      <!-- @TODO/refactor Copy-pasting from normal tags... but a little different, cause you can't rename, delete, or smart tag these -->
-      <div class="tag-manager" *ngIf="expandedTag === tag">
-        <ul class="menu">
-          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" routerLinkActive="is--active" [routerLinkActiveOptions]="{ exact: true }">
-            <i class="fa fa-fw fa-lg fa-bar-chart"></i>
-            Explore
-          </li>
-          <!-- @TODO/tags @TODO/privacy
-          <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name, 'privacy']" routerLinkActive="is--active">
-            <i class="fa fa-fw fa-lg fa-lock"></i>
-            Private tag
-          </li>
-          -->
-        </ul>
-      </div>
     </div>
   </div>
 

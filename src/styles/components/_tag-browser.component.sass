@@ -12,6 +12,23 @@ tag-browser
       width: 100%
       margin: 0
 
+  @media (min-width: $tablet-large)
+    .main-tag-list
+      position: fixed !important
+      display: flex
+      flex-direction: column
+      max-height: $full-height
+      max-width: span(4)
+
+    .main-tag-list-header
+      flex-shrink: 0
+      flex-grow: 0
+    .tags
+      flex-grow: 1
+      overflow-y: auto
+      overflow-x: hidden
+      padding-right: 0.5rem // magic number/hack no idea why this works but it helps the carets stay clear of the scrollbar, and at wider widths helps align scrollbar with the header menu
+
   .menu.menu--tag-home
     margin-bottom: 1rem
     padding-bottom: 1rem

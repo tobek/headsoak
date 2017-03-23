@@ -16,6 +16,7 @@ import {TagsService} from './tags.service'; // no idea why importing this separa
 import {Logger/*, ScrollMonitorService, AutocompleteService*/} from '../utils/';
 import {ScrollMonitorService, SizeMonitorService} from '../utils/';
 
+import * as $ from 'jquery';
 import * as _ from 'lodash';
 
 @Component({
@@ -56,6 +57,7 @@ export class TagBrowserComponent {
 
   searchBarFocused = false;
 
+  @ViewChild('mainTagList') mainTagListRef: ElementRef;
   @ViewChild('queryInput') queryInput: ElementRef;
   @ViewChildren(TagComponent) tagComponents: QueryList<TagComponent>;
   @ViewChild(TagDetailsComponent) tagDetailsComponent: TagDetailsComponent;
@@ -63,12 +65,7 @@ export class TagBrowserComponent {
   query = '';
   private queryUpdated$: Subject<void> = new Subject<void>();
 
-  private querySub: Subscription;
-  private routerSub: Subscription;
-  private tagInitializationSub: Subscription;
-  private tagCreationSub: Subscription;
-  private tagDeletionSub: Subscription;
-  // private scrollSub: Subscription;
+  private subscriptions: Subscription[] = [];
 
   // private _logger: Logger = new Logger('TagBrowserComponent');
 
@@ -89,9 +86,9 @@ export class TagBrowserComponent {
 
   ngOnInit() {
     // Will fire immediately if already initialized, otherwise will wait for initialization and then fire.
-    this.tagInitializationSub = this.tagsService.initialized$.subscribe(this.initTags.bind(this));
+    this.subscriptions.push(this.tagsService.initialized$.subscribe(this.initTags.bind(this)));
 
-    this.querySub = this.queryUpdated$
+    this.subscriptions.push(this.queryUpdated$
       .debounceTime(200)
       .subscribe(() => {
         // @TODO/tags Ideally this should use fuzzy match sorter (and bold matching parts of tag names)
@@ -103,21 +100,30 @@ export class TagBrowserComponent {
           return tag.name.toLowerCase().indexOf(this.query.toLowerCase()) !== -1;
         });
         this.tags = this.tagsService.sortTags(this.sortOpt, queriedTags);
-      });
+      })
+    );
 
-    this.tagCreationSub = this.tagsService.tagCreated$.subscribe(this.queryUpdated.bind(this));
-    this.tagDeletionSub = this.tagsService.tagDeleted$.subscribe(this.tagDeleted.bind(this));
+    this.subscriptions.push(this.tagsService.tagCreated$.subscribe(this.queryUpdated.bind(this)));
+    this.subscriptions.push(this.tagsService.tagDeleted$.subscribe(this.tagDeleted.bind(this)));
 
     // this.scrollMonitor.scroll$.subscribe(this.infiniteScrollCheck.bind(this));
   }
 
+  ngAfterViewInit() {
+    this.setMainTagListWidth();
+    this.subscriptions.push(this.sizeMonitor.resize$.subscribe(this.setMainTagListWidth));
+
+    // Also run it regularly for a bit in case stuff changes while page is loading:
+    const tagListWidthInterval = setInterval(this.setMainTagListWidth, 1000);
+    setTimeout(() => {
+      clearInterval(tagListWidthInterval);
+    }, 15000);
+  }
+
   ngOnDestroy() {
-    this.querySub.unsubscribe();
-    this.routerSub.unsubscribe();
-    this.tagInitializationSub.unsubscribe();
-    this.tagCreationSub.unsubscribe();
-    this.tagDeletionSub.unsubscribe();
-    // this.scrollSub.unsubscribe();
+    for (let sub of this.subscriptions) {
+      sub.unsubscribe();
+    }
   }
 
   initTags(): void {
@@ -129,9 +135,10 @@ export class TagBrowserComponent {
       (tag) => ! tag.internal
     );
 
-    this.routerSub = this.router.events
+    this.subscriptions.push(this.router.events
       .filter((event) => event instanceof NavigationEnd)
-      .subscribe(this.routeUpdated.bind(this));
+      .subscribe(this.routeUpdated.bind(this))
+    );
     // Above won't trigger with current router state, so let's do so manually:
     this.routeUpdated(this.router);
   }
@@ -325,6 +332,16 @@ export class TagBrowserComponent {
         this.newTag();
       }, 0);
     }
+  }
+
+  /** On desktop the tag sidebar is `position: fixed`, which means the width is kind of messed up. This way we can inherit the exact width from the statically positioned parent. */
+  setMainTagListWidth = () => {
+    if (this.sizeMonitor.isMobile) {
+      return;
+    }
+
+    const $tagList = $(this.mainTagListRef.nativeElement);
+    $tagList.css('width', $tagList.parent().width());
   }
 
   // // @TODO/polish Copied infinite scroll code from notes - we might want this eventually
