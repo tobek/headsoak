@@ -25,6 +25,9 @@ export class SettingsService {
       name: 'Background image URL',
       type: 'string',
       section: 'settings',
+      overkill: true, // @TODO/theme This is just for light theme, need ability to enable this for dark theme
+      // @TODO/theme @TODO/soon Make sure no image is downloaded at all on light theme - not on page load, not by default here, not if user has selected light theme. For now just commenting out `enact`.
+      /*
       enact: function() {
         // @TODO/settings/bg Check it's a URL and that it fetches (validation property function!) - also, it should load the image fully and then fade it in
 
@@ -39,6 +42,7 @@ export class SettingsService {
           el.style.backgroundImage = '';
         }
       },
+      */
       clickHandler: function(event: MouseEvent) {
         if (! (<HTMLElement> event.target).classList.contains('random')) {
           return;

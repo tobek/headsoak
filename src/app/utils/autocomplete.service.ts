@@ -52,7 +52,7 @@ export class AutocompleteService {
           // @TODO/ece @TODO/usertesting Should these be add-able from add tag field autocomplete? actually for now it's easier to keep them removed - some extra behavior for pinning/archiving wouldn't get triggered through normal add tag (though pretty easy to fix)
         }
 
-        // @TODO also hide prog tags here? on the one hand, trying to add a prog tag shows progTagCantChangeAlert, so you might ask "why did you put it in autocomplete in the first place?". on the other hand, if we hide it, users might be like "why isn't this tag showing up?" We'll at least hide child tags
+        // @TODO/ece also hide prog tags here? on the one hand, trying to add a prog tag shows progTagCantChangeAlert, so you might ask "why did you put it in autocomplete in the first place?". on the other hand, if we hide it, users might be like "why isn't this tag showing up?" Or it could be grayed out and/or with tooltip. We'll at least hide child tags.
         if (tag.parentTag) {
           return false;
         }
