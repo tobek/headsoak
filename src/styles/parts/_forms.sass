@@ -171,6 +171,13 @@ textarea,
   font-weight: bold
   text-transform: uppercase
 
+  @if $bg-overlay == white
+    border: 1px solid $secondary-button-text
+    &:hover
+      border: 1px solid $secondary-button-text-hover
+    &:active
+      border: 1px solid $secondary-button-text-active
+
 .btn-success
   +success-style
 .btn-warning

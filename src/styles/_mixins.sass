@@ -188,16 +188,17 @@ $tag-hash-opacity: 0.33
 
 
 =alert-style
-  color: $panel-text
-  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15) // @TODO/ece What do you think of this? Look at toasters and primary and other buttons
+  text-shadow: 1px 1px 0 black
 
   a
-    color: $panel-text
+    // color: $accent-color
     text-decoration: underline
-    &:hover
-      color: $panel-text-link-hover
+    // text-shadow: none
+    // &:hover
+    //   color: $accent-color-dark
 
   code
+    background-color: white
     text-shadow: none
 
 =success-style
@@ -206,7 +207,8 @@ $tag-hash-opacity: 0.33
   background-color: $success-color
 =info-style
   +alert-style
-  background-color: $dropdown-bg
+  color: $info-text
+  background-color: $info-color
 =warning-style
   +alert-style
   color: $warning-text
