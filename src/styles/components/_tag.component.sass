@@ -1,5 +1,6 @@
 $tag-name-max-width: 150px
 $tag-name-max-width--browse: 80px // @TODO/ece What do you think about shrinking it for this view?
+$tag-actions-dropdown-width: 200px
 
 .tag-like
   +tag-chiclet
@@ -73,10 +74,14 @@ tag
     // @NOTE This fixes the problem of a now-expanded tag overflowing tags container and going into new line, but it cause subsequent tags to up. TagComponent JS creates and destroys a spacer element to maintain flow of following tags.
     position: absolute
     z-index: 1
-    white-space: nowrap
+    white-space: normal
+    max-width: $tag-actions-dropdown-width
 
     .name-wrapper
+      display: inline
       max-width: none
+      white-space: normal
+      overflow: visible
     .parent-name
       display: inline
 
@@ -124,7 +129,7 @@ tag
 
     z-index: 1
     position: absolute
-    width: 200px
+    width: $tag-actions-dropdown-width
     margin-top: 0.5rem
     margin-left: -4px // magic number to align with left edge of tag - we can't do left 0 and position the tag relatively because then we'll run afoul of tag container with overflow hidden
     font-weight: normal
