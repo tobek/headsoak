@@ -23,7 +23,6 @@ import 'intl';
 import 'intl/locale-data/jsonp/en';
 import 'jquery';
 import 'lodash';
-import 'lunr';
 import 'mousetrap';
 import 'mousetrap-global-bind';
 import 'toastr';

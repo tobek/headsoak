@@ -9,8 +9,7 @@ import {TagsService} from '../tags/tags.service';
 import {Note} from './';
 
 import * as _ from 'lodash';
-const lunr = require('lunr');
-// import * as lunr from 'lunr';
+import * as lunr from 'lunr';
 
 @Injectable()
 export class NotesService {
