@@ -60,7 +60,7 @@
   <div class="note-actions">
     <!-- @TODO/ece Expand? Focus? Open? Also shortcut name. -->
     <!-- @TODO/polish On desktop tooltip is still visible behind modal on click until you mouse away - should make something similar -->
-    <a data-tooltip="Expand note" class="note-action note-action--open" *ngIf="! isOpened" (click)="openNote($event)"><i class="fa fa-fw fa-pencil-square-o"></i></a
+    <a data-tooltip="Expand note" class="note-action note-action--open" *ngIf="! isOpened" (click)="openNote($event)"><i class="fa fa-fw fa-expand"></i></a
 
     ><a class="note-action"
       [class.is--active]="note.pinned"
