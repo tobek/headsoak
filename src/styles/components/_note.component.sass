@@ -273,16 +273,7 @@ $note-header-height: 2.5rem
       margin-right: 0
 
   .note-action--open,
-  .note-action--close
     float: left
-
-  .note-action--close
-    // Big-ass click target to make it easy to get out of modal (small on top though since it's near body text)
-    position: relative
-    top: -0.25rem
-    left: -1rem
-    padding: 0.25rem 1rem 0.5rem
-
   .note-action--private
     .locked
       display: none
@@ -413,8 +404,17 @@ $note-header-height: 2.5rem
         padding-left: 0.5rem
         padding-right: 0.5rem
 
-modal .is--note .modal-close
-  display: none
+modal .is--note-container
+  .modal-close
+    display: none
+
+  .modal-close--outer
+    +h4
+    display: inline-block !important
+    position: fixed
+    top: 1rem
+    right: 1rem
+    padding: 0.5rem 1rem // Bigger hover target
 
 
 // This actually gets shunted into ModalComponent but let's style it here

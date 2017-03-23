@@ -1,6 +1,10 @@
 <div class="modal-backdrop" (click)="cancel()"></div>
 
-<div class="modal-content-container" (click)="cancel()">
+<div class="modal-content-container is--{{ activeModal }}-container" (click)="cancel(); $event.stopPropagation()">
+  <span class="modal-close modal-close--outer" (click)="cancel()">
+    <i class="fa fa-times"></i>
+  </span>
+
   <div class="modal-content is--{{ activeModal }}" (click)="$event.stopPropagation()">
     <span class="modal-close" (click)="cancel()">
       <i class="fa fa-times"></i>

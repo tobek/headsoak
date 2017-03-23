@@ -62,8 +62,6 @@
     <!-- @TODO/polish On desktop tooltip is still visible behind modal on click until you mouse away - should make something similar -->
     <a data-tooltip="Expand note" class="note-action note-action--open" *ngIf="! isOpened" (click)="openNote($event)"><i class="fa fa-fw fa-pencil-square-o"></i></a
 
-    ><a data-tooltip="Close note" class="note-action note-action--close" *ngIf="isOpened" (touchOrClick)="unopenNote($event)"><i class="fa fa-fw fa-close"></i></a
-
     ><a class="note-action"
       [class.is--active]="note.pinned"
       [attr.data-tooltip]="(note.pinned ? 'Un-pin' : 'Pin') + ' this note'"
@@ -97,11 +95,3 @@
     ></span
   ></div>
 </div>
-
-<!-- @REMOVED/write
-@TODO/rewrite/notes Obvs this should be better, and maybe have link to close it, or "show here anyway"?
-<div class="open-note-indicator">
-  <== note opened over there
-  <button (click)="unopenNote()">close note</button>
-</div>
--->
