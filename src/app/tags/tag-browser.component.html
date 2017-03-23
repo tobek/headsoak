@@ -75,6 +75,7 @@
         <div class="tag-wrapper"
           *ngFor="let tag of (tags | arrayLimit:limit)"
           [class.is--expanded]="expandedTag === tag"
+          [attr.data-tag-id]="tag.id"
         >
           <!-- @TODO/refactor Copy-pasting from here to internal tags... -->
           <div class="tag-header"

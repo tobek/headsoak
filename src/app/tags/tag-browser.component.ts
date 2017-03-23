@@ -157,7 +157,7 @@ export class TagBrowserComponent {
 
     this.inSidebar = false;
 
-    // @HACK @TODO/tags @TODO/polish @TODO/soon This REALLY shouldn't be necessary, but for now, especially e.g. if you scroll to bottom of notes or tag list and then click on a tag, you don't see shit. They need to scroll independently. It also means you lose your place in your notes when you go back. Bah.
+    // @HACK @TODO/tags @TODO/polish @TODO/soon This REALLY shouldn't be necessary, but for now, especially e.g. if you scroll to bottom of notes and then click on a tag, you could be stuck at the end of a tag details page. Different views should scroll independently. It also means you lose your place in your notes when you go back. Bah.
     if (! this.sizeMonitor.isMobile && (this.activeTag || this.activePane)) {
       // We were already looking at tags, so animate scroll so you don't lose your place
       this.scrollMonitor.scrollToTop();
@@ -178,6 +178,8 @@ export class TagBrowserComponent {
         if (this.tagDetailsComponent) {
           this.activeTagPane = this.tagDetailsComponent.activePane;
         }
+
+        this.ensureTagVisibleInList(this.activeTag);
       }, 0);
     }
     else {
@@ -342,6 +344,12 @@ export class TagBrowserComponent {
 
     const $tagList = $(this.mainTagListRef.nativeElement);
     $tagList.css('width', $tagList.parent().width());
+  }
+
+  ensureTagVisibleInList(tag: Tag) {
+    this.scrollMonitor.ensureElVisibleInScrollable(
+      $(this.mainTagListRef.nativeElement).find('[data-tag-id=' + tag.id + ']')
+    );
   }
 
   // // @TODO/polish Copied infinite scroll code from notes - we might want this eventually
