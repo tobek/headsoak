@@ -34,7 +34,7 @@ tag
 
   .tag-value-hover
     display: none
-  &.dropdown-enabled.hovered .tag-value-hover
+  &.dropdown-enabled.is--hovered .tag-value-hover
     display: inline
 
   .tag-actions // currently (jan 2017) only used for removing from note query or for renaming in tag browser
@@ -45,7 +45,7 @@ tag
     opacity: $btn-disabled-opacity
 
     &.is--self-active, // unless it's in use,
-    &.hovered, // hovered,
+    &.is--hovered, // hovered,
     homepage & // or on homepage demo
       opacity: 1
 
@@ -59,7 +59,7 @@ tag
       max-width: none
 
   // &.dropdown-enabled:hover // @TODO/ece Should this happen on hover, or on the 0.25s-delayed .hover classs?
-  &.dropdown-enabled.hovered
+  &.dropdown-enabled.is--hovered
     // @REMOVED We used to have the tag look like it's part of dropdown menu - now we just use active chiclet and show dropdown below it
     // +dropdown-menu
     // +tag-face
@@ -70,10 +70,10 @@ tag
 
     +tag-chiclet-active
 
-    // @TODO/now This fixes the problem of a now-expanded tag overflowing tags container and going into new line, but it cause subsequent tags to up. Proper solution would maybe be to use JS to fix the tag width at its current value, but have the contents be absolutely positioned so it overflows. When this is fixed, it can happen on :hover instead of .hovered
-    // position: absolute
-    // z-index: 1
-    // white-space: nowrap
+    // @NOTE This fixes the problem of a now-expanded tag overflowing tags container and going into new line, but it cause subsequent tags to up. TagComponent JS creates and destroys a spacer element to maintain flow of following tags.
+    position: absolute
+    z-index: 1
+    white-space: nowrap
 
     .name-wrapper
       max-width: none

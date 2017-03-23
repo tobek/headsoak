@@ -11,6 +11,7 @@ import {Logger, utils} from '../utils/';
 import {SizeMonitorService} from '../utils/size-monitor.service';
 import {TooltipService} from '../utils/tooltip.service';
 
+import * as $ from 'jquery';
 import * as _ from 'lodash';
 
 @Component({
@@ -52,7 +53,10 @@ export class TagComponent {
   @HostBinding('class.dropdown-enabled') @Input() enableDropdown?: boolean;
   @HostBinding('class.dropdown-disabled') disableDropdown = true;
 
-  @HostBinding('class.hovered') hovered = false;
+  @HostBinding('class.is--hovered') _hovered = false;
+
+  /** Hackily used to prevent tags, which on hover can become wider, from suddenly wrapping to the next line if they're at the end of a container. We make the tag absolutely positioned, and then create this spacer element to preserve the existing flow of any tags after this tag. */
+  $spacerEl: JQuery;
 
   @Output() toggled= new EventEmitter<Tag>(); // view/clear from search clicked
   @Output() removed = new EventEmitter<Tag>(); // removed from given context (e.g. note, search query)
@@ -112,6 +116,7 @@ export class TagComponent {
   private _logger = new Logger('TagComponent');
 
   constructor(
+    private elRef: ElementRef,
     private analytics: AnalyticsService,
     private sizeMonitorService: SizeMonitorService,
     private tooltipService: TooltipService,
@@ -261,10 +266,38 @@ export class TagComponent {
     return entries;
   }
 
+  get hovered(): boolean {
+    return this._hovered;
+  }
+  set hovered(nowHovered: boolean) {
+    if (this._hovered === nowHovered) {
+      return;
+    }
+
+    this._hovered = nowHovered;
+
+    if (! this.enableDropdown) {
+      return;
+    }
+
+    if (this.$spacerEl) {
+      this.$spacerEl.remove();
+    }
+
+    // See note on `$spacerEl` declaration.
+    if (nowHovered) {
+      const $el = $(this.elRef.nativeElement);
+      const width = $el.outerWidth(true);
+
+      this.$spacerEl = $('<span style="display: inline-block; width: ' + width + 'px"></span>')
+        .insertAfter($el);
+    }
+  }
+
   // @TODO/refactor Very similar code for note nav in AppComponent - if we need this again, should share logic
   unHoverOnNextTouch() {
     // We can use `one` cause no matter what we want to only affect next touch, whether it's in tag actions (so close it, but let tag actions touch go ahead) or somewhere else on the page, in which case close it and cancel any other events from firing
-    jQuery(window).one('touchend', this.onNextTouch.bind(this));
+    $(window).one('touchend', this.onNextTouch.bind(this));
   }
 
   onNextTouch(event: Event) {
