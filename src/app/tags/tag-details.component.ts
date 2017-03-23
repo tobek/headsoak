@@ -153,7 +153,7 @@ export class TagDetailsComponent {
     this.tag.getChildInclusiveNotes().forEach((note) => {
       // Now let's see what other tags these notes hav
       note.tags.forEach((tagId) => {
-        if (tagId == this.tag.id) { // intentional == (we have some integer IDs floating around in data store) @TODO/refactor We should find-and-replace in firebase and get rid of these!
+        if (String(tagId) === String(this.tag.id)) { // We have some integer IDs floating around in data store @TODO/refactor We should find-and-replace in firebase and get rid of these! `DataService.handleIdMigration` might handle it, need to check that all of the accounts with integer IDs haven't run that yet.
           return;
         }
 

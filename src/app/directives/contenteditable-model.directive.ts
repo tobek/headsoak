@@ -8,8 +8,8 @@ import * as _ from 'lodash';
   selector: '[contenteditableModel]'
 })
 export class ContenteditableModelDirective {
-  @Input('contenteditableModel') model: string;
-  @Output('contenteditableModelChange') update = new EventEmitter();
+  @Input('contenteditableModel') contenteditableModel: string;
+  @Output('contenteditableModelChange') contenteditableModelChange = new EventEmitter();
 
   private debouncedOnKeyup: () => void;
 
@@ -51,9 +51,9 @@ export class ContenteditableModelDirective {
   // }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['model'] && changes['model'].currentValue !== this.lastViewModel) {
-      // model was changed by something other than ourselves
-      this.lastViewModel = this.model;
+    if (changes['contenteditableModel'] && changes['contenteditableModel'].currentValue !== this.lastViewModel) {
+      // contenteditableModel was changed by something other than ourselves
+      this.lastViewModel = this.contenteditableModel;
       this.refreshView();
     }
   }
@@ -61,10 +61,10 @@ export class ContenteditableModelDirective {
   onKeyup() {
     const value = this.elRef.nativeElement.innerText;
     this.lastViewModel = value;
-    this.update.emit(value);
+    this.contenteditableModelChange.emit(value);
   }
 
   private refreshView() {
-    this.elRef.nativeElement.innerText = this.model;
+    this.elRef.nativeElement.innerText = this.contenteditableModel;
   }
 }

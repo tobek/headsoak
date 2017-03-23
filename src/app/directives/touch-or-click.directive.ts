@@ -13,7 +13,7 @@ import {Directive, ElementRef, Output, EventEmitter, HostListener} from '@angula
   selector: '[touchOrClick]'
 })
 export class TouchOrClickDirective {
-  @Output('touchOrClick') output = new EventEmitter<Event>();
+  @Output('touchOrClick') touchOrClick = new EventEmitter<Event>();
 
   constructor(
     private elRef: ElementRef
@@ -22,8 +22,8 @@ export class TouchOrClickDirective {
 
   @HostListener('click', ['$event']) onClick(event: MouseEvent) {
     // console.log(this.elRef.nativeElement, 'clicked!', event);
-    event['headsoakWasClick'] = true;
-    this.output.emit(event);
+    event['hsWasClick'] = true;
+    this.touchOrClick.emit(event);
   }
 
   // Type should really be `TouchEvent` but that's not present in Edge or Safari and this gets emitted in decorator metadata and breaks in those browsers. @TODO Where else could presumbed-global variables be causing problems?
@@ -33,6 +33,6 @@ export class TouchOrClickDirective {
       event.preventDefault();
     }
 
-    this.output.emit(event);
+    this.touchOrClick.emit(event);
   }
 }
