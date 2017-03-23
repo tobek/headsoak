@@ -21,6 +21,7 @@ export class SettingsService {
     {
       id: 'bgImageUrl',
       default: null,
+      // default: 'http://thereitwas.com/images/The Fox is Black - Desktop Wallpaper Project/chris-jaurique-2560x1440.jpg', // @TODO/theme @TODO/soon This is the default image for the dark theme
       name: 'Background image URL',
       type: 'string',
       section: 'settings',

@@ -54,9 +54,9 @@ h1
 =base-font-size // 14px
   font-size: 0.875rem
 
-=small // 11.2px
-  // font-size: 0.8rem
-  font-size: 0.7rem
+=small
+  // font-size: 0.8rem // 11.2px <- from major third type scale
+  font-size: 0.75rem // 12px
 
 h1
   +h1
@@ -78,12 +78,11 @@ select
   +base-font-size
 
 =tag-face
-  // +small
-  // font-size: 13px
-  // font-weight: bold
+  +small
+  font-weight: bold
   color: $tag-color
   letter-spacing: 0.5px
-  text-shadow: 1px 1px 2px black
+  text-shadow: 1px 1px 2px $shadow-color-light
   transition: text-shadow $transition-fast
 
 .logo h1
@@ -102,16 +101,16 @@ select
 
 /** E.g. main tag details headings ("explore [tagname]"), settings screen titles, etc. */
 =pane-heading
-  +h3
+  +h2
   margin: 0 0 2rem
   letter-spacing: 1.7px
   text-transform: uppercase
   color: $panel-heading
-=pane-subheading
-  +h4
-  margin: 2rem 0 1.5rem
-  letter-spacing: 1.3px
-  text-transform: uppercase
+// =pane-subheading
+//   +h3
+//   margin: 2rem 0 1.5rem
+//   letter-spacing: 1.3px
+//   text-transform: uppercase
 
 /** Side menu links, "back to all tags", etc.*/
 =control-heading
@@ -121,7 +120,8 @@ select
 
 /** Labels in settings screen. */
 =setting-heading
-  +base-font-size
+  +small
+  //+h4
   color: $form-label
   font-weight: bold
   letter-spacing: 2px

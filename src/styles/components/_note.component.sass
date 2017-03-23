@@ -2,7 +2,7 @@ $note-header-height: 2.5rem
 
 .note
   +card
-  +box-shadowed // `card` mixin is box-shadowed only if panel bg is transparent, but we always want note to be box-shadowed
+  // +box-shadowed // `card` mixin is box-shadowed only if panel bg is transparent, but we always want note to be box-shadowed
   background: transparent
 
   position: relative
@@ -51,7 +51,7 @@ $note-header-height: 2.5rem
     padding: 0.25rem 0.5rem 0.5rem
     // background-color: transparent
     background-color: $panel-bg
-    +box-shadowed-small-light
+    // +box-shadowed-small-light
     border-bottom: 2px solid transparent
 
     // @TODO/animation Animation looks weird cause either max-height has to be huge or be smaller but scrollable. If scrollable then scroll bar shows during animation. For now doing max-height none and no animatino
@@ -134,11 +134,11 @@ $note-header-height: 2.5rem
     .expand-tags
       display: inline-block
 
-  modal &,
-  &.is--adding-tag,
-  &.is--focused
-    box-shadow: 0px 6px 10px 5px $shadow-color
-    border-bottom-color: $form-focused-stroke
+  // modal &,
+  // &.is--adding-tag,
+  // &.is--focused
+  //   box-shadow: 0px 6px 10px 5px $shadow-color
+  //   border-bottom-color: $form-focused-stroke
 
   &.is--expanded
     .expand-tags

@@ -1,24 +1,39 @@
 // MAIN THEME COLORS
 
-$tag-color: #F26B57
+$bg-blur: 2px // set to 0 to disable
+$bg-overlay: white //rgba(0, 0, 0, 0.8) // set to transparent to disable
 
-$note-text: #424242
-$note-bg: rgba(255, 255, 255, 0.92)
+$tag-color: blue //#F26B57
+// @if $bg-overlay == white
+//     $tag-color: #902D41
+
+// $note-text: #424242
+// $note-bg: rgba(255, 255, 255, 0.92)
+
+$note-bg: transparent
 
 // $panel-color: #cecece // all panel stuff based on $accent-color now
 $panel-text: white
+@if $bg-overlay == white
+    $panel-text: rgba(0,0,0,.54)
 
-$form-inactive: #c0c0c0
+$note-text: $panel-text
+@if $bg-overlay == white
+    $note-text: black
+
+$form-inactive: #c2c2c2
 
 $accent-color: #00a8c6
-$accent-color-light: hsl(hue($accent-color), saturation($accent-color) * 0.4, 66%)
-$accent-color-dark: hsl(hue($accent-color), saturation($accent-color) * 1.4, 28%)
-$accent-color-darkest: hsl(hue($accent-color), saturation($accent-color) * 1.4, 8%)
+$accent-color-light: #c2c2c2 //lightgray //hsl(hue($accent-color), saturation($accent-color) * 0.4, 66%)
+$accent-color-dark: rgba(0,0,0,.54) //darkgray //hsl(hue($accent-color), saturation($accent-color) * 1.4, 28%)
+$accent-color-darkest: #272727 //hsl(hue($accent-color), saturation($accent-color), lightness($accent-color) * 0.154)
 
-$menu-color: $panel-text
 
-$bg-blur: 2px // set to 0 to disable
-$bg-overlay: transparent // set to transparent to disable
+$menu-color: rgba(0,0,0,.54) //$panel-text
+// @if $bg-overlay == white
+//     $menu-color: gray
+
+
 
 
 // ASSIGNED/DERIVED COLROS
@@ -30,13 +45,13 @@ $tag-active-text: white
     $tag-active-text: black
 $tag-active-bg: $tag-color
 
-$panel-bg: rgba($accent-color-darkest, 0.8)
+$panel-bg: transparent
 $panel-text-secondary: $accent-color-light // used for secondary stuff in panels like links, note/tag count, and asides. also currently assigned below to placeholders and form field borders
 $panel-heading: $accent-color
 $panel-text-link: $accent-color-light
 $panel-text-link-hover: $accent-color
 
-$form-label: $accent-color-light // mini label headings in settings screens
+$form-label: #1b2733 //$accent-color-dark // mini label headings in settings screens
 
 // Standalone icons which perform major functions:add tag, new tag, search, tag browser dropdown caret, x icons
 $icon-color: $accent-color-light
@@ -48,7 +63,7 @@ $note-icon-color: $accent-color-light
 $note-icon-hover: $accent-color
 $note-icon-active: $icon-active
 $note-icon-active-hover: $accent-color-dark
-$note-placeholder: hsl(hue($form-inactive), saturation($form-inactive) * 1.2, 68%)
+$note-placeholder: $form-inactive //hsl(hue($form-inactive), saturation($form-inactive) * 1.2, 68%)
 
 $primary-button-text: white
 $primary-button-text-hover: white
@@ -71,12 +86,14 @@ $secondary-button-bg-active: $primary-button-text-active
 $menu-link: $menu-color
 $menu-link-active: $accent-color
 $menu-link-active-bg: white 
-$menu-icon: white
+$menu-icon: $menu-color
 $menu-icon-active: $accent-color
 
 // Dropdowns are: autocomplete, sort dropdown, tooltips, tag dropdown, etc.
-$dropdown-text: $panel-text// non-clickable text in dropdowns
-$dropdown-bg: $accent-color-darkest
+$dropdown-text: $menu-color// non-clickable text in dropdowns
+$dropdown-bg: rgba($accent-color-darkest, 0.98)
+@if $bg-overlay == white
+    $dropdown-bg: white
 $dropdown-menu-link: $dropdown-text
 $dropdown-menu-link-active: $accent-color
 $dropdown-menu-link-active-bg: $menu-link-active-bg
@@ -96,12 +113,15 @@ $logo-color: $accent-color
 $app-bg-gradient-top: #16697f
 $app-bg-gradient-bottom: #0e465e
 
+// success/warning/danger text is overlaid of success/warning/danger color bg in tooltips/toasters
+$info-color: $accent-color
+$info-text: white
 $success-color: #44AF69
-$success-text: $panel-text
+$success-text: white
 $warning-color: #FCAB10
-$warning-text: $panel-text
+$warning-text: white
 $danger-color: #F8333C
-$danger-text: $panel-text
+$danger-text: white
 
 
 // SHADING AND MASKS
@@ -109,12 +129,18 @@ $danger-text: $panel-text
 $btn-disabled-opacity: 0.5
 
 $shadow-color: rgba(0, 0, 0, 0.5) // e.g. card box-shadow, text shadow
-$shadow-color-light: rgba(0, 0, 0, 0.1) // Only used (tentatively) for note tag list
+// @if $bg-overlay != white
+//     $shadow-color: rgba(255, 255, 255, 1)
+$shadow-color-light: rgba(0, 0, 0, 1) // Only used (tentatively) for note tag list
 // @TODO/ece Could be fun to do something like this, which takes $panel-color and makes it translucent. That way these box shadows will match changing theme
 // $shadow-color: rgba($panel-color, 0.5)
+@if $bg-overlay == white
+    $shadow-color-light: rgba(255, 255, 255, 1)
 
 $modal-backdrop: rgba(0, 0, 0, 0.7)
 $modal-backdrop--dark: rgba(0, 0, 0, 0.9) // e.g. for full screen note modal
+@if $bg-overlay == white
+    $modal-backdrop--dark: white
 $light-overlay: rgba($note-bg, 0.75)
 $light-overlay-text: $note-text
 
