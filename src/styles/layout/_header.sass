@@ -1,6 +1,3 @@
-$menu-size: 40px
-$menu-padding: 3px
-
 .app-top
   position: relative
   z-index: $z-header
@@ -29,10 +26,10 @@ $menu-padding: 3px
 
   .sync-animation
     position: absolute
-    margin-top: -1 * $menu-padding
-    margin-left: -1 * $menu-padding
-    width: $menu-size
-    height: $menu-size
+    margin-top: -1 * $header-menu-padding
+    margin-left: -1 * $header-menu-padding
+    width: $header-menu-size
+    height: $header-menu-size
     animation: syncing-animation 2s linear infinite
 
     @keyframes syncing-animation
@@ -54,7 +51,7 @@ $menu-padding: 3px
           height: 5%
 
     .sync-animation-border
-      height: $menu-size
+      height: $header-menu-size
       border: 1px solid $form-stroke
       border-radius: 50%
       transition: border-color $transition-slow, border-width $transition-slow, box-shadow $transition-slow
@@ -81,10 +78,10 @@ $menu-padding: 3px
   .menu
     cursor: pointer
 
-    width: $menu-size
-    height: $menu-size
-    max-width: $menu-size
-    padding: $menu-padding
+    width: $header-menu-size
+    height: $header-menu-size
+    max-width: $header-menu-size
+    padding: $header-menu-padding
 
     &.status--synced
       .sync-animation-border
