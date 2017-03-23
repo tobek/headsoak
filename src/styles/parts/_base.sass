@@ -27,3 +27,12 @@ a
   border-top: 4px solid $icon-color
   border-right: 4px solid transparent
   border-left: 4px solid transparent
+
+// Override FontAwesome x with "multiplication x" in our regular font
+.fa-times
+  font-family: inherit
+  &:before
+    content: '\2715'
+    position: relative
+    top: 1px // just seems off compared to FA icons otherwise
+    font-weight: bold
