@@ -94,6 +94,12 @@ export class AutocompleteService {
           }
         }
 
+        results.forEach((suggestion) => {
+          if (suggestion.data && suggestion.data.tag && suggestion.data.tag.prog) {
+            suggestion.highlighted += ' <i class="fa fa-bolt"></i>';
+          }
+        });
+
         return results;
       },
 
