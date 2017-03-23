@@ -4,6 +4,7 @@ import {AutocompleteSuggestion} from './autocomplete.service';
 // One situation in which this algorithm isn't quite optimal: you search "ep" against "extra special powers" - after matching `e` it will look ahead to the `s` in "special", not match `p`, and iterate through `special` until matching the `p` there, increasing score in the process. this could be fixed by look at every char after space in the remaining substring, which i didn't bother to do
 // Also, separator maybe shouldn't be just ' '. but for now this is fine
 
+const MAX_SCORE = 5;
 
 function fuzzyInitialismMatch(needle: string, haystack: AutocompleteSuggestion): AutocompleteSuggestion {
   needle = needle.toLowerCase();
@@ -25,6 +26,7 @@ function fuzzyInitialismMatch(needle: string, haystack: AutocompleteSuggestion):
   while (true) { // can't do for-loop cause lookahead sometimes pushes us out of it
     if (j === needle.length) break; // we're done
     if (++i >= haystackStr.length) return null; // no match
+    if (score > MAX_SCORE) return null; // no close-enough match
 
     if (haystackStr[i] === needle[j]) {
       // matched!
@@ -114,5 +116,5 @@ function rankedFuzzyInitialismMatches(needle: string, haystacks: AutocompleteSug
   return matches;
 }
 
-export let fuzzyMatchSort = rankedFuzzyInitialismMatches;
+export const fuzzyMatchSort = rankedFuzzyInitialismMatches;
 

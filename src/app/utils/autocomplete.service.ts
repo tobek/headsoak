@@ -23,8 +23,8 @@ export class AutocompleteService {
 
   private _logger: Logger = new Logger('AutocompleteService');
 
-  // When adding tags to a note, option to create a new tag with the currently-entered text will appear above any suggestions with a score worse (great) than this threshold
-  private NEW_TAG_AUTOCOMPLETE_SCORE_THRESHOLD = 5;
+  // When adding tags to a note, option to create a new tag with the currently-entered text will appear above any suggestions with a score worse (higher) than this threshold
+  // private NEW_TAG_AUTOCOMPLETE_SCORE_THRESHOLD = 5; // @REMOVED Now that fuzzy match sorter has `MAX_SCORE`, so we can just put new tag in at end
 
   constructor(
     private tagsService: TagsService
@@ -86,12 +86,14 @@ export class AutocompleteService {
             highlighted: '<i>new tag "<b>' + query + '</b>"</i>' // what is actually displayed
           };
 
-          for (let i = 0; i < results.length + 1; i++) { // length+1 to go past end and see if we haven't hit threshold yet
-            if (i === results.length || results[i].score > this.NEW_TAG_AUTOCOMPLETE_SCORE_THRESHOLD) {
-              results.splice(i, 0, newTagOption);
-              break;
-            }
-          }
+          // @REMOVED Now that fuzzy match sorter has `MAX_SCORE`, so we can just put new tag in at end
+          // for (let i = 0; i < results.length + 1; i++) { // length+1 to go past end and see if we haven't hit threshold yet
+          //   if (i === results.length || results[i].score > this.NEW_TAG_AUTOCOMPLETE_SCORE_THRESHOLD) {
+          //     results.splice(i, 0, newTagOption);
+          //     break;
+          //   }
+          // }
+          results.push(newTagOption);
         }
 
         results.forEach((suggestion) => {
