@@ -92,12 +92,12 @@ tag-browser
 
       // @TODO/soon Totally made up numbers to make space for caret, count, and any tag state icons based on how wide browser is. Should be flexbox or something - and/or should have mobile responsive breakpoints
       .name-wrapper
-        max-width: 260px
+        max-width: 170px
 
-        +susy-breakpoint($screen-small + 1, $susy)
+        @media (min-width: $screen-small + 1)
           max-width: 150px
-        +susy-breakpoint($screen-large, $susy)
-          max-width: 180px
+        @media (min-width: $screen-large)
+          max-width: 170px
 
     .description
       +small
