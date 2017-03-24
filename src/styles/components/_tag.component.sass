@@ -53,7 +53,7 @@ tag
   // Remove clipping name overflow in some situations:
   &.dropdown-disabled:hover,
   &.heading,
-  &.renaming
+  &.is--renaming
     .name-wrapper
       display: inline
       white-space: normal
@@ -89,7 +89,7 @@ tag
     +icon-button
     // @TODO/ece On note tags should this remove X be primary or secondary?
 
-  &.renaming
+  &.is--renaming
     .name
       min-width: 100px
       margin-bottom: -1px // account for the 1px border now that it's contenteditable, plus extra padding

@@ -36,7 +36,7 @@ export class TagComponent {
   /** Specifically this tag, not its parent or child. */
   @Input() @HostBinding('class.is--self-active') isSelfActive: boolean;
 
-  @HostBinding('class.renaming') renaming = false;
+  @HostBinding('class.is--renaming') renaming = false;
   @HostBinding('class.from--classifier') get fromClassifier() {
     return this.tag && this.tag.fromClassifier;
   }

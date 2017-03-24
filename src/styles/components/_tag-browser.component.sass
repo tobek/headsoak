@@ -82,6 +82,10 @@ tag-browser
       display: inline-block
       max-width: 100%
 
+      .route--tags &
+        // Tag might be in active chiclet state if it's in the note search bar, but we should ignore that here. Should only be active if it's hovered (right below) or expanded (further below)
+        +tag-chiclet-reset
+
       @media (min-width: $tablet-large)
         &.is--hovered
           +tag-chiclet-active
@@ -150,16 +154,22 @@ tag-browser
     &.is--expanded
       tag
         .route--tags &
-          // On full page tag browser you can rename just by clicking on tag name when it's expanded, so don't use the active chiclet style. (when *not* on full page tag browser, clicking on tag itself will toggle tag in query so we still want cursor pointer and active chiclet style)
-          +tag-chiclet-reset
-          cursor: default
-          .name-wrapper
-            cursor: text
+          // On note routes, only show active chiclet if it's in search query. On tag routes, show it if it's expanded for any reason.
+          +tag-chiclet-active
+
+          // Indicate that you can click on the tag name to rename it:
+          &:hover
+            cursor: default
+            .name-wrapper
+              cursor: text
+
+        &.is--renaming
+          +tag-chiclet-reset-important
+          .tag-actions
+            display: none
 
         .tag-actions
           display: inline-block
-        &.renaming .tag-actions
-          display: none
 
       .caret-wrapper
         .go-down
