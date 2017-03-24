@@ -16,7 +16,7 @@
         </div>
 
         <div class="logo">
-          <h1 (click)="logoClick()" title="Headsoak"><i class="fa fa-circle"></i><span class="text">Headsoak</span></h1>
+          <h1 (click)="logoClick()" title="Headsoak"><img src="/assets/img/logo.svg"><span class="text">Headsoak</span></h1>
         </div>
 
         <note-query [hidden]="! dataService.user.loggedIn" (setVisibility)="setSearchModeVisiblity($event)"></note-query>

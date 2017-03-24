@@ -1,3 +1,35 @@
+.logo h1
+  +h2
+  margin: 18px 0 22px
+  color: $logo-text-color
+  font-weight: normal
+  text-transform: uppercase
+  white-space: nowrap
+
+  .text,
+  img,
+    vertical-align: middle
+
+  img
+    position: relative
+    margin-right: 0.5rem
+    height: $header-menu-size
+    width: auto
+
+  .text
+    position: relative
+    top: 1px // @TODO/ece Just seems to look better, even though without this it's technically centered (10px above and below)
+
+  login &,
+  settings &
+    text-align: center
+
+    img
+      height: 60px
+      margin-right: 0
+    .text
+      display: block
+
 a
   +text-link
   text-decoration: underline
