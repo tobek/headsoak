@@ -311,11 +311,19 @@ export class Note {
 
     this.rebuildNoteSharing();
 
-    const updateNoteModified = ! tag.fromClassifier && this.dataService.settings.get('tagChangesChangeNutModifiedTimestamp');
+    const updateNoteModified = this.tagChangeShouldUpdateModified(tag);
 
     this.updated(updateNoteModified, fullUpdate);
 
     return tag;
+  }
+
+  /** Whether adding/removing this tag should update note modified. */
+  tagChangeShouldUpdateModified(tag: Tag): boolean {
+    return (
+      ! tag.fromClassifier &&
+      ! tag.internal &&
+      this.dataService.settings.get('tagChangesChangeNutModifiedTimestamp'));
   }
 
   // @TODO/refactor This should probably be combined with how tags are processed in *ngFor in component template.
@@ -360,7 +368,7 @@ export class Note {
 
     this.rebuildNoteSharing();
 
-    const updateNoteModified = ! tag.fromClassifier && this.dataService.settings.get('tagChangesChangeNutModifiedTimestamp');
+    const updateNoteModified = this.tagChangeShouldUpdateModified(tag);
 
     this.updated(updateNoteModified, fullUpdate);
   }
