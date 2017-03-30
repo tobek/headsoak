@@ -66,6 +66,24 @@ note-query
     width: 150px;
     margin-right: 4px
 
+  @media (min-width: $tablet-large)
+    // This is all magic numbers and shit to make this appear without changing vertical spacing/alignment of whole query bar
+    .query-control-icon--clear
+      &[hidden]
+        +faded-out
+
+      +fadeable
+      +faded-in
+
+      display: inline-block
+      overflow: hidden
+      top: 2px
+      width: 22px
+      height: 15px
+
+      .fa
+        position: absolute
+        top: -4px
 
   @media (max-width: $tablet-large - 1px)
     .tags

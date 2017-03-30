@@ -174,7 +174,7 @@
 
   note-query
     flex: 10
-    margin: 0 5px 0 30px
+    margin: 0 5px 0 1rem
 
   .search-mode-indicator,
   .private-mode-indicator
@@ -233,7 +233,9 @@
 
 .header-nav
   .note-views
-    // Only on mobile
+    margin-right: 0.75rem
+
+    // This one is only on mobile:
     .note-view--browse
       display: none
 
@@ -402,6 +404,9 @@
 
     .nav-link--note-views
       width: 100%
+
+    .note-views
+      margin-right: 0
 
     .note-view
       display: none
