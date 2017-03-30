@@ -381,9 +381,9 @@
       display: inline
 
     .nav-link
+      +dropdown-menu-border
       +not-dropdown-menu
       margin-right: 0
-      padding: 11px 1rem 5px // 2px off vertically from normal nav-link padding, so it looks vertically centered even when the border is not there
 
     // Faking `.is--active`, because `.is--active` is already applied to these guys via angular template and kind of used for other things (individual note views get active, and on desktop tag nav is active when browser is not collapsed)
     .route--note-route & .nav-link--note-views,
@@ -428,8 +428,9 @@
         +faded-out
 
       .nav-link-outer--notes
-        width: 100%
-        max-width: 100vw
+        // -1rem to account for `left: 0.5rem` in `.nav-link-outer--notes` above
+        width: calc(100% - 1rem)
+        max-width: calc(100vw - 1rem)
 
       .note-views
         display: inline-block
