@@ -62,6 +62,9 @@
     margin-right: -10px // matching padding - want avatar to align with edge, but menu border to go outside
     padding: 5px 10px
 
+    @media (max-width: $screen-large)
+      margin-right: 2px // make room for .menu-icon @TODO/styles @TODO/now This isn't on small desktop screens - check once header spacing is all done
+
     border: 1px solid transparent
     border-top-width: 0
     border-bottom-width: 0
@@ -74,6 +77,16 @@
     &.is--force-closed
       .menu-body
         +faded-out
+
+    .menu-icon
+      +small
+      +icon-button
+      position: absolute
+      top: $header-menu-size / 2
+      right: -6px // magic number
+      margin-top: -1px // magic number
+    &:hover .menu-icon
+      color: $icon-hover
 
   .menu
     cursor: pointer
@@ -324,6 +337,9 @@
       .route--note-route.is--note-query-visible &
         +faded-in
         transform: translateY($inner-header-height)
+
+    .query-control-icon--search
+      display: none
 
     .search-mode-indicator
       margin-right: 0
