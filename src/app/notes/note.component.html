@@ -22,7 +22,7 @@
       ></span
 
       ><tag class="tag-{{ tag.id }}" style="touch-action: manipulation"
-        *ngFor="let tag of (note.tags | internalTagsFilter | mapIdsToTags:note.id)"
+        *ngFor="let tag of (note.tags | internalTagsFilter | mapIdsToTags:note)"
         [tag]="tag"
         [ofNoteId]="note.id"
         context="note"

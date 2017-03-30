@@ -2,7 +2,7 @@ import {Component, NgZone, ViewChild, ElementRef} from '@angular/core';
 import {Subscription} from 'rxjs';
 
 import {AccountService} from './account.service';
-import {TooltipService} from '../utils/';
+import {Logger, TooltipService, ScrollMonitorService} from '../utils/';
 
 import * as _ from 'lodash';
 
@@ -30,7 +30,10 @@ export class LoginComponent {
 
   private loginSub: Subscription;
 
+  private _logger: Logger = new Logger('LoginComponent');
+
   constructor(
+    private scrollMonitor: ScrollMonitorService,
     private accountService: AccountService,
     private tooltipService: TooltipService,
     private zone: NgZone
@@ -200,5 +203,11 @@ export class LoginComponent {
         this.tooltipService.justTheTip(errMessage, this.signUpButton.nativeElement, 'error');
       }
     });
+  }
+
+  // @TODO/now @TODO/hp
+  // @HACK This logic belongs in HomepageComponent but... alas
+  goTo(where: string) {
+    this.scrollMonitor.scrollTo(500, undefined, true);
   }
 }

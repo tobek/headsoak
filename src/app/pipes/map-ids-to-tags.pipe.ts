@@ -2,6 +2,7 @@ import {Pipe, PipeTransform} from '@angular/core';
 
 import {Logger} from '../utils/';
 
+import {Note} from '../notes/';
 import {Tag} from '../tags/';
 import {TagsService} from '../tags/tags.service';
 
@@ -18,13 +19,13 @@ export class MapIdsToTagsPipe implements PipeTransform {
   ) {}
 
   // @TODO/optimization This seems to be getting called a BILLION times (more in dev mode but still in prod) though only seeing it when we hit that error with missing tag of course. Seems to be because of change detection starting from app component. Is that necessary?
-  transform(arr: string[], noteId?: string): Tag[] {
+  transform(arr: string[], note?: Note): Tag[] {
     if (! _.size(arr)) {
       return [];
     }
 
     return _.reduce(arr, (tags: Tag[], tagId: string): Tag[] => {
-      const tag = this.tagsService.tags[tagId];
+      const tag = note ? note.dataService.tags.tags[tagId] : this.tagsService.tags[tagId];
 
       if (tag) {
         tags.push(tag);
@@ -32,10 +33,10 @@ export class MapIdsToTagsPipe implements PipeTransform {
       else {
         // Have had some issue with deleted or non-existent tag IDs showing up on notes, here we can debug it
 
-        if (noteId && ! erroredOnMissingTag[noteId + tagId]) {
+        if (note && ! erroredOnMissingTag[note.id + tagId]) {
           // Logging this message a gajillion times slows things down and also we report this to GA, so only do it once
-          this._logger.warn('Note ID', noteId, 'claims to have tag ID', tagId, 'but no tag found for that ID.');
-          erroredOnMissingTag[noteId + tagId] = true;
+          this._logger.warn('Note ID', note.id, 'claims to have tag ID', tagId, 'but no tag found for that ID.');
+          erroredOnMissingTag[note.id + tagId] = true;
         }
         // @TODO/rewrite @TODO/tags. Check firebase data for all of these and see how pervasive. Permanent fix would be to loop through notes that reference this tag! Once fixed, TagComponent should throw an error rather than try to handle being passed no tag
       }

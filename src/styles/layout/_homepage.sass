@@ -1,46 +1,96 @@
 // Styles for the logged-out marketing home page
 
+$homepage-main-bg: white
+
 homepage
   display: block
   position: relative
   color: $panel-text
 
-  // There are none of these any more
-  // h2
-  //   margin-bottom: 40px
-  //   font-weight: normal
-  //   letter-spacing: 1.8px
-  //   color: $primary-color-contrast
-  //   a
-  //     color: $primary-color-contrast
+  .intro
+    // text-shadow: 2px 2px 5px black
+    // color: $panel-text
+    color: gray
+    
+    h2
+      margin-top: 0
+      margin-bottom: 0.5rem
+    h3
+      margin-top: 0.5rem
+
+  .ribbon
+    position: relative
+    width: 100%
+    padding: 0.5rem
+    color: $note-text
+    background-color: $homepage-main-bg
+    font-weight: bold
+    text-align: center
+    // @TODO/hp Styles
+
+  .full-width-edges
+    &:before,
+    &:after
+      content: ''
+      position: absolute
+      top: 0
+      height: 100%
+      max-height: 100vh // @TODO/hp This is dumb
+      width: 500px
+      background-color: $panel-bg
+
+    &:before
+      left: -500px
+    &:after
+      right: -500px
+
+    &.ribbon,
+    &.hero
+      &:before,
+      &:after
+        background-color: $homepage-main-bg
+
+  .steps
+    display: flex
+    justify-content: space-between
 
   .demo-container
     +span(6)
-    height: 100vh
-    padding-top: 10vh // matches login top margin
-    padding-right: 50px
+    &:nth-child(2n)
+      +span(6 last)
 
-    @media (max-height: 750px)
-      padding-top:  0
+  .hero
+    background-color: $homepage-main-bg
 
-  .note,
-  .tag-explore-wrapper
-    transition: opacity $transition-med, visibility $transition-med
-  .tag-explore-wrapper,
-  &.is--tag-explore-stage .note
-    opacity: 0
-    visibility: hidden
-  &.is--tag-explore-stage .tag-explore-wrapper
-    opacity: 1
-    visibility: visible
+    .demo-container
+      height: 100vh
+      padding-top: 10vh // matches login top margin
+      padding-right: 50px
 
-  .note
-    margin-top: 170px // size of login header height/margin
+      @media (max-height: 750px)
+        padding-top:  0
+
+  // .note,
+  // .tag-explore-wrapper
+  //   transition: opacity $transition-med, visibility $transition-med
+  // .tag-explore-wrapper,
+  // &.is--tag-explore-stage .note
+  //   opacity: 0
+  //   visibility: hidden
+  // &.is--tag-explore-stage .tag-explore-wrapper
+  //   opacity: 1
+  //   visibility: visible
+
+  .hero .note
+    // margin-top: 170px // size of login header height/margin
+    margin-top: 8rem
     height: 300px
 
     @media (max-height: 550px)
-      margin-top: 140px
+      // margin-top: 140px
+      margin-top: 6rem
 
+  .note
     .note-wrapper .body-input // extra specificity to overcome route-related classes
       height: 100%
       max-height: none !important
@@ -67,42 +117,35 @@ homepage
         &.is--highlighted
           opacity: 1
 
-      &:hover .tag-actions
-        display: inline // overrides normal tag style that makes the tag wider on hover here // @TODO/now I think this same problem exists in tag browser list, why do we even need it?
-
   .tag-explore-wrapper
     position: relative
     width: 100%
 
   .tag-explore
     +card
-    position: absolute
-    overflow-y: scroll
+    // position: absolute
+    // overflow-y: scroll
     width: 100%
-    height: 450px
+    height: 400px // @TODO/hp
     max-height: 90vh
-    padding-top: 25px
-    padding-bottom: 25px
+    // padding-top: 25px
+    // padding-bottom: 25px
+    padding: 1rem
 
-    margin-top: 100px
-    @media (max-height: 550px)
-      margin-top: 50px
-
-    .heading
-      +h3
+    // .heading
+    //   +h3
 
     force-graph
       display: block
       width: 100%
-      height: 300px
-      margin-top: 15px
+      height: 100%
 
-    .note-count-heading
-      +h3
-      margin: -10px 0 0
+    // .note-count-heading
+    //   +h3
+    //   margin: -10px 0 0
 
-    .cooccurrences .static-tag:before
-      margin-right: 1px
+    // .cooccurrences .static-tag:before
+    //   margin-right: 1px
 
   .teaser
     +span(6)
@@ -118,15 +161,33 @@ homepage
     font-weight: bold
     letter-spacing: 1.8px
     text-transform: uppercase
-    color: $panel-text
 
   @media (max-width: $screen-small)
     .demo-container,
     .teaser
       padding-right: 25px
 
+  .static-notes
+    @extend .clearfix
+    padding: 1.5rem 0
+
+  .screenshots
+    padding: 2rem 0
+
+    .shot
+      @extend .clearfix
+      margin-bottom: 2rem
+
+      img
+        +span(4)
+        height: auto
+      .text
+        +span(7 last)
+        text-align: left
+        font-weight: normal
+
   .features
-    +span(12)
+    @extend .clearfix
     margin-top: gutter() * 3
 
   .feature
@@ -144,22 +205,22 @@ homepage
       margin-bottom: 0
 
 
-.homepage-outro
-  clear: both
-  width: 100%
-  padding-top: 50px
+  .homepage-outro
+    clear: both
+    width: 100%
+    margin-top: 50px
 
-  h4
-    position: relative
-    margin: 0
-    padding: 50px 25px
-    text-align: center
-    background-color: $panel-bg
-    text-shadow: 2px 2px 5px $shadow-color
-    letter-spacing: 1.8px
+    h4
+      position: relative
+      margin: 0
+      padding: 50px 25px
+      // text-align: center
+      // background-color: $panel-bg
+      // text-shadow: 2px 2px 5px $shadow-color
+      letter-spacing: 1.8px
 
-    a
-      +text-link
+      a
+        +text-link
 
 // .modal-content.outro-login
 //   float: right
@@ -173,6 +234,19 @@ homepage
 //     .subheading--general
 //       opacity: 1 !important
 //       visibility: visible !important
+
+login .homepage-nav
+  position: absolute
+  display: flex
+  justify-content: space-around
+  top: 0.5rem
+  left: 0
+  width: 100%
+  text-align: center
+
+  a
+    // @TODO/hp Style this
+    text-decoration: none
 
 
 // Because of fucked up flow/DOM ordering, we need two copies of the <login> component. One we show on mobile, the other on desktop

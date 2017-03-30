@@ -139,7 +139,7 @@ export class TagComponent {
       this.renamable = false;
     }
 
-    if (this.ofNoteId || this.context === 'tagBrowser') {
+    if ((this.ofNoteId || this.context === 'tagBrowser') && this.activeUIs.noteQuery) {
       this.queryTagsUpdatedSub = this.activeUIs.noteQuery.tagsUpdated$.subscribe(
         this.queryTagsUpdated.bind(this)
       );

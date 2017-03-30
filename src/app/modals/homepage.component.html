@@ -1,59 +1,152 @@
-<div class="demo-container">
-  <div class="tag-explore-wrapper">
-    <div class="tag-explore">
-      <div class="heading">Explore <span class="static-tag">futurism</span></div>
+<div class="hero full-width-edges">
+  <div class="clearfix">
+    <div class="demo-container hero">
+      <div class="intro">
+        <h2>Don't just takes notes. Utilize them.</h2>
+        <h3>Augmented note-taking with smart tags</h3>
+      </div>
 
-      <force-graph *ngIf="tagExploreStage" [graph]="tagGraph"></force-graph>
+      <note class="note"
+        style="touch-action: manipulation"
+        ref-demoNoteRef
+        [note]="demoNote"
+      ></note>
 
-      <div class="tag-details">
-        <div class="note-count-heading">37 Notes</div>
-
-        <div>
-          <div class="cooccurrences">
-            <h4>Most commonly paired with:</h4>
-            <ul class="cooccurring-tags tag-list">
-              <li><span class="static-tag">sentiment: positive</span> <span class="common-notes-link">(9 times)</span></li>
-              <li><span class="static-tag">link</span> <span class="common-notes-link">(7 times)</span></li>
-              <li><span class="static-tag">technology</span> <span class="common-notes-link">(6 time)</span></li>
-              <li><span class="static-tag">post to blog</span> <span class="common-notes-link">(4 times)</span></li>
-            </ul>
+      <!--
+      <div class="note" [class.is--adding-tag]="addingTag">
+        <div class="note-wrapper">
+          <div class="note-bg"></div>
+          <div class="header">
+            <div class="tags"
+              ><span class="tag-like"><input type="text" placeholder="add tag" class ="new-tag-input" ref-noteAddTagInput /><span class="new-tag-button"><i class="fa fa-plus"></i></span></span
+              ><tag
+                *ngFor="let tag of tags"
+                [tag]="tag"
+                [ofNoteId]="0"
+                context="note"
+                [class.is--highlighted]="tag.highlight"
+                [class.is--being-removed]="tag.beingRemoved"
+              ></tag>
+            </div>
           </div>
-          <div class="cooccurrences">
-            <h4>Least commonly paired with:</h4>
-            <ul class="cooccurring-tags tag-list">
-              <li><span class="static-tag">sleep</span> <span class="common-notes-link">(1 time)</span></li>
-            </ul>
-          </div>
+          <textarea class="body-input" autocorrect="off" autocapitalize="off" spellcheck="false" ref-noteBody (keydown)="false"></textarea>
+        </div>
+      </div>
+      -->
+
+      <!-- only shown on mobile -->
+      <login></login>
+
+      <!--
+      <div class="teaser">
+        Learn more
+        <br>
+        <i class="fa fa-chevron-down"></i>
+      </div>
+      -->
+    </div>
+  </div>
+</div>
+
+<div class="ribbon steps full-width-edges">
+  <span>1. Add a note, add tags.</span>
+  <span>2. Enable smart tags or create your own.</span>
+  <span>3. Watch a map of your thoughts unfold.</span>
+</div>
+
+<div class="tag-explore-wrapper full-width-edges">
+  <div class="tag-explore">
+    <!-- <div class="heading">Explore <span class="static-tag">futurism</span></div> -->
+
+    <force-graph *ngIf="showVis" [graph]="tagGraph" ></force-graph>
+
+    <!-- @TODO/hp Should we have something like this? In screenshots section?
+    <div class="tag-details">
+      <div class="note-count-heading">37 Notes</div>
+
+      <div>
+        <div class="cooccurrences">
+          <h4>Most commonly paired with:</h4>
+          <ul class="cooccurring-tags tag-list">
+            <li><span class="static-tag">sentiment: positive</span> <span class="common-notes-link">(9 times)</span></li>
+            <li><span class="static-tag">link</span> <span class="common-notes-link">(7 times)</span></li>
+            <li><span class="static-tag">technology</span> <span class="common-notes-link">(6 time)</span></li>
+            <li><span class="static-tag">post to blog</span> <span class="common-notes-link">(4 times)</span></li>
+          </ul>
+        </div>
+        <div class="cooccurrences">
+          <h4>Least commonly paired with:</h4>
+          <ul class="cooccurring-tags tag-list">
+            <li><span class="static-tag">sleep</span> <span class="common-notes-link">(1 time)</span></li>
+          </ul>
         </div>
       </div>
     </div>
+    -->
   </div>
+</div>
 
-  <div class="note" [class.is--adding-tag]="addingTag">
-    <div class="note-wrapper">
-      <div class="note-bg"></div>
-      <div class="header">
-        <div class="tags"
-          ><span class="tag-like"><input type="text" placeholder="add tag" class ="new-tag-input" ref-noteAddTagInput /><span class="new-tag-button"><i class="fa fa-plus"></i></span></span
-          ><tag
-            *ngFor="let tag of tags"
-            [tag]="tag"
-            [class.is--highlighted]="tag.highlight"
-            [class.is--being-removed]="tag.beingRemoved"
-          ></tag>
+<div class="ribbon full-width-edges">HARNESS SMART TAGS</div>
+
+<div class="static-notes">
+  <div class="demo-container">
+    <div class="note">
+      <div class="note-wrapper">
+        <div class="note-bg"></div>
+        <div class="header">
+          <div class="tags"
+            ><span class="tag-like"><input type="text" placeholder="add tag" class ="new-tag-input" ref-noteAddTagInput /><span class="new-tag-button"><i class="fa fa-plus"></i></span></span
+            ><tag
+              *ngFor="let tag of staticNote1Tags"
+              [tag]="tag"
+              [ofNoteId]="1"
+              context="note"
+            ></tag>
+          </div>
         </div>
+        <div class="body-input" autocorrect="off" autocapitalize="off" spellcheck="false">Extract insights from your notes.
+
+Use the #auto tag to automatically tag your notes with keywords.
+
+Or the #sentiment tag to see where your notes fall on the positive and negative spectrum.</div>
       </div>
-      <textarea class="body-input" autocorrect="off" autocapitalize="off" spellcheck="false" ref-noteBody (keydown)="false"></textarea>
     </div>
   </div>
+  <div class="demo-container">
+    <div class="note">
+      <div class="note-wrapper">
+        <div class="note-bg"></div>
+        <div class="header">
+          <div class="tags"
+            ><span class="tag-like"><input type="text" placeholder="add tag" class ="new-tag-input" ref-noteAddTagInput /><span class="new-tag-button"><i class="fa fa-plus"></i></span></span
+            ><tag
+              *ngFor="let tag of staticNote2Tags"
+              [tag]="tag"
+              [ofNoteId]="2"
+              context="note"
+            ></tag>
+          </div>
+        </div>
+        <div class="body-input" autocorrect="off" autocapitalize="off" spellcheck="false">Perform actions on your notes.
 
-  <!-- only shown on mobile -->
-  <login></login>
+Use the #remember this tag to reap the benefits of spaced repetition learning. Yada yada.</div>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <div class="teaser">
-    Learn more
-    <br>
-    <i class="fa fa-chevron-down"></i>
+<div class="ribbon full-width-edges screenshots">
+  <div class="shot">
+    <img src="http://lorempixel.com/400/175/abstract/Smart Tag Library/">
+    <div class="text">
+      As easy as clicking a button. Just pick the ones that work for you.
+    </div>
+  </div>
+  <div class="shot">
+    <img src="http://lorempixel.com/400/250/abstract/Smart Tag Editor/">
+    <div class="text">
+      As powerful as you want it to be. Customize your smart tags using a simple interface. You're a devloper? Write your own smart tags and share them with the community!
+    </div>
   </div>
 </div>
 
@@ -88,4 +181,10 @@
     <h4>Privacy</h4>
     <p>Zero-knowledge encryption <i class="fa fa-user-secret"></i> means you rule your own data - not even we have the keys.</p>
   </div>
+</div>
+
+<div class="ribbon full-width-edges homepage-outro">
+  <h4>
+    Questions? Ideas? <a href="mailto:support@headsoak.com">Contact us.</a>
+  </h4>
 </div>

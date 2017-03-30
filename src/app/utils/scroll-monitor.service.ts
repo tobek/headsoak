@@ -48,10 +48,21 @@ export class ScrollMonitorService {
     this.lastScrollY = this.newScrollY;
   }
 
-  scrollToTop(duration = 250) {
-    const $target = jQuery(this.sizeMonitor.isMobile ? 'html, body' : 'main');
+  scrollTo(scrollTop: number, duration = 250, modal?: boolean) {
+    let $target;
 
-    $target.animate({ scrollTop: 0 }, duration);
+    if (modal) {
+      $target = jQuery('modal');
+    }
+    else {
+      $target = jQuery(this.sizeMonitor.isMobile ? 'html, body' : 'main');
+    }
+
+    $target.animate({ scrollTop: scrollTop }, duration);
+  }
+
+  scrollToTop(duration = 250, modal?: boolean) {
+    this.scrollTo(0, duration, modal);
   }
 
   ensureElVisibleInScrollable(el: JQuery | HTMLElement | string, duration = 250) {

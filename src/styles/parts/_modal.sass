@@ -43,6 +43,9 @@ modal
     max-width: $screen-small
     height: 100%
 
+    &.is--login-container
+      max-width: $screen-large // @HACK This is the natural value from `outer-container`
+
   .modal-content
     +card
     +span(6)
@@ -64,10 +67,17 @@ modal
 
     &.is--login,
     &.is--loading
-      background-color: $panel-bg
+      z-index: 1
 
       @media (min-width: $tablet-large)
         +span(6 last)
+
+    &.is--login
+      background: none
+      box-shadow: none
+
+    &.is--loading
+      background-color: $panel-bg
 
     @media (max-width: $tablet-large)
       +span(9)
@@ -100,8 +110,11 @@ modal
       transform: translateY(-50%)
       transition-timing-function: ease-out
 
-  &.full-height .modal-content
-    height: 100%
+  &.full-height
+    overflow-x: hidden
+    
+    .modal-content
+      height: 100%
 
   &.dark-solo
     @media (min-width: $tablet-large)
