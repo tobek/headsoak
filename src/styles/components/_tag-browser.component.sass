@@ -111,6 +111,7 @@ tag-browser
 
     // @TODO/polish Caret should change to active style when it's open
     .caret-wrapper
+      +small
       +icon-button
       position: absolute
       top: 0
@@ -132,7 +133,7 @@ tag-browser
       .go-up
         +faded-out
         position: absolute
-        margin-top: 2px
+        margin-top: 3px // magic number
 
     // @TODO/polish This should slide down all nice, but right now it just jumps into place because it's done with *ngIf
     .menu .item
