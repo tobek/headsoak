@@ -238,7 +238,7 @@ homepage
 login .homepage-nav
   position: absolute
   display: flex
-  justify-content: space-around
+  justify-content: center
   top: 0.5rem
   left: 0
   width: 100%
@@ -246,7 +246,13 @@ login .homepage-nav
 
   a
     // @TODO/hp Style this
+    margin: 0 1.5rem
+    font-weight: bold
     text-decoration: none
+
+    color: $accent-color-dark
+    &:hover
+      color: $panel-text-link-hover
 
 
 // Because of fucked up flow/DOM ordering, we need two copies of the <login> component. One we show on mobile, the other on desktop
