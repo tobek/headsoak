@@ -7,12 +7,9 @@ note-query
   padding: 2px 15px 1px // top padding should match .private-mode-indicator top padding
 
   +input-underline
-  &.is--focused
-    +input-underline-active
 
-  .text-input
-    border: 0
-    padding: 2px 0 0 // nudge down to align nicely with bottom border and tag chiclet
+  &.is--focused
+  +input-underline-active
 
   // Active/inactive styles
   @media (min-width: $tablet-large)
@@ -38,6 +35,10 @@ note-query
           opacity: 1
   // End active/inactive styles
 
+  .text-input
+    border: 0
+    padding: 2px 0 0 // nudge down to align nicely with bottom border and tag chiclet
+
   .tags,
   .query-controls
     flex: 1
@@ -60,9 +61,6 @@ note-query
 
   .text-input
     flex: 5
-
-  .control-icon
-    +h3
 
   .sort-dropdown
     width: 150px;
@@ -113,9 +111,9 @@ note-query
       flex: 0.1
 
     // Search icon is always in header, and we want clear always visible in note query so you can close out
-    .control-icon--search
+    .query-control-icon--search
       display: none
-    .control-icon--clear
+    .query-control-icon--clear
       display: inline
 
     .query-info

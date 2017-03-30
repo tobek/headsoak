@@ -192,34 +192,18 @@
       visibility: visible
 
 .app-nav
-  +outer-container
-  white-space: nowrap
-  height: $nav-header-height
-  padding-top: 8px
-  padding-bottom: 6px
-
-  .new-note
-    margin-top: 13px // @HACK Magic number to vertically align. Lazy.
-
-  .nav-link-outer--tags
-    float: right
-
   ul
     +plain-list
 
   .nav-link
     +menu-link
-    @if $panel-bg != transparent
-      +box-shadowed
+    white-space: nowrap
+    letter-spacing: 1px
+    text-transform: uppercase
     background-color: $panel-bg
     border: none
     display: inline-block
-    white-space: nowrap
     width: auto
-    margin-right: gutter()
-    padding: 9px 1rem 7px // we want 0.5rem vertical padding, but vertical shit is offset as always...
-    letter-spacing: 1px
-    text-transform: uppercase
 
     .nav-link-text,
     .fa
@@ -231,49 +215,58 @@
       transition: border-color $transition-fast
       // border-bottom: 4px solid transparent // for old active style
 
-  li:last-of-type a.nav-link
-    margin-right: 0
-
-  // @TODO/styles @TODO/ece Active styles for nav!
-  // .is--active a .fa
-  //   border-color: $primary-color-contrast
-  // .is--active a:hover .fa
-  //   border-color: $highlight-color
-
-  .note-view
-    display: none
-
-    &.is--active
-      display: inline
-
-    &:hover
-      color: $icon-hover
-
-    .fa-bars
+  .note-view .fa-bars
       transform: translateY(-0.5px) // no idea why this is necessary but it bothers me that it's off...
 
-  @media (min-width: $tablet-large)
-    .route--list &,
-    .route--scroll &,
-    .route--browse &
-      .nav-link--note-views:hover
-        .note-view
-          display: inline
+.header-nav
+  .note-views
+    // Only on mobile
+    .note-view--browse
+      display: none
 
-          &.is--active .fa
-            color: $icon-hover
+    .note-view .fa
+      color: $menu-icon
+    .note-view.is--active .fa
+      color: $menu-icon-active
 
-        // While actually hovering over the choices, don't highlight the currently active one
-        .note-views:hover
-          .note-view
-            &.is--active
-              cursor: default
-              .fa
-                color: $menu-icon-active
+    // While actually hovering over the choices, don't highlight the currently active one
+    &:hover
+      .note-view
+        &.is--active
+          cursor: default
+          .fa
+            color: $menu-icon
+        &:hover .fa
+          color: $menu-icon-active
+        &.is--active:hover .fa
+          color: $icon-active-hover
 
-            &:hover
-              .fa
-                color: $icon-hover
+.secondary-nav
+  +outer-container
+  white-space: nowrap
+  height: $nav-header-height
+  padding-top: 8px
+  padding-bottom: 6px
+
+  // Only on mobile
+  .nav-link-outer--notes,
+  .nav-link-outer--tags
+    display: none
+
+  .new-note
+    margin-top: 13px // @HACK Magic number to vertically align. Lazy.
+
+  .nav-link-outer--tags
+    float: right
+
+  .nav-link
+    @if $panel-bg != transparent
+      +box-shadowed
+    margin-right: gutter()
+    padding: 9px 1rem 7px // we want 0.5rem vertical padding, but vertical shit is offset as always...
+
+  li:last-of-type a.nav-link
+    margin-right: 0
 
 
 @media (max-width: 900px) // @HACK Kind of arbitrary but it works?
@@ -346,7 +339,10 @@
     .menu-link--shortcuts
       display: none !important
 
-  .app-nav
+  .header-nav
+    display: none
+
+  .secondary-nav
     +dropdown-menu
     position: fixed
     bottom: 0
@@ -356,6 +352,11 @@
     padding-bottom: 0
     border: none
     text-align: center
+
+    // Hidden here on desktop, but used on mobile. @TODO/optimization Would it be better if they were hidden with `*ngIf` instead of CSS?
+    .nav-link-outer--notes,
+    .nav-link-outer--tags
+      display: inline
 
     .nav-link
       +not-dropdown-menu
@@ -387,7 +388,14 @@
       width: 100%
 
     .note-view
+      display: none
       transition: margin $transition-fast
+
+      &.is--active
+        display: inline
+
+      &:hover
+        color: $menu-icon-active
 
     &.is--note-nav-open
       .nav-link-outer--tags,
@@ -405,8 +413,8 @@
         display: inline-block
         margin-right: 15vw
 
-        &.is--active
-          color: $icon-hover
+        &.is--active .fa
+          color: $menu-icon-active
 
 // .mobile-only
 //   display: none !important

@@ -19,6 +19,16 @@
           <h1 (click)="logoClick()" title="Headsoak"><img src="/assets/img/logo.svg"><span class="text">Headsoak</span></h1>
         </div>
 
+        <div class="search-mode-indicator"
+          *ngIf="sizeMonitor.isMobile"
+          [class.is--active]="! noteQueryComponent.isEmpty()"
+          (click)="searchModeClick()"
+        ><i class="fa fa-search"></i></div>
+
+        <span class="query-control-icon query-control-icon--main query-control-icon--search"
+          [hidden]="noteQueryComponent.queryText || noteQueryComponent.tags.length"
+          (click)="noteQueryComponent.focus()"
+        ><i class="fa fa-search"></i></span>
         <note-query [hidden]="! dataService.user.loggedIn" (setVisibility)="setSearchModeVisiblity($event)"></note-query>
 
         <div class="private-mode-indicator"
@@ -31,11 +41,32 @@
           <i class="fa fa-unlock-alt unlocked"></i>
         </div>
 
-        <div class="search-mode-indicator"
-          *ngIf="sizeMonitor.isMobile"
-          [class.is--active]="! noteQueryComponent.isEmpty()"
-          (click)="searchModeClick()"
-        ><i class="fa fa-search"></i></div>
+        <!-- Only on desktop. On mobile everything is in `nav.secondary-nav` -->
+        <nav class="app-nav header-nav" *ngIf="! sizeMonitor.isMobile">
+          <ul
+            ><li class="nav-link-outer--notes"><span class="nav-link nav-link--note-views" [routerLink]="[routingInfo.lastNoteRoute]" [class.is--active]="NOTE_BROWSER_ROUTES.indexOf(router.url) !== -1">
+                <span class="note-views"
+                  ><span
+                    *ngFor="let route of noteToggleNavRoutes"
+                    class="note-view note-view--{{ route.data.slug }}"
+                    [routerLink]="[route.path]"
+                    [attr.data-tooltip]="route.data.name + ' view'"
+                    [class.is--active]="('/' + route.path) === routingInfo.lastNoteRoute" 
+                  ><!-- @TODO/optimization These could be a one time binding
+                    --><i class="fa fa-lg fa-{{ route.data.iconSlug }}"></i
+                  ></span
+                ></span>
+
+                <span class="nav-link-text">Notes</span
+              ></span
+            ></li
+
+            ><li class="nav-link-outer--tags"><span class="nav-link" [class.is--active]="router.url.indexOf('/tags') === 0" (touchOrClick)="tagNavClick()">
+                <span class="nav-link-text">Tags</span>
+              </span
+            ></li
+          ></ul>
+        </nav>
 
         <!-- @TODO/mobile @TODO/QA Test the menu behavior with forceMenuClosed works -->
         <div class="menu-wrapper" [class.is--force-closed]="forceMenuClosed" (mouseenter)="forceMenuClosed = false" (click)="forceMenuClosed = false">
@@ -82,7 +113,8 @@
       </div>
     </header>
 
-    <nav class="app-nav" *ngIf="dataService.user.loggedIn" [class.is--note-nav-open]="isNoteViewsNavOpen">
+    <!-- On desktop this provides just new note button and tag sidebar expand/collapse, and the rest is provided by `nav.header-nav`. On mobile this nav provides everything. -->
+    <nav class="app-nav secondary-nav" *ngIf="dataService.user.loggedIn" [class.is--note-nav-open]="isNoteViewsNavOpen">
       <ul
         ><li class="nav-link-outer--new-note"
           ><span class="nav-link" (touchOrClick)="newNote()">
@@ -92,15 +124,14 @@
         ></li
 
         ><li class="nav-link-outer--notes" ref-notesNav
+          *ngIf="sizeMonitor.isMobile"
           ><span class="nav-link nav-link--note-views"
             [routerLink]="[routingInfo.lastNoteRoute]"
             (click)="noteNavTouchend($event)"
-          >
-            <!-- @TODO/mobile @TODO/polish Ideally this would have a special behavior on mobile where it normally goes to last note route and does NOT show the notes views, unless already on a note route, in which case it force-shows the note views but without the current bug of hitting one while you tap. -->
-            <span class="note-views"
+            ><span class="note-views"
               ><span
                 *ngFor="let route of noteToggleNavRoutes"
-                class="note-view"
+                class="note-view note-view--{{ route.data.slug }}"
                 [routerLink]="[route.path]"
                 [class.is--active]="('/' + route.path) === routingInfo.lastNoteRoute" 
               ><!-- @TODO/optimization These could be a one time binding
@@ -112,12 +143,14 @@
           ></span
         ></li
 
-        ><li class="nav-link-outer--tags" [class.is--active]="! homeComponent || ! homeComponent.tagBrowserCollapsed"
+        ><li class="nav-link-outer--tags"
+          [class.is--active]="! homeComponent || ! homeComponent.tagBrowserCollapsed"
+          *ngIf="sizeMonitor.isMobile"
           ><span class="nav-link" (touchOrClick)="tagNavClick()">
-          <i class="fa fa-lg fa-hashtag"></i>
+            <i class="fa fa-lg fa-hashtag"></i>
             <span class="nav-link-text">Tags</span>
           </span
-        ></li
+        ><!-- @TODO/now @TODO/head tag sidebar collapse stuff --></li
       ></ul>
     </nav>
   </div>
