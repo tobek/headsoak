@@ -343,7 +343,14 @@ export class TagBrowserComponent {
     }
 
     const $tagList = $(this.mainTagListRef.nativeElement);
-    $tagList.css('width', $tagList.parent().width());
+    const width = $tagList.parent().width();
+
+    if (width <= 0) {
+      // This only happens due to an alternate state, e.g. tag browser is collapsed, which shouldn't be taken into consideration because then we have a flash of 0 width tag list when the tag browser is un-collapsed
+      return;
+    }
+
+    $tagList.css('width', width);
   }
 
   ensureTagVisibleInList(tag: Tag) {

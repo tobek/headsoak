@@ -346,12 +346,7 @@ export class AppComponent {
     // Something else closed us, OR this was a click inside notes nav. Either way, let other handlers handle what to do next
   }
 
-  tagNavClick(): void {
-    if (this.sizeMonitor.isMobile) {
-      this.router.navigateByUrl('/tags');
-      return;
-    }
-
+  tagsToggleCollapsed(): void {
     // @TODO/polish @TODO/tags Would be cool if on tags pages it also collapsed the tag browser - this would let you go full screen on things like the visualizations, and also smart tag creation page (allowing for documentation in the sidebar?) On the other hand, maybe an explicit "full screen" link in those places would be better (it could do the same thing though.)
 
     if (NOTE_BROWSER_ROUTES.indexOf(this.router.url) !== -1) {

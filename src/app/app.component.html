@@ -51,7 +51,10 @@
               ></span
             ></li
 
-            ><li class="nav-link-outer--tags"><span class="nav-link" [class.is--active]="router.url.indexOf('/tags') === 0" (touchOrClick)="tagNavClick()">
+            ><li class="nav-link-outer--tags"><span class="nav-link"
+              [routerLink]="['/tags']"
+              [class.is--active]="router.url.indexOf('/tags') === 0"
+            >
                 <span class="nav-link-text">Tags</span>
               </span
             ></li
@@ -146,13 +149,29 @@
         ></li
 
         ><li class="nav-link-outer--tags"
-          [class.is--active]="! homeComponent || ! homeComponent.tagBrowserCollapsed"
+          *ngIf="! sizeMonitor.isMobile && (! homeComponent || ! homeComponent.tagBrowserCollapsed)"
+          data-tooltip="Collapse tags"
+          ><span class="nav-link" (touchOrClick)="tagsToggleCollapsed()">
+            <i class="fa fa-lg fa-chevron-circle-right"></i>
+          </span
+        ></li
+        ><li class="nav-link-outer--tags"
+          *ngIf="! sizeMonitor.isMobile && (!! homeComponent && homeComponent.tagBrowserCollapsed)"
+          data-tooltip="Expand tags"
+          ><span class="nav-link" (touchOrClick)="tagsToggleCollapsed()">
+            <i class="fa fa-lg fa-chevron-circle-left"></i>
+          </span
+        ></li
+
+        ><li class="nav-link-outer--tags"
           *ngIf="sizeMonitor.isMobile"
-          ><span class="nav-link" (touchOrClick)="tagNavClick()">
+          [class.is--active]="router.url.indexOf('/tags') === 0"
+          [routerLink]="['/tags']"
+          ><span class="nav-link">
             <i class="fa fa-lg fa-hashtag"></i>
             <span class="nav-link-text">Tags</span>
           </span
-        ><!-- @TODO/now @TODO/head tag sidebar collapse stuff --></li
+        ></li
       ></ul>
     </nav>
   </div>
