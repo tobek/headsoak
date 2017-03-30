@@ -452,6 +452,7 @@ export class HomepageComponent {
       this.write(tagName, () => {
         setTimeout(() => {
           this.demoNoteRef.completeAddTag(tagName, true);
+          this.demoNoteAddTagInput.value = '';
           cb();
         }, 500);
       }, 0, 0.33, this.demoNoteAddTagInput);

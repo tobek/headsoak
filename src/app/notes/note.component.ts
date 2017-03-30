@@ -281,6 +281,9 @@ export class NoteComponent {
     if (focusOnBody && ! this.sizeMonitor.isMobile) {
       this.bodyFocus();
     }
+
+    // Clear add tag input
+    this.addTagName = '';
   }
 
   newTagClick(event: MouseEvent): void {
