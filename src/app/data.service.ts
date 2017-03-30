@@ -149,6 +149,7 @@ export class DataService {
     }
   }
 
+  // @TODO/data @TODO/account We should confirm this when logging out, too
   confirmLeaving = (event) => {
     if (this.isDigestEmpty(this.digest) && this.isDigestEmpty(this.digestSyncing)) {
       // It's ok, they can leave

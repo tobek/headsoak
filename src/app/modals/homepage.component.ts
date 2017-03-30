@@ -300,6 +300,16 @@ export class HomepageComponent {
     this.demoNote.updated = function(updateModified, fullUpdate) {
       this['_updated'](updateModified, true);
     };
+
+    // @HACK Copied from Note model, so that homepage demo note updates faster:
+    this.demoNote.focused = function() {
+      this._logger.log('Focused');
+
+      this.oldBody = this.body;
+      clearInterval(this.nutSaver);
+
+      this.nutSaver = setInterval(this.maybeUpdate.bind(this), 1000);
+    };
   }
 
   ngOnInit() {
@@ -331,9 +341,13 @@ export class HomepageComponent {
     jQuery(window).off('.hsHp');
     jQuery('modal').off('.hsHp');
     jQuery(this.demoNoteBody).off('.hsHp');
+    this.demoNote.blurred();
+    delete this.fakeDataService;
   }
 
   initTags() {
+    this.fakeDataService.tags.progTagApi.initializeGeniusWorker();
+
     this.libraryTags.forEach((libraryTagId) => {
       const tag = this.fakeDataService.tags.createTag(
         _.find(this.progTagLibrary.librarySourceData, { id: libraryTagId })

@@ -203,6 +203,7 @@ export class Note {
     this.dataService.notes.noteUpdated$.next(this);
   }
 
+  // @NOTE @HACK There's a copy of this function in HomepageComponent with a faster interval... so if this changes, change that too.
   focused(): void {
     this._logger.log('Focused');
 

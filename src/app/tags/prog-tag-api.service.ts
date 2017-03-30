@@ -76,9 +76,12 @@ export class ProgTagApiService {
     // });
   }
 
-  private initializeGeniusWorker() {
+  initializeGeniusWorker() {
     if (! window['Worker']) {
       throw new Error('Web worker not available!');
+    }
+    if (this._worker) {
+      return;
     }
 
     this._logger.log('Starting GeniusWorker...');
