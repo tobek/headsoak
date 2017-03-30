@@ -1,4 +1,7 @@
 tag-browser
+  .pane-layout .overview
+    padding-top: 0
+
   .collapsed-browser
     // @TODO/polish It would be nice if this were fixed, but we can't get the right width if we are (`width: inherit` gets us part way there but only seems to work with px widths, and the parent is defined using percentages from susy grid). Would have to be fixed setting width in JS (and probably then using a resize handler...).
     display: none
