@@ -44,4 +44,16 @@ export class ProgTagLibraryComponent {
   viewCode(tag: Tag) {
     this.modalService.progTagLibTag(tag);
   }
+
+  createSmartTag() {
+    this.modalService.prompt('Enter a name for your smart tag:', (name: string) => {
+      if (! name) {
+        return;
+      }
+
+      const newTag = this.tagsService.createTag({ name: name, prog: true }, true);
+
+      newTag.goTo('smartness');
+    });
+  }
 }

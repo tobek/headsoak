@@ -118,6 +118,11 @@ export class AppComponent {
     this._logger.log('App component destroyed!');
   }
 
+  ngDoCheck() {
+    debugger;
+    this._logger.log('CHANGE DETECTION');
+  }
+
   appInitialization(isInitialized: boolean): void {
     if (isInitialized) {
       // Wait a little while before we actually init or else the MutationObserver will freak out (Firefox hangs actually if you init this too early on) as everything loads.
