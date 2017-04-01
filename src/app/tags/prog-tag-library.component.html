@@ -9,13 +9,18 @@
     <!-- @TODO/polish @TODO/ece This interface needs some love. Also you should be able to go to tag details or search for notes from here. -->
     <tag [tag]="tag" [isActive]="!! tagsService.tags[tag.id]"></tag>
 
-    <label class="enable">
-      Enabled:
-      <input type="checkbox" [checked]="!! tagsService.tags[tag.id]" (change)="toggleTag(tag, $event)">
-    </label>
+    <div class="checkbox-wrapper">
+      <input
+        type="checkbox"
+        id="lib-tag--{{ tag.id }}"
+        [checked]="!! tagsService.tags[tag.id]"
+        (change)="toggleTag(tag, $event)"
+      /><label [attr.for]="'lib-tag--' + tag.id"
+      >{{ tagsService.tags[tag.id] ? 'Enabled' : 'Disabled' }}</label>
+    </div>
 
     <p class="description">{{ tag.description }}</p>
 
-    <p><a class="code-link" (click)="viewCode(tag)"><i class="fa fa-code"></i> View code</a></p>
+    <a class="code-link" (click)="viewCode(tag)"><i class="fa fa-code"></i> View code</a>
   </div>
 </div>

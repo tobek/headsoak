@@ -1,11 +1,24 @@
 prog-tag-library
   .library
-    margin-top: 1em
-    padding-top: 1.5em
+    margin-top: 1rem
+    padding-top: 1.5rem
     border-top: 1px solid $form-stroke
 
   .library-tag
-    margin-bottom: 25px
+    +dropdown-menu
+    +gallery(4)
+    position: relative
+    margin-bottom: 2rem
+    padding: 0.5rem 1rem
+    min-height: 325px
+
+    @media (max-width: 1200px)
+      +gallery(6)
+
+    @media (max-width: 640px)
+      +gallery(12)
+      clear: both !important // why isn't gallery(12) working?
+      min-height: 0
 
   tag
     &.is--active
@@ -14,12 +27,16 @@ prog-tag-library
     &:hover .tag-actions
       display: none
 
-  .description
-    margin-top: 5px
+  .checkbox-wrapper
+    margin: 1.5rem 0 1rem
+    +small
 
-  .enable
-    float: right
+  .description
+    margin-bottom: 2rem
 
   .code-link
+    position: absolute
+    bottom: 0.5rem
+
     .fa
       display: inline // to preserve underline

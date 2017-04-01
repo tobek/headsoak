@@ -385,7 +385,7 @@ return {
       id: 'lib--nsfw',
       fromLib: true,
       name: 'nsfw',
-      description: 'Automatically tags NSFW (not safe for work) notes and makes them private. (To err on the safe side, if this smart tag previously detected NSFW content in a note and then later no longer does, the note will remain private - though this tag will be removed.) Only works on English text.',
+      description: 'Automatically tags NSFW (not safe for work) notes and makes them private. (To err on the safe side, if NSFW content was previously detected in a note and then later is gone, the note will remain private - though this tag will be removed.) Only works on English text.',
       prog: true,
       // progFunc: function(api: ProgTagApiService, _): ProgTagDef {
       progFuncString: `// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`retext-profanities\` module) have been bundled with the app.
