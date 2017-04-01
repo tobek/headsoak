@@ -1,8 +1,11 @@
 <h3 class="pane-heading">Smart Tag Library</h3>
 
-<p>Smart tags can automatically tag your notes and identify attributes about them. Enabled smart tags will continually process all of your notes as you write.</p>
+<p>Smart tags can draw insights from your notes, automatically tag them, and perform operations on them. Enabled smart tags will continually process all of your notes as you write.</p>
 
-<p>Select from this library or create your own by choosing one of your existing tags and then clicking "Smart Tag".</p>
+<p class="create">
+  <button class="btn btn-secondary" (click)="createSmartTag()">Create smart tag</button>
+  or enable tags from the library below:
+</p>
 
 <div class="library">
   <div class="library-tag" *ngFor="let tag of progTagLibraryService.library">

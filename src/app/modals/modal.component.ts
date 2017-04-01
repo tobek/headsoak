@@ -17,9 +17,11 @@ export interface ModalConfig {
   /**
    * Called when OK is pressed (or enter in prompt), just before modal is closed. If it's a prompt and not cancelled, prompt contents is passed in, otherwise falsey value passed. Return explicit false to prevent modal from being closed. Callback is also passed two functions that control loading state of button.
    *
-   * @NOTE @TODO/polish Since we have to run this before actually closing in order to see if we *should* close, navigation is impossible in `okCb` (because modal is closed via `window.history.back`, which will fire after `okCb`). For cancel and additional button callbacks, which can't control whether modal closes, this isn't an issue. One fix would be to have a separate `canOk` cb and then a `didOk` cb.
+   * @NOTE @TODO/polish Since we have to run this before actually closing in order to see if we *should* close, navigation is impossible in `okCb` (because modal is closed via `window.history.back`, which will fire after `okCb`). For cancel and additional button callbacks, which can't control whether modal closes, this isn't an issue. To accomplish this, put the required logic in `okPostCloseCb`.
    */
   okCb?: (result?: any, showLoadingState?: Function, hideLoadingState?: Function) => any;
+  /** If `ok` happened, this gets called *after* modal close is initiated. This can be used to get around the `window.history.back` issue described on `okCb`. */
+  okPostCloseCb?: () => any;
 
   message?: string | SafeHtml;
   okButtonText?: string;
@@ -189,7 +191,7 @@ export class ModalComponent {
       }
     }
 
-    this.close();
+    this.close(this.config.okPostCloseCb);
   }
 
   cancel(evenIfUncancellable = false) {

@@ -104,7 +104,7 @@ export class ModalService {
     message: string,
     cb: (result: string, showLoadingState?: Function, hideLoadingState?: Function) => any,
     trustAsHtml = false,
-    opts: ModalConfig
+    opts: ModalConfig = {}
   ): void {
     const component = this.modal.visible ? this.modal2 : this.modal;
 

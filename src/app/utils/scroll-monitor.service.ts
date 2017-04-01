@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 
 import {SizeMonitorService} from '../utils/size-monitor.service';
+import {Logger} from '../utils/';
 
 import * as $ from 'jquery';
 import * as _ from 'lodash';
@@ -20,6 +21,8 @@ export class ScrollMonitorService {
     200,
     { leading: true, trailing: true }
   );
+
+  private _logger: Logger = new Logger('ScrollMonitorService');
 
   constructor(
     private sizeMonitor: SizeMonitorService,
@@ -67,6 +70,12 @@ export class ScrollMonitorService {
 
   ensureElVisibleInScrollable(el: JQuery | HTMLElement | string, duration = 250) {
     const $el = $(el);
+
+    if (! $el.length) {
+      this._logger.warn('No element found for', el, '- can\'t ensure visibility in scrollable parent');
+      return;
+    }
+
     const $parent = $el.offsetParent();
 
     const topFromTop = $el.position().top; // How far top of el is from top of current tag list scroll position
