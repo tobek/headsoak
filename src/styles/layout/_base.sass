@@ -76,6 +76,8 @@ html
   z-index: -1
   background: $bg-overlay
 
+.is--initialized .app-outer
+  +faded-in
 
 // This is our main grid container. gutter() and span() etc. should work as normal in here
 main
@@ -153,7 +155,7 @@ main
   
 
 // This guy is hardcoded/inlined into index.html
-.hide-loader .initial-loader.outer
+.is--initialized .initial-loader.outer
   opacity: 0
   visibility: hidden
 

@@ -77,7 +77,11 @@ modal
       box-shadow: none
 
     &.is--loading
-      background-color: $panel-bg
+      // @TODO/polish @TODO/hp There's a brief flash, as the page is initially loading, where the loader icon in loading modal is visible on top of outer loader in index.html. Background color here made that a brief flash instead of constant, but it's still there.
+      @if $panel-bg == transparent
+        background-color: $bg-overlay
+      @else
+        background-color: $panel-bg
 
     @media (max-width: $tablet-large)
       +span(9)

@@ -23,20 +23,24 @@
       min-height: 100%;
     }
     body {
-      background-color: #0e465e;
-      background-image: linear-gradient(201deg, #16697f, #0e465e);
+      background-color: white;
     }
     .initial-loader {
       position: absolute;
       top: 50vh;
       left: 50vw;
       margin: -16px 0 0 -16px;
-      color: white;
+      color: rgba(0,0,0,.54);
       font-size: 32px !important;
 
       opacity: 1;
       visibility: visible;
       transition: opacity 1.5s, visibility 1.5s;
+    }
+    .app-outer {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s, visibility 0.5s;
     }
   </style>
 

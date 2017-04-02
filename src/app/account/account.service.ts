@@ -137,8 +137,6 @@ export class AccountService {
 
   /** Firebase is in a logged-in state, whether page loaded that way or user has just logged in. */
   handleLoggedIn(authData) {
-    // @TODO/style @TODO/soon This is a good place to put a breakpoint to see flash of unstyled content
-
     if (this.modalService.activeModal !== 'login') {
       // They were logged in on page load so we never had to show login modal, so let's just leave the non-modal, pre-initialization loader visible until everything is initialized
       this._logger.logTime('Logged in on load');
