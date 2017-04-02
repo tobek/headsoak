@@ -2,6 +2,7 @@ import {Component, NgZone, ViewChild, ElementRef} from '@angular/core';
 import {Subscription} from 'rxjs';
 
 import {AccountService} from './account.service';
+import {ModalService} from '../modals/modal.service';
 import {Logger, TooltipService, ScrollMonitorService} from '../utils/';
 
 import * as _ from 'lodash';
@@ -34,6 +35,7 @@ export class LoginComponent {
 
   constructor(
     private scrollMonitor: ScrollMonitorService,
+    private modalService: ModalService,
     private accountService: AccountService,
     private tooltipService: TooltipService,
     private zone: NgZone
@@ -205,9 +207,7 @@ export class LoginComponent {
     });
   }
 
-  // @TODO/now @TODO/hp
-  // @HACK This logic belongs in HomepageComponent but... alas
-  goTo(where: string) {
-    this.scrollMonitor.scrollTo(500, undefined, true);
+  showFaq() {
+    this.modalService.faq();
   }
 }

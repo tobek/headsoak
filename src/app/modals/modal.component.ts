@@ -11,7 +11,7 @@ import {Logger, SizeMonitorService} from '../utils/';
 import {Note, NoteComponent} from '../notes/';
 import {Tag} from '../tags/';
 
-export type ModalType = null | 'loading' | 'login' | 'feedback' | 'privateMode' | 'progTagLibTag' | 'note' | 'generic';
+export type ModalType = null | 'loading' | 'login' | 'faq' | 'feedback' | 'privateMode' | 'progTagLibTag' | 'note' | 'generic';
 
 export interface ModalConfig {
   /**

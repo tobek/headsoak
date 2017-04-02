@@ -16,6 +16,10 @@
 
     <login *ngIf="activeModal === 'login'"></login>
 
+    <div *ngIf="activeModal === 'faq'">
+      <h2>FAQ</h2>
+    </div>
+
     <feedback *ngIf="activeModal === 'feedback'"></feedback>
     <private-mode *ngIf="activeModal === 'privateMode'" isModal=1></private-mode>
     <note *ngIf="activeModal === 'note'"

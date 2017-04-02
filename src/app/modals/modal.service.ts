@@ -126,6 +126,14 @@ export class ModalService {
     this.modal.generic(config);
   }
 
+  faq(): void {
+    if (this.modal.visible) {
+      this.setActiveModal2$.next('faq');
+    }
+    else {
+      this.setActiveModal$.next('faq');
+    }
+  }
   feedback(): void {
     this.setActiveModal$.next('feedback');
   }
