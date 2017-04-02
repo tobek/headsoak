@@ -5,17 +5,19 @@ $homepage-main-bg: white
 homepage
   display: block
   position: relative
+  padding-top: 2rem
   color: $panel-text
 
   .intro
     // text-shadow: 2px 2px 5px black
     // color: $panel-text
-    color: gray
+    color: $accent-color-dark
     
     h2
       margin-top: 0
       margin-bottom: 0.5rem
     h3
+      +h4
       margin-top: 0.5rem
 
   .ribbon
@@ -63,12 +65,11 @@ homepage
     background-color: $homepage-main-bg
 
     .demo-container
-      height: 100vh
-      padding-top: 10vh // matches login top margin
-      padding-right: 50px
+      padding-top: 5vh // matches login top margin
+      padding-right: 1.5rem
 
       @media (max-height: 750px)
-        padding-top:  0
+        padding-top:  1rem
 
   // .note,
   // .tag-explore-wrapper
@@ -83,7 +84,7 @@ homepage
 
   .hero .note
     // margin-top: 170px // size of login header height/margin
-    margin-top: 8rem
+    margin-top: 4rem
     height: 300px
 
     @media (max-height: 550px)
@@ -234,6 +235,12 @@ homepage
 //     .subheading--general
 //       opacity: 1 !important
 //       visibility: visible !important
+
+.modal-content.is--login
+  margin-bottom: -30vh // @HACK Modal styles align themselves based on 100vh and changing height of modal messes it up leaving it at 100vh but with negative bottom margin is faster than a refactor right now
+
+  @media (max-width: $screen-small)
+    margin-bottom: -25vh
 
 login .homepage-nav
   position: absolute

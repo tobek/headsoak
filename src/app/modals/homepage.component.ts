@@ -1,7 +1,7 @@
 import {Component, ViewChild, ElementRef, HostBinding} from '@angular/core';
 
 import {AnalyticsService} from '../analytics.service';
-import {Logger, utils} from '../utils/';
+import {SizeMonitorService, Logger, utils} from '../utils/';
 
 import {Note, NoteComponent} from '../notes/';
 import {Tag, ChildTag, ProgTagLibraryService, ProgTagApiService} from '../tags/';
@@ -289,6 +289,7 @@ export class HomepageComponent {
   private _logger: Logger = new Logger('HomepageComponent');
 
   constructor(
+    private sizeMonitor: SizeMonitorService,
     private analyticsService: AnalyticsService,
     private progTagApi: ProgTagApiService,
     private progTagLibrary: ProgTagLibraryService
@@ -319,12 +320,21 @@ export class HomepageComponent {
   }
 
   ngAfterViewInit() {
-    // When the graph is first set up it bounces around a bit which looks dynamic and invites user to play. It's just below the fold so we can wait until first scroll to trigger.
-    jQuery('modal').first().one('scroll.hsHp', () => {
+    if (this.sizeMonitor.isMobile) {
+      // When the graph is first set up it bounces around a bit which looks dynamic and invites user to play. It's below the fold so we can wait until first scroll to trigger.
+      // @TODO/polish @TODO/hp We should actually wait until it's visible before doing this, not just on scroll, cause on mobile you might have to scroll a bit
+      jQuery('modal').first().one('scroll.hsHp', () => {
+        setTimeout(() => {
+          this.showVis = true;
+        }, 200);
+      });
+    }
+    else {
+      // On desktop it's visible above the fold, so trigger it right away
       setTimeout(() => {
         this.showVis = true;
-      }, 200);
-    });
+      }, 0);
+    }
 
     this.demoNoteBody = this.demoNoteRef.el.nativeElement.querySelector('.body-input');
     this.demoNoteAddTagInput = this.demoNoteRef.el.nativeElement.querySelector('.new-tag-input');
