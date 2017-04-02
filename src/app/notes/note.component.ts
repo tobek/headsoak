@@ -25,6 +25,7 @@ export class NoteComponent {
   @Input() note: Note;
 
   @Input() isOpened = false;
+  @Input() isDemo = false;
   @Output() noteClosed = new EventEmitter<Note>();
 
   // @REMOVED/write
@@ -193,7 +194,7 @@ export class NoteComponent {
   }
 
   bodyFocused(event: Event) {
-    if (this.sizeMonitor.isMobile && ! this.isOpened) {
+    if (this.sizeMonitor.isMobile && ! this.isOpened && ! this.isDemo) {
       this.openNote();
 
       if (event) {
