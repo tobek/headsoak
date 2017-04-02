@@ -415,175 +415,17 @@ export class HomepageComponent {
   }
 
   play(i = 0) {
-    if (this.scriptStopped) {
-      return;
-    }
-
-    const scene = this.script[i];
-
-    if (! scene) {
-      // We're done!
-      return;
-    }
-
-    if (scene.text) {
-      // e.g. we're running this.write or this.unwrite, so supply text as first arg
-      scene.function = _.partial(scene.function, scene.text);
-    }
-
-    scene.function.bind(this)(() => {
-      // if (scene.addTag) {
-      //   this.addTag(scene.addTag);
-      // }
-      // if (scene.removeTag) {
-      //   this.removeTag(scene.removeTag);
-      // }
-
-      const nextScene = () => {
-        setTimeout(() => {
-          this.play(i + 1);
-        }, typeof scene.delay === 'undefined' ? 500 : scene.delay);
-      };
-
-      if (scene.manualAddTag) {
-        this.manualAddTag(scene.manualAddTag, nextScene);
-      }
-      else {
-        nextScene();
-      }
-    }, 0, scene.speed || 1);
   }
 
   manualAddTag(tagName: string, cb?: Function) {
-    this.demoNoteAddTagInput.value = '';
-    this.demoNoteRef.addingTag = true;
-
-    setTimeout(() => {
-      this.write(tagName, () => {
-        setTimeout(() => {
-          this.demoNoteRef.completeAddTag(tagName, true);
-          this.demoNoteAddTagInput.value = '';
-          cb();
-        }, 500);
-      }, 0, 0.33, this.demoNoteAddTagInput);
-    }, 500);
   }
 
   write(str: string, cb?: Function, i = 0, speed = 1, el?: HTMLInputElement) {
-    if (this.scriptStopped) {
-      return;
-    }
-
-    if (! el) {
-      el = this.demoNoteBody;
-    }
-
-    if (typeof el.value !== 'undefined') {
-      el.value += str.substr(i, 1);
-    }
-    else {
-      el.innerHTML += str.substr(i, 1);
-      if (this.stealFocus) {
-        utils.placeCaretAtEnd(el);
-      }
-    }
-
-    el.scrollTop = el.scrollHeight;
-
-    if (i === str.length - 1) {
-      if (cb) {
-        if (el === this.demoNoteBody) {
-          this.demoNote.body = el.innerHTML;
-          this.demoNote.doFullUpdate();
-          setTimeout(this.demoNoteRef.checkTagOverflow.bind(this.demoNoteRef), 100);
-        }
-        cb();
-      }
-
-      return;
-    }
-
-    if (this.stealFocus) {
-      el.focus();
-    }
-
-    let delay = Math.floor(Math.random() * (50)) + 25;
-
-    if (str[i - 1] === ',' || str[i - 1] === ':') {
-      delay += 150;
-    }
-    else if (str[i - 1] === '.' || str[i - 1] === '!' || str[i - 1] === '?') {
-      delay += 350;
-    }
-
-    setTimeout(() => {
-      this.write(str, cb, i + 1, speed, el);
-    }, delay / speed);
   }
 
   /** Deletes contents in demoNoteBody until content ends with given string. */
   unwrite(str: string, cb?: Function) {
-    if (this.scriptStopped) {
-      return;
-    }
-
-    const currentString = this.demoNoteBody.innerHTML;
-
-    if (currentString.indexOf(str) === -1) {
-      throw Error('Current string doesn\'t contain with given string!');
-    }
-
-    if (currentString.endsWith(str)) { // @TODO/now TypeScript doesn't polyfill this
-      if (cb) {
-        this.demoNote.body = this.demoNoteBody.innerHTML;
-        this.demoNote.doFullUpdate();
-        setTimeout(this.demoNoteRef.checkTagOverflow.bind(this.demoNoteRef), 100);
-        cb();
-      }
-
-      return;
-    }
-
-    if (this.stealFocus) {
-      this.demoNoteBody.focus();
-    }
-
-    this.demoNoteBody.innerHTML = currentString.substr(0, currentString.length - 1);
-
-    setTimeout(() => {
-      this.unwrite(str, cb);
-    }, 25);
   }
-
-  // addTag(tagName: string) {
-  //   const tag = this.fakeDataService.tags.getTagByName(tagName);
-
-  //   this.demoNote.addTag(tag, true, true);
-
-  //   // triggers chiclet style then let it fade
-  //   // @TODO/now
-  //   setTimeout(function() {
-  //     tag['highlight'] = true;
-  //   }, 10);
-  //   setTimeout(function() {
-  //     tag['highlight'] = false;
-  //   }, 500);
-  // }
-
-  // removeTag(tag: Tag) {
-  //   tag['beingRemoved'] = true;
-  //   tag['highlight'] = true;
-  //   setTimeout(function() {
-  //     tag['highlight'] = false;
-  //   }, 500);
-  //   setTimeout(() => {
-  //     this.tags = _.without(this.tags, tag);
-  //   }, 1000);
-  // }
-
-  // setUpTagExplore() {
-  //   this.tagExploreStage = true;
-  // }
 
 
 }

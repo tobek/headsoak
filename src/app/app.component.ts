@@ -118,10 +118,10 @@ export class AppComponent {
     this._logger.log('App component destroyed!');
   }
 
-  // ngDoCheck() {
-  //   debugger;
-  //   this._logger.log('CHANGE DETECTION');
-  // }
+  ngDoCheck() {
+    debugger;
+    this._logger.log('CHANGE DETECTION');
+  }
 
   appInitialization(isInitialized: boolean): void {
     if (isInitialized) {
