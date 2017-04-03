@@ -118,11 +118,14 @@ modal
       height: 100%
 
   &.dark-solo
-    @media (min-width: $tablet-large)
-      .modal-backdrop
-        background: $modal-backdrop--dark
+    // @media (min-width: $tablet-large)
+    //   .modal-backdrop
+    //     background: $modal-backdrop--dark
 
-      // On smaller devices there's so little space around the modal that it just looks like a black border if we darken - I prefer the normal backdrop look and it's not distraction
+    //   // On smaller devices there's so little space around the modal that it just looks like a black border if we darken - I prefer the normal backdrop look and it's not distraction
+    // nm, I think we want it at all sizes?
+    .modal-backdrop
+      background: $modal-backdrop--dark
 
     .modal-content
       float: none
