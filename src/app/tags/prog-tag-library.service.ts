@@ -16,10 +16,8 @@ export class ProgTagLibraryService {
   librarySourceData = [
     {
       id: 'lib--auto',
-      fromLib: true,
       name: 'auto',
       description: 'Automatically tags notes based on their content. Only works on English text.',
-      prog: true,
       // progFunc: function(api: ProgTagApiService, _): ProgTagDef {
       progFuncString: `// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (e.g. npm's \`nlcstToString\` module) have been bundled with the app.
 var nlcstToString = api.lib.nlcstToString;
@@ -196,10 +194,8 @@ return {
     },
     {
       id: 'lib--sentiment',
-      fromLib: true,
       name: 'sentiment',
       description: 'Tag notes that show a markedly positive or negative sentiment. Hover over the tag on a note to see the calculated strength of that note\'s sentiment. Only works on English text.',
-      prog: true,
       // @NOTE Can use this function definition to write the library tag with the benefits of type checking and general JS linting, and then just comment out and use backticks (and comment/update the last line of func as well, AND make sure to double escape as necessary)
       // progFunc: function(api: ProgTagApiService, _): ProgTagDef {
       progFuncString: `// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`sentiment\` module) have been bundled with the app.
@@ -239,10 +235,8 @@ return function(note) {
     },
     {
       id: 'lib--remember',
-      fromLib: true,
       name: 'remember this',
       description: 'Employ spaced repetition learning to better remember notes. Whenever you add this tag to one of your notes, Headsoak will email you that note in a day, a week, a month, 4 months, and 18 months after tagging.',
-      prog: true,
       // progFunc: function(api: ProgTagApiService, _): ProgTagDef { const _this: Tag = this;
       // @TODO/ece @TODO/prog There should be other links back to Headsoak here
       // @TODO/prog The emails should have links for "actually, send me this again [sooner]" and "actually don't send me this until [later]" (and should this comment go in the prog tag code?)
@@ -383,10 +377,8 @@ return {
     },
     {
       id: 'lib--nsfw',
-      fromLib: true,
       name: 'nsfw',
       description: 'Automatically tags NSFW (not safe for work) notes and makes them private. (To err on the safe side, if NSFW content was previously detected in a note and then later is gone, the note will remain private - though this tag will be removed.) Only works on English text.',
-      prog: true,
       // progFunc: function(api: ProgTagApiService, _): ProgTagDef {
       progFuncString: `// @NOTE: Soon you will be able to import your own external resources in order to run your own smart tags that rely on them. At the moment resources such as these (npm's \`retext-profanities\` module) have been bundled with the app.
 var profanities = api.lib.profanities;
@@ -419,10 +411,8 @@ return function(note) {
     },
     {
       id: 'lib--untagged',
-      fromLib: true,
       name: 'untagged',
       description: 'Tag all notes which have no tags',
-      prog: true,
       progFuncString: `return function(note) {
   if (note.tags.length === 0) {
     return true;
@@ -438,10 +428,8 @@ return function(note) {
     },
     {
       id: 'lib--has-quote',
-      fromLib: true,
       name: 'has quote',
       description: 'Tag all notes which contain quotes. This is calculated by looking to see if at least one line in the note follows the Markdown syntax for blockquotes: starting a line with "> ".',
-      prog: true,
       // old version which looks for 50% of lines being a quote:
       // progFuncString: 'if (! note.body) {\n  return false;\n}\n\nvar lines = note.body.split(\'\\n\');\nvar numQuoteLines = 0;\n\n_.each(lines, function(line) {\n  if (line[0] === \'>\') {\n    numQuoteLines++;\n  }\n});\n\nif (numQuoteLines / lines.length >= 0.5) {\n  return true;\n} else {\n  return false;\n}',
       progFuncString: `return function(note) {
@@ -462,12 +450,11 @@ return function(note) {
   return foundQuote;
 }`,
     },
+    /*
     {
       id: 'lib--nutmeg',
-      fromLib: true,
       name: 'mentions headsoak', // @TODO/prog Mention or show that this is a "tutorial" tag or something. BETTER: Make it customizable for search string
       description: 'Tag all notes which contain the text "headsoak"',
-      prog: true,
       progFuncString: `return function(note) {
   if (note.body.toLowerCase().indexOf("headsoak") !== -1) {
     return true;
@@ -477,12 +464,39 @@ return function(note) {
   }
 }`,
     },
-    // {
-    //   name: 'List',
-    //   description: 'Applies tag to notes where the majority of lines appear to be items in a list',
-    //   progFuncString: ''
-    // },
-    // '// programmatically create a general \"nutmeg\" parent tag.\n\n// let\'s also use some lo-dash/underscore\n\nvar noteTagNames = _.map(note.tags, function(tagId) {\n  return getTagNameById(tagId);\n});\n\nvar nutmegTags = ["nutmeg bugs", "nutmeg features", "nutmeg faq", "nutmeg shortcodes", "nutmeg inspiration"];\n\nvar intersection = _.intersection(nutmegTags, noteTagNames);\n\nif (intersection.length) {\n  return true;\n}\nelse {\n  return false;\n}',
+    */
+    /*
+    {
+      id: 'lib--nutmeg-parent',
+      name: 'about nutmeg',
+      progFuncString: `// programmatically create a general "nutmeg" parent tag.
+
+// let's also use some lo-dash/underscore
+
+var noteTagNames = _.map(note.tags, function(tagId) {
+  return getTagNameById(tagId);
+});
+
+var nutmegTags = ["nutmeg bugs", "nutmeg features", "nutmeg faq", "nutmeg shortcodes", "nutmeg inspiration"];
+
+var intersection = _.intersection(nutmegTags, noteTagNames);
+
+if (intersection.length) {
+  return true;
+}
+else {
+  return false;
+}`,
+    },
+    */
+    /*
+    {
+      id: 'lib--list',
+      name: 'list',
+      description: 'Applies tag to notes where the majority of lines appear to be items in a list',
+      progFuncString: `// @TODO/prog`,
+    },
+    */
   ];
 
   library: Tag[];
@@ -505,6 +519,9 @@ return function(note) {
   }
 
   initializeLibraryTag(tagData): Tag {
+    tagData.prog = true;
+    tagData.fromLib = true;
+
     const localTag = this.tagsService.tags[tagData.id];
 
     if (localTag) {
