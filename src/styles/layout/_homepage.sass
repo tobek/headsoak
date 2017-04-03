@@ -9,6 +9,7 @@ homepage
   padding-top: 2rem
   color: $panel-text
 
+
   // @HACK Kind of a `.full-width-edges` to cover up gap above <homepage> element...
   &:before
     content: ''
@@ -33,13 +34,23 @@ homepage
       margin-top: 0.5rem
 
   .ribbon
+    +h4
     position: relative
     width: 100%
-    padding: 0.5rem
+    padding: 1rem
     color: $primary-button-text
     background-color: invert($accent-color-dark)
-    font-weight: bold
     text-align: center
+
+    // @TODO/ece @TODO/hp What about these styles? And the "steps" ribbon has different ones below
+    text-transform: uppercase
+    letter-spacing: 1px
+    font-weight: bold
+
+    &.steps
+      letter-spacing: 0
+      text-transform: none
+      font-weight: normal
 
   .full-width-edges
     &:before,
@@ -63,7 +74,7 @@ homepage
 
   .steps
     display: flex
-    justify-content: space-between
+    justify-content: space-around
 
   .demo-container
     +span(6)
@@ -74,34 +85,27 @@ homepage
     position: relative
     background-color: $homepage-main-bg
 
-    .demo-container
+    &.demo-container
       padding-top: 5vh // matches login top margin
       padding-right: 1.5rem
 
       @media (max-height: 750px)
         padding-top:  1rem
 
-  // .note,
-  // .tag-explore-wrapper
-  //   transition: opacity $transition-med, visibility $transition-med
-  // .tag-explore-wrapper,
-  // &.is--tag-explore-stage .note
-  //   opacity: 0
-  //   visibility: hidden
-  // &.is--tag-explore-stage .tag-explore-wrapper
-  //   opacity: 1
-  //   visibility: visible
+    .note
+      // margin-top: 170px // size of login header height/margin
+      margin-top: 4rem
+      height: 300px
 
-  .hero .note
-    // margin-top: 170px // size of login header height/margin
-    margin-top: 4rem
-    height: 300px
-
-    @media (max-height: 550px)
-      // margin-top: 140px
-      margin-top: 6rem
+      @media (max-height: 550px)
+        // margin-top: 140px
+        margin-top: 6rem
 
   .note
+    +box-shadowed
+    // For some reason, the right edge of the note box shadow is being clipped, regardless of `overflow` value on parent. This fixes that.
+    width: calc(100% - 2px)
+
     .note-wrapper .body-input // extra specificity to overcome route-related classes
       height: 100%
       max-height: none !important
@@ -134,23 +138,18 @@ homepage
     width: 100%
 
   .tag-explore
-    +card
-    // position: absolute
-    // overflow-y: scroll
     width: 100%
-    height: 400px // @TODO/hp
+    height: 350px
     max-height: 90vh
-    // padding-top: 25px
-    // padding-bottom: 25px
     padding: 1rem
-
-    // .heading
-    //   +h3
 
     force-graph
       display: block
       width: 100%
       height: 100%
+
+    // .heading 
+    //   +h3 
 
     // .note-count-heading
     //   +h3
@@ -159,46 +158,27 @@ homepage
     // .cooccurrences .static-tag:before
     //   margin-right: 1px
 
-  .teaser
-    +span(6)
-    position: absolute
-    top: 100vh
-    margin-top: -75px
-    padding-right: 50px // matches .demo-container
-
-    +h3
-    text-align: center
-    line-height: 30px
-    text-shadow: 2px 2px 5px black
-    font-weight: bold
-    letter-spacing: 1.8px
-    text-transform: uppercase
-
-  @media (max-width: $screen-small)
-    .demo-container,
-    .teaser
-      padding-right: 25px
-
   .static-notes
     position: relative
-    padding: 1.5rem 0
+    padding: 3rem 0
     background: $homepage-main-bg
 
   .screenshots
-    padding: 2rem 0
+    padding: 3rem 0
     color: $bg-overlay-text
 
     .shot
       @extend .clearfix
       margin-bottom: 2rem
 
-      img
-        +span(4)
-        height: auto
-      .text
-        +span(7 last)
-        text-align: left
-        font-weight: normal
+    img
+      +span(4)
+      height: auto
+    .text
+      +span(7 last)
+      +h4
+      text-align: left
+      font-weight: normal
 
   .features
     position: relative
@@ -223,13 +203,12 @@ homepage
   .homepage-outro
     clear: both
     width: 100%
-    margin-top: 50px
     color: $bg-overlay-text
 
     h4
       position: relative
       margin: 0
-      padding: 50px 25px
+      padding: 5rem 1.5rem
       text-align: center
       // background-color: $panel-bg
       // text-shadow: 2px 2px 5px $shadow-color
@@ -267,7 +246,7 @@ login .homepage-nav
   text-align: center
 
   a
-    // @TODO/hp Style this
+    // @TODO/hp @TODO/ece Style for this?
     margin: 0 1.5rem
     font-weight: bold
     text-decoration: none
@@ -317,12 +296,6 @@ login .homepage-nav
       .sendgrid-subscription-widget input[type=submit]
         padding-left: 0;
         padding-right: 0;
-
-    .teaser
-      position: static
-      width: 100%
-      margin-top: 25px
-      padding-right: 0
 
     .feature
       +gallery(9 of 12)

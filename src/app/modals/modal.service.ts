@@ -20,6 +20,13 @@ export class ModalService {
   setActiveModal$ = new ReplaySubject<ModalType>(1);
   setActiveModal2$ = new ReplaySubject<ModalType>(1);
 
+  get setUnusedActiveModal$(): ReplaySubject<ModalType> {
+    return this.modal.visible ? this.setActiveModal2$ : this.setActiveModal$;
+  }
+  get unusedModal(): ModalComponent {
+    return this.modal.visible ? this.modal2 : this.modal;
+  }
+
   /** Emits whenever any modal changes state (whether initiated by us or by the modal itself). Currently no need to distinguish between the two modals. */
   modalChange$ = new Subject<ModalType>();
 
@@ -127,12 +134,7 @@ export class ModalService {
   }
 
   faq(): void {
-    if (this.modal.visible) {
-      this.setActiveModal2$.next('faq');
-    }
-    else {
-      this.setActiveModal$.next('faq');
-    }
+    this.setUnusedActiveModal$.next('faq');
   }
   feedback(): void {
     this.setActiveModal$.next('feedback');
@@ -146,8 +148,8 @@ export class ModalService {
   }
 
   note(note: Note): void {
-    this.modal.note = note;
-    this.setActiveModal$.next('note');
+    this.unusedModal.note = note;
+    this.setUnusedActiveModal$.next('note');
   }
 
 
