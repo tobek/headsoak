@@ -272,15 +272,16 @@
   padding-top: 8px
   padding-bottom: 6px
 
-  // Only show this here when on mobile
-  .nav-link-outer--notes
-    display: none
-
   .new-note
     margin-top: 13px // @HACK Magic number to vertically align. Lazy.
 
   .nav-link-outer--tags
     float: right
+
+    +fadeable
+    +faded-out
+    .route--note-route &
+      +faded-in
 
   .nav-link
     @if $panel-bg != transparent
@@ -380,10 +381,9 @@
     border: none
     text-align: center
 
-    // Hidden here on desktop, but used on mobile. @TODO/optimization Would it be better if they were hidden with `*ngIf` instead of CSS?
-    .nav-link-outer--notes,
+    // On desktop we only show when on note route, but on mobile we want it in nav from everywhere
     .nav-link-outer--tags
-      display: inline
+      +faded-in
 
     .nav-link
       +dropdown-menu-border
