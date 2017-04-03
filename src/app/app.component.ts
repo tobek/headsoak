@@ -211,7 +211,7 @@ export class AppComponent {
 
     let className = this.appWrapperRef.nativeElement.className;
 
-    className = className.replace(/route--[^ $]*/g, '');
+    className = className.replace(/ ?route--[^ $]*/g, '');
 
     className += ' route--' + routeInfo.data['slug'];
 
