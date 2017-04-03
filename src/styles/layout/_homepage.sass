@@ -245,6 +245,9 @@ login .homepage-nav
   width: 100%
   text-align: center
 
+  @media (max-width: $tablet-large)
+    justify-content: space-between
+
   a
     // @TODO/hp @TODO/ece Style for this?
     margin: 0 1.5rem
@@ -254,6 +257,9 @@ login .homepage-nav
     color: $accent-color-dark
     &:hover
       color: $panel-text-link-hover
+
+    @media (max-width: 350px)
+      margin: 0 1rem
 
 
 // Because of fucked up flow/DOM ordering, we need two copies of the <login> component. One we show on mobile, the other on desktop
@@ -269,17 +275,43 @@ login .homepage-nav
     display: none
 
   homepage
+    // Put space from top as margin on intro instead of padding on homepage so that the <login> element that's used inside of <homepage> on mobile can be at the top of the page
+    padding-top: 0
+    .intro
+      margin-top: 4rem
+
     .demo-container
-      width: 100%
+      width: 100% !important // lazy override of `+span(6)`
       height: auto
       padding: 0
 
-    .note
-      margin: 20px 0 50px
+    .hero .demo-container
+      padding-right: 0
+
+    .hero .note
+      margin: 2rem 0
+
+    .steps
+      display: block
+    .step
+      display: block
+      margin: 0.5rem 0
 
     .tag-explore
       height: 325px
       margin-top: 20px
+
+    .static-notes
+      .demo-container
+        margin-bottom: 1rem
+        .note
+          margin: 0
+
+    .screenshots
+      img,
+      .text
+        +span(12)
+        margin-bottom: 1rem
 
     login
       +card
