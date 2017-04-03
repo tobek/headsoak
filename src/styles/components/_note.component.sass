@@ -402,11 +402,19 @@ modal .is--note-container
 
   .modal-close--outer
     +h3
+    z-index: 1
     display: inline-block !important
     position: fixed
     top: 1rem
     right: 1rem
     padding: 0.5rem 1rem // Bigger hover target
+
+    @media (max-width: $tablet-large - 1px)
+      top: 0
+      right: 0
+
+    @media (max-width: $mobile-large)
+      padding-bottom: 0 // don't clip tag overflow thing
 
 
 // This actually gets shunted into ModalComponent but let's style it here
