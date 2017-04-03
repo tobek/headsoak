@@ -158,13 +158,14 @@ homepage
     // .cooccurrences .static-tag:before
     //   margin-right: 1px
 
-  .static-notes
+  .hp-section
     position: relative
     padding: 3rem 0
+
+  .static-notes
     background: $homepage-main-bg
 
   .screenshots
-    padding: 3rem 0
     color: $bg-overlay-text
 
     .shot
@@ -181,23 +182,81 @@ homepage
       font-weight: normal
 
   .features
-    position: relative
-    padding-top: 2rem
     background: $homepage-main-bg
+    padding-left: 5rem
+    padding-right: 5rem
 
-  .feature
-    +card
-    +gallery(4 of 12)
-    min-height: 160px
-    margin-bottom: 25px
-    padding: 25px gutter()
-    text-align: center
+    @media (max-width: $screen-small)
+      padding-left: 2rem
+      padding-right: 2rem
 
-    h4
-      margin: 0 0 20px
+    @media (max-width: $screen-small)
+      padding-left: 1rem
+      padding-right: 1rem
 
-    p
-      margin-bottom: 0
+    @media (max-width: 640px)
+      text-align: center
+
+  .feature-list
+    display: inline-block
+    width: span(5)
+    text-align: left
+
+    @media (max-width: $tablet-large)
+      width: span(6)
+      &.now
+        padding-right: 1rem
+
+    @media (max-width: 640px)
+      width: span(10)
+      padding-right: 0
+      clear: both
+      float: none !important
+      &.now
+        margin-bottom: 3rem
+
+    @media (max-width: $tablet-small)
+      width: 100%
+
+    &.now
+      float: left
+    &.soon
+      float: right
+
+    .heading
+      +h2
+      text-transform: uppercase
+      margin-bottom: 2rem
+
+    .freedom
+      +base-font-size
+      margin-top: 0.5rem
+      color: $panel-text-secondary
+      text-transform: none
+
+    .feat
+      +h4
+      margin-bottom: 0.5rem
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #EEE;
+
+      &:last-child
+        border-bottom: none
+
+  // @REMOVED/hp features
+  // .feature
+  //   +card
+  //   +gallery(4 of 12)
+  //   min-height: 160px
+  //   margin-bottom: 25px
+  //   padding: 25px gutter()
+  //   text-align: center
+
+  //   h4
+  //     margin: 0 0 20px
+
+  //   p
+  //     margin-bottom: 0
 
 
   .homepage-outro
@@ -329,8 +388,9 @@ login .homepage-nav
         padding-left: 0;
         padding-right: 0;
 
-    .feature
-      +gallery(9 of 12)
-      float: none !important
-      margin-left: auto !important
-      margin-right: auto !important
+    // @REMOVED/hp features
+    // .feature
+    //   +gallery(9 of 12)
+    //   float: none !important
+    //   margin-left: auto !important
+    //   margin-right: auto !important
