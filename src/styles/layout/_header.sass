@@ -73,10 +73,13 @@
     @media (max-width: $screen-large)
       margin-right: 2px // make room for .menu-icon @TODO/styles @TODO/now This isn't on small desktop screens - check once header spacing is all done
 
-    border: 1px solid transparent
-    border-top-width: 0
-    border-bottom-width: 0
-    transition: border-color $transition-fast
+    @media (max-width: $screen-small) and (min-width: $tablet-large)
+      padding-left: 0
+
+    // border: 1px solid transparent
+    // border-top-width: 0
+    // border-bottom-width: 0
+    // transition: border-color $transition-fast
 
     .hover-target:hover
       .menu-body
@@ -194,6 +197,9 @@
   .private-mode-indicator
     color: $danger-color
 
+    @media (max-width: $screen-small) and (min-width: $tablet-large)
+      margin-right: 0
+
     .unlocked
       display: none
 
@@ -277,6 +283,13 @@
           color: $menu-icon-active
         &.is--active:hover .fa
           color: $accent-color-darkest
+
+  @media (max-width: $screen-small) and (min-width: $tablet-large)
+    .nav-link
+      padding: 5px 2px
+
+    .note-views
+      margin-right: 0
 
 .mobile-nav
   +outer-container
