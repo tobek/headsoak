@@ -162,6 +162,9 @@ homepage
     position: relative
     padding: 3rem 0
 
+    @media (max-width: $tablet-small)
+      padding: 2rem 0
+
   .static-notes
     background: $homepage-main-bg
 
@@ -217,6 +220,8 @@ homepage
 
     @media (max-width: $tablet-small)
       width: 100%
+      &.now
+        margin-bottom: 2rem
 
     &.now
       float: left
@@ -317,7 +322,7 @@ login .homepage-nav
     &:hover
       color: $panel-text-link-hover
 
-    @media (max-width: 350px)
+    @media (max-width: $tablet-small)
       margin: 0 1rem
 
 
@@ -338,6 +343,9 @@ login .homepage-nav
     padding-top: 0
     .intro
       margin-top: 4rem
+
+    padding-left: 0.5rem
+    padding-right: 0.5rem
 
     .demo-container
       width: 100% !important // lazy override of `+span(6)`
@@ -367,6 +375,8 @@ login .homepage-nav
           margin: 0
 
     .screenshots
+      padding-left: 0.5rem
+      padding-right: 0.5rem
       img,
       .text
         +span(12)
