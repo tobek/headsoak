@@ -27,6 +27,7 @@
         [ofNoteId]="note.id"
         context="note"
         enableDropdown=1
+        noShiftClickHighlight
         (click)="toggleTag(tag.id, $event, true)"
         (toggled)="toggleTag($event.id)"
         (removed)="removeTag(tag.id)"
@@ -91,7 +92,11 @@
         (touchOrClick)="toggleArchived($event)"
       ><i class="fa fa-fw fa-archive"></i></a
 
-      ><a data-tooltip="Delete note" class="note-action" (touchOrClick)="delete($event)"><i class="fa fa-fw fa-trash-o"></i></a
+      ><a class="note-action"
+        data-tooltip="Delete note"
+        noShiftClickHighlight
+        (touchOrClick)="delete($event)"
+      ><i class="fa fa-fw fa-trash-o"></i></a
     ></span
   ></div>
 </div>

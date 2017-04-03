@@ -70,11 +70,12 @@ const APP_COMPONENTS = [
 ];
 
 
-import {AnimateToSelectorDirective, ContenteditableModelDirective, TouchOrClickDirective} from './directives';
+import {AnimateToSelectorDirective, ContenteditableModelDirective, NoShiftClickHighlightDirective, TouchOrClickDirective} from './directives';
 
 const APP_DIRECTIVES = [
   AnimateToSelectorDirective,
   ContenteditableModelDirective,
+  NoShiftClickHighlightDirective,
   TouchOrClickDirective,
 ];
 
