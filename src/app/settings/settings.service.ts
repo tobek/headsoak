@@ -59,7 +59,6 @@ export class SettingsService {
 
       EXAMPLE_BG_URLS: [
         'http://thereitwas.com/images/russian/Nikolay Dubovskoy - 1890 - Quieting Down.jpg',
-        'http://thereitwas.com/images/hyperdude111 - Buzz - 2560x1440.jpg',
         'http://thereitwas.com/images/The Fox is Black - Desktop Wallpaper Project/Adam-Hanson-2560x1440.jpeg',
         'http://thereitwas.com/images/The Fox is Black - Desktop Wallpaper Project/chris-jaurique-2560x1440.jpg',
         'http://thereitwas.com/images/The Fox is Black - Desktop Wallpaper Project/upso-1920x1200.jpg',
@@ -68,6 +67,7 @@ export class SettingsService {
         'https://upload.wikimedia.org/wikipedia/commons/d/d5/Vincent_van_Gogh_-_Wheatfield_with_a_reaper_-_Google_Art_Project.jpg',
         'https://upload.wikimedia.org/wikipedia/commons/a/a3/Gustav_Klimt_-_Beech_Grove_I_-_Google_Art_Project.jpg',
         'https://upload.wikimedia.org/wikipedia/commons/5/50/John_Martin_-_The_Great_Day_of_His_Wrath_-_Google_Art_Project.jpg',
+        'https://s3.amazonaws.com/static.headsoak.com/img/bg/John%20Martin_-_1840_-_Joshua_Commanding_the_Sun_to_Stand_Still.jpg', // this is like 5mb
 
         // @TODO/ece maybs not?
         // 'https://upload.wikimedia.org/wikipedia/commons/e/ee/Extermination_of_Evil_Vaisravana.jpg',
