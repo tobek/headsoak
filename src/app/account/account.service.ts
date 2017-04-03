@@ -178,6 +178,9 @@ export class AccountService {
     });
 
     this.loginState$.next('logged-in');
+
+    document.querySelector('body').classList.remove('is--logged-out');
+    document.querySelector('body').classList.add('is--logged-in');
   }
 
   /** User explicitly requested to logout. */
@@ -207,6 +210,9 @@ export class AccountService {
     }
 
     this.modalService.login();
+
+    document.querySelector('body').classList.remove('is--logged-in');
+    document.querySelector('body').classList.add('is--logged-out');
   }
 
   passwordReset(email: string, cb: (errMessage?: string) => void) {

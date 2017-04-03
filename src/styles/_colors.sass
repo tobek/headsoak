@@ -50,6 +50,9 @@ $panel-text-secondary: $accent-color-light // used for secondary stuff in panels
 $panel-heading: $accent-color
 $panel-text-link: $accent-color-light
 $panel-text-link-hover: $accent-color
+$panel-or-overlay: $panel-bg
+@if $panel-bg == transparent
+    $panel-or-overlay: $bg-overlay
 
 $form-label: #1b2733 //$accent-color-dark // mini label headings in settings screens
 

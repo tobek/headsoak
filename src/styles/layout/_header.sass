@@ -1,6 +1,11 @@
 .app-top
   position: relative
   z-index: $z-header
+
+  +fadeable
+  +faded-out
+  .is--logged-in &
+    +faded-in
   
 .app-header
   @if $panel-bg != transparent

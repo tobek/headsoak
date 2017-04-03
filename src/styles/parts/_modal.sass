@@ -4,10 +4,10 @@ modal
 
   visibility: hidden
   opacity: 0
-  transition: visibility $transition-med ease-in, opacity $transition-med ease-in
+  transition: visibility $transition-slow ease-in, opacity $transition-slow ease-in
 
-  .uninitialized + &
-    transition-duration: $transition-slow
+  .is--initialized &
+    transition-duration: $transition-med
 
   &.second
     z-index: $z-modal + 1
@@ -77,11 +77,8 @@ modal
       box-shadow: none
 
     &.is--loading
-      // @TODO/polish @TODO/hp There's a brief flash, as the page is initially loading, where the loader icon in loading modal is visible on top of outer loader in index.html. Background color here made that a brief flash instead of constant, but it's still there.
-      @if $panel-bg == transparent
-        background-color: $bg-overlay
-      @else
-        background-color: $panel-bg
+      // @TODO/polish @TODO/hp There's a brief flash, as the page is initially loading, where the loader icon in loading modal is visible on top of outer loader in index.html. Even setting this to white (by using `$panel-or-overlay`) or giving `.is--initialized .initial-loader.outer` display none didn't seem to fix it
+      background-color: $panel-bg 
 
     @media (max-width: $tablet-large)
       +span(9)
