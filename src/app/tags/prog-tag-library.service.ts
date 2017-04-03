@@ -429,12 +429,16 @@ return function(note) {
     {
       id: 'lib--has-quote',
       name: 'has quote',
-      description: 'Tag all notes which contain quotes. This is calculated by looking to see if at least one line in the note follows the Markdown syntax for blockquotes: starting a line with "> ".',
-      // old version which looks for 50% of lines being a quote:
-      // progFuncString: 'if (! note.body) {\n  return false;\n}\n\nvar lines = note.body.split(\'\\n\');\nvar numQuoteLines = 0;\n\n_.each(lines, function(line) {\n  if (line[0] === \'>\') {\n    numQuoteLines++;\n  }\n});\n\nif (numQuoteLines / lines.length >= 0.5) {\n  return true;\n} else {\n  return false;\n}',
-      progFuncString: `return function(note) {
+      description: 'Tag all notes which contain quotations. This is calculated by looking for either 1) text in quotation marks that\'s 50 characters or more, or 2) at least one line starting with "> " (i.e. the Markdown syntax for blockquotes).',
+      progFuncString: `var quoteRegExp = new RegExp('"[^"]{50,}"');
+
+return function(note) {
   if (! note.body) {
     return false;
+  }
+
+  if (note.body.match(quoteRegExp)) {
+    return true;
   }
 
   var lines = note.body.split('\\n');
@@ -443,7 +447,7 @@ return function(note) {
   _.each(lines, function(line) {
     if (line[0] === '>' && line[1] === ' ') {
       foundQuote = true;
-      return false;
+      return false; // exit iteration early
     }
   });
 
