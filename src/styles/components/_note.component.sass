@@ -96,6 +96,28 @@ $note-header-height: 2.5rem
     .fa
       +small
 
+  .add-tag-tagless-text
+    display: inline-block
+    position: relative
+    top: -1px
+    overflow: hidden
+    white-space: nowrap
+    vertical-align: middle
+    +tag-placeholder-face
+
+    transition: opacity $transition-fast, visibility $transition-fast, max-width $transition-fast, margin $transition-fast
+    +faded-out
+    margin-left: 0
+    max-width: 0
+  &.is--tagless .add-tag-tagless-text
+    +faded-in
+    margin-left: 0.5rem
+    max-width: 75px
+  &.is--tagless.is--adding-tag .add-tag-tagless-text
+    +faded-out
+    margin-left: 0
+    max-width: 0
+
   .note-id
     cursor: default
 

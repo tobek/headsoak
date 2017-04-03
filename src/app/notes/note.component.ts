@@ -41,6 +41,9 @@ export class NoteComponent {
   @HostBinding('class.is--expanded') hasExpandedTags = false;
   @HostBinding('class.is--focused') isFocused = false;
   @HostBinding('class.is--textless') isTextless = false;
+  @HostBinding('class.is--tagless') get isTagless(): boolean {
+    return ! this.note.tags || this.note.tags.length === 0;
+  }
   // @REMOVED/note text overflow
   // @HostBinding('class.is--text-overflowing') isTextOverflowing = false;
 
