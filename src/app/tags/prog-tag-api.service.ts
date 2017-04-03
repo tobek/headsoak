@@ -62,6 +62,10 @@ export class ProgTagApiService {
     this.initializePublicApi();
   }
 
+  clearRequestQueue() {
+    this._requests = {};
+  }
+
   _init(dataService: DataService): void {
     this._dataService = dataService;
 
@@ -131,6 +135,12 @@ export class ProgTagApiService {
       return;
     }
 
+    if (! this._requests[res.id]) {
+      // This shouldn't ever happen unless you've called `this.clearRequestQueue`, which currently only the homepage does so that queued up requests for demo note don't do weird shit when they come back and note is gone.
+      // this._logger.warn('No worker request found for id', res.id);
+      return;
+    }
+
     if (res.err) {
       this._logger.warn('GeniusWorker returned error:', res.err);
       this._requests[res.id].reject(res.err);
@@ -144,6 +154,7 @@ export class ProgTagApiService {
 
   private postWorkerRequest(req: GeniusRequest) {
     if (this._worker) {
+      // this._logger.log('Posting to GeniusWorker:', req);
       this._worker.postMessage(req);
     }
     else {

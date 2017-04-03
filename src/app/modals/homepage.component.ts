@@ -39,7 +39,7 @@ export class HomepageComponent {
   demoNoteAddTagInput: HTMLInputElement;
 
 
-  // @TODO/refactor This is fucking stupid. May be better to spin up real version of DataService and initialize it with fake data, and then clear when user logs in. But that may be even more difficult than this route.
+  // @TODO/refactor This is fucking stupid. May be better to spin up real version of DataService and initialize it with fake data, and then clear when user logs in. But that may be even more difficult than this route. Actually, we do have DataService initialized by AccountService on page load, so we can just use it and make sure to do `dataService.clear()` when user logs in?
   fakeDataService = {
     digest$: {
       emit: function() {},
@@ -52,8 +52,8 @@ export class HomepageComponent {
     },
     tags: {
       tags: {},
-      getTagByName: function(name) {
-        return _.find(this.tags, { name: name });
+      getTagByName: (name): Tag => {
+        return _.find(this.fakeDataService.tags.tags, { name: name });
       },
       createTag: (data) => {
         if (! data.id) {
@@ -64,7 +64,7 @@ export class HomepageComponent {
         this.fakeDataService.tags.tags[tag.id] = tag;
         return tag;
       },
-      createNewChildTag: function(childTagName: string, parentTag: Tag) {
+      createNewChildTag: (childTagName: string, parentTag: Tag) => {
         const tagData = {
           childTagName: childTagName,
           parentTagId: parentTag.id,
@@ -72,7 +72,7 @@ export class HomepageComponent {
           fromLib: parentTag.fromLib,
           readOnly: parentTag.readOnly,
         };
-        return this.createTag(tagData);
+        return this.fakeDataService.tags.createTag(tagData);
       },
       removeTag: function() {},
       progTagApi: this.progTagApi,
@@ -350,8 +350,14 @@ export class HomepageComponent {
   ngOnDestroy() {
     jQuery(window).off('.hsHp');
     jQuery('modal').off('.hsHp');
+
+    this.scriptStopped = true;
     jQuery(this.demoNoteBody).off('.hsHp');
+    this.demoNote.updated = function() {};
     this.demoNote.blurred();
+    delete this.demoNote;
+
+    this.fakeDataService.tags.progTagApi.clearRequestQueue();
     delete this.fakeDataService;
   }
 
