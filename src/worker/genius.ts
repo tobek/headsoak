@@ -75,6 +75,11 @@ function handleRequest(req: GeniusRequest, cb: (GeniusResponse) => void) {
 
       res.result = doc;
 
+      if (req.fn === 'keywords' && doc.contents) {
+        // Keywords library includes entire string passed in as part of the result - for a huge note this is needlessly heavy to send with `postMessage`, which creates a copy of the message.
+        delete doc.contents;
+      }
+
       cb(res);
     });
   }
