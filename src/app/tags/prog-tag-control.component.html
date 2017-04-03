@@ -27,11 +27,11 @@
 </div>
 
 <div class="code-container" [class.is--disabled]="! tag.prog">
-  <div class="disabled-cover"></div>
-
-  <pre class="function-wrapper">function smartTagDef(api) {{ '{' }}</pre> 
-  <pre ref-editorRef class="code-editor">{{ tag.progFuncString || DEFAULT_PROG_FUNC_STRING }}</pre>
-  <pre class="function-wrapper">{{ '}' }}</pre> 
+  <div class="the-code">
+    <pre class="function-wrapper">function smartTagDef(api) {{ '{' }}</pre> 
+    <pre ref-editorRef class="code-editor">{{ tag.progFuncString || DEFAULT_PROG_FUNC_STRING }}</pre>
+    <pre class="function-wrapper">{{ '}' }}</pre> 
+  </div>
 
   <div *ngIf="! tag.readOnly && ! tag.fromLib">
     <button class="btn btn-primary"
