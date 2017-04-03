@@ -29,6 +29,9 @@
     h1
       cursor: pointer
 
+  .new-note-button
+    margin-right: 1rem
+
   .sync-animation
     position: absolute
     margin-top: -1 * $header-menu-padding
@@ -75,7 +78,7 @@
     border-bottom-width: 0
     transition: border-color $transition-fast
 
-    &:hover
+    .hover-target:hover
       .menu-body
         +faded-in
 
@@ -90,7 +93,7 @@
       top: $header-menu-size / 2
       right: -6px // magic number
       margin-top: -1px // magic number
-    &:hover .menu-icon
+    .hover-target:hover .menu-icon
       color: $icon-hover
 
   .menu
@@ -209,6 +212,16 @@
       opacity: 1
       visibility: visible
 
+  .tag-browser-collapse
+    position: absolute
+    right: -6px // matches the `.menu-icon` magic number to align with that
+    bottom: -2rem // magic number to align with top of tag browser
+
+    +fadeable 
+    +faded-out 
+    .route--note-route & 
+      +faded-in
+
 .app-nav
   ul
     +plain-list
@@ -236,7 +249,7 @@
   .note-view .fa-bars
       transform: translateY(-0.5px) // no idea why this is necessary but it bothers me that it's off...
 
-.header-nav
+.desktop-nav
   .note-views
     margin-right: 0.75rem
 
@@ -265,7 +278,7 @@
         &.is--active:hover .fa
           color: $accent-color-darkest
 
-.secondary-nav
+.mobile-nav
   +outer-container
   white-space: nowrap
   height: $nav-header-height
@@ -274,14 +287,6 @@
 
   .new-note
     margin-top: 13px // @HACK Magic number to vertically align. Lazy.
-
-  .nav-link-outer--tags
-    float: right
-
-    +fadeable
-    +faded-out
-    .route--note-route &
-      +faded-in
 
   .nav-link
     @if $panel-bg != transparent
@@ -366,11 +371,11 @@
     .menu-link--shortcuts
       display: none !important
 
-  .header-nav,
-  .nav-link-text--full
+  .desktop-nav,
+  .app-header .new-note-button
     display: none
 
-  .secondary-nav
+  .mobile-nav
     +dropdown-menu
     position: fixed
     bottom: 0
@@ -380,10 +385,6 @@
     padding-bottom: 0
     border: none
     text-align: center
-
-    // On desktop we only show when on note route, but on mobile we want it in nav from everywhere
-    .nav-link-outer--tags
-      +faded-in
 
     .nav-link
       +dropdown-menu-border

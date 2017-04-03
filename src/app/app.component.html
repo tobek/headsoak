@@ -19,6 +19,9 @@
           <h1 (click)="logoClick()" title="Headsoak"><img src="/assets/img/logo.svg"></h1>
         </div>
 
+        <!-- @NOTE Any changes here need to be replicated in `nav.mobile-nav` -->
+        <button class="btn btn-primary new-note-button" (touchOrClick)="newNote()">New Note</button>
+
         <div class="search-mode-indicator"
           *ngIf="sizeMonitor.isMobile"
           [class.is--active]="! noteQueryComponent.isEmpty()"
@@ -31,8 +34,8 @@
         ><i class="fa fa-search"></i></span>
         <note-query [hidden]="! dataService.user.loggedIn" (setVisibility)="setSearchModeVisiblity($event)"></note-query>
 
-        <!-- Only on desktop. On mobile everything is in `nav.secondary-nav` -->
-        <nav class="app-nav header-nav" *ngIf="! sizeMonitor.isMobile">
+        <!-- @NOTE Any updates here may need to be reflected in `nav.mobile-nav` -->
+        <nav class="app-nav desktop-nav" *ngIf="! sizeMonitor.isMobile">
           <ul
             ><li class="nav-link-outer--notes"><span class="nav-link nav-link--note-views" [routerLink]="[routingInfo.lastNoteRoute]" [class.is--active]="NOTE_BROWSER_ROUTES.indexOf(router.url) !== -1">
                 <span class="note-views"
@@ -73,64 +76,84 @@
 
         <!-- @TODO/mobile @TODO/QA Test the menu behavior with forceMenuClosed works -->
         <div class="menu-wrapper" [class.is--force-closed]="forceMenuClosed" (mouseenter)="forceMenuClosed = false" (click)="forceMenuClosed = false">
-          <div class="menu status--{{ dataService.status }}" [hidden]="! dataService.user.loggedIn">
-            <div class="sync-animation">
-              <div class="sync-animation-clipper">
-                <div class="sync-animation-border">
+          <div class="hover-target">
+            <div class="menu status--{{ dataService.status }}" [hidden]="! dataService.user.loggedIn">
+              <div class="sync-animation">
+                <div class="sync-animation-clipper">
+                  <div class="sync-animation-border">
+                  </div>
                 </div>
               </div>
+              
+              <img class="avatar" src="{{ settings.get('profileImageUrl', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7') }}" />
+
+              <ul class="menu-body" (click)="forceMenuClosed = true; $event.stopPropagation()">
+                <li class="sync-status">
+                  Status:
+                  <span class="status">{{ dataService.statusNameMap[dataService.status] }}</span>
+                </li>
+
+                <li *ngFor="let route of menuNavSettingsRoutes" [class.is--active]="router.url === '/settings' + (route.path ? '/' + route.path : '')">
+                  <a [routerLink]="route.path ? ['/settings', route.path] : ['/settings']" [class]="'menu-link--' + route.data.slug">
+                    <!-- @TODO/optimization These could be a one time binding -->
+                    <i class="fa fa-lg fa-fw fa-{{ route.data.iconSlug }}"></i>
+                    {{ route.data.name }}
+                  </a>
+                </li>
+
+                <li (click)="modalService.privateMode()"><a>
+                  <i class="fa fa-lg fa-fw fa-user-secret"></i>
+                  Private Mode
+                </a></li>
+                <li (click)="modalService.feedback()"><a>
+                  <i class="fa fa-lg fa-fw fa-comment-o"></i>
+                  Feedback
+                </a></li>
+
+                <li (click)="accountService.logout()"><a>
+                  <i class="fa fa-lg fa-fw fa-sign-out"></i>
+                  Logout
+                </a></li>
+              </ul>
             </div>
-            
-            <img class="avatar" src="{{ settings.get('profileImageUrl', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7') }}" />
 
-            <ul class="menu-body" (click)="forceMenuClosed = true; $event.stopPropagation()">
-              <li class="sync-status">
-                Status:
-                <span class="status">{{ dataService.statusNameMap[dataService.status] }}</span>
-              </li>
-
-              <li *ngFor="let route of menuNavSettingsRoutes" [class.is--active]="router.url === '/settings' + (route.path ? '/' + route.path : '')">
-                <a [routerLink]="route.path ? ['/settings', route.path] : ['/settings']" [class]="'menu-link--' + route.data.slug">
-                  <!-- @TODO/optimization These could be a one time binding -->
-                  <i class="fa fa-lg fa-fw fa-{{ route.data.iconSlug }}"></i>
-                  {{ route.data.name }}
-                </a>
-              </li>
-
-              <li (click)="modalService.privateMode()"><a>
-                <i class="fa fa-lg fa-fw fa-user-secret"></i>
-                Private Mode
-              </a></li>
-              <li (click)="modalService.feedback()"><a>
-                <i class="fa fa-lg fa-fw fa-comment-o"></i>
-                Feedback
-              </a></li>
-
-              <li (click)="accountService.logout()"><a>
-                <i class="fa fa-lg fa-fw fa-sign-out"></i>
-                Logout
-              </a></li>
-            </ul>
+            <i class="menu-icon fa fa-chevron-down"></i>
           </div>
 
-          <i class="menu-icon fa fa-chevron-down"></i>
+          <!-- @HACK Putting this inside `.menu-wrapper` so that it's easier (possible at all) to align it with the menu chevron. -->
+          <span class="tag-browser-collapse"
+            *ngIf="! sizeMonitor.isMobile"
+            (touchOrClick)="tagsToggleCollapsed()"
+          >
+            <span
+              *ngIf="! homeComponent || ! homeComponent.tagBrowserCollapsed"
+              data-tooltip="Collapse tags"
+            >
+              <i class="fa fa-lg fa-chevron-circle-right"></i>
+            </span>
+            <span
+              *ngIf="!! homeComponent && homeComponent.tagBrowserCollapsed"
+              data-tooltip="Expand tags"
+            >
+              <i class="fa fa-lg fa-chevron-circle-left"></i>
+            </span>
+          </span>
         </div>
       </div>
     </header>
 
-    <!-- On desktop this provides just new note button and tag sidebar expand/collapse, and the rest is provided by `nav.header-nav`. On mobile this nav provides everything. -->
-    <nav class="app-nav secondary-nav" *ngIf="dataService.user.loggedIn" [class.is--note-nav-open]="isNoteViewsNavOpen">
+    <!-- @NOTE Any updates here may need to be reflected in `nav.desktop-nav` -->
+    <!-- @TODO/refactor Previously we got by with desktop and mobile using same nav, until part of the desktop nav got combined with the top header part, leaving some desktop nav stuff down here and all mobile stuff down here. Now, all of the desktop nav is in the top. It's probably possible with some tweaks to resume using a single nav, but for now they're totally separate. -->
+    <nav class="app-nav mobile-nav" *ngIf="dataService.user.loggedIn && sizeMonitor.isMobile" [class.is--note-nav-open]="isNoteViewsNavOpen">
       <ul
         ><li class="nav-link-outer--new-note"
           ><span class="nav-link" (touchOrClick)="newNote()">
             <i class="fa fa-lg fa-pencil-square-o"></i>
-            <span class="nav-link-text">New<span class="nav-link-text--full"> note</span></span>
+            <span class="nav-link-text">New</span>
           </span
         ></li
 
-        ><li class="nav-link-outer--notes" ref-notesNav
-          *ngIf="sizeMonitor.isMobile"
-          ><span class="nav-link nav-link--note-views"
+        ><li class="nav-link-outer--notes" ref-notesNav><span class="nav-link nav-link--note-views"
             [routerLink]="[routingInfo.lastNoteRoute]"
             (click)="noteNavTouchend($event)"
             ><span class="note-views"
@@ -149,22 +172,6 @@
         ></li
 
         ><li class="nav-link-outer--tags"
-          *ngIf="! sizeMonitor.isMobile && (! homeComponent || ! homeComponent.tagBrowserCollapsed)"
-          data-tooltip="Collapse tags"
-          ><span class="nav-link" (touchOrClick)="tagsToggleCollapsed()">
-            <i class="fa fa-lg fa-chevron-circle-right"></i>
-          </span
-        ></li
-        ><li class="nav-link-outer--tags"
-          *ngIf="! sizeMonitor.isMobile && (!! homeComponent && homeComponent.tagBrowserCollapsed)"
-          data-tooltip="Expand tags"
-          ><span class="nav-link" (touchOrClick)="tagsToggleCollapsed()">
-            <i class="fa fa-lg fa-chevron-circle-left"></i>
-          </span
-        ></li
-
-        ><li class="nav-link-outer--tags"
-          *ngIf="sizeMonitor.isMobile"
           [class.is--active]="router.url.indexOf('/tags') === 0"
           [routerLink]="['/tags']"
           ><span class="nav-link">
