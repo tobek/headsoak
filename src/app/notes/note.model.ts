@@ -451,8 +451,8 @@ export class Note {
     }
   }
 
-  /** Confirms that the user wants to delete the note, and if so, runs `actuallyDelete`. */
-  delete(noConfirm = false): void {
+  /** Confirms that the user wants to delete the note, and if so, calls `confirmedCb` and then runs `actuallyDelete`. */
+  delete(noConfirm = false, confirmedCb?: Function): void {
     let confirmMessage = '<p>Are you sure you want to delete this note? This can\'t be undone.</p>';
     if (this.body) {
       confirmMessage += '<p>It\'s the note that goes like this: "';
@@ -466,6 +466,7 @@ export class Note {
     }
 
     if (noConfirm) {
+      confirmedCb && confirmedCb();
       this.actuallyDelete();
       return;
     }
@@ -474,6 +475,7 @@ export class Note {
       confirmMessage,
       (confirmed) => {
         if (confirmed) {
+          confirmedCb && confirmedCb();
           this.actuallyDelete();
         }
       },

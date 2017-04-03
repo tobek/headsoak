@@ -102,7 +102,7 @@ export class ModalService {
       message: trustAsHtml ? this.sanitizer.bypassSecurityTrustHtml(message) : message,
       okButtonText: okButtonText,
       cancelButton: true,
-      okCb: () => { cb(true); },
+      okPostCloseCb: () => { cb(true); },
       cancelCb: () => { cb(false); },
     });
   }
@@ -130,7 +130,7 @@ export class ModalService {
       config.message = this.sanitizer.bypassSecurityTrustHtml(<string> config.message);
     }
 
-    this.modal.generic(config);
+    this.unusedModal.generic(config);
   }
 
   faq(): void {

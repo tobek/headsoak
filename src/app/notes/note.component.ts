@@ -428,7 +428,7 @@ export class NoteComponent {
       noConfirm = eventOrNoConfirm;
     }
 
-    this.note.delete(noConfirm);
+    this.note.delete(noConfirm, this.unopenNote.bind(this));
   }
 
   newNoteWithSameTags() {
