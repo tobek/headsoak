@@ -4,9 +4,7 @@ prog-tag-library
       margin-right: 0.5rem
 
   .library
-    margin-top: 1rem
-    padding-top: 1.5rem
-    border-top: 1px solid $form-stroke
+    margin-top: 2rem
 
   .library-tag
     +dropdown-menu
@@ -15,6 +13,10 @@ prog-tag-library
     margin-bottom: 2rem
     padding: 0.5rem 1rem
     min-height: 325px
+
+    transition: border-color $transition-fast
+    &.is--disabled
+      border-color: $form-placeholder
 
     @media (max-width: 1200px)
       +gallery(6)
