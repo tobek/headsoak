@@ -81,6 +81,10 @@ html
   z-index: -1
   background: $bg-overlay
 
+  transition: background $transition-med
+  .is--logged-out &
+    background: $bg-overlay--logged-out
+
 // This is our main grid container. gutter() and span() etc. should work as normal in here
 main
   @extend .clearfix

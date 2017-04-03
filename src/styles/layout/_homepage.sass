@@ -1,12 +1,24 @@
 // Styles for the logged-out marketing home page
 
-$homepage-main-bg: white
+$homepage-main-bg: $panel-or-overlay
+$bg-overlay-text: rgba(invert($panel-text), 0.9)
 
 homepage
   display: block
   position: relative
   padding-top: 2rem
   color: $panel-text
+
+  // @HACK Kind of a `.full-width-edges` to cover up gap above <homepage> element...
+  &:before
+    content: ''
+    position: absolute
+    z-index: -1
+    top: 0
+    left: -50vw
+    width: 200vw
+    height: 100px
+    background-color: $homepage-main-bg
 
   .intro
     // text-shadow: 2px 2px 5px black
@@ -24,11 +36,10 @@ homepage
     position: relative
     width: 100%
     padding: 0.5rem
-    color: $note-text
-    background-color: $homepage-main-bg
+    color: $primary-button-text
+    background-color: invert($accent-color-dark)
     font-weight: bold
     text-align: center
-    // @TODO/hp Styles
 
   .full-width-edges
     &:before,
@@ -37,20 +48,18 @@ homepage
       position: absolute
       top: 0
       height: 100%
-      max-height: 100vh // @TODO/hp @TODO/now This is dumb
       width: 500px
-      background-color: $panel-bg
+      background-color: $homepage-main-bg
 
     &:before
       left: -500px
     &:after
       right: -500px
 
-    &.ribbon,
-    &.hero
+    &.ribbon
       &:before,
       &:after
-        background-color: $homepage-main-bg
+        background-color: invert($accent-color-dark)
 
   .steps
     display: flex
@@ -62,6 +71,7 @@ homepage
       +span(6 last)
 
   .hero
+    position: relative
     background-color: $homepage-main-bg
 
     .demo-container
@@ -119,6 +129,7 @@ homepage
           opacity: 1
 
   .tag-explore-wrapper
+    z-index: 1 // otherwise it can be below the negative margin-bottomed login modal
     position: relative
     width: 100%
 
@@ -169,11 +180,13 @@ homepage
       padding-right: 25px
 
   .static-notes
-    @extend .clearfix
+    position: relative
     padding: 1.5rem 0
+    background: $homepage-main-bg
 
   .screenshots
     padding: 2rem 0
+    color: $bg-overlay-text
 
     .shot
       @extend .clearfix
@@ -188,8 +201,9 @@ homepage
         font-weight: normal
 
   .features
-    @extend .clearfix
-    margin-top: gutter() * 3
+    position: relative
+    padding-top: 2rem
+    background: $homepage-main-bg
 
   .feature
     +card
@@ -210,12 +224,13 @@ homepage
     clear: both
     width: 100%
     margin-top: 50px
+    color: $bg-overlay-text
 
     h4
       position: relative
       margin: 0
       padding: 50px 25px
-      // text-align: center
+      text-align: center
       // background-color: $panel-bg
       // text-shadow: 2px 2px 5px $shadow-color
       letter-spacing: 1.8px

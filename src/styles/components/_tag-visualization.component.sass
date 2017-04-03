@@ -77,6 +77,10 @@ force-graph
     fill: $note-text
     text-shadow: 2px 2px 3px $shadow-color-light, -2px -2px 3px $shadow-color-light
 
+    homepage &
+      fill: invert($note-text)
+      text-shadow: 2px 2px 3px invert($shadow-color-light), -2px -2px 3px invert($shadow-color-light)
+
     //invert($panel-text) 2px 2px 3px, invert($panel-text) -2px -2px 3px
 
     .hash
@@ -90,6 +94,9 @@ force-graph
   .node.is--central text,
   .node.is--highlighted text
     text-shadow: 2px 2px 3px $shadow-color-light, -2px -2px 3px $shadow-color-light, 0 0 1px $note-text
+
+    homepage &
+      text-shadow: 2px 2px 3px invert($shadow-color-light), -2px -2px 3px invert($shadow-color-light), 0 0 1px invert($note-text)
 
 
   .node,
