@@ -140,6 +140,10 @@ export class DataService {
   }
 
   onlineStateHandler = (snap) => {
+    if (! this.isInitialized || ! this.user.loggedIn) {
+      return;
+    }
+
     const online = snap.val();
     if (this.status === 'offline' && online) {
       this.sync();
