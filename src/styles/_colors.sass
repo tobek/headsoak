@@ -147,8 +147,8 @@ $modal-backdrop: rgba(0, 0, 0, 0.7)
 $modal-backdrop--dark: rgba(0, 0, 0, 0.9) // e.g. for full screen note modal
 @if $bg-overlay == white
     $modal-backdrop--dark: white
-$light-overlay: rgba($note-bg, 0.75)
-$light-overlay-text: $note-text
+$light-overlay: rgba($bg-overlay, 0.85)
+$light-overlay-text: rgba(invert($light-overlay), 1)
 
 
 // OLD COLORS
