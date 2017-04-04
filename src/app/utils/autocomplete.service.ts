@@ -93,7 +93,8 @@ export class AutocompleteService {
           //     break;
           //   }
           // }
-          results.push(newTagOption);
+          // Actually, we just want it to be the 2nd option (and splice will put it first if array is empty)
+          results.splice(1, 0, newTagOption);
         }
 
         results.forEach((suggestion) => {
