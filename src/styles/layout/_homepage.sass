@@ -101,10 +101,6 @@ homepage
         margin-top: 6rem
 
   .note
-    +box-shadowed
-    // For some reason, the right edge of the note box shadow is being clipped, regardless of `overflow` value on parent. This fixes that.
-    width: calc(100% - 2px)
-
     .note-wrapper .body-input // extra specificity to overcome route-related classes
       height: 100%
       max-height: none !important
