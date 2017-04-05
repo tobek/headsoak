@@ -55,9 +55,6 @@ export class DataService {
 
   digest$ = new EventEmitter<DataItem>();
 
-  /** Whether there is currently some sync problem, e.g. we're offline or there was an error syncing. */
-  syncProblem = false;
-
   statusNameMap = {
     synced: 'Synced',
     syncing: 'Syncing',
@@ -67,19 +64,23 @@ export class DataService {
   };
   _status: 'synced' | 'syncing' | 'unsynced' | 'offline' | 'error' = 'synced';
 
+  /** Timestamp (in ms) that device was last connected to the internet. */
+  lastOnline: number;
+
   ref: Firebase;
 
   accountService: AccountService;
 
-  private _errorToast: Toast;
-  private get errorToast(): Toast {
-    return this._errorToast;
+  /** If this is truthy it means we've shown the user a toaster about a sync problem (e.g. error, offline). Even if the user has closed the toaster, we still keep a reference to it here and manually clear it when things are synced again. */
+  private _syncProblemToast: Toast;
+  private get syncProblemToast(): Toast {
+    return this._syncProblemToast;
   }
-  private set errorToast(newToast: Toast) {
-    if (this._errorToast) {
-      this._errorToast.close();
+  private set syncProblemToast(newToast: Toast) {
+    if (this._syncProblemToast) {
+      this._syncProblemToast.close();
     }
-    this._errorToast = newToast;
+    this._syncProblemToast = newToast;
   }
 
   /** This stores data that needs to be synced to server. Checked by this.sync() */
@@ -140,17 +141,38 @@ export class DataService {
   }
 
   onlineStateHandler = (snap) => {
-    if (! this.isInitialized || ! this.user.loggedIn) {
-      return;
+    const online = snap.val();
+
+    if (online) {
+      this.lastOnline = Date.now();
+    }
+    else if (! this.syncProblemToast && (Date.now() - this.lastOnline > 30000)) {
+      this.offlineToast();
     }
 
-    const online = snap.val();
     if (this.status === 'offline' && online) {
+      // We were offline and now we're not, so try to sync again (which will change `status`)
       this.sync();
     }
     else if (this.status !== 'offline' && ! online) {
       this.status = 'offline';
     }
+  }
+
+  offlineToast() {
+    if (! this.isInitialized || ! this.user.loggedIn) {
+      return;
+    }
+
+    this.syncProblemToast = this.toaster.error(
+      '<p>Connection to the internet has been lost. Changes to your notes will not be saved until you are reconnected.</p>', // @TODO/copy
+      'Disconnected from Headsoak',
+      {
+        timeOut: 0,
+        extendedTimeOut: 0,
+        closeButton: true,
+      }
+    );
   }
 
   // @TODO/data @TODO/account We should confirm this when logging out, too
@@ -289,9 +311,9 @@ export class DataService {
       this._logger.error('Sync to Firebase threw or returned error:', err);
       const stuffChanged = field === 'nuts' ? 'notes' : field;
 
-      // If we're already in an error state, no need to show toaster again, but when we first arrive, do:
-      if (! this.syncProblem) {
-        this.errorToast = this.toaster.error(
+      // If we've already shown a toaster about an error, no need to show toaster again, but when we first arrive, do:
+      if (! this.syncProblemToast) {
+        this.syncProblemToast = this.toaster.error(
           'Changes you just made to some ' + stuffChanged + ' may not have been saved, and future changes may not be saved. We\'ll keep trying though, and let you know when we\'re back online.<br><br>Click for more info.',
           'Error syncing ' + stuffChanged + ' to the cloud',
           {
@@ -334,39 +356,16 @@ export class DataService {
     return this._status;
   }
   set status(newStatus) {
-    // @TODO/soon @TODO/data We should actually detect offline state (and what happens if it tries to sync while offline currently? Error?)
-    if (newStatus === 'error' || newStatus === 'offline') {
-      if (! this.syncProblem) {
-        // We've gone from a normal state to an error state
-        this.syncProblem = true;
-
-        // Error status fires its own toaster, but for offline let's do it here
-        if (newStatus === 'offline') {
-          this.errorToast = this.toaster.error(
-            '<p>Connection to the internet has been lost. Changes to your notes will not be saved until you are reconnected.</p>', // @TODO/copy
-            'Disconnected from Headsoak',
-            {
-              timeOut: 0,
-              extendedTimeOut: 0,
-              closeButton: true,
-            }
-          );
+    if (newStatus === 'synced' && this.syncProblemToast) {
+      // We were in an error/offline state and showed a toaster about it, so let user know it's all good now
+      this.syncProblemToast = null;
+      this.toaster.success(
+        '<p>Your notes have synced and everything looks good.</p>',
+        'Back online!',
+        {
+          closeButton: true,
         }
-      }
-    }
-    else if (newStatus === 'synced') {
-      if (this.syncProblem) {
-        // We've gone from a problem state to a good state
-        this.syncProblem = false;
-        this.errorToast = null;
-        this.toaster.success(
-          '<p>Your notes have synced and everything looks good.</p>',
-          'Back online!',
-          {
-            closeButton: true,
-          }
-        );
-      }
+      );
     }
 
     if (newStatus === 'unsynced' && this._status === 'offline') {
