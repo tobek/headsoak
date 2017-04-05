@@ -13,7 +13,11 @@ $note-header-height: 2.5rem
 
   &.is--focused,
   homepage &
-    border-left-color: $dropdown-underline
+    border-color: $dropdown-underline
+
+    &.is--expanded
+      // Looks silly with top border from expanded tag header
+      border-color: transparent
 
   note-browser &
     margin-bottom: 1rem
