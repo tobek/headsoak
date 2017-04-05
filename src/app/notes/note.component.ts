@@ -38,8 +38,11 @@ export class NoteComponent {
   /** We want to use `.note` selector to style notes so that we can have a "fake" note using same styles in homepage demo. Set that class here so we don't have to remember to do so whenever using <note>. */
   @HostBinding('class.note') thisIsUnusedAndAlwaysTrue = true;
 
+  isBodyFocused = false;
   @HostBinding('class.is--expanded') hasExpandedTags = false;
-  @HostBinding('class.is--focused') isFocused = false;
+  @HostBinding('class.is--focused') get isFocused(): boolean {
+    return this.isBodyFocused || this.hasExpandedTags || this.addingTag;
+  }
   @HostBinding('class.is--textless') isTextless = false;
   @HostBinding('class.is--tagless') get isTagless(): boolean {
     return ! this.note.tags || this.note.tags.length === 0;
@@ -209,7 +212,7 @@ export class NoteComponent {
 
     this.activeUIs.focusedNoteComponent = this;
     this.note.focused();
-    this.isFocused = true;
+    this.isBodyFocused = true;
   }
 
   bodyBlurred() {
@@ -217,7 +220,7 @@ export class NoteComponent {
       this.activeUIs.focusedNoteComponent = null;
     }
     this.note.blurred();
-    this.isFocused = false;
+    this.isBodyFocused = false;
 
     this.checkTextlessness();
 

@@ -49,7 +49,7 @@
     ref-bodyInput
     *ngIf="! note.sharedBody"
     [attr.contenteditable]="! sizeMonitor.isMobile || isOpened"
-    [attr.spellcheck]="isFocused || isOpened"
+    [attr.spellcheck]="isBodyFocused || isOpened"
     [attr.placeholder]="note.new ? 'Enter a new note' : 'This note has no text'"
     [contenteditableModel]="note.body"
     (contenteditableModelChange)="note.body = $event; note.changed()"
