@@ -2,6 +2,7 @@
 
 $homepage-main-bg: $panel-or-overlay
 $bg-overlay-text: rgba(invert($panel-text), 0.9)
+$ribbon-bg: rgba($note-text, 0.8)
 
 homepage
   display: block
@@ -38,13 +39,11 @@ homepage
     width: 100%
     padding: 1rem
     color: $primary-button-text
-    background-color: $logo-text-color
+    background-color: $ribbon-bg
     text-align: center
 
-    // @TODO/ece @TODO/hp What about these styles? And the "steps" ribbon has different ones below
     text-transform: uppercase
     letter-spacing: 1px
-    font-weight: bold
 
     &.steps
       letter-spacing: 0
@@ -69,7 +68,7 @@ homepage
     &.ribbon
       &:before,
       &:after
-        background-color: $logo-text-color
+        background-color: $ribbon-bg
 
   .steps
     display: flex
@@ -224,7 +223,7 @@ homepage
       float: right
 
     .heading
-      +h2
+      +pane-heading
       text-transform: uppercase
       margin-bottom: 2rem
 
