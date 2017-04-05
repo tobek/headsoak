@@ -117,7 +117,7 @@ main
   //     height: $mobile-full-height--with-note-query
   //   .is--headerless &
   //     height: $mobile-full-height--headerless
-  //     transform: translateY(-1 * $inner-header-height)
+  //     transform: translateY(-1 * $header-height)
   //   .is--headerless.is--note-query-visible &
   //     height: $mobile-full-height--headerless-with-note-query
 
@@ -128,11 +128,11 @@ main
 
     margin-top: 0
     margin-bottom: $mobile-nav-height
-    transform: translateY($inner-header-height + $mobile-header-margin)
+    transform: translateY($header-height + $mobile-header-margin)
     transition: transform $transition-fast
 
     .route--note-route.is--note-query-visible &
-      transform: translateY($inner-header-height + $mobile-header-margin + $mobile-note-query-height)
+      transform: translateY($header-height + $mobile-header-margin + $mobile-note-query-height)
     .is--headerless &
       transform: translateY($mobile-header-margin)
     .is--headerless.route--note-route.is--note-query-visible &

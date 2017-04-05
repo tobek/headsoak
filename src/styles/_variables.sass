@@ -1,18 +1,15 @@
 @import 'colors'
 
-$inner-header-height: 3rem
-$nav-header-height: 3.5rem
-
-$full-header-height: $inner-header-height + $nav-header-height
-$full-height: calc(100vh - #{$full-header-height})
-$full-height-nestable: (100vh - #{$full-header-height}) // can be nested inside other calc statements
+$header-height: 3rem
+$full-height: calc(100vh - #{$header-height})
+$full-height-nestable: (100vh - #{$header-height}) // can be nested inside other calc statements
 
 $mobile-nav-height: 2.5rem
 $mobile-note-query-height: 3.5rem
 $mobile-header-margin: 1rem
-$mobile-full-height: calc(100vh - #{$full-header-height + $mobile-header-margin})
+$mobile-full-height: calc(100vh - #{$header-height + $mobile-nav-height + $mobile-header-margin})
 
-$mobile-full-height--with-note-query: calc(100vh - #{$full-header-height + $mobile-header-margin + $mobile-note-query-height})
+$mobile-full-height--with-note-query: calc(100vh - #{$header-height + $mobile-nav-height + $mobile-header-margin + $mobile-note-query-height})
 
 $mobile-full-height--headerless: calc(100vh - #{$mobile-header-margin + $mobile-nav-height}) // when having scrolled down
 $mobile-full-height--headerless-with-note-query: calc(100vh - #{$mobile-header-margin + $mobile-nav-height + $mobile-note-query-height})

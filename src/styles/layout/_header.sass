@@ -15,7 +15,7 @@
   .inner
     +outer-container
     display: flex
-    height: $inner-header-height
+    height: $header-height
     align-items: center
 
   .back-button
@@ -298,7 +298,7 @@
 .mobile-nav
   +outer-container
   white-space: nowrap
-  height: $nav-header-height
+  height: $mobile-nav-height
   padding-top: 8px
   padding-bottom: 6px
 
@@ -332,7 +332,7 @@
     background-color: $panel-or-overlay
 
     .is--headerless &
-      transform: translateY(-1 * $inner-header-height);
+      transform: translateY(-1 * $header-height);
 
     .back-button
       +faded-out
@@ -347,7 +347,7 @@
         // Vertical align:
         position: relative
         top: 1px
-        line-height: $inner-header-height
+        line-height: $header-height
 
     &.is--backable
       .back-button
@@ -370,7 +370,7 @@
 
       .route--note-route.is--note-query-visible &
         +faded-in
-        transform: translateY($inner-header-height)
+        transform: translateY($header-height)
 
     .query-control-icon--search
       display: none
