@@ -168,10 +168,11 @@ textarea,
     color: $primary-button-text-active
 
 .btn-secondary
+  +box-shadowed-small-accent
   font-weight: bold
   text-transform: uppercase
 
-  @if $bg-overlay == white
+  @if $bg-is-light
     border: 1px solid $secondary-button-text
     &:hover
       border: 1px solid $secondary-button-text-hover

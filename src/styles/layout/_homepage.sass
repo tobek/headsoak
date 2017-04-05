@@ -23,8 +23,7 @@ homepage
 
   .intro
     // text-shadow: 2px 2px 5px black
-    // color: $panel-text
-    color: $accent-color-dark
+    color: $logo-text-color
     
     h2
       margin-top: 0
@@ -39,7 +38,7 @@ homepage
     width: 100%
     padding: 1rem
     color: $primary-button-text
-    background-color: invert($accent-color-dark)
+    background-color: $logo-text-color
     text-align: center
 
     // @TODO/ece @TODO/hp What about these styles? And the "steps" ribbon has different ones below
@@ -70,7 +69,7 @@ homepage
     &.ribbon
       &:before,
       &:after
-        background-color: invert($accent-color-dark)
+        background-color: $logo-text-color
 
   .steps
     display: flex
@@ -313,12 +312,11 @@ login .homepage-nav
     justify-content: space-between
 
   a
-    // @TODO/hp @TODO/ece Style for this?
     margin: 0 1.5rem
     font-weight: bold
     text-decoration: none
 
-    color: $accent-color-dark
+    color: $panel-text
     &:hover
       color: $panel-text-link-hover
 
