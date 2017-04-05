@@ -208,6 +208,6 @@ export class LoginComponent {
   }
 
   showFaq() {
-    this.modalService.faq();
+    this.modalService.help();
   }
 }

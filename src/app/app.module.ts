@@ -34,6 +34,7 @@ import {ModalComponent} from './modals/modal.component';
 import {HomepageComponent} from './modals/homepage.component';
 import {FeedbackComponent} from './modals/feedback.component';
 import {PrivateModeComponent} from './modals/private-mode.component';
+import {HelpComponent} from './modals/help.component';
 
 import {SettingsComponent, SettingComponent} from './settings/';
 
@@ -62,6 +63,7 @@ const APP_COMPONENTS = [
   HomepageComponent,
   FeedbackComponent,
   PrivateModeComponent,
+  HelpComponent,
 
   SettingsComponent,
   SettingComponent,

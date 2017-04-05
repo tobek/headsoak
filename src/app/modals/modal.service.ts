@@ -133,8 +133,8 @@ export class ModalService {
     this.unusedModal.generic(config);
   }
 
-  faq(): void {
-    this.setUnusedActiveModal$.next('faq');
+  help(): void {
+    this.setUnusedActiveModal$.next('help');
   }
   feedback(): void {
     this.setActiveModal$.next('feedback');
