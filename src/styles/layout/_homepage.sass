@@ -23,6 +23,8 @@ homepage
     background-color: $homepage-main-bg
 
   .intro
+    display: inline-block
+    text-align: left
     // text-shadow: 2px 2px 5px black
     color: $logo-text-color
     
@@ -84,22 +86,24 @@ homepage
     background-color: $homepage-main-bg
 
     &.demo-container
-      padding-top: 5vh // matches login top margin
-      padding-right: 1.5rem
+      padding-top: 7.25rem // magic number to align with logo text... at least on some screens? @TODO/polish
+      text-align: center
 
-      @media (max-height: 750px)
-        padding-top:  1rem
+      @media (max-height: 650px)
+        padding-top:  2rem
 
     .note
-      // margin-top: 170px // size of login header height/margin
       margin-top: 4rem
-      height: 300px
+      margin-left: 4rem // @TODO/now @TODO/polish @TODO/hp Magic number to align left of note with hero text on some screens...
+      min-height: 200px // @TODO/now @TODO/hp Check on mobile
 
       @media (max-height: 550px)
         // margin-top: 140px
         margin-top: 6rem
 
   .note
+    text-align: left
+
     .note-wrapper .body-input // extra specificity to overcome route-related classes
       height: 100%
       max-height: none !important
@@ -289,10 +293,13 @@ homepage
 //       visibility: visible !important
 
 .modal-content.is--login
-  margin-bottom: -30vh // @HACK Modal styles align themselves based on 100vh and changing height of modal messes it up leaving it at 100vh but with negative bottom margin is faster than a refactor right now
+  margin-bottom: -23vh // @HACK Modal styles align themselves based on 100vh and changing height of modal messes it up leaving it at 100vh but with negative bottom margin is faster than a refactor right now
 
-  @media (max-width: $screen-small)
+  // @TODO/polish The alignments all over the homepage are stupid and these tweaks are evidence of that
+  @media (min-height: 800px)
     margin-bottom: -25vh
+  @media (min-height: 900px)
+    margin-bottom: -30vh
 
 login .homepage-nav
   position: absolute
