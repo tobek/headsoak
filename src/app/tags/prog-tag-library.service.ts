@@ -512,7 +512,13 @@ else {
 
   constructor(
     private sizeMonitor: SizeMonitorService,
-  ) {}
+  ) {
+    // So we don't have to manually put it in the source data for each:
+    _.each(this.librarySourceData, (tagData) => {
+      tagData['prog'] = true;
+      tagData['fromLib'] = true;
+    });
+  }
 
   init(tagsService: TagsService) {
     this.tagsService = tagsService;
@@ -523,9 +529,6 @@ else {
   }
 
   initializeLibraryTag(tagData): Tag {
-    tagData.prog = true;
-    tagData.fromLib = true;
-
     const localTag = this.tagsService.tags[tagData.id];
 
     if (localTag) {
