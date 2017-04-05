@@ -11,6 +11,8 @@ tag,
   +tag-face
   
   &:before
+    +fadeable
+    +faded-in
     content: '#'
     opacity: $tag-hash-opacity
     margin-right: 1px
@@ -22,6 +24,8 @@ tag
     +tag-chiclet-active
 
   .name-wrapper
+    +fadeable
+    +faded-in
     +single-line-truncate
     display: inline-block
     max-width: $tag-name-max-width
@@ -87,7 +91,6 @@ tag
 
   .tag-action
     +icon-button
-    // @TODO/ece On note tags should this remove X be primary or secondary?
 
   &.is--renaming
     .name
@@ -105,8 +108,13 @@ tag
     font-weight: normal
 
   note-query &
-    &:hover .tag-actions
-      display: block
+    &:hover
+      &:before,
+      .name-wrapper
+        +faded-out
+
+      .tag-actions
+        display: block
 
     .tag-action--remove
       cursor: pointer
@@ -117,11 +125,9 @@ tag
       left: 0
       padding: 2px 0 // matches vertical padding on root tag element so that icon remains centered
       text-align: center
-      background-color: $light-overlay
-      color: $light-overlay-text
-
+      color: $tag-active-text
       &:hover
-        color: $light-overlay-text
+        color: $tag-active-text
 
   .tag-actions-dropdown
     // @TODO/bug Dropdown can get hidden off right edgeof the screen (also making horizontal scrollbar appear)
