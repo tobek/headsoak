@@ -89,7 +89,7 @@ export class NoteBrowserComponent {
     });
 
     if (NOTE_BROWSER_ROUTES.indexOf(this.router.url) !== -1 && ! this.sizeMonitorService.isMobile) {
-      this.goToNewNote();
+      setTimeout(this.goToNewNote.bind(this), 0);
     }
 
     this.subscriptions.push(this.notesService.noteUpdated$.subscribe(
