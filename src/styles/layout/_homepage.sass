@@ -39,7 +39,7 @@ homepage
     +h4
     position: relative
     width: 100%
-    padding: 1rem
+    padding: 1rem 0
     color: $primary-button-text
     background-color: $ribbon-bg
     text-align: center
@@ -93,9 +93,9 @@ homepage
         padding-top:  2rem
 
     .note
-      margin-top: 4rem
-      margin-left: 4rem // @TODO/now @TODO/polish @TODO/hp Magic number to align left of note with hero text on some screens...
-      min-height: 200px // @TODO/now @TODO/hp Check on mobile
+      margin: 4rem auto 0
+      max-width: 450px
+      min-height: 250px // @TODO/now @TODO/hp Depends on copy
 
       @media (max-height: 550px)
         // margin-top: 140px
@@ -344,11 +344,11 @@ login .homepage-nav
   homepage
     // Put space from top as margin on intro instead of padding on homepage so that the <login> element that's used inside of <homepage> on mobile can be at the top of the page
     padding-top: 0
-    .intro
-      margin-top: 4rem
-
-    padding-left: 0.5rem
+    padding-left: 0.5rem 
     padding-right: 0.5rem
+
+    .intro
+      margin-top: 3rem
 
     .demo-container
       width: 100% !important // lazy override of `+span(6)`
@@ -356,10 +356,11 @@ login .homepage-nav
       padding: 0
 
     .hero .demo-container
-      padding-right: 0
+      padding: 0
 
     .hero .note
       margin: 2rem 0
+      min-height: 350px // @TODO/hp @TODO/now This depends on updated copy for the note
 
     .steps
       display: block
@@ -373,7 +374,10 @@ login .homepage-nav
 
     .static-notes
       .demo-container
-        margin-bottom: 1rem
+        margin-bottom: 2rem
+        &:last-child
+          margin-bottom: 0
+
         .note
           margin: 0
 
@@ -387,7 +391,10 @@ login .homepage-nav
 
     login
       +card
-      padding-top: 0
+      position: relative
+      margin-top: 0
+      padding: 4rem 0 0
+      background-color: $homepage-main-bg
 
       header
         margin-bottom: 25px
