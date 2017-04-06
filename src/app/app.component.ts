@@ -166,13 +166,13 @@ export class AppComponent {
 
     document.querySelector('body').classList.add('is--initialized');
 
-    const outerLoader = document.querySelector('.initial-loader.outer');
-    if (outerLoader) {
-      setTimeout(function() {
-        // Maybe not necesssary, but the .is--initialized class only makes the loader fade out, but even with 0 opacity visibility hidden, loader still seems to be animated, maybe wasting work. Fuck it just get rid of it.
+    // Maybe not necesssary, but the .is--initialized class only makes the loader fade out, but even with 0 opacity visibility hidden, loader still seems to be animated, maybe wasting work. Fuck it just get rid of it after it's faded out.
+    setTimeout(function() {
+      const outerLoader = document.querySelector('.initial-loader.outer');
+      if (outerLoader) {
         outerLoader.parentNode.removeChild(outerLoader);
-      }, 5000);
-    }
+      }
+    }, 5000);
 
     this.initialized = isInitialized;
   }
