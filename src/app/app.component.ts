@@ -35,7 +35,7 @@ export class AppComponent {
   routingInfo = routingInfo;
 
   /** Used to make on-hover menu go away when clicking on a menu item. */
-  forceMenuClosed = false;
+  forceMenuClosed = true;
 
   isNoteQueryVisible = false;
   isHeaderless = false;

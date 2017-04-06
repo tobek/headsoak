@@ -74,8 +74,11 @@
           <i class="fa fa-unlock-alt unlocked"></i>
         </div>
 
-        <!-- @TODO/mobile @TODO/QA Test the menu behavior with forceMenuClosed works -->
-        <div class="menu-wrapper" [class.is--force-closed]="forceMenuClosed" (mouseenter)="forceMenuClosed = false" (click)="forceMenuClosed = false">
+        <div class="menu-wrapper"
+          [class.is--force-closed]="forceMenuClosed" (mouseenter)="sizeMonitor.isMobile ? null : forceMenuClosed = false"
+          (mouseleave)="forceMenuClosed = true"
+          (click)="forceMenuClosed = ! forceMenuClosed"
+        >
           <div class="hover-target">
             <div class="menu status--{{ dataService.status }}" [hidden]="! dataService.user.loggedIn">
               <div class="sync-animation">
