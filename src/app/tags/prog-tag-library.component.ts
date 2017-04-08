@@ -67,4 +67,9 @@ export class ProgTagLibraryComponent {
     }
     );
   }
+
+  smartTagIdea() {
+    // @TODO/analytics And also check if they actually send feedback!
+    this.modalService.feedback(); // @TODO/polish Would be cool to make the feedback modal customizable so it could refer to this, like "We're always looking for new ideas of things we can blah blah blah" and maybe later resources about community library etc.
+  }
 }
