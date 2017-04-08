@@ -29,6 +29,7 @@ var defaultBlacklist = {
   'blah': 1,
   'both': 1,
   'first': 1,
+  'have': 1,
   'http': 1,
   'https': 1,
   'kind': 1,
@@ -67,7 +68,7 @@ function confirmBlacklisting(childTag, event, noteId, tagDetailsComponent) {
   }
 
   api.modal.confirm(
-    '<p>Are you sure you want to blacklist the auto tag <span class="static-tag">' + _.escape(childTag.childTagName) + '</span>? It won\\'t be suggested again.</p><p>You can view and edit the list of blacklisted tags from the <span class="static-tag">' + _.escape(_this.name) + '</span> Explore page.</p><p>Hold the shift key to skip this dialog in the future.</p>',
+    '<p>Are you sure you want to blacklist the auto tag <span class="static-tag">' + _.escape(childTag.childTagName) + '</span>? It won\\'t be suggested again for any notes.</p><p>You can view and edit the list of blacklisted tags from the <span class="static-tag">' + _.escape(_this.name) + '</span> Explore page.</p><p>Hold the shift key to skip this dialog in the future.</p>',
     function(confirmed) {
       if (confirmed) {
         blacklistChildTag(childTag, tagDetailsComponent);
