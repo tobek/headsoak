@@ -57,16 +57,16 @@ export class LoginComponent {
               this.view = 'login';
             }
             else {
-              // this.view = 'create-account';
-              this.view = 'email-signup';
+              this.view = 'create-account';
+              // this.view = 'email-signup';
             }
             break;
           case 'error':
             // Don't change the view
             break;
           default:
-            // this.view = 'create-account';
-            this.view = 'email-signup';
+            this.view = 'create-account';
+            // this.view = 'email-signup';
             break;
           }
       });
