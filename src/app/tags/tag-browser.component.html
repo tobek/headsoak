@@ -53,12 +53,12 @@
       <div class="query-controls sort-count">
         <span class="count">{{ tags.length }} TAG{{ tags.length !== 1 ? 'S' : '' }}</span>
 
-        <ng-select class="sort-dropdown"
+        <!-- <ng-select class="sort-dropdown"
           [items]="tagsService.sortOpts"
           [active]="[sortOpt]"
           (selected)="sort($event)"
           placeholder="{{ sortOpt.text }}"
-        ></ng-select>
+        ></ng-select> -->
       </div>
     </div>
 

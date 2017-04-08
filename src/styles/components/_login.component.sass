@@ -20,10 +20,6 @@ login
       display: inline-block
       margin-bottom: 0
 
-    .fa
-      display: block
-      margin-bottom: 10px
-
     .subheading
       color: $panel-text-secondary
       letter-spacing: 1.2px
@@ -124,4 +120,30 @@ login
       &.success
         color: $accent-color
       &.error
+        display: none
         color: $danger-color
+
+      &.hack
+        display: none
+
+  .hack-response
+    .response
+      max-height: 0
+      margin: 0
+      transition: max-height $transition-med, margin $transition-med
+
+      &.success,
+      &.error
+        max-height: 40px
+        text-align: center
+        margin-bottom: 20px
+
+      &.success
+        color: $accent-color
+      &.error
+        display: none
+        color: $danger-color
+
+      &.hack
+        display: none
+        color: $success-color

@@ -2,7 +2,7 @@ import {Component, NgZone, ViewChild, ElementRef} from '@angular/core';
 import {Subscription} from 'rxjs';
 
 import {AccountService} from './account.service';
-import {TooltipService} from '../utils/';
+import {Logger, TooltipService} from '../utils/';
 
 import * as _ from 'lodash';
 
@@ -30,7 +30,10 @@ export class LoginComponent {
 
   private loginSub: Subscription;
 
+  private _logger: Logger = new Logger('LoginComponent');
+
   constructor(
+    private el: ElementRef,
     private accountService: AccountService,
     private tooltipService: TooltipService,
     private zone: NgZone
@@ -113,6 +116,41 @@ export class LoginComponent {
       js.src = protocol + '://s3.amazonaws.com/subscription-cdn/0.2/widget.min.js';
       firstScript.parentNode.insertBefore(js, firstScript);
     }
+
+    const $widget = jQuery(this.el.nativeElement).find('div.sendgrid-subscription-widget');
+    $widget.on('error', () => {
+      $widget.find('.response.error').hide();
+
+      const name = $widget.find('[name=a]').val();
+      const email = $widget.find('[name=email]').val();
+
+      if (! name || ! email) {
+        return;
+      }
+
+      if (window['hsSubbedEmail'] === email) {
+        return;
+      }
+
+      window['hsSubbedEmail'] = email;
+
+      console.log('SUBSCRIBE', name, email, $widget, jQuery);
+
+
+      this.accountService.ref.root().child('emailSubHack').push({
+        name: name,
+        email: email,
+      }, (err?) => {
+        if (err) {
+          this._logger.error('Subscribe hack failed:', err);
+          $widget.find('.response.error').show();
+          return;
+        }
+        this._logger.info('Successfully pushed sub hack');
+        $widget.find('.response.error').hide();
+        jQuery(this.el.nativeElement).find('.response.success.hack').fadeIn(200);
+      });
+    });
   }
   clearEmailSignup() {
     const script = document.getElementById('sendgrid-subscription-widget-js');

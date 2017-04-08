@@ -23,12 +23,12 @@
     <span class="count"
       >{{ notes.length }} NOTE{{ notes.length !== 1 ? 'S' : '' }}</span
     >
-    <ng-select class="sort-dropdown"
+    <!-- <ng-select class="sort-dropdown"
       [items]="notesService.sortOpts"
       [active]="[sortOpt]"
       (selected)="ngSelectSelected($event)"
       placeholder="{{ sortOpt.text }}"
-    ></ng-select>
+    ></ng-select> -->
   </span>
 
   <span class="control-icon control-icon--clear"
