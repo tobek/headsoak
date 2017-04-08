@@ -56,12 +56,14 @@ modal
     margin: 0 auto
     background-color: $dropdown-bg
 
+    &.is--help,
     &.is--progTagLibTag
       +span(9)
       float: none
       margin-left: auto
       margin-right: auto
 
+    &.is--progTagLibTag
       prog-tag-control .code-container .code-editor
         height: 60vh
 
@@ -202,6 +204,11 @@ modal
     opacity: 1
     visibility: visible
 
+
+help
+  display: block
+  overflow: auto
+  max-height: 90vh
 
 feedback,
 private-mode
