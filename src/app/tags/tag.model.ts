@@ -746,6 +746,12 @@ export class Tag {
     this.dataService.router.navigateByUrl(path);
   }
 
+  goToTaggedNotes(additionalTags: Tag[] = []) {
+    let x = this.dataService.activeUIs.noteQuery.goToQuery(
+      _.concat([this], additionalTags)
+    );
+  }
+
   // @TODO/privacy We could exclude private notes and recalculate all lengths when private mode enabled/disabled. Should time running recalculate all on ece's account with gajillion tags
   _calculateNoteCount(): void {
     this._noteCount = this.childInclusiveDocs.length;

@@ -17,7 +17,7 @@
     <ul class="tag-list">
       <li *ngFor="let childTag of sortedChildTags" class="child-tag">
         <span
-          (click)="goToTaggedNotes([childTag])"
+          (click)="childTag.goToTaggedNotes()"
           (mouseenter)="hoveredTag = childTag"
           (mouseleave)="hoveredTag = null"
         >
@@ -58,7 +58,7 @@
               (click)="cooccurrence.tag.goTo()"
             >{{ cooccurrence.tag.name }}</span>
 
-            <span class="common-notes-link" (click)="goToTaggedNotes([tag, cooccurrence.tag])">
+            <span class="common-notes-link" (click)="tag.goToTaggedNotes([cooccurrence.tag])">
               {{ cooccurrence.numNotes }} common note{{ cooccurrence.numNotes !== 1 ? 's' : '' }}
             </span>
           </span>
@@ -79,7 +79,7 @@
               (click)="cooccurrence.tag.goTo()"
             >{{ cooccurrence.tag.name }}</span>
 
-            <span class="common-notes-link" (click)="goToTaggedNotes([tag, cooccurrence.tag])">
+            <span class="common-notes-link" (click)="tag.goToTaggedNotes([cooccurrence.tag])">
               {{ cooccurrence.numNotes }} common note{{ cooccurrence.numNotes !== 1 ? 's' : '' }}
             </span>
           </span>
