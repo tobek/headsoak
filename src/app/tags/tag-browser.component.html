@@ -101,6 +101,16 @@
           <div class="tag-manager" *ngIf="expandedTag === tag">
             <div *ngIf="tag.description" class="description">{{ tag.description }}</div>
             <ul class="menu">
+              <!-- @TODO/refactor This is basically the same as what's in the tag dropdown! We should just use that but style it differently for here, or have a TagMenuComponent. -->
+              <li class="item" *ngIf="! tag.isSelfActiveInQuery" (click)="tag.goToTaggedNotes()">
+                <i class="fa fa-fw fa-lg fa-eye"></i>
+                <span>View {{ tag.noteCount }} note{{ tag.noteCount !== 1 ? 's' : '' }}</span>
+              </li>
+              <li class="item" *ngIf="tag.isSelfActiveInQuery" (click)="tag.removeFromNoteQuery()">
+                <i class="fa fa-fw fa-lg fa-eye-slash"></i>
+                <span>Clear from search</span>
+              </li>
+
               <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" routerLinkActive="is--active" [routerLinkActiveOptions]="{ exact: true }">
                 <i class="fa fa-fw fa-lg fa-bar-chart"></i>
                 Explore
@@ -153,6 +163,15 @@
           <!-- @TODO/refactor Copy-pasting from normal tags... but a little different, cause you can't rename, delete, or smart tag these -->
           <div class="tag-manager" *ngIf="expandedTag === tag">
             <ul class="menu">
+              <li class="item" *ngIf="! tag.isSelfActiveInQuery" (click)="tag.goToTaggedNotes()">
+                <i class="fa fa-fw fa-lg fa-eye"></i>
+                <span>View {{ tag.noteCount }} note{{ tag.noteCount !== 1 ? 's' : '' }}</span>
+              </li>
+              <li class="item" *ngIf="tag.isSelfActiveInQuery" (click)="tag.removeFromNoteQuery()">
+                <i class="fa fa-fw fa-lg fa-eye-slash"></i>
+                <span>Clear from search</span>
+              </li>
+
               <li class="item" [routerLink]="['/tags/tag', tag.id, tag.name]" routerLinkActive="is--active" [routerLinkActiveOptions]="{ exact: true }">
                 <i class="fa fa-fw fa-lg fa-bar-chart"></i>
                 Explore

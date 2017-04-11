@@ -1,3 +1,5 @@
+import {Subscription} from 'rxjs';
+
 import {DataService} from '../data.service';
 
 import {Logger} from '../utils/logger';
@@ -124,6 +126,11 @@ export class Tag {
   /** If this note is currently in the process of being deleted. Child tags delete themselves when they've been removed from all notes, deleting a tag also removes the tag from notes, so we need this to prevent infinite loop */
   isDeleting: boolean;
 
+  /** Whether we should consider this tag "active" (being searched for in note query, or a parent or child is). */
+  isActiveInQuery: boolean;
+  /** Specifically this tag, not its parent or child. */
+  isSelfActiveInQuery: boolean;
+
 
   /** Whether this came from the smart tag library. */
   readonly fromLib?: boolean;
@@ -171,6 +178,8 @@ export class Tag {
   private _data: Object = {};
   private _parentTag: Tag;
 
+  private queryTagsUpdatedSub: Subscription;
+
 
   // @TODO how do we handle duplicate names?
   constructor(tagData: any, public dataService: DataService) {
@@ -193,6 +202,21 @@ export class Tag {
     this._logger = new Logger('Tag ' + this.id);
 
     // @TODO/old if `docs` exists, go through and add to each nut?
+
+    this.dataService.activeUIs.noteQuery$.first().subscribe((noteQuery) => {
+      this.queryTagsUpdatedSub = noteQuery.tagsUpdated$.subscribe(
+        this.queryTagsUpdated.bind(this)
+      );
+
+      this.queryTagsUpdated(noteQuery.tags); // run once now to get us started
+    });
+  }
+
+  /** Call this to clear up any shit when deleting ourselves. */
+  destroy() {
+    if (this.queryTagsUpdatedSub) {
+      this.queryTagsUpdatedSub.unsubscribe();
+    }
   }
 
 
@@ -341,6 +365,8 @@ export class Tag {
       this.docs = []; // makes for cleaner update if user adds tag back in this session
       this.prog = true; // need this back!
     }
+
+    this.destroy();
 
     return true;
   }
@@ -746,10 +772,33 @@ export class Tag {
     this.dataService.router.navigateByUrl(path);
   }
 
+  // @TODO/refactor @TODO/optimization A *much* better option would be to have NoteQueryComponent keep track of tags added/removed and set this value via TagsService.
+  queryTagsUpdated(tagsInQuery: Tag[]): void {
+    this.isSelfActiveInQuery = false;
+
+    this.isActiveInQuery = !! _.find(tagsInQuery, (tagInQuery) => {
+      if (tagInQuery.id === this.id) {
+        this.isSelfActiveInQuery = true;
+        return true;
+      }
+      else if (tagInQuery.parentTagId === this.id || tagInQuery.id === this.parentTagId) {
+        // If ourselves or a parent or child of ourselves is in the query, we should be highlighted too
+        return true;
+      }
+      else if (tagInQuery.name === (this as any as ChildTag).childTagName) {
+        return true;
+      }
+    });
+  }
+
   goToTaggedNotes(additionalTags: Tag[] = []) {
     let x = this.dataService.activeUIs.noteQuery.goToQuery(
       _.concat([this], additionalTags)
     );
+  }
+
+  removeFromNoteQuery() {
+    this.dataService.activeUIs.noteQuery.removeTag(this);
   }
 
   // @TODO/privacy We could exclude private notes and recalculate all lengths when private mode enabled/disabled. Should time running recalculate all on ece's account with gajillion tags

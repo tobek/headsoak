@@ -50,11 +50,12 @@
 <!-- @TODO/mobile @TODO/polish On mobile you might want click out some random place to close dropdown, and then you end up e.g. opening a note. Maybe should have window touch listener to cancel next click. (same with note add tag field being open) -->
 <div class="tag-actions-dropdown" *ngIf="enableDropdown && hovered" ref-actionsDropdown>
   <a class="tag-action" style="touch-action: none" (click)="_toggled(); $event.stopPropagation()">
-    <i class="fa fa-fw fa-eye"></i>
     <span *ngIf="isSelfActive">
+      <i class="fa fa-fw fa-eye-slash"></i>
       Clear from search
     </span>
     <span *ngIf="! isSelfActive">
+      <i class="fa fa-fw fa-eye"></i>
       View {{ tag.noteCount }} note{{ tag.noteCount !== 1 ? 's' : '' }}
     </span>
     <!-- @TODO/ece Should clicking on the name still toggle? What about elsehwere in the dropdown? Right now anywhere except the other tag actions will toggle. -->

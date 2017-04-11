@@ -15,7 +15,7 @@
     <!-- @TODO/polish @TODO/prog You should be able to go to tag details (done now) or search for notes from here, or see stats like how many notes tagged. -->
     <tag
       [tag]="tag"
-      [isActive]="!! tagsService.tags[tag.id]"
+      [forceIsActive]="!! tagsService.tags[tag.id]"
       (click)="tagsService.tags[tag.id] && tag.goTo()"
     ></tag>
 

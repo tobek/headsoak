@@ -32,9 +32,15 @@ export class TagComponent {
   isNewTag = false;
 
   /** Whether this should have active state, e.g. note is in the note query search bar is enabled in smart tag library */
-  @Input() @HostBinding('class.is--active') isActive: boolean;
+  @HostBinding('class.is--active') get isActive(): boolean {
+    return this.tag.isActiveInQuery || this.forceIsActive;
+  }
   /** Specifically this tag, not its parent or child. */
-  @Input() @HostBinding('class.is--self-active') isSelfActive: boolean;
+  @HostBinding('class.is--self-active') get isSelfActive(): boolean {
+    return this.tag.isSelfActiveInQuery;
+  }
+  /** If this component should always appear to be active. */
+  @Input() forceIsActive: boolean;
 
   @HostBinding('class.is--renaming') renaming = false;
   @HostBinding('class.from--classifier') get fromClassifier() {
@@ -111,8 +117,6 @@ export class TagComponent {
 
   private hoveredTimeout;
 
-  private queryTagsUpdatedSub: Subscription;
-
   private _logger = new Logger('TagComponent');
 
   constructor(
@@ -139,41 +143,7 @@ export class TagComponent {
       this.renamable = false;
     }
 
-    if ((this.ofNoteId || this.context === 'tagBrowser') && this.activeUIs.noteQuery) {
-      this.queryTagsUpdatedSub = this.activeUIs.noteQuery.tagsUpdated$.subscribe(
-        this.queryTagsUpdated.bind(this)
-      );
-
-      // And run it once at first to get us started:
-
-      this.queryTagsUpdated(this.activeUIs.noteQuery.tags);
-    }
-
     this.disableDropdown = ! this.enableDropdown;
-  }
-
-  ngOnDestroy() {
-    if (this.queryTagsUpdatedSub) {
-      this.queryTagsUpdatedSub.unsubscribe();
-    }
-  }
-
-  queryTagsUpdated(tags: Tag[]): void {
-    this.isSelfActive = false;
-
-    this.isActive = !! _.find(tags, (tag) => {
-      if (tag.id === this.tag.id) {
-        this.isSelfActive = true;
-        return true;
-      }
-      else if (tag.parentTagId === this.tag.id || tag.id === this.tag.parentTagId) {
-        // If ourselves or a parent or child of ourselves is in the query, we should be highlighted too
-        return true;
-      }
-      else if (tag.name === (<ChildTag> this.tag).childTagName) {
-        return true;
-      }
-    });
   }
 
   _toggled() {
