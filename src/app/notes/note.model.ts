@@ -125,8 +125,8 @@ export class Note {
       this.new = false;
 
       // Also, for any tags we put on here, we haven't actually updated the tag models with this note, so do that now.
-      this.tags.forEach((tagId: string) => {
-        this.dataService.tags.tags[tagId].addNoteId(this.id);
+      this.tagInstances.forEach((tag: Tag) => {
+        tag.addNoteId(this.id);
       });
     }
 
@@ -183,14 +183,8 @@ export class Note {
     this._logger.log('Doing full update');
 
     if (updateModified && this.dataService.settings.get('nutChangesChangeTagModifiedTimestamp')) {
-      this.tags.forEach((tagId: string) => {
-        if (! this.dataService.tags.tags[tagId]) {
-          this._logger.warn('Looks like we have tag ID', tagId, 'but that tag does not exist');
-          // @TODO Should we delete it? See similar error in NoteComponent
-          return;
-        }
-
-        this.dataService.tags.tags[tagId].updated();
+      this.tagInstances.forEach((tag: Tag) => {
+        tag.updated();
       });
     }
 
@@ -334,9 +328,12 @@ export class Note {
     let tag: Tag;
     this.tags.forEach((tagId) => {
       tag = this.dataService.tags.tags[tagId];
-      if (tag) {
-        tags.push(tag);
+      if (! tag) {
+        this._logger.warn('Looks like we have tag ID', tagId, 'but that tag does not exist!');
+        return;
       }
+
+      tags.push(tag);
     });
 
     return tags;
@@ -487,11 +484,9 @@ export class Note {
   actuallyDelete(): void {
     this.deleted = true;
 
-    if (this.tags) {
-      this.tags.forEach((tagId) => {
-        this.dataService.tags.tags[tagId].removeNoteId(this.id);
-      });
-    }
+    this.tagInstances.forEach((tag: Tag) => {
+      tag.removeNoteId(this.id);
+    });
 
     this.dataService.notes.noteUpdated$.next(this);
     this.dataService.notes.removeNote(this);
