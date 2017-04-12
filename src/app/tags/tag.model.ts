@@ -203,13 +203,15 @@ export class Tag {
 
     // @TODO/old if `docs` exists, go through and add to each nut?
 
-    this.dataService.activeUIs.noteQuery$.first().subscribe((noteQuery) => {
-      this.queryTagsUpdatedSub = noteQuery.tagsUpdated$.subscribe(
-        this.queryTagsUpdated.bind(this)
-      );
+    if (this.dataService && this.dataService.activeUIs) {
+      this.dataService.activeUIs.noteQuery$.first().subscribe((noteQuery) => {
+        this.queryTagsUpdatedSub = noteQuery.tagsUpdated$.subscribe(
+          this.queryTagsUpdated.bind(this)
+        );
 
-      this.queryTagsUpdated(noteQuery.tags); // run once now to get us started
-    });
+        this.queryTagsUpdated(noteQuery.tags); // run once now to get us started
+      });
+    }
   }
 
   /** Call this to clear up any shit when deleting ourselves. */
