@@ -203,7 +203,8 @@ export class SettingsService {
   private accountSettingsSourceData = [
     {
       id: 'profileImageUrl',
-      default: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+      // default: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+      default: 'https://d30y9cdsu7xlg0.cloudfront.net/png/125112-200.png', // @TODO/user Confirm default avatar
       name: 'Profile image URL',
       type: 'string',
       section: 'account',
