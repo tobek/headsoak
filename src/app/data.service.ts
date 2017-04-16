@@ -452,13 +452,13 @@ export class DataService {
       nuts: {
         0: {
           id: '0',
-          body: 'This example note has been automatically tagged with a sentiment analysis "smart tag", because it\'s a really sad miserable horrid awful bad note.\n\nSmart tags are indicated by the wand symbol. You can find more like these in the Smart Tag Library from the Tags screen, and you can even make your own.',
+          body: 'This example note has been automatically tagged with some "smart tags" based on the content of the note.\n\nSmart tags are indicated by the lightning bolt symbol. Smart tags that have been automatically applied are faded so that your own tags stand out. You can find more like these in the Smart Tag Library, and you can even make your own.',
           created: 1475642885139,
           modified: 1475643994229,
         },
         1: {
           id: '1',
-          body: 'This note has a regular tag. You can remove it by hovering over it and pressing the X icon. You can add more tags by pressing the + button above.',
+          body: 'This note has a regular tag. You can remove it by hovering over it and hitting "Remove from note". You can add more tags by pressing the + button above.',
           created: 1475643969089,
           modified: 1475644103580,
           tags: ['0'],
@@ -473,9 +473,9 @@ export class DataService {
       tags: {
         0: {
           id: '0',
-          name: 'example tag',
+          name: 'an example tag',
           created: 1475642802518,
-          modified: 1475644006309,
+          modified: Date.now() + 10000, // for a modified timestamp *after* prog tags are added haha
           docs: ['1'],
         },
       },
@@ -499,6 +499,9 @@ export class DataService {
     // Smart tags that are enabled by default for new users:
     this.tags.progTagLibraryService.toggleTagById('lib--sentiment');
     this.tags.progTagLibraryService.toggleTagById('lib--untagged');
+    this.tags.progTagLibraryService.toggleTagById('lib--auto');
+    this.tags.progTagLibraryService.toggleTagById('lib--remember');
+    this.tags.progTagLibraryService.toggleTagById('lib--has-quote');
   }
 
   initFromData(data) {
