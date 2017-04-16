@@ -372,18 +372,35 @@ export class Note {
   }
 
   progTagCantChangeAlert(tag: Tag): void {
-    this.dataService.modalService.generic({
-      message: 'The tag <span class="static-tag">' + _.escape(tag.name) + '</span> is a smart tag, so it can\'t be added or removed manually.',
-      additionalButtons: [
-        {
-          text: 'Change tag settings',
-          cb: () => {
-            tag.goTo('smartness');
+    if (tag.fromLib) {
+      const smartTagLibRef = tag.parentTag ? ('the <span class="static-tag">' + _.escape(tag.parentTag.name) + '</span> tag') : 'this tag';
+
+      this.dataService.modalService.generic({
+        message: '<p>The tag <span class="static-tag">' + _.escape(tag.name) + '</span> is from the Smart Tag Library, so it can\'t be added or removed manually.</p><p>You can disable ' + smartTagLibRef + ' from the Smart Tag Library.</p>',
+        additionalButtons: [
+          {
+            text: 'Go to Smart Tag Library',
+            cb: () => {
+              this.dataService.router.navigateByUrl('/tags/smart-tags/library');
+            }
           }
-        }
-      ],
-    });
-    // @TODO/rewrite Maybe should explain smart tags (specifically this *type* of smart tag - with auto application), etc.
+        ],
+      });
+    }
+    else {
+      this.dataService.modalService.generic({
+        message: 'The tag <span class="static-tag">' + _.escape(tag.name) + '</span> is a smart tag, so it can\'t be added or removed manually.',
+        additionalButtons: [
+          {
+            text: 'Change tag settings',
+            cb: () => {
+              tag.goTo('smartness');
+            }
+          }
+        ],
+      });
+    }
+    // @TODO/rewrite @TODO/prog Maybe should explain smart tags (specifically this *type* of smart tag - with auto application), etc.
   }
 
   get nonInternalTagsCount() {
