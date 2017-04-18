@@ -18,13 +18,17 @@ export class Setting {
   /** Settings are displayed grouped according to subsections, each with a heading. Settings with no subsections are shown first. */
   subSection?: string;
 
-  /** For power users - don't display by default. */
+  /** This setting is for power users. Don't display by default. */
   overkill = false;
-  /** Never display. */
+  /** This setting is used internally. Never display. */
   internal = false;
 
+  /** Default value with which this setting is initialized and can be reverted to. */
   default: any;
-  value: any; // current value used in app
+  /** Whether to return `default` if `value` is falsey. */
+  useDefaultIfFalsey = false;
+  /** Current value used in app. */
+  value: any;
 
   /** Custom function called to make setting take effect - e.g. called when setting first initialized and every time it's updated. Called with setting model as `this`. */
   enact: Function;

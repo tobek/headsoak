@@ -204,7 +204,8 @@ export class SettingsService {
     {
       id: 'profileImageUrl',
       // default: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
-      default: 'https://d30y9cdsu7xlg0.cloudfront.net/png/125112-200.png', // @TODO/user Confirm default avatar
+      default: 'https://static.headsoak.com/img/avatars/default.png',
+      useDefaultIfFalsey: true,
       name: 'Profile image URL',
       type: 'string',
       section: 'account',
@@ -504,8 +505,14 @@ export class SettingsService {
   }
 
   get(settingId: string, fallback = undefined) {
-    if (this.data[settingId]) {
-      return this.data[settingId].value;
+    const setting = this.data[settingId];
+    if (setting) {
+      if (setting.useDefaultIfFalsey) {
+        return setting.value || setting.default;
+      }
+      else {
+        return setting.value;
+      }
     }
     else {
       return fallback;
