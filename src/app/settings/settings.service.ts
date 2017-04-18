@@ -62,12 +62,12 @@ export class SettingsService {
         'http://thereitwas.com/images/The Fox is Black - Desktop Wallpaper Project/Adam-Hanson-2560x1440.jpeg',
         'http://thereitwas.com/images/The Fox is Black - Desktop Wallpaper Project/chris-jaurique-2560x1440.jpg',
         'http://thereitwas.com/images/The Fox is Black - Desktop Wallpaper Project/upso-1920x1200.jpg',
-        'https://s3.amazonaws.com/static.headsoak.com/img/bg/Hokusai_1760-1849_Ocean_waves-huge.jpg',
+        'https://static.headsoak.com/img/bg/Hokusai_1760-1849_Ocean_waves-huge.jpg',
         'https://upload.wikimedia.org/wikipedia/commons/a/a6/Rosette%2C_Titles_of_Sha_Jahan.jpg',
         'https://upload.wikimedia.org/wikipedia/commons/d/d5/Vincent_van_Gogh_-_Wheatfield_with_a_reaper_-_Google_Art_Project.jpg',
         'https://upload.wikimedia.org/wikipedia/commons/a/a3/Gustav_Klimt_-_Beech_Grove_I_-_Google_Art_Project.jpg',
         'https://upload.wikimedia.org/wikipedia/commons/5/50/John_Martin_-_The_Great_Day_of_His_Wrath_-_Google_Art_Project.jpg',
-        'https://s3.amazonaws.com/static.headsoak.com/img/bg/John%20Martin_-_1840_-_Joshua_Commanding_the_Sun_to_Stand_Still.jpg', // this is like 5mb
+        'https://static.headsoak.com/img/bg/John%20Martin_-_1840_-_Joshua_Commanding_the_Sun_to_Stand_Still.jpg', // this is like 5mb
 
         // @TODO/ece maybs not?
         // 'https://upload.wikimedia.org/wikipedia/commons/e/ee/Extermination_of_Evil_Vaisravana.jpg',
@@ -253,6 +253,13 @@ export class SettingsService {
         'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Gilbert_Stuart_-_Catherine_Brass_Yates.jpg/199px-Gilbert_Stuart_-_Catherine_Brass_Yates.jpg',
         'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Bacon_by_Gray_257.jpg/192px-Bacon_by_Gray_257.jpg',
         'https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Jan_van_Eyck_-_Kardinal_Niccol%C3%B2_Albergati_-_Google_Art_Project.jpg/187px-Jan_van_Eyck_-_Kardinal_Niccol%C3%B2_Albergati_-_Google_Art_Project.jpg',
+
+        'https://static.headsoak.com/img/avatars/default.png',
+        'https://static.headsoak.com/img/avatars/alien.svg',
+        'https://static.headsoak.com/img/avatars/drac.svg',
+        'https://static.headsoak.com/img/avatars/frank.svg',
+        'https://static.headsoak.com/img/avatars/mumm.svg',
+        'https://static.headsoak.com/img/avatars/zomb.svg',
       ],
       postSettingHtml: '<a class="text-link random">Random avatar</a>',
     },
