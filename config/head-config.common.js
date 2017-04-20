@@ -27,7 +27,7 @@ module.exports = {
     { rel: 'apple-touch-icon', sizes: '180x180', href: '/assets/icon/apple-icon-180x180.png' },
 
     /** <link> tags for android web app icons **/
-    { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/assets/icon/android-icon-192x192.png' },
+    { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/assets/icon/android-chrome-512x512.png' },
 
     /** <link> tags for favicons **/
     { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/assets/icon/favicon-32x32.png' },
@@ -37,10 +37,11 @@ module.exports = {
     /** <link> tags for a Web App Manifest **/
     { rel: 'manifest', href: '/assets/manifest.json' },
   ],
+
   meta: [
-    { name: 'msapplication-TileColor', content: '#30302f' },
-    { name: 'msapplication-TileImage', content: '/assets/icon/ms-icon-144x144.png', '=content': true },
-    { name: 'theme-color', content: '#30302f' }, // @TODO/styles This should match $pane-bar-bg-color or something! (and the one above too). Also it's not working at all anyways?
+    { name: 'msapplication-TileColor', content: '#20A4F3' },
+    { name: 'msapplication-TileImage', content: '/assets/icon/mstile-144x144.png', '=content': true },
+    { name: 'theme-color', content: '#20A4F3' }, // @TODO/styles This should match $pane-bar-bg-color or something! (and the one above too). Also it's not working at all anyways? (Maybe the one in manifest.json will work.)
 
     { name: 'apple-mobile-web-app-capable', content: 'yes' },
     { name: 'mobile-web-app-capable', content: 'yes' },

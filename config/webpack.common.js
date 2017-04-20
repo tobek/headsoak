@@ -323,6 +323,12 @@ module.exports = function (options) {
             'index.html', // handled by HtmlWebpackPlugin
           ],
         },
+        // @TODO/build @TODO/polish For some reason this isn't actually copying the favicon to `dist`, so the deployment won't upload the favicon. For now I've manually uploaded the favicon.
+        // {
+        //   from: 'src/assets/icon/favicon.ico',
+        //   flatten: true,
+        //   to: '.',
+        // },
       ]),
 
 

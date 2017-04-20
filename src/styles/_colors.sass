@@ -3,11 +3,11 @@
 $logo-text-color: #0A424F
 
 $bg-blur: 2px // set to 0 to disable
-$bg-overlay: #F7F6F3 //rgba(0, 0, 0, 0.8) // set to transparent to disable
+$bg-overlay: #F7F6F3 //rgba(0, 0, 0, 0.8) // set to transparent to disable. @NOTE This must be manually set in manifest.json and index.html inline style
 
 $bg-is-light: true
 
-$tag-color: #20A4F3 // good for dark #66D7D1 
+$tag-color: #20A4F3 // good for dark #66D7D1 // @NOTE This is manually set as theme color in manifest.json and TileColor in browserconfig.xml, and also as tilecolor and theme-color in head-config.common.js @TODO/ece Or should it be the orange?
 // @if $bg-is-light
 //     $tag-color: #902D41
 
