@@ -32,6 +32,17 @@
         </ul>
 
         <div class="tag-query">
+          <span class="query-controls query-controls--icons">
+            <span class="query-control-icon"
+              *ngIf="query"
+              (click)="queryClear()"
+            ><i class="fa fa-times"></i></span>
+            <span class="query-control-icon"
+              *ngIf="! query"
+              (click)="queryFocus()"
+            ><i class="fa fa-search"></i></span>
+          </span>
+
           <div class="search-bar" [class.is--focused]="searchBarFocused">
             <input class="text-input" tabindex=1 type="text" placeholder="Search tags"
               ref-queryInput [(ngModel)]="query"
@@ -39,17 +50,6 @@
               (focus)="searchBarFocused = true"
               (blur)="searchBarFocused = false"
             >
-
-            <span class="query-controls">
-              <span class="query-control-icon"
-                *ngIf="query"
-                (click)="queryClear()"
-              ><i class="fa fa-times"></i></span>
-              <span class="query-control-icon"
-                *ngIf="! query"
-                (click)="queryFocus()"
-              ><i class="fa fa-search"></i></span>
-            </span>
           </div>
 
           <div class="query-controls sort-count">

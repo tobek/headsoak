@@ -43,20 +43,22 @@ tag-browser
 
   .search-bar
     +input-underline
+    display: inline-block
+    width: calc(100% - 1.75rem) // room for the search icon
     padding-bottom: 4px
 
     &.is--focused
       +input-underline-active
 
     .text-input
-      width: calc(100% - 20px) // room for the search icon
       border: 0
-      padding: 0
+      padding: 0 0 0 0.5rem
       letter-spacing: 1.1px
 
-    .query-control-icon
-      +h4
-      float: right
+  .query-controls--icons
+    +h4
+    float: left
+    margin-right: 0.5rem
 
   .sort-count
     // see also styles for .query-controls in _forms.sass
