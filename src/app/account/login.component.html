@@ -68,7 +68,7 @@
       [disabled]="isLoading"
     >Sign In</button>
 
-    <iframe ref-pseudoLoginIframe id="pseudo-login-iframe" src="/pseudo-login.html" style="width:0px; height:0px; border:0px;"></iframe>
+    <iframe ref-pseudoLoginIframe id="pseudo-login-iframe" src="/pseudo-login.html" style="width:0px; height:0px; border:0px; position: absolute; opacity: 0;"></iframe>
   </form>
 
   <div class="switch-sign-up-in" (click)="view = 'create-account'">
