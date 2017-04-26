@@ -8,7 +8,7 @@
   <p>Private mode is currently <b>{{ dataService.accountService.privateMode ? 'ON' : 'OFF' }}</b></p>
 </div>
 
-<form *ngIf="! dataService.accountService.privateMode" ref-privateModeForm="ngForm" (ngSubmit)="enable()">
+<form *ngIf="! dataService.accountService.privateMode" autocomplete="off" ref-privateModeForm="ngForm" (ngSubmit)="enable()">
   <input type="password" name="password"
     ref-passwordInput
     placeholder="Enter your password here"
