@@ -398,6 +398,7 @@ export class NoteComponent {
 
     if (this.note.archived) {
       this.unopenNote();
+      this.activeUIs.noteBrowser.ensureNewNoteSetUp(true);
     }
   }
   togglePinned(event: MouseEvent) {
@@ -411,7 +412,8 @@ export class NoteComponent {
     event.stopPropagation();
 
     if (this.note.private && ! this.notesService.dataService.accountService.privateMode) {
-      this.unopenNote(); // @TODO/ece Is this (and same with archiving note) the right behavior?
+      this.unopenNote(); // @TODO/polish Maybe it should remain open, but tooltip says "since you don't have private mode enabled, this note will be hidden once you close it"? Not sure which is less surprising.
+      this.activeUIs.noteBrowser.ensureNewNoteSetUp(true);
     }
   }
 
