@@ -1,7 +1,7 @@
 import {Component, ViewChild, ElementRef, HostBinding} from '@angular/core';
 
 import {AnalyticsService} from '../analytics.service';
-import {SizeMonitorService, Logger, utils} from '../utils/';
+import {SizeMonitorService, TooltipService, Logger, utils} from '../utils/';
 
 import {Note, NoteComponent} from '../notes/';
 import {Tag, ChildTag, ProgTagLibraryService, ProgTagApiService} from '../tags/';
@@ -34,7 +34,7 @@ export class HomepageComponent {
   // @HostBinding('class.is--tag-explore-stage') tagExploreStage = false;
   showVis = false;
 
-  @ViewChild('demoNoteRef') demoNoteRef: NoteComponent;
+  @ViewChild('demoNoteRef') demoNoteComp: NoteComponent;
   demoNoteBody: HTMLInputElement;
   demoNoteAddTagInput: HTMLInputElement;
 
@@ -57,7 +57,12 @@ export class HomepageComponent {
       },
       createTag: (data) => {
         if (! data.id) {
-          data.id = Math.random() + '';
+          if (data.childTagName) {
+            data.id = data.parentTagId + '--' + _.kebabCase(data.childTagName);
+          }
+          else {
+            data.id = _.kebabCase(data.name);
+          }
         }
         const constructor = data.parentTagId ? ChildTag : Tag;
         const tag = new constructor(data, this.fakeDataService);
@@ -290,6 +295,7 @@ export class HomepageComponent {
 
   constructor(
     private sizeMonitor: SizeMonitorService,
+    private tooltipService: TooltipService,
     private analyticsService: AnalyticsService,
     private progTagApi: ProgTagApiService,
     private progTagLibrary: ProgTagLibraryService
@@ -336,13 +342,11 @@ export class HomepageComponent {
       }, 0);
     }
 
-    this.demoNoteBody = this.demoNoteRef.el.nativeElement.querySelector('.body-input');
-    this.demoNoteAddTagInput = this.demoNoteRef.el.nativeElement.querySelector('.new-tag-input');
+    this.demoNoteBody = this.demoNoteComp.el.nativeElement.querySelector('.body-input');
+    this.demoNoteAddTagInput = this.demoNoteComp.el.nativeElement.querySelector('.new-tag-input');
 
-    jQuery(this.demoNoteBody).one('click.hsHp', () => {
-      this.scriptStopped = true;
-      utils.placeCaretAtEnd(this.demoNoteBody);
-    });
+    this.noteComponentHacks();
+
 
     setTimeout(this.play.bind(this), 0);
   }
@@ -359,6 +363,36 @@ export class HomepageComponent {
 
     this.fakeDataService.tags.progTagApi.clearRequestQueue();
     delete this.fakeDataService;
+  }
+
+  noteComponentHacks() {
+    this.demoNoteComp.delete = () => {
+      this.scriptStopped = true;
+      this.demoNote.body = '';
+      this.demoNote.tags = [];
+    };
+
+    const oldOpenNote = this.demoNoteComp.openNote.bind(this.demoNoteComp);
+    this.demoNoteComp.openNote = () => {
+      this.scriptStopped = true;
+      oldOpenNote();
+    };
+
+    this.demoNoteComp.togglePrivate = this.noteActionTeaser;
+    this.demoNoteComp.toggleArchived = this.noteActionTeaser;
+    this.demoNoteComp.togglePinned = this.noteActionTeaser;
+  }
+
+  noteActionTeaser = (event: MouseEvent) => {
+    this.tooltipService.closeTooltip(event);
+
+    this.tooltipService.justTheTip(
+      'Sign up to try out this feature!',
+      <HTMLElement> event.currentTarget,
+      'info',
+      3000,
+      'top'
+    );
   }
 
   initTags() {
@@ -462,12 +496,12 @@ export class HomepageComponent {
 
   manualAddTag(tagName: string, cb?: Function) {
     this.demoNoteAddTagInput.value = '';
-    this.demoNoteRef.addingTag = true;
+    this.demoNoteComp.addingTag = true;
 
     setTimeout(() => {
       this.write(tagName, () => {
         setTimeout(() => {
-          this.demoNoteRef.completeAddTag(tagName, true);
+          this.demoNoteComp.completeAddTag(tagName, true);
           this.demoNoteAddTagInput.value = '';
           cb();
         }, 500);
@@ -501,7 +535,7 @@ export class HomepageComponent {
         if (el === this.demoNoteBody) {
           this.demoNote.body = el.innerHTML;
           this.demoNote.doFullUpdate();
-          setTimeout(this.demoNoteRef.checkTagOverflow.bind(this.demoNoteRef), 100);
+          setTimeout(this.demoNoteComp.checkTagOverflow.bind(this.demoNoteComp), 100);
         }
         cb();
       }
@@ -543,7 +577,7 @@ export class HomepageComponent {
       if (cb) {
         this.demoNote.body = this.demoNoteBody.innerHTML;
         this.demoNote.doFullUpdate();
-        setTimeout(this.demoNoteRef.checkTagOverflow.bind(this.demoNoteRef), 100);
+        setTimeout(this.demoNoteComp.checkTagOverflow.bind(this.demoNoteComp), 100);
         cb();
       }
 
