@@ -16,6 +16,7 @@
 module.exports = {
   link: [
     /** <link> tags for 'apple-touch-icon' (AKA Web Clips). **/
+    // @TODO/favicon @TODO/polish Should these have the cream bg instead of white bg?
     { rel: 'apple-touch-icon', sizes: '57x57', href: '/assets/icon/apple-icon-57x57.png' },
     { rel: 'apple-touch-icon', sizes: '60x60', href: '/assets/icon/apple-icon-60x60.png' },
     { rel: 'apple-touch-icon', sizes: '72x72', href: '/assets/icon/apple-icon-72x72.png' },
@@ -25,6 +26,8 @@ module.exports = {
     { rel: 'apple-touch-icon', sizes: '144x144', href: '/assets/icon/apple-icon-144x144.png' },
     { rel: 'apple-touch-icon', sizes: '152x152', href: '/assets/icon/apple-icon-152x152.png' },
     { rel: 'apple-touch-icon', sizes: '180x180', href: '/assets/icon/apple-icon-180x180.png' },
+
+    { rel: 'mask-icon', href: '/assets/icon/safari-pinned-tab.svg', color: '#013E67' },
 
     /** <link> tags for android web app icons **/
     { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/assets/icon/android-chrome-512x512.png' },
@@ -39,9 +42,10 @@ module.exports = {
   ],
 
   meta: [
-    { name: 'msapplication-TileColor', content: '#20A4F3' },
+    { name: 'msapplication-TileColor', content: '#013E67' },
     { name: 'msapplication-TileImage', content: '/assets/icon/mstile-144x144.png', '=content': true },
-    { name: 'theme-color', content: '#20A4F3' }, // @TODO/styles This should match $pane-bar-bg-color or something! (and the one above too). Also it's not working at all anyways? (Maybe the one in manifest.json will work.)
+    { name: 'theme-color', content: '#013E67' },
+    { name: 'apple-mobile-web-app-status-bar-style', content: '#013E67' },
 
     { name: 'apple-mobile-web-app-capable', content: 'yes' },
     { name: 'mobile-web-app-capable', content: 'yes' },
