@@ -339,7 +339,7 @@ export class HomepageComponent {
       // On desktop it's visible above the fold, so trigger it right away
       setTimeout(() => {
         this.showVis = true;
-      }, 0);
+      }, 1000); // @HACK @TODO/hp @TODO/polish terrible. graph container sometimes hasn't been drawn and so the graph gets shown in corner.
     }
 
     this.demoNoteBody = this.demoNoteComp.el.nativeElement.querySelector('.body-input');
