@@ -107,7 +107,7 @@ homepage
     .note-wrapper .body-input // extra specificity to overcome route-related classes
       height: 100%
       max-height: none !important
-      padding-left: 29px !important // magic number to align with first tag
+      // padding-left: 29px !important // magic number to align with first tag - UPDATE everything is left-aligned now
       padding-right: 30px !important
 
     .new-tag
@@ -160,7 +160,7 @@ homepage
     position: relative
     padding: 3rem 0
 
-    @media (max-width: $tablet-small)
+    @media (max-width: $tablet-small - 1px)
       padding: 2rem 0
 
   .static-notes
@@ -183,14 +183,14 @@ homepage
       text-align: center
       font-weight: normal
 
-      @media (min-width: $tablet-large + 1)
+      @media (min-width: $tablet-large)
         margin-top: calc(100vw * 0.11) // holy hell magic number. to lazy to refactor to flex box or table row or osmething for vertical height centering. 0.22 gets the height of the image, which we want to divide by 2
         transform: translateY(-50%)
 
-      @media (min-width: $screen-large + 1)
+      @media (min-width: $screen-large)
         margin-top: 140px // magic number - half the height of the adjacent screenshot at full size
 
-    @media (min-width: $tablet-large + 1)
+    @media (min-width: $tablet-large)
       .shot:last-child
         .text
           +span(7)
@@ -203,11 +203,11 @@ homepage
     padding-left: 5rem
     padding-right: 5rem
 
-    @media (max-width: $screen-small)
+    @media (max-width: $screen-small - 1px)
       padding-left: 2rem
       padding-right: 2rem
 
-    @media (max-width: $screen-small)
+    @media (max-width: $screen-small - 1px)
       padding-left: 1rem
       padding-right: 1rem
 
@@ -219,7 +219,7 @@ homepage
     width: span(5)
     text-align: left
 
-    @media (max-width: $tablet-large)
+    @media (max-width: $tablet-large - 1px)
       width: span(6)
       &.now
         padding-right: 1rem
@@ -235,7 +235,7 @@ homepage
       .freedom.spacer
         display: none
 
-    @media (max-width: $tablet-small)
+    @media (max-width: $tablet-small - 1px)
       width: 100%
       &.now
         margin-bottom: 2rem
@@ -329,7 +329,7 @@ login .homepage-nav
   width: 100%
   text-align: center
 
-  @media (max-width: $tablet-large)
+  @media (max-width: $tablet-large - 1px)
     justify-content: space-between
 
   a
@@ -341,22 +341,22 @@ login .homepage-nav
     &:hover
       color: $panel-text-link-hover
 
-    @media (max-width: $tablet-small)
+    @media (max-width: $tablet-large - 1px)
       margin: 0 1rem
 
-    @media (max-width: $mobile-large)
+    @media (max-width: $mobile-large - 1px)
       margin: 0 0.5rem
 
 
 // Because of fucked up flow/DOM ordering, we need two copies of the <login> component. One we show on mobile, the other on desktop
 
-@media (min-width: $tablet-large + 1)
+@media (min-width: $tablet-large)
   login .signup-text
     display: none
   homepage login
     display: none
 
-@media (max-width: $tablet-large)
+@media (max-width: $tablet-large - 1px)
   .modal-content.is--login
     display: none
 
@@ -378,7 +378,7 @@ login .homepage-nav
       padding: 0
 
     .hero .note
-      margin: 2rem 0
+      margin: 2rem auto // @TODO/polish @TODO/hp This looks a bit odd between tablet-small and tablet-large
       min-height: 350px // @TODO/hp @TODO/now This depends on updated copy for the note
 
     .steps

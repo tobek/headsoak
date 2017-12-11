@@ -1,4 +1,5 @@
 $note-header-height: 2.5rem
+$note-left-padding: 1.5rem
 
 .note
   +card
@@ -27,7 +28,19 @@ $note-header-height: 2.5rem
 
   &,
   homepage .demo-container & // extra specificity for homepage to override route class that might be there e.g. if you're in route--browse and logout
-    padding: 54px 10px 35px 1rem // More magic numbers (correctly vertically positions header and note actions). Left padding is needed in order for body input scrollbar to not be flush against body text nor flush against edge of note. These values (+ right padding on .body-input) are close enough on all browser widths it seems, especially since right edge of text isn't clear because of non-justified left-alignment.
+    padding: 54px 10px 35px $note-left-padding // More magic numbers (correctly vertically positions header and note actions). Left padding is needed in order for body input scrollbar to not be flush against body text nor flush against edge of note. These values (+ right padding on .body-input) are close enough on all browser widths it seems, especially since right edge of text isn't clear because of non-justified left-alignment.
+
+  left: -1rem // see note below, just less
+  +susy-breakpoint($screen-large, $susy)
+    left: -$note-left-padding // Same as left padding. This probably needs refactoring. Left edge of `note` element is the orange highlight bar. If we have space, we want the left edge of the *content* (text and tags) with the grid, and the orange bar should be outside it.
+
+  homepage .demo-container &
+    left: 0
+
+  +susy-breakpoint($screen-large, $susy)
+    homepage .hero .demo-container &
+      left: -$note-left-padding
+
 
   // @HACK @TODO/optimization The way padding and header work on here made it really hard to not have note-bg behind the header, so instead we're taking background off main .note element and hacking it in here while avoiding the header
   .note-bg
@@ -55,12 +68,14 @@ $note-header-height: 2.5rem
   .header
     top: 0
     left: 0
+    width: calc(100% - #{$note-left-padding})
+    padding-left: $note-left-padding
 
   .tags
     overflow: hidden
     width: 100%
     max-height: $note-header-height
-    padding: 0.25rem 0.5rem 0.5rem
+    padding: 0.25rem 0.5rem 0.5rem 0
     // background-color: transparent
     background-color: $panel-bg
     // +box-shadowed-small-light
@@ -74,6 +89,7 @@ $note-header-height: 2.5rem
 
   .tag-like
     cursor: pointer
+    padding-left: 0 // line it all up
 
     // @TODO/ece Right now hover just makes + icon change color. Should it instead flip bg color and text color like hover on tag in tag browser?
     &:hover .fa
@@ -190,14 +206,14 @@ $note-header-height: 2.5rem
     overflow-y: auto // goes with max-height being full height now?
     // max-height: 133px // 6.5 lines of text (so that clipping is obvious)
     max-height: calc(#{$full-height-nestable} - 100px) // magic numbers - 100px is about the vertical padding of note element plus a bit to spare
-    padding: 2px 20px 2px 2px // see note about right padding in base .note styles // @NOTE if right padding changes here it must also be changed for .body-input overrides in .route--list
+    padding: 2px 20px 2px 0 // see note about right padding in base .note styles // @NOTE if right padding changes here it must also be changed for .body-input overrides in .route--list
     border: 0
     outline: none
     white-space: pre-wrap
     color: $note-text
 
     transition: min-height $transition-fast, max-height $transition-fast, padding $transition-fast
-    
+
     @media (max-width: $tablet-large - 1px)
       // @TODO/soon Is this the right behavior on mobile?
       // @TODO/soon I think these need to be nestable, but some browsers manage without, I think?
@@ -279,7 +295,7 @@ $note-header-height: 2.5rem
 
           .body-input
             min-height: 95px
-        
+
 
 
   .note-actions
@@ -384,12 +400,13 @@ $note-header-height: 2.5rem
 
   .route--scroll &
     .body-input
-      padding-left: 10px
+      // padding-left: 10px
 
       +susy-breakpoint($screen-small, $susy)
         // These achieve a "max width" of 600px while filling the rest with padding. Additionally, it's aligned a little towards the left from centered
+        // UPDATE 2017/12: we want it to be all left-aligned now, so removing left-padding. @TODO/polish @TODO/styles @TODO/note Is this the right width with the right-padding here?
         padding-right: calc(75% - 450px)
-        padding-left: calc(25% - 150px)
+        // padding-left: calc(25% - 150px)
 
     // @REMOVED/note text overflow Along with bit above
     // &.is--focused,
