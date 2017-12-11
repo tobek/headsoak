@@ -27,7 +27,7 @@ homepage
     text-align: left
     // text-shadow: 2px 2px 5px black
     color: $logo-text-color
-    
+
     h2
       margin-top: 0
       margin-bottom: 0.5rem
@@ -146,8 +146,8 @@ homepage
       width: 100%
       height: 100%
 
-    // .heading 
-    //   +h3 
+    // .heading
+    //   +h3
 
     // .note-count-heading
     //   +h3
@@ -176,11 +176,27 @@ homepage
     img
       +span(4)
       height: auto
+
     .text
       +span(7 last)
       +h4
-      text-align: left
+      text-align: center
       font-weight: normal
+
+      @media (min-width: $tablet-large + 1)
+        margin-top: calc(100vw * 0.11) // holy hell magic number. to lazy to refactor to flex box or table row or osmething for vertical height centering. 0.22 gets the height of the image, which we want to divide by 2
+        transform: translateY(-50%)
+
+      @media (min-width: $screen-large + 1)
+        margin-top: 140px // magic number - half the height of the adjacent screenshot at full size
+
+    @media (min-width: $tablet-large + 1)
+      .shot:last-child
+        .text
+          +span(7)
+        img
+          +span(4 last)
+
 
   .features
     background: $homepage-main-bg
@@ -347,7 +363,7 @@ login .homepage-nav
   homepage
     // Put space from top as margin on intro instead of padding on homepage so that the <login> element that's used inside of <homepage> on mobile can be at the top of the page
     padding-top: 0
-    padding-left: 0.5rem 
+    padding-left: 0.5rem
     padding-right: 0.5rem
 
     .intro
@@ -389,8 +405,10 @@ login .homepage-nav
       padding-right: 0.5rem
       img,
       .text
-        +span(12)
         margin-bottom: 1rem
+        &,
+        &:last-child
+          +span(12)
 
     login
       +card
