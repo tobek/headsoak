@@ -33,7 +33,7 @@ ref.authWithCustomToken(firebaseToken, function(err, authData) {
   }
 });
 
-// Cache users, tags, and notes for the duration of this run. Each user will have a `tags` and `notes` field that maps ID to data
+// Cache users, tags, and notes for the duration of this run. Each user will have a `tags` and `notes` field that maps ID to data. No need for cache expiry because this process is run on a cron job so cache will be fresh each time.
 const users = {};
 
 function init() {

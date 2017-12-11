@@ -3,7 +3,7 @@ When updating these on the server, run:
     git pull
     npm install
 
-If necessary, any updates in `server/upstart` can then be applied like so:
+If necessary, any updates in `config/server/upstart` can then be applied like so:
 
     sudo cp server/upstart/*.conf /etc/init/
     sudo initctl reload-configuration

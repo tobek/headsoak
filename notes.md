@@ -1,11 +1,76 @@
 # TODO
 
-- active tag in query should have its dropdown open?
+- maybe have a "working" sync status for stuff like prog tag updating - still warns before navigation, but doesn't set up sync. would need a separate variable in case you do something that overrides sync status while working
+- get rid of intense spellcheck red line in list mode
+- marker of where you last edited
+    - constantly save cursor position, save to data store
+    - little arrow (with tooltip) on right side?
+- ECE: should buttons be disabled while loading?
+- bug with logging in (saw with regular login *sometimes* and with new account theonetime i did that - may only happen when on no route or something) where seems like change detection isn't run after final initialization. same with account deletion? it's cause firebase is outside the zone! happening a bunch on login on iOS
+- layout
+    - minimum height for focused/editing note should be same on scroll view?
+    - adjust padding on list view?
+
+### styles
+
+- pin/archived style
+- new note button?
+- move search mag glass to left
+
+### analytics
+
+##### analytics config info
+
+- superset user `soaker`, password `tftwf!`
+- local db user `socker`, password `TFTWF!`
+
+### homepage
+
+- help - should we have "why should i use headsoak" or "who should use headsoak?"
+- sign up link at bottom?
+- make visualization more spread out (check on mobile)
+- demo note
+    - make sure you can type on mobile!
+    - when it focuses in (or from) add tag field, it jumps viewport back up there. check if it's visible first!
+    - adding tag animation
+    - hide note tag dropdown?
+
+### index improvements
+
+- `awful` matches `away`. same in elasticlunr?
+- `wallpaper` doesn't match note with `painting/wallpapering`
+- <http://elasticlunr.com/> - <https://github.com/weixsong/elasticlunr.js>
+
+### mobile responsive
+
+- QA safari iOS
+    - click out to close note tag dropdown
+- there should be a way to hit note actions without focusing note? like a little menu thing that expands them all
+- on android seems like you can have multiple notes focused at the same time - click on one add tag field then another. will focus mode for note fix this?
+- sort shouldn't drop you to focus on search bar
+- maybe notes on mobile have a menu icon to pop up note actions *without* expanding the note?
+    - right-padding on hover in list mode is maybe too much, too (especially with unclear hover - but still have to show active icons...)
+- check that on iOS safari you can un-click stuff by clicking on background somewhere (<https://developer.mozilla.org/en-US/docs/Web/Events/click#Safari_Mobile>) - actually, check that click events fire everywhere needed! (find a typically non-clickable element and see if it works)
+- check that things with tooltips don't require double click to open, like expand tags
+- bg image jumping when address bar hides: <http://stackoverflow.com/questions/24944925/background-image-jumps-when-address-bar-hides-ios-android-mobile-chrome>
+- manually triggering focus on iOS? e.g. for search or note modal opening
+    - <https://github.com/ftlabs/fastclick> and their triggering focus example <http://ftlabs.github.io/fastclick/examples/focus.html>
+    - <http://stackoverflow.com/questions/30752250/ios-workaround-for-manually-focusing-on-an-input-textarea>
+    
 
 ### focused note
 
 - search for `@REMOVED/write`
 - search for `openNote` and stuff like that
+
+### `trash` system tag
+
+- delete
+    - if already in trash, message says "are you sure you want to delete permanently" and deletes
+    - otherwise, change messaging, add tag
+- exclude from ALL queries UNLESS trash is in the query
+- i guess note count on a tag should exclude it? just like they should exclude private - LATER? if so then we need a "no (more) notes found - check deleted and/or private notes?"
+- login hook checks each trashed note to see if it's over 1 month old
 
 ### misc
 
@@ -18,6 +83,7 @@
 - shortcuts align mod key with other ones
 - tag data like sentiment value - show in dropdown
 - make all bg images and profile images https
+- clicking on an note action (or add tag button) while note is expanded - blur happens first. note actions need to happen on mousedown/touchstart but not double doing it - should prob make a directive to handle this? (basically just throttles the function and doesn't call on trailing edge). and then test
 
 
 AMAZING. run `node --debug-brk --inspect=9222 /usr/lib/node_modules/webpack-dev-server/bin/webpack-dev-server.js --config config/webpack.dev.js --progress --profile --watch --content-base src/` then open up the URL in browser, it'll be stopped on first line and then you can continue!
@@ -33,36 +99,6 @@ AMAZING. run `node --debug-brk --inspect=9222 /usr/lib/node_modules/webpack-dev-
 - "remove" tooltip shouldn't appear on tag in note query? or should be different
 - sort dropdown might not be updating to show initial, non "recently modified" state?
 - when you pin/archive something, the (new?) tooltip gets detached and sits in the top left corner?!
-
-nov 28 - dec 4
-
-- tooltip notifications + information indicators
-- smart tag improvements
-- smart tag examples
-
-dec 5 - dec 11
-
-- smart tag examples
-- smart tag parameters and/or IFTTT
-
-dec 12 - dec 18
-
-- design tweaks + fixes
-- mobile responsive
-
-dec 19 - dec 25
-
-- design tweaks + fixes
-- analytics
-- onboarding/finish homepage/pricing
-- bugs
-
-dec 26 - jan 1
-
-- design tweaks + fixes
-- pricing
-- bugs
-- woo
 
 ### right now
 
@@ -94,6 +130,21 @@ dec 26 - jan 1
 - make "learn more" bob and link to scroll down
 - start loading bg image when page loads
 - make sendgrid form invisible until initialized
+
+### messaging academics
+
+nando@cs.ox.ac.uk
+@NandoDF
+
+Open-sourcing your NSFW text classifier?
+
+Hi Dr. de Freitas,
+
+My name is Toby Fox and I'm working on a note-taking application (somewhat like Evernote) that, among other things, can serve as a platform for applying NLP algorithms to your own notes. BLAH MSc at Oxford CS.
+
+One of the abilities I want to bundle with the application is automatic classification (and making "private") of NSFW notes. I found your paper on NSFW classification of Reddit posts (http://www.cs.ubc.ca/~nando/540-2013/projects/p38.pdf) and was planning on recreating the classifier following the paper's conclusions, but before I did I was wondering if you had any re-usable work from that project that you'd consider open sourcing. If so I'd be happy to document and help maintain.
+
+Also, if you're interested more in the project, BLAH
 
 ### firebase migrate
 
@@ -127,7 +178,37 @@ dec 26 - jan 1
     - fixed central nodes dont exert forces? maybe they should be fixed by a new force instead of fixed with `fx` and `fy`
     - for fade on hover, could fade-less notes that are connected by two degrees
 
-### prog tag examples
+### prog tag examples and stuff
+
+- ability to add multiple
+    - tag.notedata
+        - in model and component
+    - tag.subtagdocs
+        - in tag model - only work needed is in
+            - `removeNoteId`
+            - `handleProgResult`
+            - `getSubTagIdForNoteId` which is referenced in tag viz which should break out all subtags on a note at start
+        - no work needed in: subtag, tag viz comp, autocomplete, force graph
+    - see if it can be displayed in tag template
+- ok
+    - move logic for splitting into note
+        - look at all `splitIntoSubtags` and `is--split`
+- update prog documentation after child tag and notedata stuff
+- nsfw
+    - use custom processor, imitate <https://github.com/wooorm/retext-profanities/blob/master/index.js>
+- maybe classifier should receive and return an array of tags, so that initialization of stuff is obvious and required, and API requests would be batched more easily? if so maybe the default function should return array with something mapped over it. might be a stumbling block for super basic stuff
+- now that we have workers, improve messaging/toasters/loading for running prog on all notes
+    - maybe if it takes longer than X seconds, toaster pops up saying "running ___ tag on your notes, we'll let you know when it's done". OR messaging on the page says this, and if that message is no longer visible when it's done, then it toasters you
+
+##### keyword extraction
+
+- minimum note length?
+- cutoff? should cutoff be strength or # or both?
+- handle stemming
+    - and ideally synonyms...
+- loading indicator while running
+- cooccurrences for each child tag in tag details?
+- tag details pages for tag that shares a name with a prog child tag should reference that child tag
 
 ##### searchable subtags
 
@@ -145,6 +226,8 @@ dec 26 - jan 1
     - after running prog on all notes, re-sort tag browser
     - loading
     - firebase can't save undefined values so if they put undefined in `noteData` it'll break - error message isn't bad (check error handling is good enough to show) but maybs we can check for it
+- error handling
+    - tell them to throw errors
 - library
     - clicking on subtag on note should filter by the subtag? OR should both be an option?
     - enabling smart tag makes new note become a real, empty note?
@@ -292,7 +375,7 @@ basically when instantiating
 - addanothertag behavior is janky. need to confirm it always works as expected but enabled and disabled, and with ctrl/shift enter, and everything
 - tag expand - when you click outside it should collapse
 - logging out fires a million "note component claims to have tag ID ... but ..." - DID I FIX THIS
-- deleting a tag (in this case a note with that tag was open in browser and in query bar) causing `[NoteComponent 12] Note ID 12 claims to have tag ID 16 but no tag found for that ID.`
+- deleting a tag (in this case a note with that tag was open in browser and in query bar) causing `[NoteComponent 12] Note ID 12 claims to have tag ID 16 but no tag found for that ID.` - and generally messes up
 - the way subtags are handled (autocomplete produces strings like "sentiment: positive" which get put into autocomplete box and then converted from string back into Tag instance...) will break if you have dupe tag names. when adding library tag (with subtags) if you have tag w same name, prevent it or somehow change lib tag name on your end
 - if notes sort is not recently modified, show it? i had it on longest and reloaded the page and of course it was still longest and i was like... where's my note
 - making a note private when it's the open-note doesn't hide it! should it? also confirm that open note is affected by changing private mode.

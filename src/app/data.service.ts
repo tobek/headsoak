@@ -251,6 +251,7 @@ export class DataService {
   /** We run this throttled. Checks the digest and syncs updates as necessary. */
   sync(): void {
     if (! this.isDigestEmpty(this.digestSyncing)) {
+      // @TODO/now @TODO/bug REALLY BAD I got stuck in a state where every attempt to sync said this, but status was stuck at "unsynced". trying to close window threw warning, tried to sync again, but no avail. eventually, after being paused in debugger for a while, when unpausing debugger it thought we were disconnected and upon reconnect it successfully synced! ideally figure out how this is possible. at the very least guard against situation where we hit this but syncing isn't happening. lastly see what the reconnect may have done to fix it. no idea what i was doing that precipitated it. i added a bunch of notes, had turned private mode on, searched a bunch, etc. at least the "data may be lost" popup was accurate
       this._logger.log('sync called while digest is syncing');
       return;
     }
