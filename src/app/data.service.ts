@@ -1,6 +1,7 @@
 import {Inject, forwardRef, Injectable, EventEmitter, NgZone, ChangeDetectorRef} from '@angular/core';
 import {Router} from '@angular/router';
 import {ReplaySubject, Subscription} from 'rxjs';
+import * as firebase from 'firebase';
 
 import {Logger, utils, sampleData} from './utils/';
 
@@ -67,7 +68,7 @@ export class DataService {
   /** Timestamp (in ms) that device was last connected to the internet. */
   lastOnline: number;
 
-  ref: Firebase;
+  ref: firebase.database.Reference;
 
   accountService: AccountService;
 
@@ -133,7 +134,7 @@ export class DataService {
   }
 
   monitorOnlineState() {
-    const onlineStateRef = this.ref.root().child('.info/connected');
+    const onlineStateRef = this.ref.root.child('.info/connected');
 
     setInterval(() => {
       onlineStateRef.on('value', this.onlineStateHandler);
@@ -401,7 +402,7 @@ export class DataService {
       return;
     }
 
-    this.ref = this.ref.root().child('users/' + uid);
+    this.ref = this.ref.root.child('users/' + uid);
 
     this.ref.once('value', (snapshot) => { this.zone.run(() => {
       const data = snapshot.val();
@@ -442,7 +443,7 @@ export class DataService {
       }
     });
 
-    this.ref.root().child('emailToId/' + utils.formatForFirebase(this.user.email)).set(this.user.uid, (err) => {
+    this.ref.root.child('emailToId/' + utils.formatForFirebase(this.user.email)).set(this.user.uid, (err) => {
       this._logger.error('Failed to set emailToId for user ' + this.user.uid, err);
     });
 
@@ -568,7 +569,7 @@ export class DataService {
     if (featuresSeen < this.NEW_FEATURE_COUNT) {
       this._logger.info('[latestFeatures] There are some new features user hasn\'t seen');
 
-      this.ref.root().child('newFeatures').once('value', (snapshot) => { this.zone.run(() => {
+      this.ref.root.child('newFeatures').once('value', (snapshot) => { this.zone.run(() => {
         this._logger.log('[latestFeatures] Fetched new feautures list');
 
         const feats = snapshot.val();

@@ -285,26 +285,15 @@ export class SettingsComponent {
     }
 
     this.changePasswordIsLoading = true;
-    this.dataService.accountService.changePassword(this.oldPass, this.newPass, (err) => {
+    this.dataService.accountService.changePassword(this.oldPass, this.newPass, (errMessage) => {
       this.changePasswordIsLoading = false;
 
-      if (err) {
-        if (err.code === 'INVALID_PASSWORD') {
-          this.tooltipService.justTheTip(
-            'Wrong password!',
-            this.currentPasswordInput.nativeElement,
-            'error'
-          );
-        }
-        else {
-          this.tooltipService.justTheTip(
-            'Something went wrong, sorry!<br><br>[' + (err.message || err.code || err) + ']',
-            this.changePasswordButton.nativeElement,
-            'error'
-          );
-
-          this._logger.error('Failed to change password:', err);
-        }
+      if (errMessage) {
+        this.tooltipService.justTheTip(
+          errMessage,
+          this.currentPasswordInput.nativeElement,
+          'error'
+        );
         return;
       }
 

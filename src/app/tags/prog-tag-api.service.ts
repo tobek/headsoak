@@ -187,7 +187,7 @@ export class ProgTagApiService {
     const localId = utils.randomId();
     const globalId = this._dataService.user.uid + ':' + localId;
 
-    this._dataService.ref.root().child('queuedEmails/' + globalId).set({
+    this._dataService.ref.root.child('queuedEmails/' + globalId).set({
       uid: this._dataService.user.uid,
       type: 'prog',
       sendAt: Math.round(sendAt / 1000),
@@ -211,7 +211,7 @@ export class ProgTagApiService {
     }
     const actualId = this._dataService.user.uid + ':' + id;
 
-    this._dataService.ref.root().child('queuedEmails/' + actualId).remove((err?) => {
+    this._dataService.ref.root.child('queuedEmails/' + actualId).remove((err?) => {
       err && this._logger.warn('Failed to cancel queued email for user', this._dataService.user.uid, 'with email id', actualId, ' - error:', err);
 
       cb && cb(err);

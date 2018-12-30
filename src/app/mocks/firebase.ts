@@ -1,3 +1,4 @@
+// @TODO/rewrite/fbSdk3 This doesn't work with new Firebase SDK 3. App has been migrated but mocks have not been. See https://www.firebase.com/docs/web/api/firebase/onauth.html.
 export class FirebaseMock {
   authCb: Function;
   mockOnCb: Function;

@@ -56,7 +56,7 @@ export class FeedbackComponent {
 
     this.isLoading = true;
 
-    this.dataService.ref.root().child('feedback').push({
+    this.dataService.ref.root.child('feedback').push({
       feedback: feedback,
       timestamp: new Date().toString(),
       uid: this.dataService.user.uid,
@@ -69,7 +69,7 @@ export class FeedbackComponent {
         this._logger.error('Failed to submit feedback:', err);
 
         this.tooltipService.justTheTip(
-          'Sorry, that didn\'t work! Try again please.<br><br>[' + (err.message || err.code || JSON.stringify(err)) + ']',
+          'Sorry, that didn\'t work! Try again please.<br><br>[' + (err.message || err['code'] || JSON.stringify(err)) + ']',
           this.submitButton.nativeElement,
           'error'
         );

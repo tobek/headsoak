@@ -1,8 +1,8 @@
 import {Injectable, NgZone, ChangeDetectorRef} from '@angular/core';
 import {ReplaySubject} from 'rxjs/ReplaySubject';
+import * as firebase from 'firebase';
 
-import * as Firebase from 'firebase';
-
+const config = require('../../../config.json');
 import {utils, Logger, ToasterService, TooltipService} from '../utils/';
 import {AnalyticsService} from '../analytics.service';
 import {DataService} from '../data.service';
@@ -29,11 +29,9 @@ export class AccountService {
 
   rootChangeDetector: ChangeDetectorRef;
 
-  ref: Firebase;
+  ref: firebase.database.Reference;
 
   private _logger: Logger = new Logger('AccountService');
-
-  private onlineStateRef: Firebase;
 
   constructor(
     private zone: NgZone,
@@ -48,7 +46,8 @@ export class AccountService {
     // Instantiating this outside of the Angular zone prevents Firebase from using Angular/Zone's monkey-patched async services. If we don't do this, then any of Firebase's continual setInterval and setTimeout and websocket calls etc. will trigger change detection for the whole app. This way, we have to trigger change detection manually.
     // @NOTE: This means that callbacks from functions like `this.ref.on('value', ...)` will not trigger change detection, even if called from within angular zone. In order to fix this, make sure Firebase callbacks execute in `zone.run(...)` when necessary.
     this.zone.runOutsideAngular(() => {
-      this.ref = new Firebase('https://nutmeg.firebaseio.com/');
+      firebase.initializeApp(config.FIREBASE_CLIENT_CONFIG);
+      this.ref = firebase.database().ref();
     });
   }
 
@@ -56,28 +55,29 @@ export class AccountService {
     this.rootChangeDetector = rootChangeDetector;
 
     if (this.FORCE_OFFLINE) {
-      this.handleLoggedOut();
+      throw Error("firebase mock library doesn't support latest firebase SDK, so offline won't work");
+      // this.handleLoggedOut();
 
-      setTimeout(() => {
-        this.devOfflineHandler();
-        this.ref.authWithPassword({ email: 'email@example.com', password: 'abc' });
-      }, 0);
+      // setTimeout(() => {
+      //   this.devOfflineHandler();
+      //   this.ref.authWithPassword({ email: 'email@example.com', password: 'abc' });
+      // }, 0);
 
-      return;
+      // return;
     }
 
     this.setUpAuthHandlers();
   }
 
   setUpAuthHandlers(): void {
-    // onAuth immediately fires with current auth state, so let's capture that specifically
+    // onAuthStateChanged immediately fires with current auth state, so let's capture that specifically
     let isInitialAuthState = true;
 
-    this.ref.onAuth((authData) => { this.zone.run(() => {
-      if (authData) {
-        this._logger.info('Log in succeeded', authData);
+    firebase.auth().onAuthStateChanged((user) => { this.zone.run(() => {
+      if (user) {
+        this._logger.info('Log in succeeded', user);
 
-        this.handleLoggedIn(authData);
+        this.handleLoggedIn(user);
       }
       else {
         // They're logged out
@@ -87,7 +87,7 @@ export class AccountService {
       if (isInitialAuthState) {
         isInitialAuthState = false;
 
-        this.analytics.event('Account', 'initialized', authData ? 'logged_in' : 'logged_out');
+        this.analytics.event('Account', 'initialized', user ? 'logged_in' : 'logged_out');
       }
     }); });
   }
@@ -103,18 +103,25 @@ export class AccountService {
   login(email: string, password: string, cb: (errMessage?: string) => void) {
     this.analytics.event('Account', 'login.attempt');
 
-    this.ref.authWithPassword({
-      email: email,
-      password: password,
-    }, (error) => { this.zone.run(() => {
-      if (error) {
+    // @TODO Handle "remember me" stuff
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then((userCred: firebase.auth.UserCredential) => { this.zone.run(() => {
+        this.analytics.event('Account', 'login.success');
+        cb();
+        // Actual login logic handled in `onAuth` callback from this.init
+      }); })
+      .catch((error) => { this.zone.run(() => {
+        if (! error) {
+          return;
+        }
+
         this.analytics.event('Account', 'login.error', error.code);
 
         switch (error.code) {
-          case 'INVALID_EMAIL':
-          case 'INVALID_PASSWORD':
-          case 'INVALID_USER':
-            cb('Wrong credentials, please try again.'); // @TODO/copy friendlier message
+          case 'auth/invalid-email':
+          case 'auth/wrong-password':
+          case 'auth/user-not-found':
+            cb('Incorrect password or no account with that email, please try again.'); // @TODO/copy friendlier message
             break;
           default:
             this._logger.warn('Login failed: ', error);
@@ -122,21 +129,11 @@ export class AccountService {
         }
 
         this.loginState$.next('error');
-        return;
-      }
-
-      this.analytics.event('Account', 'login.success');
-
-      cb();
-
-      // Actual login logic handled in `onAuth` callback from this.init
-    }); }, {
-      remember: 'default' // @TODO - should let user choose not to remember, in which case should be 'none'
-    });
+      }); });
   }
 
   /** Firebase is in a logged-in state, whether page loaded that way or user has just logged in. */
-  handleLoggedIn(authData) {
+  handleLoggedIn(user: firebase.User) {
     if (this.modalService.activeModal !== 'login') {
       // They were logged in on page load so we never had to show login modal, so let's just leave the non-modal, pre-initialization loader visible until everything is initialized
       this._logger.logTime('Logged in on load');
@@ -148,20 +145,21 @@ export class AccountService {
       this._logger.setLoginTime();
     }
 
-    if (authData.password && authData.password.isTemporaryPassword) {
-      this.loggedInWithTemporaryPassword = true;
-    }
+    // @TODO/rewrite/fbSdk3 This needs handling differently with FB SDK 3 update
+    // if (user.password && user.password.isTemporaryPassword) {
+    //   this.loggedInWithTemporaryPassword = true;
+    // }
 
     this.user.setData({
-      uid: authData.uid,
-      email: authData.provider && authData[authData.provider] && authData[authData.provider].email,
-      provider: authData.provider,
+      uid: user.uid,
+      email: user.email,
+      provider: user.providerId,
     });
     this.user.loggedIn = true;
 
     this.dataService.init(this.user.uid, this);
 
-    const userRef = this.ref.child('users/' + authData['uid'] + '/user');
+    const userRef = this.ref.child('users/' + user['uid'] + '/user');
 
     userRef.update({
       lastLogin: Date.now()
@@ -187,7 +185,7 @@ export class AccountService {
   logout() {
     this.analytics.event('Account', 'logout');
     this.wasLoggedIn = true;
-    this.ref.unauth(); // will trigger `handleLoggedOut` via firebase auth listener
+    firebase.auth().signOut(); // will trigger `handleLoggedOut` via firebase auth listener
   }
 
   /** Firebase is in a logged-out state, whether page loaded that way or user has just logged out. */
@@ -218,42 +216,53 @@ export class AccountService {
   passwordReset(email: string, cb: (errMessage?: string) => void) {
     this.analytics.event('Account', 'password_reset.attempt');
 
-    this.ref.resetPassword({ email: email }, (err) => {
-      let errMessage = null;
+    // @TODO/rewrite/fbSdk3 Password reset flow is different now, this won't work.
+    cb('Sorry! Due to an update to Firebase (a code library we use), this feature currently does not work and we haven\'t re-implemented it yet. Please email us at support@headsoak.com and we can sort this out manually.');
+    // this.ref.resetPassword({ email: email }, (err) => {
+    //   let errMessage = null;
 
-      if (err) {
-        this.analytics.event('Account', 'password_reset.error', err.code);
-        switch (err.code) {
-          case 'INVALID_USER':
-            // For security purposes this should be indistinguishable from successful password reset
-            break;
-          default:
-            errMessage = 'Sorry, something went wrong when trying to reset your password:<br><br><code>[' + (err.message || err.code || err) + ']</code><br><br>Please try again later or get in touch at <a href="mailto:support@headsoak.com">support@headsoak.com</a>.';
-            this._logger.error('Error resetting password:', err);
-        }
-      }
+    //   if (err) {
+    //     this.analytics.event('Account', 'password_reset.error', err.code);
+    //     switch (err.code) {
+    //       case 'INVALID_USER':
+    //         // For security purposes this should be indistinguishable from successful password reset
+    //         break;
+    //       default:
+    //         errMessage = 'Sorry, something went wrong when trying to reset your password:<br><br><code>[' + (err.message || err.code || err) + ']</code><br><br>Please try again later or get in touch at <a href="mailto:support@headsoak.com">support@headsoak.com</a>.';
+    //         this._logger.error('Error resetting password:', err);
+    //     }
+    //   }
 
-      if (! err) {
-        this.analytics.event('Account', 'password_reset.success');
-      }
+    //   if (! err) {
+    //     this.analytics.event('Account', 'password_reset.success');
+    //   }
 
-      this.zone.run(() => {
-        cb(errMessage);
-      });
-    });
+    //   this.zone.run(() => {
+    //     cb(errMessage);
+    //   });
+    // });
   }
 
   createAccount(email: string, password: string, cb: (errMessage?: string) => void) {
     this.analytics.event('Account', 'create_account.attempt');
 
-    this.ref.createUser({ email: email, password: password}, (err, userData) => { this.zone.run(() => {
-      if (err) {
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then((userCred: firebase.auth.UserCredential) => { this.zone.run(() => {
+        this.analytics.event('Account', 'create_account.success');
+
+        this._logger.info('New account created with user id', userCred.user.uid);
+        this.login(email, password, cb);
+      }); })
+      .catch((err) => { this.zone.run(() => {
+        if (! err) {
+          return;
+        }
         switch (err.code) {
-          case 'INVALID_EMAIL':
+          case 'auth/invalid-email':
             this.analytics.event('Account', 'create_account.error', err.code);
             cb('That\'s an invalid email address!');
             break;
-          case 'EMAIL_TAKEN':
+          case 'auth/email-already-in-use':
             // Just try to log them in
             this.login(email, password, (errMessage) => {
               if (errMessage) {
@@ -273,20 +282,10 @@ export class AccountService {
         }
 
         this.loginState$.next('error');
-
-        return;
-      }
-
-      this.analytics.event('Account', 'create_account.success');
-
-      this._logger.info('New account created with user id', userData.id);
-      this.login(email, password, cb);
-    }); });
+      }); });
   }
 
   changeEmail(newEmail: string, doneCb: () => void): void {
-    // @TODO/account Should check valid email, OR confirm that Firebase does
-
     this.modalService.prompt(
       'Please enter your password in order to change your email address:',
       (password, showLoading, hideLoading) => {
@@ -296,15 +295,27 @@ export class AccountService {
 
         showLoading();
 
-        this.ref.changeEmail({
-          oldEmail: this.user.email,
-          newEmail: newEmail,
-          password: password,
-        }, (err) => { this.zone.run(() => {
-          hideLoading();
-          this.changeEmailResponseHandler(newEmail, err);
-          doneCb();
-        }); });
+        // @TODO/refactor Could just use this.checkPassword
+        firebase.auth().signInWithEmailAndPassword(this.user.email, password)
+          .then((userCred: firebase.auth.UserCredential) => { this.zone.run(() => {
+            hideLoading();
+            userCred.user.updateEmail(newEmail)
+              .then(() => { this.zone.run(() => {
+                hideLoading();
+                this.changeEmailResponseHandler(newEmail);
+                doneCb();
+              }); })
+              .catch((err) => { this.zone.run(() => {
+                hideLoading();
+                this.changeEmailResponseHandler(null, err);
+                doneCb();
+              }); });
+          }); })
+          .catch((err) => { this.zone.run(() => {
+            hideLoading();
+            this.changeEmailResponseHandler(null, err);
+            doneCb();
+          }); });
 
         return false; // don't close modal, wait for Firebase response so we can keep it open if wrong password
       },
@@ -323,21 +334,26 @@ export class AccountService {
     if (err) {
       this._logger.warn('Failed to change email:', err);
 
-      if (err.code === 'INVALID_PASSWORD') {
-        this.tooltipService.justTheTip(
-          'Wrong password!',
-          this.modalService.modal.promptInput.nativeElement,
-          'error'
-        );
+      let errMessage = 'Sorry, try again!<br><br><code>[' + (err.message || err.code || err) + ']</code>';
+      let tooltipTarget = this.modalService.modal.okButton.nativeElement;
+
+      if (err.code === 'auth/wrong-password') {
+        errMessage = 'Wrong password!';
+        tooltipTarget = this.modalService.modal.promptInput.nativeElement;
+      }
+      else if (err.code === 'auth/invalid-email') {
+        errMessage = 'Invalid email!';
+        tooltipTarget = this.modalService.modal.promptInput.nativeElement;
       }
       else {
-        this.tooltipService.justTheTip(
-          'Sorry, try again!<br><br><code>[' + (err.message || err.code || err) + ']</code>',
-          this.modalService.modal.okButton.nativeElement,
-          'error'
-        );
-        this._logger.error('Failed to change email:', err);
+        this._logger.error('Failed to change email due to unknown error:', err);
       }
+
+      this.tooltipService.justTheTip(
+        errMessage,
+        tooltipTarget,
+        'error'
+      );
 
       return; // don't close modal
     }
@@ -349,15 +365,20 @@ export class AccountService {
     setTimeout(this.logout.bind(this), 10);
   }
 
-  changePassword(oldPassword: string, newPassword: string, cb: (error: any) => void): void {
-    this.ref.changePassword({
-      email: this.user.email,
-      oldPassword: oldPassword,
-      newPassword: newPassword,
-    }, (err) => {
-      this.zone.run(() => {
-        cb(err);
-      });
+  changePassword(oldPassword: string, newPassword: string, cb: (errMessage?: any) => void): void {
+    this.checkPassword(oldPassword, (errMessage?: string) => {
+      if (errMessage) {
+        cb(errMessage);
+        return;
+      }
+
+      firebase.auth().currentUser.updatePassword(newPassword)
+        .then(() => { this.zone.run(() => {
+          cb();
+        }); })
+        .catch((err) => { this.zone.run(() => {
+          cb(err);
+        }); });
     });
   }
 
@@ -373,20 +394,20 @@ export class AccountService {
       this.analytics.event('Account', 'delete_account.attempt');
 
       // First remove this index.
-      this.ref.root().child('emailToId/' + utils.formatForFirebase(this.user.email)).set(null, (err) => {
+      this.ref.root.child('emailToId/' + utils.formatForFirebase(this.user.email)).set(null, (err) => {
         if (err) {
           // @TODO This happens a lot. Account deletion or log out can hit first and then no permission to do it I think? Either need to change Firebase rules or else do these all sequentially. But don't care that much. If user later signs up with same email it'll overwrite the value in /emailToId/, and if not, it can hang out there, it's tiny. (Might show up when searching for a user by email?)
-          this.analytics.event('Account', 'delete_account.error_emailtoid', err.code);
+          this.analytics.event('Account', 'delete_account.error_emailtoid', err['code']);
           this._logger.warn('Failed to remove value at `/emailToId/' + utils.formatForFirebase(this.user.email) + '` while deleting user account:', err);
         }
       });
 
       // Then delete account data
-      this.ref.root().child('users/' + this.user.uid).set(null, (err) => {
+      this.ref.root.child('users/' + this.user.uid).set(null, (err) => {
         if (err) {
           // @TODO/modals @TODO/tooltip Not sure which
-          alert('Sorry, something went wrong when trying to delete your account: [' + (err.message || err.code || err) + ']. Please try again later or get in touch at support@headsoak.com');
-          this.analytics.event('Account', 'delete_account.error_data', err.code);
+          alert('Sorry, something went wrong when trying to delete your account: [' + (err.message || err['code'] || err) + ']. Please try again later or get in touch at support@headsoak.com');
+          this.analytics.event('Account', 'delete_account.error_data', err['code']);
           this._logger.error('Error deleting account data:', err);
 
           this.zone.run(() => {
@@ -396,34 +417,31 @@ export class AccountService {
         }
 
         // Now delete actual user account
-        this.ref.removeUser({ email: email, password: password}, (err) => {
-          if (err) {
+        firebase.auth().currentUser.delete()
+          .then(() => { this.zone.run(() => {
+            this.analytics.event('Account', 'delete_account.success');
+
+            this._logger.info('Successfully deleted account with email', email);
+
+            // @TODO/modals Will this work with logout? Might need blocking modal
+            alert('Your account was deleted successfully - thanks for using Headsoak!'); // @TODO Should give opportunity to leave feedback? We'd need to make modal (in this case) blocking, and to send additional data (that it was before deletion) and to loggout on cancel or successful submit. Maybe leave feedback before finishing account deletion because writing feedback and knowing we want it might change their mind?
+
+            this.logout();
+            cb();
+          }); })
+          .catch((err) => { this.zone.run(() => {
             this.analytics.event('Account', 'delete_account.error_user', err.code);
             // @TODO/modals @TODO/tooltip Not sure which
             alert('Sorry, something went wrong when trying to delete your account: [' + (err.message || err.code || err) + ']. Please try again later or get in touch at support@headsoak.com');
             this._logger.error('Error removing user account after successfully deleting all account data:', err);
-            // @TODO THINGS ARE IN A REAL WEIRD STATE - DELETED USER INFO BUT NOT ACCOUNT. Now they can log in still with same account details (and can't make new account) but they'll have data. Let's act like everything was fine, and we'll have to go in manually and delete account.
-          }
-          else {
-            this.analytics.event('Account', 'delete_account.success');
-          }
-
-          this._logger.info('Successfully deleted account with email', email);
-
-          // @TODO/modals Will this work with logout? Might need blocking modal
-          alert('Your account was deleted successfully - thanks for using Headsoak!'); // @TODO Should give opportunity to leave feedback? We'd need to make modal (in this case) blocking, and to send additional data (that it was before deletion) and to loggout on cancel or successful submit. Maybe leave feedback before finishing account deletion because writing feedback and knowing we want it might change their mind?
-
-          this.zone.run(() => {
-            this.logout();
-            cb();
-          });
-        });
+            // @TODO THINGS ARE IN A REAL WEIRD STATE - DELETED USER INFO BUT NOT ACCOUNT. Now they can log in still with same account details (and can't make new account) but they'll have no data. Let's act like everything was fine, and we'll have to go in manually and delete account.
+          }); });
       });
     });
   }
 
-  userDataUpdated(newUserChild: FirebaseDataSnapshot) {
-    if (newUserChild.key() !== 'lastLogin') {
+  userDataUpdated(newUserChild: firebase.database.DataSnapshot) {
+    if (newUserChild.key !== 'lastLogin') {
       return;
     }
 
@@ -452,7 +470,7 @@ export class AccountService {
   }
 
   /** Calls cb with error message if password is incorrect or with null if password is correct. */
-  checkPassword(password: string, cb: Function): void {
+  checkPassword(password: string, cb: (errMessage?: string) => any): void {
     if (! password) {
       return cb('Please enter your password.');
     }
@@ -462,27 +480,19 @@ export class AccountService {
       return cb('Something went wrong, sorry! Give it another shot or try refreshing the page.');
     }
 
-    // @HACK We try to change their firebase password using supplied password, but the password we change it *to* is the same password, so if it's correct, result is nothing happens. If password is incorrect, however, we get an error.
-    this.ref.changePassword({
-      email: this.user.email,
-      oldPassword: password,
-      newPassword: password
-    }, (err) => { this.zone.run(() => {
-      if (err) {
+    firebase.auth().signInWithEmailAndPassword(this.user.email, password)
+      .then(() => { this.zone.run(cb); })
+      .catch((err) => { this.zone.run(() => {
         this._logger.warn('Password didn\'t check out:', err);
 
-        if (err.code === 'INVALID_PASSWORD') {
-          return cb('Wrong password');
+        if (err.code === 'auth/wrong-password') {
+          return cb('Wrong password!');
         }
         else {
-          this._logger.error('Error while "changing" password in order to check password:', err);
-          return cb('Something went wrong, sorry! Give it another shot or try refreshing the page.');
+          this._logger.error('Error while signing in in order to check password:', err);
+          return cb('Something went wrong, sorry! Give it another shot or try refreshing the page. [' + (err.message || err.code || err) + ']');
         }
-      }
-      else {
-        return cb();
-      }
-    }); });
+      }); });
   }
 
   // @TODO/ece The messaging is maybe switched here. "Private mode on" could be interpreted as privacy features are activated, meaning private notes are now hidden. That's why I'm adding the full text in toaster after title text - however, copy in the private mode modal itself (and toasters when making note private) has this same problem. Also, we can consider using warning or error toaster for enabling/disabling/both.
